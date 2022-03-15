@@ -1,5 +1,6 @@
 package com.inhatc.demp.domain;
 
+import com.inhatc.demp.dto.MemberForm;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,10 +19,17 @@ public class Member {
     private Long id;
 
     private String username;
-    private int age;
+    private Integer age;
+    private int password;
 
     public Member(String username, int age) {
         this.username = username;
         this.age = age;
+    }
+
+    public Member(MemberForm memberForm) {
+        this.username = memberForm.getUsername();
+        this.age = memberForm.getAge();
+        this.password = memberForm.getPassword();
     }
 }
