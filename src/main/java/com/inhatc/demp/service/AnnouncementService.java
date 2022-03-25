@@ -31,4 +31,8 @@ public class AnnouncementService {
     public Optional<Announcement> findById(Long id) {
         return announcementRepository.findById(id);
     }
+
+    public List<Announcement> findAll() {
+        return announcementRepository.findAll();
+    }
 }

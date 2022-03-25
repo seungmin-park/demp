@@ -13,20 +13,20 @@ import java.util.Optional;
 
 @Slf4j
 @RestController
+@RequestMapping("/api/member")
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
 
-    @RequestMapping(value = "/member",method = RequestMethod.GET)
-    @GetMapping("/member")
+    @GetMapping("")
     public ResponseEntity<Member> Member() {
         log.info("MemberController.Member");
         Optional<Member> findMember = memberService.findById(1L);
         return new ResponseEntity<>(findMember.get(), HttpStatus.OK);
     }
 
-    @PostMapping("/member/save")
+    @PostMapping("/save")
     public ResponseEntity<Member> saveMember(@RequestBody MemberForm memberForm) {
         Member member = new Member(memberForm);
         memberService.join(member);
