@@ -1,9 +1,6 @@
 package com.inhatc.demp.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,7 +16,8 @@ public class Announcement {
     private Long id;
 
     private String image;
-    private String company;
+    @Embedded
+    private Company company;
     private String title;
     private LocalDateTime startedDate;
     private LocalDateTime deadLineDate;
@@ -35,7 +33,7 @@ public class Announcement {
     @Enumerated(EnumType.STRING)
     private AnnouncementType announcementType;
 
-    public Announcement(String image, String company, String title, LocalDateTime startedDate, LocalDateTime deadLineDate, String language, String position, int payment, String career, String content, String accessUrl, AnnouncementType announcementType) {
+    public Announcement(String image, Company company, String title, LocalDateTime startedDate, LocalDateTime deadLineDate, String language, String position, int payment, String career, String content, String accessUrl, AnnouncementType announcementType) {
         this.image = image;
         this.company = company;
         this.title = title;

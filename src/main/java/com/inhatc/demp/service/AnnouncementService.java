@@ -2,6 +2,8 @@ package com.inhatc.demp.service;
 
 import com.inhatc.demp.domain.Announcement;
 import com.inhatc.demp.domain.AnnouncementType;
+import com.inhatc.demp.dto.AnnouncementSearchCondition;
+import com.inhatc.demp.repository.AnnouncementQueryRepository;
 import com.inhatc.demp.repository.AnnouncementRepository;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -17,15 +19,15 @@ import java.util.Optional;
 public class AnnouncementService {
 
     private final AnnouncementRepository announcementRepository;
-    private final JPAQueryFactory jpaQueryFactory;
+    private final AnnouncementQueryRepository announcementQueryRepository;
 
     @Transactional
     public void join(Announcement announcement) {
         announcementRepository.save(announcement);
     }
 
-    public List<Announcement> findByAnnouncementType(AnnouncementType announcementType) {
-        return announcementRepository.findByAnnouncementType(announcementType);
+    public List<Announcement> findAllByAnnouncementType(AnnouncementSearchCondition AnnouncementSearchCondition) {
+        return announcementQueryRepository.findAllByAnnouncementType(AnnouncementSearchCondition);
     }
 
     public Optional<Announcement> findById(Long id) {
