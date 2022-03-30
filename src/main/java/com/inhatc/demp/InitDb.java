@@ -30,18 +30,27 @@ public class InitDb {
 
     @Transactional
     public void initMember() {
-        Answer answer = new Answer("댓글1번");
-        Question question = new Question("질문1번", "질문 내용1번");
+        Answer answerA = new Answer("질문\\n 답변\\n 테스트",22,11);
+        Answer answerB = new Answer("질문\\n 답변\\n 테스트",11,22);
+        Question questionA = new Question("접근 제어자가 헷갈려요", "비 전공자라 그런지 CS 부분을 잘 모르겠네요",11,23,1);
+        Question questionB = new Question("Java8에서 뭐가 달라진건가요?", "제곧내",110,20,10);
         Member memberA = new Member("testMemberA", 20);
         Member memberB = new Member("testMemberB", 30);
 
-        question.settingMember(memberA);
-        answer.settingQuestion(question);
-        answer.settingMember(memberB);
+        questionA.settingMember(memberA);
+        answerA.settingQuestion(questionA);
+        answerA.settingMember(memberB);
         memberService.join(memberA);
         memberService.join(memberB);
-        questionRepository.save(question);
-        answerRepository.save(answer);
+        questionRepository.save(questionA);
+        answerRepository.save(answerA);
+
+        questionB.settingMember(memberB);
+        answerB.settingQuestion(questionB);
+        answerB.settingMember(memberA);
+        questionRepository.save(questionB);
+        answerRepository.save(answerB);
+
     }
 
     @Transactional

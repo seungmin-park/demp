@@ -1,11 +1,9 @@
 package com.inhatc.demp.service;
 
 import com.inhatc.demp.domain.Announcement;
-import com.inhatc.demp.domain.AnnouncementType;
 import com.inhatc.demp.dto.AnnouncementSearchCondition;
 import com.inhatc.demp.repository.AnnouncementQueryRepository;
 import com.inhatc.demp.repository.AnnouncementRepository;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

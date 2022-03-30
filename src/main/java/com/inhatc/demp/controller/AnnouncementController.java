@@ -1,7 +1,6 @@
 package com.inhatc.demp.controller;
 
 import com.inhatc.demp.domain.Announcement;
-import com.inhatc.demp.domain.AnnouncementType;
 import com.inhatc.demp.dto.AnnouncementResponse;
 import com.inhatc.demp.dto.AnnouncementScroll;
 import com.inhatc.demp.dto.AnnouncementSearchCondition;
@@ -12,14 +11,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/announce")
 @RequiredArgsConstructor
+@RequestMapping("/api/announce")
 public class AnnouncementController{
 
     private final AnnouncementService announcementService;
@@ -28,7 +28,12 @@ public class AnnouncementController{
     public List<AnnouncementResponse> announce(@ModelAttribute AnnouncementSearchCondition announcementSearchCondition) {
         log.info("AnnouncementController.announce");
         List<Announcement> announcements = announcementService.findAllByAnnouncementType(announcementSearchCondition);
-        return announcements.stream().map(AnnouncementResponse::new).collect(Collectors.toList());
+        List<AnnouncementResponse> list = new ArrayList<>();
+        for (Announcement announcement : announcements) {
+            AnnouncementResponse announcementResponse = new AnnouncementResponse(announcement);
+            list.add(announcementResponse);
+        }
+        return list;
     }
 
     @GetMapping("/scroll")
