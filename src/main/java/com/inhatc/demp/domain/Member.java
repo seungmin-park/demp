@@ -1,6 +1,5 @@
 package com.inhatc.demp.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.inhatc.demp.dto.MemberForm;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,11 +11,13 @@ import java.util.List;
 
 @Entity
 @Getter
+@SequenceGenerator(name = "member_id_generator",
+sequenceName = "member_sequence",allocationSize = 1)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Member {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "member_id_generator")
     @Column(name = "member_id")
     private Long id;
 

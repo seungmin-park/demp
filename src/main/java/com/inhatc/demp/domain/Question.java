@@ -14,11 +14,13 @@ import java.util.List;
 
 @Entity
 @Getter
+@SequenceGenerator(name = "que_id_generator",
+        sequenceName = "que_sequence",allocationSize = 1)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Question {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "que_id_generator")
     @Column(name = "question_id")
     private Long id;
 
