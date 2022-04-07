@@ -58,12 +58,19 @@ public class InitDb {
 
         Company line = new Company("LINE");
         Company woowahan = new Company("우아한 형제들");
+        UploadFile lineImage = new UploadFile();
+        lineImage.setSaveFileName("line.png");
+        lineImage.setUploadFileName("line.png");
+        UploadFile woowahanImage = new UploadFile();
+        woowahanImage.setSaveFileName("wootech.jpg");
+        woowahanImage.setUploadFileName("wootech.jpg");
 
-        announcementService.join(new Announcement("line.png",line,"2021 라인 공채", LocalDateTime.of(2021,03,04,0,0),LocalDateTime.of(2021,03,21,0,0),
-                "React, HTML, CSS","FRONTEND",5000,"3년 이하","채용 공고에 대한 설명","https://recruit.linepluscorp.com/lineplus/login/login?annoId=20007660&classId=&jobId=&entTypeCd=001&sysCompanyCd=LP",
+
+        announcementService.join(new Announcement(lineImage, line,"2021라인 공채", LocalDateTime.of(2021,03,04,0,0),
+                LocalDateTime.of(2021,03,21,0,0),"React, HTML, CSS","FRONTEND", 5000,"3년 이하","채용 공고에 대한 설명","https://recruit.linepluscorp.com/lineplus/login/login?annoId=20007660&classId=&jobId=&entTypeCd=001&sysCompanyCd=LP",
                 AnnouncementType.emp));
 
-        announcementService.join(new Announcement("wootech.jpg",woowahan,"2021 우아한 테크코스", LocalDateTime.of(2021,10,03,0,0),LocalDateTime.of(2021,10,27,0,0),
+        announcementService.join(new Announcement(woowahanImage,woowahan,"2021 우아한 테크코스", LocalDateTime.of(2021,10,03,0,0),LocalDateTime.of(2021,10,27,0,0),
                 "Java, Spring, JPA","BACKEND",0,"경력 무관","모집 요강에 대한 설명","https://woowacourse.github.io/apply.html",
                 AnnouncementType.edu));
     }

@@ -22,6 +22,6 @@ public class AnnouncementResponse {
         this.title = announcement.getTitle();
         this.language = announcement.getLanguage();
         this.position = announcement.getPosition();
-        this.image = announcement.getImage();
+        this.image = announcement.getImage().getSaveFileName();
     }
 }

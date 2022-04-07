@@ -1,6 +1,10 @@
 package com.inhatc.demp.domain;
 
-import lombok.*;
+import jdk.jfr.Timestamp;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -15,7 +19,8 @@ public class Announcement {
     @GeneratedValue
     private Long id;
 
-    private String image;
+    @Embedded
+    private UploadFile image;
     @Embedded
     private Company company;
     private String title;
@@ -33,10 +38,28 @@ public class Announcement {
     @Enumerated(EnumType.STRING)
     private AnnouncementType announcementType;
 
-    public Announcement(String image, Company company, String title, LocalDateTime startedDate, LocalDateTime deadLineDate, String language, String position, int payment, String career, String content, String accessUrl, AnnouncementType announcementType) {
-        this.image = image;
+    @Timestamp
+    private LocalDateTime createdDate = LocalDateTime.now();
+
+    public Announcement(UploadFile image, Company company, String title, LocalDateTime startedDate, LocalDateTime deadLineDate, String language, String position, int payment, String career, String content, String accessUrl, AnnouncementType announcementType) {
         this.company = company;
         this.title = title;
+        this.image = image;
+        this.startedDate = startedDate;
+        this.deadLineDate = deadLineDate;
+        this.language = language;
+        this.position = position;
+        this.payment = payment;
+        this.career = career;
+        this.content = content;
+        this.accessUrl = accessUrl;
+        this.announcementType = announcementType;
+    }
+
+    public Announcement(String title, UploadFile image, Company company,LocalDateTime startedDate, LocalDateTime deadLineDate, String language, String position, int payment, String career, String content, String accessUrl, AnnouncementType announcementType) {
+        this.company = company;
+        this.title = title;
+        this.image = image;
         this.startedDate = startedDate;
         this.deadLineDate = deadLineDate;
         this.language = language;

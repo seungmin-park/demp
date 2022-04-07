@@ -14,4 +14,5 @@ public class AnnouncementScroll {
     private Long id;
     private String title;
     private Company company;
+    private String image;
 }

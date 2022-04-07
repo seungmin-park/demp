@@ -1,6 +1,8 @@
 package com.inhatc.demp.controller;
 
 import com.inhatc.demp.domain.Announcement;
+import com.inhatc.demp.domain.AnnouncementForm;
+import com.inhatc.demp.dto.AnnouncementDetail;
 import com.inhatc.demp.dto.AnnouncementResponse;
 import com.inhatc.demp.dto.AnnouncementScroll;
 import com.inhatc.demp.dto.AnnouncementSearchCondition;
@@ -11,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +23,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/announce")
-public class AnnouncementController{
+public class AnnouncementController {
 
     private final AnnouncementService announcementService;
 
@@ -41,20 +44,35 @@ public class AnnouncementController{
         log.info("AnnouncementController.scroll");
         List<Announcement> announcements = announcementService.findAll();
         List<AnnouncementScroll> result = announcements.stream()
-                .map(a -> new AnnouncementScroll(a.getId(), a.getTitle(), a.getCompany()))
+                .map(a -> new AnnouncementScroll(a.getId(), a.getTitle(), a.getCompany(),a.getImage().getSaveFileName()))
                 .collect(Collectors.toList());
-        log.info("result={}",result);
+        log.info("result={}", result);
         return result;
     }
 
     @GetMapping("/detail/{AnnouncementId}")
-    public ResponseEntity<Announcement> detail(@PathVariable Long AnnouncementId) {
+    public ResponseEntity<AnnouncementDetail> detail(@PathVariable Long AnnouncementId) {
         log.info("AnnouncementController.Detail");
-        Optional<Announcement> result = announcementService.findById(AnnouncementId);
-        if (result.isEmpty()) {
+        Optional<Announcement> optionalAnnouncement = announcementService.findById(AnnouncementId);
+        if (optionalAnnouncement.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        log.info("result={}",result);
-        return new ResponseEntity<>(result.get(),HttpStatus.OK);
+
+        Announcement announcement = optionalAnnouncement.get();
+
+        AnnouncementDetail result = new AnnouncementDetail(announcement.getImage().getSaveFileName(), announcement.getCompany(), announcement.getTitle(),
+                announcement.getStartedDate(), announcement.getDeadLineDate(), announcement.getLanguage(), announcement.getPosition(),
+                announcement.getPayment(), announcement.getCareer(), announcement.getContent(), announcement.getAccessUrl(), announcement.getAnnouncementType());
+
+        log.info("result={}", result);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/test")
+    public String saveTest(@ModelAttribute AnnouncementForm param) throws IOException {
+        log.info("AnnouncementController.saveTest");
+        log.info("{}",param);
+        announcementService.save(param);
+        return "ok";
     }
 }
