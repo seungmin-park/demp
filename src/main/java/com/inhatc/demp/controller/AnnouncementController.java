@@ -68,7 +68,7 @@ public class AnnouncementController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/test")
+    @PostMapping(value = "/add")
     public String saveTest(@ModelAttribute AnnouncementForm param) throws IOException {
         log.info("AnnouncementController.saveTest");
         log.info("{}",param);

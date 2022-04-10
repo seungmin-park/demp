@@ -7,6 +7,7 @@ import com.inhatc.demp.dto.AnnouncementSearchCondition;
 import com.inhatc.demp.repository.AnnouncementQueryRepository;
 import com.inhatc.demp.repository.AnnouncementRepository;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.DuplicateMappingException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,9 +34,16 @@ public class AnnouncementService {
     @Transactional
     public void save(AnnouncementForm announcementForm) throws IOException {
         UploadFile image = fileService.saveFile(announcementForm.getImage());
-        Announcement announcement = new Announcement(announcementForm.getTitle(), image, announcementForm.getCompany()
-                , parsingTime(announcementForm.getStartedDate()), parsingTime(announcementForm.getDeadLineDate()), announcementForm.getLanguage(),
-                announcementForm.getPosition(), announcementForm.getPayment(), announcementForm.getCareer(), announcementForm.getContent(), announcementForm.getAccessUrl(), announcementForm.getType());
+        Optional<Announcement> optional = announcementRepository.findByTitle(announcementForm.getTitle());
+
+        if (optional.isPresent()) {
+            throw new IllegalStateException("이미 존재하는 공고 입니다.");
+        }
+
+        Announcement announcement = new Announcement(announcementForm.getTitle(),announcementForm.getLanguage(), announcementForm.getPosition(),
+                announcementForm.getCareer(),announcementForm.getContent(),announcementForm.getAccessUrl(),announcementForm.getPayment(),announcementForm.getCompany(),
+                image, announcementForm.getType(),parsingTime(announcementForm.getStartedDate()), parsingTime(announcementForm.getDeadLineDate()));
+
         announcementRepository.save(announcement);
     }
 

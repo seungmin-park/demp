@@ -18,56 +18,37 @@ public class Announcement {
     @Id
     @GeneratedValue
     private Long id;
-
-    @Embedded
-    private UploadFile image;
-    @Embedded
-    private Company company;
     private String title;
-    private LocalDateTime startedDate;
-    private LocalDateTime deadLineDate;
     private String language;
     private String position;
-    private int payment;
     private String career;
     @Lob
     private String content;
-
     private String accessUrl;
-
+    private int payment;
+    @Embedded
+    private Company company;
+    @Embedded
+    private UploadFile image;
     @Enumerated(EnumType.STRING)
     private AnnouncementType announcementType;
-
+    private LocalDateTime startedDate;
+    private LocalDateTime deadLineDate;
     @Timestamp
     private LocalDateTime createdDate = LocalDateTime.now();
 
-    public Announcement(UploadFile image, Company company, String title, LocalDateTime startedDate, LocalDateTime deadLineDate, String language, String position, int payment, String career, String content, String accessUrl, AnnouncementType announcementType) {
-        this.company = company;
+    public Announcement(String title, String language, String position, String career, String content, String accessUrl, int payment, Company company, UploadFile image, AnnouncementType announcementType, LocalDateTime startedDate, LocalDateTime deadLineDate) {
         this.title = title;
-        this.image = image;
-        this.startedDate = startedDate;
-        this.deadLineDate = deadLineDate;
         this.language = language;
         this.position = position;
-        this.payment = payment;
         this.career = career;
         this.content = content;
         this.accessUrl = accessUrl;
-        this.announcementType = announcementType;
-    }
-
-    public Announcement(String title, UploadFile image, Company company,LocalDateTime startedDate, LocalDateTime deadLineDate, String language, String position, int payment, String career, String content, String accessUrl, AnnouncementType announcementType) {
+        this.payment = payment;
         this.company = company;
-        this.title = title;
         this.image = image;
+        this.announcementType = announcementType;
         this.startedDate = startedDate;
         this.deadLineDate = deadLineDate;
-        this.language = language;
-        this.position = position;
-        this.payment = payment;
-        this.career = career;
-        this.content = content;
-        this.accessUrl = accessUrl;
-        this.announcementType = announcementType;
     }
 }
