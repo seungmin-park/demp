@@ -5,6 +5,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -32,8 +33,10 @@ public class Announcement {
     private UploadFile image;
     @Enumerated(EnumType.STRING)
     private AnnouncementType announcementType;
+
     private LocalDateTime startedDate;
     private LocalDateTime deadLineDate;
+
     @Timestamp
     private LocalDateTime createdDate = LocalDateTime.now();
 

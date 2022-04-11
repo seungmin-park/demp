@@ -6,19 +6,28 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.UnexpectedTypeException;
+
 @Slf4j
 @RestControllerAdvice
 public class ExController {
 
     @ExceptionHandler
-    public ErrorResult illegalExHandle(IllegalStateException e) {
+    public ErrorResult illegalExHandle(HttpServletRequest request, IllegalStateException e) {
 //        log.error("[exceptionHandle] ex", e);
-        return new ErrorResult(e.getMessage(), HttpStatus.BAD_REQUEST);
+        return new ErrorResult(e.getMessage(), HttpStatus.BAD_REQUEST.value(), request.getRequestURI());
     }
 
     @ExceptionHandler
-    public ErrorResult bindingExHandle(BindException e) {
+    public ErrorResult UnexpectedTypeHandle(HttpServletRequest request, UnexpectedTypeException e) {
         log.error("[exceptionHandle] ex", e);
-        return new ErrorResult("잘못된 형식의 데이터 입니다.", HttpStatus.BAD_REQUEST);
+        return new ErrorResult(e.getMessage(), HttpStatus.BAD_REQUEST.value(), request.getRequestURI());
+    }
+
+    @ExceptionHandler
+    public ErrorResult bindingExHandle(HttpServletRequest request, BindException e) {
+        log.error("[exceptionHandle] ex", e);
+        return new ErrorResult(e.getFieldError().getDefaultMessage(), HttpStatus.BAD_REQUEST.value(), request.getRequestURI());
     }
 }

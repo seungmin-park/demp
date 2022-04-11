@@ -42,7 +42,7 @@ public class AnnouncementService {
 
         Announcement announcement = new Announcement(announcementForm.getTitle(),announcementForm.getLanguage(), announcementForm.getPosition(),
                 announcementForm.getCareer(),announcementForm.getContent(),announcementForm.getAccessUrl(),announcementForm.getPayment(),announcementForm.getCompany(),
-                image, announcementForm.getType(),parsingTime(announcementForm.getStartedDate()), parsingTime(announcementForm.getDeadLineDate()));
+                image, announcementForm.getType(),announcementForm.getStartedDate(), announcementForm.getDeadLineDate());
 
         announcementRepository.save(announcement);
     }

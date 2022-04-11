@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -62,14 +63,13 @@ public class AnnouncementController {
 
         AnnouncementDetail result = new AnnouncementDetail(announcement.getImage().getSaveFileName(), announcement.getCompany(), announcement.getTitle(),
                 announcement.getStartedDate(), announcement.getDeadLineDate(), announcement.getLanguage(), announcement.getPosition(),
-                announcement.getPayment(), announcement.getCareer(), announcement.getContent(), announcement.getAccessUrl(), announcement.getAnnouncementType());
-
+                announcement.getPayment(), announcement.getCareer(), announcement.getContent().replaceAll("\r\n","<br>"), announcement.getAccessUrl(), announcement.getAnnouncementType());
         log.info("result={}", result);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @PostMapping(value = "/add")
-    public String saveTest(@ModelAttribute AnnouncementForm param) throws IOException {
+    public String saveTest(@Valid @ModelAttribute AnnouncementForm param) throws IOException {
         log.info("AnnouncementController.saveTest");
         log.info("{}",param);
         announcementService.save(param);

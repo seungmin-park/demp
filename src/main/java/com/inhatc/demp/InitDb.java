@@ -66,7 +66,7 @@ public class InitDb {
         woowahanImage.setUploadFileName("wootech.jpg");
 
 
-        announcementService.join(new Announcement("2021라인 공채","React, HTML, CSS","FRONTEND","3년 이하","채용 공고에 대한 설명",
+        announcementService.join(new Announcement("2021라인 공채","React, HTML, CSS","FRONTEND","3년 이하","채용 공고에\r\n대한 설명",
                 "https://recruit.linepluscorp.com/lineplus/login/login?annoId=20007660&classId=&jobId=&entTypeCd=001&sysCompanyCd=LP",5000, line, lineImage,
                 AnnouncementType.emp,LocalDateTime.of(2021,03,04,0,0), LocalDateTime.of(2021,03,21,0,0)));
 
