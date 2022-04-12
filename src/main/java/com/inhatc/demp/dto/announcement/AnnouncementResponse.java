@@ -1,4 +1,4 @@
-package com.inhatc.demp.dto;
+package com.inhatc.demp.dto.announcement;
 
 import com.inhatc.demp.domain.Announcement;
 import com.inhatc.demp.domain.AnnouncementType;
@@ -20,7 +20,7 @@ public class AnnouncementResponse {
     public AnnouncementResponse(Announcement announcement) {
         this.id = announcement.getId();
         this.title = announcement.getTitle();
-        this.language = announcement.getLanguage();
+        this.language = announcement.getLanguages().toString();
         this.position = announcement.getPosition();
         this.image = announcement.getImage().getSaveFileName();
     }

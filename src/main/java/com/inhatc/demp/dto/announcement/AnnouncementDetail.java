@@ -1,11 +1,10 @@
-package com.inhatc.demp.dto;
+package com.inhatc.demp.dto.announcement;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.inhatc.demp.domain.AnnouncementType;
 import com.inhatc.demp.domain.Company;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 

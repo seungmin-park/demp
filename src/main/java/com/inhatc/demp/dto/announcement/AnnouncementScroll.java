@@ -1,4 +1,4 @@
-package com.inhatc.demp.dto;
+package com.inhatc.demp.dto.announcement;
 
 import com.inhatc.demp.domain.Company;
 import lombok.AllArgsConstructor;

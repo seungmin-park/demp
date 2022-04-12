@@ -1,4 +1,4 @@
-package com.inhatc.demp.dto;
+package com.inhatc.demp.dto.member;
 
 import lombok.Getter;
 import lombok.Setter;

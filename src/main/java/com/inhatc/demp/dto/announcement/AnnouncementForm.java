@@ -1,5 +1,7 @@
-package com.inhatc.demp.domain;
+package com.inhatc.demp.dto.announcement;
 
+import com.inhatc.demp.domain.AnnouncementType;
+import com.inhatc.demp.domain.Company;
 import lombok.*;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -9,6 +11,8 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -23,7 +27,7 @@ public class AnnouncementForm {
     @NotBlank
     private String content;
     @NotBlank
-    private String language;
+    private List<String> languages = new ArrayList<>();
 
     @URL
     @NotBlank
