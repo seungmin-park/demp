@@ -1,11 +1,11 @@
 package com.inhatc.demp.controller;
 
 import com.inhatc.demp.domain.Announcement;
-import com.inhatc.demp.domain.AnnouncementForm;
-import com.inhatc.demp.dto.AnnouncementDetail;
-import com.inhatc.demp.dto.AnnouncementResponse;
-import com.inhatc.demp.dto.AnnouncementScroll;
-import com.inhatc.demp.dto.AnnouncementSearchCondition;
+import com.inhatc.demp.dto.announcement.AnnouncementForm;
+import com.inhatc.demp.dto.announcement.AnnouncementDetail;
+import com.inhatc.demp.dto.announcement.AnnouncementResponse;
+import com.inhatc.demp.dto.announcement.AnnouncementScroll;
+import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.inhatc.demp.service.AnnouncementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -62,7 +62,7 @@ public class AnnouncementController {
         Announcement announcement = optionalAnnouncement.get();
 
         AnnouncementDetail result = new AnnouncementDetail(announcement.getImage().getSaveFileName(), announcement.getCompany(), announcement.getTitle(),
-                announcement.getStartedDate(), announcement.getDeadLineDate(), announcement.getLanguage(), announcement.getPosition(),
+                announcement.getStartedDate(), announcement.getDeadLineDate(), announcement.getLanguages().toString(), announcement.getPosition(),
                 announcement.getPayment(), announcement.getCareer(), announcement.getContent().replaceAll("\r\n","<br>"), announcement.getAccessUrl(), announcement.getAnnouncementType());
         log.info("result={}", result);
         return new ResponseEntity<>(result, HttpStatus.OK);

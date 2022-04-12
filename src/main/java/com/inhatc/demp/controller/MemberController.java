@@ -1,7 +1,7 @@
 package com.inhatc.demp.controller;
 
 import com.inhatc.demp.domain.Member;
-import com.inhatc.demp.dto.MemberForm;
+import com.inhatc.demp.dto.member.MemberForm;
 import com.inhatc.demp.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -1,6 +1,6 @@
 package com.inhatc.demp.domain;
 
-import com.inhatc.demp.dto.MemberForm;
+import com.inhatc.demp.dto.member.MemberForm;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

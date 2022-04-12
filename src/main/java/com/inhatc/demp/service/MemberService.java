@@ -1,7 +1,7 @@
 package com.inhatc.demp.service;
 
 import com.inhatc.demp.domain.Member;
-import com.inhatc.demp.dto.MemberSearchCondition;
+import com.inhatc.demp.dto.member.MemberSearchCondition;
 import com.inhatc.demp.repository.MemberRepository;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;

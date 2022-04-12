@@ -1,13 +1,12 @@
 package com.inhatc.demp.service;
 
 import com.inhatc.demp.domain.Announcement;
-import com.inhatc.demp.domain.AnnouncementForm;
+import com.inhatc.demp.dto.announcement.AnnouncementForm;
 import com.inhatc.demp.domain.UploadFile;
-import com.inhatc.demp.dto.AnnouncementSearchCondition;
+import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.inhatc.demp.repository.AnnouncementQueryRepository;
 import com.inhatc.demp.repository.AnnouncementRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.DuplicateMappingException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +39,7 @@ public class AnnouncementService {
             throw new IllegalStateException("이미 존재하는 공고 입니다.");
         }
 
-        Announcement announcement = new Announcement(announcementForm.getTitle(),announcementForm.getLanguage(), announcementForm.getPosition(),
+        Announcement announcement = new Announcement(announcementForm.getTitle(),announcementForm.getLanguages(), announcementForm.getPosition(),
                 announcementForm.getCareer(),announcementForm.getContent(),announcementForm.getAccessUrl(),announcementForm.getPayment(),announcementForm.getCompany(),
                 image, announcementForm.getType(),announcementForm.getStartedDate(), announcementForm.getDeadLineDate());
 
@@ -54,7 +53,7 @@ public class AnnouncementService {
     }
 
     public List<Announcement> findAllByAnnouncementType(AnnouncementSearchCondition AnnouncementSearchCondition) {
-        return announcementQueryRepository.findAllByAnnouncementType(AnnouncementSearchCondition);
+        return announcementQueryRepository.findAllByAnnouncementCondition(AnnouncementSearchCondition);
     }
 
     public Optional<Announcement> findById(Long id) {

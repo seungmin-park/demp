@@ -1,7 +1,7 @@
 package com.inhatc.demp.controller;
 
 import com.inhatc.demp.domain.Answer;
-import com.inhatc.demp.dto.QuestionAnswer;
+import com.inhatc.demp.dto.question.QuestionAnswer;
 import com.inhatc.demp.repository.AnswerRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

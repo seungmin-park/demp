@@ -1,14 +1,14 @@
 package com.inhatc.demp.domain;
 
-import jdk.jfr.Timestamp;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -20,7 +20,9 @@ public class Announcement {
     @GeneratedValue
     private Long id;
     private String title;
-    private String language;
+
+    @ElementCollection(fetch = FetchType.LAZY)
+    private List<String> languages = new ArrayList<>();
     private String position;
     private String career;
     @Lob
@@ -37,12 +39,11 @@ public class Announcement {
     private LocalDateTime startedDate;
     private LocalDateTime deadLineDate;
 
-    @Timestamp
     private LocalDateTime createdDate = LocalDateTime.now();
 
-    public Announcement(String title, String language, String position, String career, String content, String accessUrl, int payment, Company company, UploadFile image, AnnouncementType announcementType, LocalDateTime startedDate, LocalDateTime deadLineDate) {
+    public Announcement(String title, List<String> languages, String position, String career, String content, String accessUrl, int payment, Company company, UploadFile image, AnnouncementType announcementType, LocalDateTime startedDate, LocalDateTime deadLineDate) {
         this.title = title;
-        this.language = language;
+        this.languages.addAll(languages);
         this.position = position;
         this.career = career;
         this.content = content;

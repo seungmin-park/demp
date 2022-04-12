@@ -1,8 +1,8 @@
 package com.inhatc.demp.controller;
 
 import com.inhatc.demp.domain.Question;
-import com.inhatc.demp.dto.QuestionDetail;
-import com.inhatc.demp.dto.QuestionList;
+import com.inhatc.demp.dto.question.QuestionDetail;
+import com.inhatc.demp.dto.question.QuestionList;
 import com.inhatc.demp.repository.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
