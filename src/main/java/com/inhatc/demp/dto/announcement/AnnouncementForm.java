@@ -26,7 +26,7 @@ public class AnnouncementForm {
     private String position;
     @NotBlank
     private String content;
-    @NotBlank
+    @NotNull
     private List<String> languages = new ArrayList<>();
 
     @URL
