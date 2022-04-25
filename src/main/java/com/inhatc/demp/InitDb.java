@@ -71,7 +71,7 @@ public class InitDb {
                 "https://recruit.linepluscorp.com/lineplus/login/login?annoId=20007660&classId=&jobId=&entTypeCd=001&sysCompanyCd=LP",5000, line, lineImage,
                 AnnouncementType.emp,LocalDateTime.of(2021,03,04,0,0), LocalDateTime.of(2021,03,21,0,0)));
 
-        announcementService.join(new Announcement("2021 우아한 테크코스",new ArrayList<>(Arrays.asList("Java", "Spring", "JPA")),"backend","경력 무관","모집 요강에 대한 설명",
+        announcementService.join(new Announcement("2021 우아한 테크코스",new ArrayList<>(Arrays.asList("Java", "Spring", "JPA")),"server/backend","경력 무관","모집 요강에 대한 설명",
                 "https://woowacourse.github.io/apply.html",0,woowahan,woowahanImage,AnnouncementType.edu,
                 LocalDateTime.of(2021,10,03,0,0),LocalDateTime.of(2021,10,27,0,0)));
     }

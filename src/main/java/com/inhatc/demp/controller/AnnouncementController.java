@@ -31,7 +31,7 @@ public class AnnouncementController {
     @GetMapping("")
     public List<AnnouncementResponse> announce(@ModelAttribute AnnouncementSearchCondition announcementSearchCondition) {
         log.info("AnnouncementController.announce");
-        List<Announcement> announcements = announcementService.findAllByAnnouncementType(announcementSearchCondition);
+        List<Announcement> announcements = announcementService.findAllByAnnouncementCondition(announcementSearchCondition);
         List<AnnouncementResponse> list = new ArrayList<>();
         for (Announcement announcement : announcements) {
             AnnouncementResponse announcementResponse = new AnnouncementResponse(announcement);

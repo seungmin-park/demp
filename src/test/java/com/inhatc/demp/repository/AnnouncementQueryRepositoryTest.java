@@ -78,7 +78,7 @@ class AnnouncementQueryRepositoryTest {
     void positionBackend() throws Exception {
         //given
         AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.getPositions().add("backend");
+        announcementSearchCondition.getPositions().add("server/backend");
         //when
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
 
@@ -93,7 +93,7 @@ class AnnouncementQueryRepositoryTest {
         //given
         AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
         announcementSearchCondition.getPositions().add("frontend");
-        announcementSearchCondition.getPositions().add("backend");
+        announcementSearchCondition.getPositions().add("server/backend");
 
         //when
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
@@ -137,7 +137,7 @@ class AnnouncementQueryRepositoryTest {
         //given
         AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
         announcementSearchCondition.setTypeName("emp");
-        announcementSearchCondition.getPositions().add("backend");
+        announcementSearchCondition.getPositions().add("server/backend");
 
         //when
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
@@ -180,7 +180,7 @@ class AnnouncementQueryRepositoryTest {
         //given
         AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
         announcementSearchCondition.setTypeName("edu");
-        announcementSearchCondition.getPositions().add("backend");
+        announcementSearchCondition.getPositions().add("server/backend");
 
         //when
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
@@ -255,5 +255,31 @@ class AnnouncementQueryRepositoryTest {
         //then
         assertThat(result.size()).isEqualTo(2);
         assertThat(result).extracting("title").containsExactly("2021라인 공채","2021 우아한 테크코스");
+    }
+
+    @Test
+    @DisplayName("paymentZero")
+    void paymentZero() throws Exception {
+        //given
+        AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
+        announcementSearchCondition.setPayment(0);
+        //when
+        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
+        //then
+        assertThat(result.size()).isEqualTo(2);
+        assertThat(result).extracting("title").containsExactly("2021라인 공채", "2021 우아한 테크코스");
+    }
+
+    @Test
+    @DisplayName("payment5000")
+    void payment5000() throws Exception {
+        //given
+        AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
+        announcementSearchCondition.setPayment(5000);
+        //when
+        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
+        //then
+        assertThat(result.size()).isEqualTo(1);
+        assertThat(result).extracting("title").containsExactly("2021라인 공채");
     }
 }

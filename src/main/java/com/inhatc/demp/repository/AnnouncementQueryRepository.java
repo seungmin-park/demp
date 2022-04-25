@@ -26,6 +26,7 @@ public class AnnouncementQueryRepository {
                 .where(typeEq(announcementSearchCondition.getTypeName()),
                         positionIn(announcementSearchCondition.getPositions()),
                         languageIn(announcementSearchCondition.getLanguages()),
+                        paymentGoe(announcementSearchCondition.getPayment()),
                         titleContain(announcementSearchCondition.getTitle()))
                 .fetch();
     }
@@ -34,12 +35,16 @@ public class AnnouncementQueryRepository {
         return hasText(announcementType) ? announcement.announcementType.eq(AnnouncementType.valueOf(announcementType)) : null;
     }
 
+    private BooleanExpression positionIn(List<String> positions) {
+        return positions.isEmpty() ? null : announcement.position.in(positions);
+    }
+
     private BooleanExpression languageIn(List<String> languages) {
         return languages.isEmpty() ? null : announcement.languages.any().in(languages);
     }
 
-    private BooleanExpression positionIn(List<String> positions) {
-        return positions.isEmpty() ? null : announcement.position.in(positions);
+    private BooleanExpression paymentGoe(int payment) {
+        return payment <= 0 ? null : announcement.payment.goe(payment);
     }
 
     private Predicate titleContain(String title) {

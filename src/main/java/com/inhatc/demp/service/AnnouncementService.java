@@ -52,8 +52,8 @@ public class AnnouncementService {
         return LocalDateTime.of(ld, LocalDateTime.now().toLocalTime());
     }
 
-    public List<Announcement> findAllByAnnouncementType(AnnouncementSearchCondition AnnouncementSearchCondition) {
-        return announcementQueryRepository.findAllByAnnouncementCondition(AnnouncementSearchCondition);
+    public List<Announcement> findAllByAnnouncementCondition(AnnouncementSearchCondition announcementSearchCondition) {
+        return announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
     }
 
     public Optional<Announcement> findById(Long id) {
