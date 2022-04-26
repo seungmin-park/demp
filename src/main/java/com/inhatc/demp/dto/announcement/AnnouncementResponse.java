@@ -1,11 +1,8 @@
 package com.inhatc.demp.dto.announcement;
 
 import com.inhatc.demp.domain.Announcement;
-import com.inhatc.demp.domain.AnnouncementType;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.lang.reflect.AnnotatedArrayType;
 
 @Getter
 @Setter

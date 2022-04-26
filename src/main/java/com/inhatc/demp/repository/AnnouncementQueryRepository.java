@@ -12,12 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StopWatch;
 
 import java.util.List;
 
-import static com.inhatc.demp.domain.QAnnouncement.*;
-import static org.springframework.util.StringUtils.*;
+import static com.inhatc.demp.domain.QAnnouncement.announcement;
+import static org.springframework.util.StringUtils.hasText;
 
 @Slf4j
 @Repository
@@ -40,6 +39,8 @@ public class AnnouncementQueryRepository {
     public PageImpl<Announcement> pagingTest(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
         QueryResults<Announcement> results = jpaQueryFactory
                 .selectFrom(announcement)
+                .leftJoin(announcement.languages)
+                .fetchJoin()
                 .where(typeEq(announcementSearchCondition.getTypeName()),
                         positionIn(announcementSearchCondition.getPositions()),
                         languageIn(announcementSearchCondition.getLanguages()),
@@ -47,6 +48,7 @@ public class AnnouncementQueryRepository {
                         titleContain(announcementSearchCondition.getTitle()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
+                .distinct()
                 .fetchResults();
 
         List<Announcement> content = results.getResults();

@@ -1,6 +1,5 @@
 package com.inhatc.demp.dto.announcement;
 
-import com.inhatc.demp.domain.AnnouncementType;
 import lombok.Getter;
 import lombok.Setter;
 

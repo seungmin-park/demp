@@ -2,7 +2,10 @@ package com.inhatc.demp.dto.announcement;
 
 import com.inhatc.demp.domain.AnnouncementType;
 import com.inhatc.demp.domain.Company;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.validator.constraints.URL;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;

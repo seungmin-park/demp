@@ -12,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-import static com.inhatc.demp.domain.QMember.*;
-import static org.springframework.util.StringUtils.*;
+import static com.inhatc.demp.domain.QMember.member;
+import static org.springframework.util.StringUtils.hasText;
 
 @Service
 @RequiredArgsConstructor
