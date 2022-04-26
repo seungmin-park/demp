@@ -66,13 +66,16 @@ public class InitDb {
         woowahanImage.setSaveFileName("wootech.jpg");
         woowahanImage.setUploadFileName("wootech.jpg");
 
+        for (int i = 1; i <= 10; i++) {
+            announcementService.join(new Announcement("2021라인 공채"+i, new ArrayList<>(Arrays.asList("React", "HTML", "CSS")),"frontend","3년 이하","채용 공고에\r\n대한 설명",
+                    "https://recruit.linepluscorp.com/lineplus/login/login?annoId=20007660&classId=&jobId=&entTypeCd=001&sysCompanyCd=LP",i*1000, line, lineImage,
+                    AnnouncementType.emp,LocalDateTime.of(2021,03,04,0,0), LocalDateTime.of(2021,03,21,0,0)));
+        }
 
-        announcementService.join(new Announcement("2021라인 공채", new ArrayList<>(Arrays.asList("React", "HTML", "CSS")),"frontend","3년 이하","채용 공고에\r\n대한 설명",
-                "https://recruit.linepluscorp.com/lineplus/login/login?annoId=20007660&classId=&jobId=&entTypeCd=001&sysCompanyCd=LP",5000, line, lineImage,
-                AnnouncementType.emp,LocalDateTime.of(2021,03,04,0,0), LocalDateTime.of(2021,03,21,0,0)));
-
-        announcementService.join(new Announcement("2021 우아한 테크코스",new ArrayList<>(Arrays.asList("Java", "Spring", "JPA")),"server/backend","경력 무관","모집 요강에 대한 설명",
-                "https://woowacourse.github.io/apply.html",0,woowahan,woowahanImage,AnnouncementType.edu,
-                LocalDateTime.of(2021,10,03,0,0),LocalDateTime.of(2021,10,27,0,0)));
+        for (int i = 1; i < 10; i++) {
+            announcementService.join(new Announcement("2021 우아한 테크코스"+i,new ArrayList<>(Arrays.asList("Java", "Spring", "JPA")),"server/backend","경력 무관","모집 요강에 대한 설명",
+                    "https://woowacourse.github.io/apply.html",0,woowahan,woowahanImage,AnnouncementType.edu,
+                    LocalDateTime.of(2021,10,03,0,0),LocalDateTime.of(2021,10,27,0,0)));
+        }
     }
 }

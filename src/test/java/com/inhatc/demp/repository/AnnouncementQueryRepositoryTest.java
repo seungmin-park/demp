@@ -6,6 +6,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
@@ -281,5 +283,19 @@ class AnnouncementQueryRepositoryTest {
         //then
         assertThat(result.size()).isEqualTo(1);
         assertThat(result).extracting("title").containsExactly("2021라인 공채");
+    }
+
+    @Test
+    @DisplayName("pagingTest")
+    void pagingTest() throws Exception {
+        //given
+        AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
+        PageRequest pageRequest = PageRequest.of(0, 3);
+        //when
+        PageImpl<Announcement> result = announcementQueryRepository.pagingTest(announcementSearchCondition, pageRequest);
+
+        //then
+        assertThat(result.getSize()).isEqualTo(3);
+        assertThat(result).extracting("title").containsExactly("2021라인 공채1", "2021라인 공채2", "2021라인 공채3");
     }
 }

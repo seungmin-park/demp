@@ -1,21 +1,18 @@
 package com.inhatc.demp.controller;
 
 import com.inhatc.demp.domain.Announcement;
-import com.inhatc.demp.dto.announcement.AnnouncementForm;
-import com.inhatc.demp.dto.announcement.AnnouncementDetail;
-import com.inhatc.demp.dto.announcement.AnnouncementResponse;
-import com.inhatc.demp.dto.announcement.AnnouncementScroll;
-import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
+import com.inhatc.demp.dto.announcement.*;
 import com.inhatc.demp.service.AnnouncementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,15 +26,13 @@ public class AnnouncementController {
     private final AnnouncementService announcementService;
 
     @GetMapping("")
-    public List<AnnouncementResponse> announce(@ModelAttribute AnnouncementSearchCondition announcementSearchCondition) {
-        log.info("AnnouncementController.announce");
-        List<Announcement> announcements = announcementService.findAllByAnnouncementCondition(announcementSearchCondition);
-        List<AnnouncementResponse> list = new ArrayList<>();
-        for (Announcement announcement : announcements) {
-            AnnouncementResponse announcementResponse = new AnnouncementResponse(announcement);
-            list.add(announcementResponse);
-        }
-        return list;
+    public ListResponse announce(@ModelAttribute AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
+        log.info("AnnouncementController.pageTest");
+        PageImpl<Announcement> announcementPage = announcementService.pageTest(announcementSearchCondition, pageable);
+        List<AnnouncementResponse> announcementResponses = announcementPage.getContent()
+                .stream().map(a -> new AnnouncementResponse(a)).collect(Collectors.toList());
+        int totalPages = announcementPage.getTotalPages();
+        return new ListResponse(announcementResponses, totalPages);
     }
 
     @GetMapping("/scroll")

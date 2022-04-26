@@ -7,13 +7,12 @@ import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.inhatc.demp.repository.AnnouncementQueryRepository;
 import com.inhatc.demp.repository.AnnouncementRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,10 +45,8 @@ public class AnnouncementService {
         announcementRepository.save(announcement);
     }
 
-    private LocalDateTime parsingTime(String formDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
-        LocalDate ld = LocalDate.parse(formDate, formatter);
-        return LocalDateTime.of(ld, LocalDateTime.now().toLocalTime());
+    public PageImpl<Announcement> pageTest(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
+        return announcementQueryRepository.pagingTest(announcementSearchCondition, pageable);
     }
 
     public List<Announcement> findAllByAnnouncementCondition(AnnouncementSearchCondition announcementSearchCondition) {
