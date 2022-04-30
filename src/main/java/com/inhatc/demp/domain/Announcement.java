@@ -1,9 +1,6 @@
 package com.inhatc.demp.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -46,6 +43,7 @@ public class Announcement {
     @Column(updatable = false)
     private LocalDateTime createdDate;
 
+    @Builder
     public Announcement(String title, List<String> languages, String position, String career, String content, String accessUrl, int payment, Company company, UploadFile image, AnnouncementType announcementType, LocalDateTime startedDate, LocalDateTime deadLineDate) {
         this.title = title;
         this.languages.addAll(languages);

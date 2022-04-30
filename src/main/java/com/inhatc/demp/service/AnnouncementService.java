@@ -7,6 +7,7 @@ import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.inhatc.demp.repository.AnnouncementQueryRepository;
 import com.inhatc.demp.repository.AnnouncementRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -38,14 +39,26 @@ public class AnnouncementService {
             throw new IllegalStateException("이미 존재하는 공고 입니다.");
         }
 
-        Announcement announcement = new Announcement(announcementForm.getTitle(),announcementForm.getLanguages(), announcementForm.getPosition(),
-                announcementForm.getCareer(),announcementForm.getContent(),announcementForm.getAccessUrl(),announcementForm.getPayment(),announcementForm.getCompany(),
-                image, announcementForm.getType(),announcementForm.getStartedDate(), announcementForm.getDeadLineDate());
+        Announcement announcement = Announcement.builder()
+                .title(announcementForm.getTitle())
+                .announcementType(announcementForm.getType())
+                .accessUrl(announcementForm.getAccessUrl())
+                .career(announcementForm.getCareer())
+                .company(announcementForm.getCompany())
+                .content(announcementForm.getContent())
+                .startedDate(announcementForm.getStartedDate())
+                .deadLineDate(announcementForm.getDeadLineDate())
+                .image(image)
+                .languages(announcementForm.getLanguages())
+                .payment(announcementForm.getPayment())
+                .position(announcementForm.getPosition())
+                .build();
+
 
         announcementRepository.save(announcement);
     }
 
-    public PageImpl<Announcement> pageTest(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
+    public Page<Announcement> pageTest(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
         return announcementQueryRepository.pagingTest(announcementSearchCondition, pageable);
     }
 
