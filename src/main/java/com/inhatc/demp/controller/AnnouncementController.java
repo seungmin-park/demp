@@ -5,6 +5,7 @@ import com.inhatc.demp.dto.announcement.*;
 import com.inhatc.demp.service.AnnouncementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -28,7 +29,7 @@ public class AnnouncementController {
     @GetMapping("")
     public ListResponse announce(@ModelAttribute AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
         log.info("AnnouncementController.pageTest");
-        PageImpl<Announcement> announcementPage = announcementService.pageTest(announcementSearchCondition, pageable);
+        Page<Announcement> announcementPage = announcementService.pageTest(announcementSearchCondition, pageable);
         List<AnnouncementResponse> announcementResponses = announcementPage.getContent()
                 .stream().map(a -> new AnnouncementResponse(a)).collect(Collectors.toList());
         int totalPages = announcementPage.getTotalPages();
@@ -55,13 +56,13 @@ public class AnnouncementController {
         }
 
         Announcement announcement = optionalAnnouncement.get();
+        AnnouncementDetail result = AnnouncementDetail.getBuild(announcement);
 
-        AnnouncementDetail result = new AnnouncementDetail(announcement.getImage().getSaveFileName(), announcement.getCompany(), announcement.getTitle(),
-                announcement.getStartedDate(), announcement.getDeadLineDate(), announcement.getLanguages().toString(), announcement.getPosition(),
-                announcement.getPayment(), announcement.getCareer(), announcement.getContent().replaceAll("\r\n","<br>"), announcement.getAccessUrl(), announcement.getAnnouncementType());
         log.info("result={}", result);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+
+
 
     @PostMapping(value = "/add")
     public String saveTest(@Valid @ModelAttribute AnnouncementForm param) throws IOException {

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
@@ -29,8 +30,8 @@ class AnnouncementQueryRepositoryTest {
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
 
         //then
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result).extracting("title").containsExactly("2021라인 공채");
+        assertThat(result.size()).isEqualTo(10);
+        assertThat(result).extracting("title").contains("2021라인 공채1");
     }
     
     @Test
@@ -43,8 +44,9 @@ class AnnouncementQueryRepositoryTest {
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
 
         //then
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result).extracting("title").containsExactly("2021 우아한 테크코스");
+        assertThat(result.size()).isEqualTo(10);
+        assertThat(result).extracting("title").contains("2021 우아한 테크코스1");
+
     }
     
     @Test
@@ -57,8 +59,8 @@ class AnnouncementQueryRepositoryTest {
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
 
         //then
-        assertThat(result.size()).isEqualTo(2);
-        assertThat(result).extracting("title").containsExactly("2021라인 공채","2021 우아한 테크코스");
+        assertThat(result.size()).isEqualTo(20);
+        assertThat(result).extracting("title").contains("2021라인 공채1","2021 우아한 테크코스1");
     }
 
     @Test
@@ -71,8 +73,8 @@ class AnnouncementQueryRepositoryTest {
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
 
         //then
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result).extracting("title").containsExactly("2021라인 공채");
+        assertThat(result.size()).isEqualTo(10);
+        assertThat(result).extracting("title").contains("2021라인 공채1");
     }
 
     @Test
@@ -85,8 +87,8 @@ class AnnouncementQueryRepositoryTest {
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
 
         //then
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result).extracting("title").containsExactly("2021 우아한 테크코스");
+        assertThat(result.size()).isEqualTo(10);
+        assertThat(result).extracting("title").contains("2021 우아한 테크코스1");
     }
 
     @Test
@@ -101,8 +103,8 @@ class AnnouncementQueryRepositoryTest {
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
 
         //then
-        assertThat(result.size()).isEqualTo(2);
-        assertThat(result).extracting("title").containsExactly("2021라인 공채","2021 우아한 테크코스");
+        assertThat(result.size()).isEqualTo(20);
+        assertThat(result).extracting("title").contains("2021라인 공채1","2021 우아한 테크코스1");
     }
 
     @Test
@@ -115,8 +117,8 @@ class AnnouncementQueryRepositoryTest {
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
 
         //then
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result).extracting("title").containsExactly("2021라인 공채");
+        assertThat(result.size()).isEqualTo(10);
+        assertThat(result).extracting("title").contains("2021라인 공채1");
     }
 
     @Test
@@ -129,8 +131,8 @@ class AnnouncementQueryRepositoryTest {
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
 
         //then
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result).extracting("title").containsExactly("2021 우아한 테크코스");
+        assertThat(result.size()).isEqualTo(10);
+        assertThat(result).extracting("title").contains("2021 우아한 테크코스1");
     }
 
     @Test
@@ -158,8 +160,8 @@ class AnnouncementQueryRepositoryTest {
         //when
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
         //then
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result).extracting("title").containsExactly("2021라인 공채");
+        assertThat(result.size()).isEqualTo(10);
+        assertThat(result).extracting("title").contains("2021라인 공채1");
     }
 
     @Test
@@ -187,8 +189,8 @@ class AnnouncementQueryRepositoryTest {
         //when
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
         //then
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result).extracting("title").containsExactly("2021 우아한 테크코스");
+        assertThat(result.size()).isEqualTo(10);
+        assertThat(result).extracting("title").contains("2021 우아한 테크코스1");
     }
 
     @Test
@@ -200,8 +202,8 @@ class AnnouncementQueryRepositoryTest {
         //when
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
         //then
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result).extracting("title").containsExactly("2021 우아한 테크코스");
+        assertThat(result.size()).isEqualTo(10);
+        assertThat(result).extracting("title").contains("2021 우아한 테크코스1");
     }
 
     @Test
@@ -214,8 +216,8 @@ class AnnouncementQueryRepositoryTest {
         //when
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
         //then
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result).extracting("title").containsExactly("2021 우아한 테크코스");
+        assertThat(result.size()).isEqualTo(10);
+        assertThat(result).extracting("title").contains("2021 우아한 테크코스1");
     }
 
     @Test
@@ -227,8 +229,8 @@ class AnnouncementQueryRepositoryTest {
         //when
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
         //then
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result).extracting("title").containsExactly("2021라인 공채");
+        assertThat(result.size()).isEqualTo(10);
+        assertThat(result).extracting("title").contains("2021라인 공채1");
     }
 
     @Test
@@ -241,8 +243,8 @@ class AnnouncementQueryRepositoryTest {
         //when
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
         //then
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result).extracting("title").containsExactly("2021라인 공채");
+        assertThat(result.size()).isEqualTo(10);
+        assertThat(result).extracting("title").contains("2021라인 공채1");
     }
 
     @Test
@@ -255,8 +257,8 @@ class AnnouncementQueryRepositoryTest {
         //when
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
         //then
-        assertThat(result.size()).isEqualTo(2);
-        assertThat(result).extracting("title").containsExactly("2021라인 공채","2021 우아한 테크코스");
+        assertThat(result.size()).isEqualTo(20);
+        assertThat(result).extracting("title").contains("2021라인 공채1","2021 우아한 테크코스1");
     }
 
     @Test
@@ -268,8 +270,8 @@ class AnnouncementQueryRepositoryTest {
         //when
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
         //then
-        assertThat(result.size()).isEqualTo(2);
-        assertThat(result).extracting("title").containsExactly("2021라인 공채", "2021 우아한 테크코스");
+        assertThat(result.size()).isEqualTo(20);
+        assertThat(result).extracting("title").contains("2021라인 공채1", "2021 우아한 테크코스1");
     }
 
     @Test
@@ -281,8 +283,8 @@ class AnnouncementQueryRepositoryTest {
         //when
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
         //then
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result).extracting("title").containsExactly("2021라인 공채");
+        assertThat(result.size()).isEqualTo(6);
+        assertThat(result).extracting("title").contains("2021라인 공채6");
     }
 
     @Test
@@ -292,10 +294,10 @@ class AnnouncementQueryRepositoryTest {
         AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
         PageRequest pageRequest = PageRequest.of(0, 3);
         //when
-        PageImpl<Announcement> result = announcementQueryRepository.pagingTest(announcementSearchCondition, pageRequest);
+        Page<Announcement> result = announcementQueryRepository.pagingTest(announcementSearchCondition, pageRequest);
 
         //then
         assertThat(result.getSize()).isEqualTo(3);
-        assertThat(result).extracting("title").containsExactly("2021라인 공채1", "2021라인 공채2", "2021라인 공채3");
+        assertThat(result).extracting("title").contains("2021라인 공채1", "2021라인 공채2", "2021라인 공채3");
     }
 }

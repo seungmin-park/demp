@@ -72,7 +72,7 @@ public class InitDb {
                     AnnouncementType.emp,LocalDateTime.of(2021,03,04,0,0), LocalDateTime.of(2021,03,21,0,0)));
         }
 
-        for (int i = 1; i < 10; i++) {
+        for (int i = 1; i <= 10; i++) {
             announcementService.join(new Announcement("2021 우아한 테크코스"+i,new ArrayList<>(Arrays.asList("Java", "Spring", "JPA")),"server/backend","경력 무관","모집 요강에 대한 설명",
                     "https://woowacourse.github.io/apply.html",0,woowahan,woowahanImage,AnnouncementType.edu,
                     LocalDateTime.of(2021,10,03,0,0),LocalDateTime.of(2021,10,27,0,0)));
