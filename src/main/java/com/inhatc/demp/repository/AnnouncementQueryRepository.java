@@ -40,7 +40,7 @@ public class AnnouncementQueryRepository {
     }
 
     public Page<Announcement> pagingTest(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
-        QueryResults<Announcement> results = jpaQueryFactory
+        QueryResults<Announcement> result = jpaQueryFactory
                 .selectFrom(announcement)
                 .leftJoin(announcement.languages)
                 .fetchJoin()
@@ -54,18 +54,10 @@ public class AnnouncementQueryRepository {
                 .distinct()
                 .fetchResults();
 
-        JPAQuery<Announcement> countQuery = jpaQueryFactory
-                .selectFrom(announcement)
-                .leftJoin(announcement.languages)
-                .where(typeEq(announcementSearchCondition.getTypeName()),
-                        positionIn(announcementSearchCondition.getPositions()),
-                        languageIn(announcementSearchCondition.getLanguages()),
-                        paymentGoe(announcementSearchCondition.getPayment()),
-                        titleContain(announcementSearchCondition.getTitle()));
+        List<Announcement> content = result.getResults();
+        long total = result.getTotal();
 
-        List<Announcement> content = results.getResults();
-
-        return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchCount);
+        return new PageImpl<>(content, pageable, total);
     }
 
 
