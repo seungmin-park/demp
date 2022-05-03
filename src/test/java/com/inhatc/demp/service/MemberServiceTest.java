@@ -36,7 +36,7 @@ class MemberServiceTest {
         //when
 
         //then
-        assertThat(members.size()).isEqualTo(10);
+        assertThat(members.size()).isEqualTo(12);
     }
 
     @Test
@@ -62,9 +62,9 @@ class MemberServiceTest {
         //when
         List<Member> members = memberService.findByUsernameOrAge(memberSearchCondition);
         //then
-        assertThat(members.size()).isEqualTo(3);
-        assertThat(members).extracting("username").containsExactly("member7", "member8", "member9");
-        assertThat(members).extracting("age").containsExactly(7,8,9);
+        assertThat(members.size()).isEqualTo(5);
+        assertThat(members).extracting("username").contains("member7", "member8", "member9");
+        assertThat(members).extracting("age").contains(7,8,9);
 
     }
    @Test
@@ -78,8 +78,8 @@ class MemberServiceTest {
         List<Member> members = memberService.findByUsernameOrAge(memberSearchCondition);
         //then
         assertThat(members.size()).isEqualTo(1);
-       assertThat(members).extracting("username").containsExactly("member2");
-       assertThat(members).extracting("age").containsExactly(2);
+       assertThat(members).extracting("username").contains("member2");
+       assertThat(members).extracting("age").contains(2);
     }
 
 }

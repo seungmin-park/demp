@@ -29,7 +29,7 @@ class QuestionRepositoryTest {
         assertThat(questions.size()).isEqualTo(2);
         assertThat(questions.get(0).getTitle()).isEqualTo("접근 제어자가 헷갈려요");
         assertThat(questions.get(0).getHits()).isEqualTo(11);
-        assertThat(questions.get(0).getRecomend()).isEqualTo(2);
+        assertThat(questions.get(0).getRecomend()).isEqualTo(23);
         assertThat(questions.get(0).getMember().getUsername()).isEqualTo("testMemberA");
         assertThat(questions.get(0).getAnswers().get(0).getMember().getUsername()).isEqualTo("testMemberB");
 
