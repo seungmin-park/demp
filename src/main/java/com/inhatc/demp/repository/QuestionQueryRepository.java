@@ -2,17 +2,16 @@ package com.inhatc.demp.repository;
 
 import com.inhatc.demp.domain.Question;
 import com.inhatc.demp.dto.question.QuestionSearchCondition;
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-import org.springframework.util.StringUtils;
 
 import java.util.List;
 
 import static com.inhatc.demp.domain.QHashtag.hashtag;
 import static com.inhatc.demp.domain.QQuestion.question;
+import static com.inhatc.demp.domain.QQuestionHashtag.*;
 import static org.springframework.util.StringUtils.*;
 
 @Repository
@@ -24,7 +23,8 @@ public class QuestionQueryRepository {
     public List<Question> findAllBySearchCondition(QuestionSearchCondition questionSearchCondition) {
         return jpaQueryFactory
                 .selectFrom(question)
-                .join(question.hashtags, hashtag)
+                .join(question.QuestionHashtags, questionHashtag)
+                .join(questionHashtag.hashtag, hashtag)
                 .fetchJoin()
                 .where(titleContains(questionSearchCondition.getTitle()),
                         contentContains(questionSearchCondition.getContent())
@@ -36,8 +36,8 @@ public class QuestionQueryRepository {
     public List<Question> findAllByHashtags(List<String> hashtags) {
         return jpaQueryFactory
                 .selectFrom(question)
-                .join(question.hashtags, hashtag)
-                .fetchJoin()
+                .join(question.QuestionHashtags, questionHashtag)
+                .join(questionHashtag.hashtag, hashtag)
                 .where(hashtagIn(hashtags))
                 .distinct()
                 .fetch();

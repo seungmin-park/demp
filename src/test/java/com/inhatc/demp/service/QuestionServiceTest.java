@@ -2,10 +2,12 @@ package com.inhatc.demp.service;
 
 import com.inhatc.demp.domain.Question;
 import com.inhatc.demp.dto.question.QuestionForm;
+import com.inhatc.demp.dto.question.QuestionSearchCondition;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
@@ -22,6 +24,7 @@ class QuestionServiceTest {
     QuestionService questionService;
 
     @Test
+    @Rollback(value = false)
     @DisplayName("saveQuestion")
     void saveQuestion() throws Exception {
         //given
@@ -36,15 +39,16 @@ class QuestionServiceTest {
     }
 
     @Test
-    @DisplayName("findALlByHashtag")
-    void findALlByHashtag() throws Exception {
+    @DisplayName("findAllByHashtag")
+    void findAllByHashtag() throws Exception {
         //given
         QuestionForm questionForm = new QuestionForm("제목테스트", "내용테스트", new ArrayList<>(Arrays.asList("java", "jpa")));
         //when
         questionService.join(questionForm);
         //then
-        ArrayList<String> condition = new ArrayList<>(Arrays.asList("java"));
-        List<Question> result = questionService.findAllByHashtags(condition);
+        QuestionSearchCondition questionSearchCondition = new QuestionSearchCondition();
+        questionSearchCondition.getHashtags().add("java");
+        List<Question> result = questionService.findAllByHashtags(questionSearchCondition.getHashtags());
         assertThat(result.size()).isEqualTo(1);
         assertThat(result).extracting("title").containsExactly("제목테스트");
         assertThat(result).extracting("content").containsExactly("내용테스트");

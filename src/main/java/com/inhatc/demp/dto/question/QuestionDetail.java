@@ -1,11 +1,17 @@
 package com.inhatc.demp.dto.question;
 
+import com.inhatc.demp.domain.Hashtag;
 import com.inhatc.demp.domain.Question;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
+@ToString
 public class QuestionDetail {
 
     private Long id;
@@ -16,6 +22,8 @@ public class QuestionDetail {
     private int dislike;
     private String username;
 
+    private List<String> hashtags = new ArrayList<>();
+
     public QuestionDetail(Question question) {
         this.id = question.getId();
         this.title = question.getTitle();
@@ -24,5 +32,7 @@ public class QuestionDetail {
         this.recomend = question.getRecomend();
         this.dislike = question.getDislike();
         this.username = question.getMember().getUsername();
+        question.getQuestionHashtags().iterator()
+                .forEachRemaining(qh -> qh.getHashtag().getTagName());
     }
 }

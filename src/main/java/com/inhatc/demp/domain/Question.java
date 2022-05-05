@@ -29,9 +29,8 @@ public class Question {
     @OneToMany(mappedBy = "question")
     private List<Answer> answers = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "question_id")
-    private List<Hashtag> hashtags = new ArrayList<>();
+    @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<QuestionHashtag> QuestionHashtags = new ArrayList<>();
 
     //연관 관계 편의 메소드
     public void settingMember(Member member) {
@@ -48,6 +47,11 @@ public class Question {
 
     @Timestamp
     private LocalDateTime createdDate = LocalDateTime.now();
+
+    public void addQuestionHashtag(QuestionHashtag questionHashtag) {
+        this.QuestionHashtags.add(questionHashtag);
+        questionHashtag.setQuestion(this);
+    }
 
     public Question(String title, String content, int hits, int recomend, int dislike) {
         this.title = title;
