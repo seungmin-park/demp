@@ -12,5 +12,6 @@ public class QuestionSearchCondition {
 
     private String title;
     private String content;
+    private String orderBy;
     private List<String> hashtags = new ArrayList<>();
 }

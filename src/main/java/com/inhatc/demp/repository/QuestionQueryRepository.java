@@ -2,6 +2,8 @@ package com.inhatc.demp.repository;
 
 import com.inhatc.demp.domain.Question;
 import com.inhatc.demp.dto.question.QuestionSearchCondition;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -25,12 +27,25 @@ public class QuestionQueryRepository {
                 .selectFrom(question)
                 .join(question.QuestionHashtags, questionHashtag)
                 .join(questionHashtag.hashtag, hashtag)
-                .fetchJoin()
                 .where(titleContains(questionSearchCondition.getTitle()),
                         contentContains(questionSearchCondition.getContent())
                         , hashtagIn(questionSearchCondition.getHashtags()))
+                .orderBy(QuestionSort(questionSearchCondition.getOrderBy()))
                 .distinct()
                 .fetch();
+    }
+
+    private OrderSpecifier<?> QuestionSort(String orderBy) {
+        if (orderBy.equals("createdDate")) {
+            return new OrderSpecifier(Order.DESC, question.createdDate);
+        }
+        if (orderBy.equals("hits")) {
+            return new OrderSpecifier(Order.DESC, question.hits);
+        }
+        if (orderBy.equals("recomend")) {
+            return new OrderSpecifier(Order.DESC, question.recomend);
+        }
+        return null;
     }
 
     public List<Question> findAllByHashtags(List<String> hashtags) {
