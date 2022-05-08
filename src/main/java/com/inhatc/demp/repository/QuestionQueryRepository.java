@@ -35,19 +35,6 @@ public class QuestionQueryRepository {
                 .fetch();
     }
 
-    private OrderSpecifier<?> QuestionSort(String orderBy) {
-        if (orderBy.equals("createdDate")) {
-            return new OrderSpecifier(Order.DESC, question.createdDate);
-        }
-        if (orderBy.equals("hits")) {
-            return new OrderSpecifier(Order.DESC, question.hits);
-        }
-        if (orderBy.equals("recomend")) {
-            return new OrderSpecifier(Order.DESC, question.recomend);
-        }
-        return null;
-    }
-
     public List<Question> findAllByHashtags(List<String> hashtags) {
         return jpaQueryFactory
                 .selectFrom(question)
@@ -76,5 +63,18 @@ public class QuestionQueryRepository {
 
     private BooleanExpression hashtagIn(List<String> hashtags) {
         return hashtags.isEmpty() ? null : hashtag.tagName.in(hashtags);
+    }
+
+    private OrderByNull QuestionSort(String orderBy) {
+        if (orderBy.equals("createdDate")) {
+            return new OrderByNull(Order.DESC, question.createdDate);
+        }
+        if (orderBy.equals("hits")) {
+            return new OrderByNull(Order.DESC, question.hits);
+        }
+        if (orderBy.equals("recomend")) {
+            return new OrderByNull(Order.DESC, question.recomend);
+        }
+        return OrderByNull.DEFAULT;
     }
 }
