@@ -4,7 +4,9 @@ import com.inhatc.demp.domain.Hashtag;
 import com.inhatc.demp.domain.Member;
 import com.inhatc.demp.domain.Question;
 import com.inhatc.demp.domain.QuestionHashtag;
+import com.inhatc.demp.dto.question.QuestionDetail;
 import com.inhatc.demp.dto.question.QuestionForm;
+import com.inhatc.demp.dto.question.QuestionList;
 import com.inhatc.demp.dto.question.QuestionSearchCondition;
 import com.inhatc.demp.repository.HashtagRepository;
 import com.inhatc.demp.repository.MemberRepository;
@@ -67,7 +69,7 @@ public class QuestionService {
         return questionQueryRepository.findAllByHashtags(hashtags);
     }
 
-    public List<Question> findAllBySearchCondition(QuestionSearchCondition questionSearchCondition) {
+    public List<QuestionList> findAllBySearchCondition(QuestionSearchCondition questionSearchCondition) {
         return questionQueryRepository.findAllBySearchCondition(questionSearchCondition);
     }
 
@@ -75,7 +77,9 @@ public class QuestionService {
         return questionQueryRepository.findAllHashtags();
     }
 
-    public Optional<Question> findById(Long id) {
-        return questionRepository.findById(id);
+    public QuestionDetail findById(Long id) {
+        return questionRepository.findById(id)
+                .map(q->new QuestionDetail(q))
+                .orElse(null);
     }
 }

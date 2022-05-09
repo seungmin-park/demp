@@ -29,21 +29,20 @@ public class QuestionController {
     @GetMapping
     public ResponseEntity<List<QuestionList>> list(@ModelAttribute QuestionSearchCondition searchCondition) {
         log.info("QuestionController.list");
-        List<QuestionList> result = questionService.findAllBySearchCondition(searchCondition)
-                .stream().map(QuestionList::new).collect(Collectors.toList());
+        List<QuestionList> result = questionService.findAllBySearchCondition(searchCondition);
         return new ResponseEntity(result, HttpStatus.OK);
     }
 
     @GetMapping("/{questionId}")
     public ResponseEntity<QuestionDetail> questionDetail(@PathVariable Long questionId) {
         log.info("QuestionController.questionDetail");
-        Optional<Question> question = questionService.findById(questionId);
-        if (question.isEmpty()) {
+        QuestionDetail questionDetail = questionService.findById(questionId);
+        if (questionDetail == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-        QuestionDetail result = new QuestionDetail(question.get());
-        log.info("result={}", result);
-        return new ResponseEntity<>(result, HttpStatus.OK);
+
+        log.info("questionDetail={}", questionDetail);
+        return new ResponseEntity<>(questionDetail, HttpStatus.OK);
     }
 
     @GetMapping("/hashtags")

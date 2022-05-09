@@ -1,9 +1,11 @@
 package com.inhatc.demp.repository;
 
 import com.inhatc.demp.domain.Question;
+import com.inhatc.demp.dto.question.QuestionList;
 import com.inhatc.demp.dto.question.QuestionSearchCondition;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +24,11 @@ public class QuestionQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    public List<Question> findAllBySearchCondition(QuestionSearchCondition questionSearchCondition) {
+    public List<QuestionList> findAllBySearchCondition(QuestionSearchCondition questionSearchCondition) {
         return jpaQueryFactory
-                .selectFrom(question)
+                .select(Projections.fields(QuestionList.class
+                ,question.id,question.title,question.hits,question.recomend))
+                .from(question)
                 .join(question.QuestionHashtags, questionHashtag)
                 .join(questionHashtag.hashtag, hashtag)
                 .where(titleContains(questionSearchCondition.getTitle()),
@@ -66,14 +70,16 @@ public class QuestionQueryRepository {
     }
 
     private OrderByNull QuestionSort(String orderBy) {
-        if (orderBy.equals("createdDate")) {
-            return new OrderByNull(Order.DESC, question.createdDate);
-        }
-        if (orderBy.equals("hits")) {
-            return new OrderByNull(Order.DESC, question.hits);
-        }
-        if (orderBy.equals("recomend")) {
-            return new OrderByNull(Order.DESC, question.recomend);
+        if (hasText(orderBy)) {
+            if (orderBy.equals("createdDate")) {
+                return new OrderByNull(Order.DESC, question.createdDate);
+            }
+            if (orderBy.equals("hits")) {
+                return new OrderByNull(Order.DESC, question.hits);
+            }
+            if (orderBy.equals("recomend")) {
+                return new OrderByNull(Order.DESC, question.recomend);
+            }
         }
         return OrderByNull.DEFAULT;
     }
