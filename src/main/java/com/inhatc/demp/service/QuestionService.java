@@ -1,17 +1,13 @@
 package com.inhatc.demp.service;
 
-import com.inhatc.demp.domain.Hashtag;
-import com.inhatc.demp.domain.Member;
-import com.inhatc.demp.domain.Question;
-import com.inhatc.demp.domain.QuestionHashtag;
-import com.inhatc.demp.dto.question.QuestionDetail;
-import com.inhatc.demp.dto.question.QuestionForm;
-import com.inhatc.demp.dto.question.QuestionList;
-import com.inhatc.demp.dto.question.QuestionSearchCondition;
+import com.inhatc.demp.domain.*;
+import com.inhatc.demp.dto.AnswerForm;
+import com.inhatc.demp.dto.question.*;
+import com.inhatc.demp.repository.AnswerRepository;
 import com.inhatc.demp.repository.HashtagRepository;
 import com.inhatc.demp.repository.MemberRepository;
-import com.inhatc.demp.repository.QuestionQueryRepository;
-import com.inhatc.demp.repository.QuestionRepository;
+import com.inhatc.demp.repository.question.QuestionQueryRepository;
+import com.inhatc.demp.repository.question.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -19,7 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -29,9 +26,8 @@ public class QuestionService {
     private final QuestionRepository questionRepository;
     private final QuestionQueryRepository questionQueryRepository;
     private final MemberRepository memberRepository;
-
     private final HashtagRepository hashtagRepository;
-
+    private final AnswerRepository answerRepository;
     @Transactional
     public void join(QuestionForm questionForm) {
         // TODO: 2022-05-03 회원가입 기능 미구현, 임시 회원 객체 대체
@@ -81,5 +77,31 @@ public class QuestionService {
         return questionRepository.findById(id)
                 .map(q->new QuestionDetail(q))
                 .orElse(null);
+    }
+
+    @Transactional
+    public void deleteQuestion(Long id) {
+        questionRepository.deleteById(id);
+    }
+
+    @Transactional
+    public List<QuestionAnswer> saveAnswer(AnswerForm answerForm){
+        Member member = memberRepository.findByEmail(answerForm.getMemberEmail()).orElse(null);
+        Question question = questionRepository.findById(answerForm.getQuestionId()).orElse(null);
+        if (member == null || question == null) {
+            throw new NoSuchElementException("회원 또는 질문 데이터 존재x");
+        }
+        Answer answer = new Answer(answerForm.getAnswerContent(), 0, 0);
+        answer.settingQuestion(question);
+        answer.settingMember(member);
+        answerRepository.save(answer);
+
+        return convertQuestionAnswer(answerForm);
+    }
+
+    private List<QuestionAnswer> convertQuestionAnswer(AnswerForm answerForm) {
+        return answerRepository.findByQuestion_Id(answerForm.getQuestionId())
+                .stream().map(QuestionAnswer::new)
+                .collect(Collectors.toList());
     }
 }

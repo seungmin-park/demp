@@ -1,6 +1,7 @@
 package com.inhatc.demp.repository;
 
 import com.inhatc.demp.domain.Question;
+import com.inhatc.demp.repository.question.QuestionRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
