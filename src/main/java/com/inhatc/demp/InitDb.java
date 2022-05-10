@@ -1,9 +1,10 @@
 package com.inhatc.demp;
 
 import com.inhatc.demp.domain.*;
+import com.inhatc.demp.dto.member.MemberForm;
 import com.inhatc.demp.repository.AnswerRepository;
 import com.inhatc.demp.repository.HashtagRepository;
-import com.inhatc.demp.repository.QuestionRepository;
+import com.inhatc.demp.repository.question.QuestionRepository;
 import com.inhatc.demp.service.AnnouncementService;
 import com.inhatc.demp.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -42,8 +43,10 @@ public class InitDb {
         Hashtag jpa = new Hashtag("jpa");
         Hashtag cs = new Hashtag("cs");
         Hashtag thread = new Hashtag("thread");
-        Member memberA = new Member("testMemberA", 20);
-        Member memberB = new Member("testMemberB", 30);
+        MemberForm testMemberA = new MemberForm("testMemberA", "memberA@memberA", 20, 123);
+        MemberForm testMemberB = new MemberForm("testMemberB", "memberB@memberB", 30, 123);
+        Member memberA = new Member(testMemberA);
+        Member memberB = new Member(testMemberB);
 
         questionA.settingMember(memberA);
         answerA.settingQuestion(questionA);

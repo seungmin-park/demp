@@ -21,6 +21,7 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
+    private String email;
     private String username;
     private Integer age;
     private int password;
@@ -38,6 +39,7 @@ public class Member {
 
     public Member(MemberForm memberForm) {
         this.username = memberForm.getUsername();
+        this.email = memberForm.getEmail();
         this.age = memberForm.getAge();
         this.password = memberForm.getPassword();
     }
