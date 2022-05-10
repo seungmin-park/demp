@@ -1,4 +1,4 @@
-package com.inhatc.demp.repository;
+package com.inhatc.demp.repository.question;
 
 import com.inhatc.demp.domain.Question;
 import org.springframework.data.jpa.repository.JpaRepository;

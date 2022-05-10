@@ -1,4 +1,4 @@
-package com.inhatc.demp.repository;
+package com.inhatc.demp.repository.question;
 
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.NullExpression;

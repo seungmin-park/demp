@@ -1,4 +1,4 @@
-package com.inhatc.demp.repository;
+package com.inhatc.demp.repository.announcement;
 
 import com.inhatc.demp.domain.Announcement;
 import com.inhatc.demp.domain.AnnouncementType;
