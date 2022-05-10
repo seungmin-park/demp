@@ -22,6 +22,7 @@ public class Announcement {
     private String title;
 
     @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(joinColumns = @JoinColumn(name = "announcement_id"), name = "language")
     private List<String> languages = new ArrayList<>();
     private String position;
     private String career;

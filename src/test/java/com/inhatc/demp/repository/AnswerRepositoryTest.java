@@ -26,7 +26,6 @@ class AnswerRepositoryTest {
 
         //then
         Assertions.assertThat(answers.size()).isEqualTo(1);
-        Assertions.assertThat(answers.get(0).getId()).isEqualTo(1L);
         Assertions.assertThat(answers.get(0).getContent()).isEqualTo("질문\\n 답변\\n 테스트");
         Assertions.assertThat(answers.get(0).getRecomend()).isEqualTo(22);
         Assertions.assertThat(answers.get(0).getDislike()).isEqualTo(11);
