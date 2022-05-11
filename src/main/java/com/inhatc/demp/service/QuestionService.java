@@ -1,7 +1,7 @@
 package com.inhatc.demp.service;
 
 import com.inhatc.demp.domain.*;
-import com.inhatc.demp.dto.AnswerForm;
+import com.inhatc.demp.dto.answer.AnswerForm;
 import com.inhatc.demp.dto.question.*;
 import com.inhatc.demp.repository.AnswerRepository;
 import com.inhatc.demp.repository.HashtagRepository;
@@ -35,23 +35,12 @@ public class QuestionService {
         Question question = new Question(questionForm.getTitle(), questionForm.getContent(), 0, 0, 0);
         ArrayList<String> hashtags = questionForm.getHashtags();
 
-        List<Hashtag> hashtagList = hashtagRepository.findAll();
-        for (String formHashtag : hashtags) {
-            Hashtag hashtag = new Hashtag(formHashtag);
-            if (!hashtagList.contains(hashtag)) {
-                hashtagRepository.save(hashtag);
-            }
-            settingQuestionHashtag(question, hashtag);
-        }
+        setHashtags(question, hashtags);
         question.settingMember(testMember);
         questionRepository.save(question);
     }
 
-    private void settingQuestionHashtag(Question question, Hashtag hashtag) {
-        QuestionHashtag questionHashtag = new QuestionHashtag();
-        hashtag.addQuestionHashtag(questionHashtag);
-        question.addQuestionHashtag(questionHashtag);
-    }
+
 
     public List<Question> findAllOrderBy(Sort sort) {
         return questionRepository.findAll(sort);
@@ -80,6 +69,16 @@ public class QuestionService {
     }
 
     @Transactional
+    public void updateQuestion(QuestionUpdateForm questionUpdateForm) {
+        Question question = questionRepository.findById(questionUpdateForm.getQuestionId()).orElse(null);
+        if (question == null) {
+            throw new NoSuchElementException("데이터 존재X");
+        }
+        question.updateQuestion(questionUpdateForm.getTitle(), questionUpdateForm.getContent());
+        setHashtags(question,questionUpdateForm.getHashtags());
+    }
+
+    @Transactional
     public void deleteQuestion(Long id) {
         questionRepository.deleteById(id);
     }
@@ -97,6 +96,23 @@ public class QuestionService {
         answerRepository.save(answer);
 
         return convertQuestionAnswer(answerForm);
+    }
+
+    private void setHashtags(Question question, ArrayList<String> hashtags) {
+        List<Hashtag> hashtagList = hashtagRepository.findAll();
+        for (String formHashtag : hashtags) {
+            Hashtag hashtag = new Hashtag(formHashtag);
+            if (!hashtagList.contains(hashtag)) {
+                hashtagRepository.save(hashtag);
+            }
+            settingQuestionHashtag(question, hashtag);
+        }
+    }
+
+    private void settingQuestionHashtag(Question question, Hashtag hashtag) {
+        QuestionHashtag questionHashtag = new QuestionHashtag();
+        hashtag.addQuestionHashtag(questionHashtag);
+        question.addQuestionHashtag(questionHashtag);
     }
 
     private List<QuestionAnswer> convertQuestionAnswer(AnswerForm answerForm) {

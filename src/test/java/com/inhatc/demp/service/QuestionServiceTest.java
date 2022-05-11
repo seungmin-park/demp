@@ -1,17 +1,11 @@
 package com.inhatc.demp.service;
 
 import com.inhatc.demp.domain.Answer;
-import com.inhatc.demp.domain.Hashtag;
 import com.inhatc.demp.domain.Question;
-import com.inhatc.demp.dto.AnswerForm;
-import com.inhatc.demp.dto.question.QuestionAnswer;
-import com.inhatc.demp.dto.question.QuestionDetail;
-import com.inhatc.demp.dto.question.QuestionForm;
-import com.inhatc.demp.dto.question.QuestionSearchCondition;
+import com.inhatc.demp.dto.answer.AnswerForm;
+import com.inhatc.demp.dto.question.*;
 import com.inhatc.demp.repository.AnswerRepository;
 import com.inhatc.demp.repository.HashtagRepository;
-import com.inhatc.demp.repository.question.QuestionQueryRepository;
-import com.inhatc.demp.repository.question.QuestionRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,5 +128,29 @@ class QuestionServiceTest {
         //then
         assertThat(questionDetail).isNull();
         assertThat(answers.isEmpty()).isTrue();
+    }
+
+    @Test
+    @DisplayName("updateQuestion")
+    void updateQuestion() throws Exception {
+        //given
+        QuestionUpdateForm questionUpdateForm = new QuestionUpdateForm(1L, "제목 수정 테스트용 텍스트", "내용 수정 테스트용 텍스트", new ArrayList<>(Arrays.asList("1", "2")));
+        //when
+        questionService.updateQuestion(questionUpdateForm);
+        QuestionDetail questionDetail = questionService.findById(questionUpdateForm.getQuestionId());
+        List<String> hashtags = questionService.findAllHashtags();
+        //then
+        assertThat(questionDetail.getTitle()).isEqualTo("제목 수정 테스트용 텍스트");
+        assertThat(questionDetail.getContent()).isEqualTo("내용 수정 테스트용 텍스트");
+        assertThat(hashtags.size()).isEqualTo(6);
+        assertThat(hashtags).contains("java", "jpa", "cs", "thread", "1", "2");
+    }
+
+    @Test
+    @DisplayName("updateQuestionFail")
+    void updateQuestionFail() throws Exception {
+        QuestionUpdateForm questionUpdateForm = new QuestionUpdateForm(100L, "제목 수정 테스트용 텍스트", "내용 수정 테스트용 텍스트", new ArrayList<>(Arrays.asList("1", "2")));
+        assertThatThrownBy(() -> questionService.updateQuestion(questionUpdateForm))
+                .isInstanceOf(NoSuchElementException.class);
     }
 }

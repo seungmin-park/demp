@@ -39,6 +39,7 @@ public class Question {
     }
 
     private String title;
+    @Lob
     private String content;
 
     private int hits;
@@ -59,5 +60,10 @@ public class Question {
         this.hits = hits;
         this.recomend = recomend;
         this.dislike = dislike;
+    }
+
+    public void updateQuestion(String title, String content) {
+        this.title = title;
+        this.content = content;
     }
 }

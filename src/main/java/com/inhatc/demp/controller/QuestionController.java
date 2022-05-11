@@ -1,10 +1,7 @@
 package com.inhatc.demp.controller;
 
 import com.inhatc.demp.domain.Question;
-import com.inhatc.demp.dto.question.QuestionDetail;
-import com.inhatc.demp.dto.question.QuestionForm;
-import com.inhatc.demp.dto.question.QuestionList;
-import com.inhatc.demp.dto.question.QuestionSearchCondition;
+import com.inhatc.demp.dto.question.*;
 import com.inhatc.demp.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -55,5 +52,15 @@ public class QuestionController {
         log.info("questionForm ={}",questionForm);
         questionService.join(questionForm);
         return "ok";
+    }
+
+    @PatchMapping("/update")
+    public void updateQuestion(@RequestBody QuestionUpdateForm questionUpdateForm) {
+        questionService.updateQuestion(questionUpdateForm);
+    }
+
+    @DeleteMapping("/delete")
+    public void deleteQuestion(@RequestParam Long questionId) {
+        questionService.deleteQuestion(questionId);
     }
 }
