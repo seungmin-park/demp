@@ -1,8 +1,9 @@
 package com.inhatc.demp.controller;
 
 import com.inhatc.demp.domain.Answer;
-import com.inhatc.demp.dto.AnswerForm;
+import com.inhatc.demp.dto.answer.AnswerForm;
 import com.inhatc.demp.dto.question.QuestionAnswer;
+import com.inhatc.demp.dto.answer.UpdateAnswerForm;
 import com.inhatc.demp.repository.AnswerRepository;
 import com.inhatc.demp.service.QuestionService;
 import lombok.RequiredArgsConstructor;
@@ -35,5 +36,16 @@ public class AnswerController {
     @PostMapping("/save")
     public List<QuestionAnswer> saveAnswer(@RequestBody AnswerForm answerForm) {
         return questionService.saveAnswer(answerForm);
+    }
+
+    @PatchMapping("/update")
+    public void updateAnswer(@RequestBody UpdateAnswerForm updateAnswerForm) {
+        Answer answer = answerRepository.findById(updateAnswerForm.getAnswerId()).orElse(null);
+        answer.updateAnswer(updateAnswerForm.getAnswerContent());
+    }
+
+    @DeleteMapping("/delete")
+    public void deleteAnswer(@RequestParam Long answerId) {
+        answerRepository.deleteById(answerId);
     }
 }

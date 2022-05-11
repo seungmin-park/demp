@@ -1,4 +1,4 @@
-package com.inhatc.demp.dto;
+package com.inhatc.demp.dto.answer;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

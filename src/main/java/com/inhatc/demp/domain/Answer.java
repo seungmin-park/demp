@@ -23,7 +23,7 @@ public class Answer {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
-
+    @Lob
     private String content;
     private int recomend;
     private int dislike;
@@ -39,6 +39,9 @@ public class Answer {
         question.getAnswers().add(this);
     }
 
+    public void updateAnswer(String content) {
+        this.content = content;
+    }
 
     public Answer(String content, int recomend, int dislike) {
         this.content = content;
