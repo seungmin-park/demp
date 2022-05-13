@@ -65,15 +65,12 @@ public class QuestionService {
     public QuestionDetail findById(Long id) {
         return questionRepository.findById(id)
                 .map(q->new QuestionDetail(q))
-                .orElse(null);
+                .orElseThrow(()->new NoSuchElementException("회원 또는 질문 데이터 존재x"));
     }
 
     @Transactional
     public void updateQuestion(QuestionUpdateForm questionUpdateForm) {
-        Question question = questionRepository.findById(questionUpdateForm.getQuestionId()).orElse(null);
-        if (question == null) {
-            throw new NoSuchElementException("데이터 존재X");
-        }
+        Question question = questionRepository.findById(questionUpdateForm.getQuestionId()).orElseThrow(() -> new NoSuchElementException("데이터 존재X"));
         question.updateQuestion(questionUpdateForm.getTitle(), questionUpdateForm.getContent());
         setHashtags(question,questionUpdateForm.getHashtags());
     }
@@ -85,11 +82,8 @@ public class QuestionService {
 
     @Transactional
     public List<QuestionAnswer> saveAnswer(AnswerForm answerForm){
-        Member member = memberRepository.findByEmail(answerForm.getMemberEmail()).orElse(null);
-        Question question = questionRepository.findById(answerForm.getQuestionId()).orElse(null);
-        if (member == null || question == null) {
-            throw new NoSuchElementException("회원 또는 질문 데이터 존재x");
-        }
+        Member member = memberRepository.findByEmail(answerForm.getMemberEmail()).orElseThrow(()->new NoSuchElementException("회원 또는 질문 데이터 존재x"));
+        Question question = questionRepository.findById(answerForm.getQuestionId()).orElseThrow(() -> new NoSuchElementException("회원 또는 질문 데이터 존재x"));
         Answer answer = new Answer(answerForm.getAnswerContent(), 0, 0);
         answer.settingQuestion(question);
         answer.settingMember(member);

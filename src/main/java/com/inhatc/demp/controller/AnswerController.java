@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -40,7 +41,7 @@ public class AnswerController {
 
     @PatchMapping("/update")
     public void updateAnswer(@RequestBody UpdateAnswerForm updateAnswerForm) {
-        Answer answer = answerRepository.findById(updateAnswerForm.getAnswerId()).orElse(null);
+        Answer answer = answerRepository.findById(updateAnswerForm.getAnswerId()).orElseThrow(() -> new NoSuchElementException("해당 데이터 존재x"));
         answer.updateAnswer(updateAnswerForm.getAnswerContent());
     }
 

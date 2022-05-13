@@ -15,6 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.NoSuchElementException;
+
 import static org.assertj.core.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -62,7 +64,7 @@ class AnswerControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(content)
                 .accept(MediaType.APPLICATION_JSON));
-        Answer answer = answerRepository.findById(7L).orElse(null);
+        Answer answer = answerRepository.findById(7L).orElseThrow(() -> new NoSuchElementException("해당 데이터 존재x"));
         //then
         assertThat(answer.getContent()).isEqualTo("댓글 수정 테스트를 위한 텍스트");
     }
