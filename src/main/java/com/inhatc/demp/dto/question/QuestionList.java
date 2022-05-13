@@ -1,7 +1,6 @@
 package com.inhatc.demp.dto.question;
 
 import com.inhatc.demp.domain.Question;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

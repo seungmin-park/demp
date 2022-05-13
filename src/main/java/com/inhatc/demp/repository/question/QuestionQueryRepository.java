@@ -14,8 +14,8 @@ import java.util.List;
 
 import static com.inhatc.demp.domain.QHashtag.hashtag;
 import static com.inhatc.demp.domain.QQuestion.question;
-import static com.inhatc.demp.domain.QQuestionHashtag.*;
-import static org.springframework.util.StringUtils.*;
+import static com.inhatc.demp.domain.QQuestionHashtag.questionHashtag;
+import static org.springframework.util.StringUtils.hasText;
 
 @Repository
 @RequiredArgsConstructor

@@ -2,8 +2,8 @@ package com.inhatc.demp.controller;
 
 import com.inhatc.demp.domain.Answer;
 import com.inhatc.demp.dto.answer.AnswerForm;
-import com.inhatc.demp.dto.question.QuestionAnswer;
 import com.inhatc.demp.dto.answer.UpdateAnswerForm;
+import com.inhatc.demp.dto.question.QuestionAnswer;
 import com.inhatc.demp.repository.AnswerRepository;
 import com.inhatc.demp.service.QuestionService;
 import lombok.RequiredArgsConstructor;
