@@ -26,7 +26,7 @@ public class AnnouncementController {
     private final AnnouncementService announcementService;
 
     @GetMapping("")
-    public ListResponse announce(@ModelAttribute AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
+    public ListResponse getAllAnnounces(@ModelAttribute AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
         log.info("AnnouncementController.pageTest");
         Page<Announcement> announcementPage = announcementService.pageTest(announcementSearchCondition, pageable);
         List<AnnouncementResponse> announcementResponses = announcementPage.getContent()
@@ -47,7 +47,7 @@ public class AnnouncementController {
     }
 
     @GetMapping("/detail/{AnnouncementId}")
-    public ResponseEntity<AnnouncementDetail> detail(@PathVariable Long AnnouncementId) {
+    public ResponseEntity<AnnouncementDetail> getDetailAnnounce(@PathVariable Long AnnouncementId) {
         log.info("AnnouncementController.Detail");
         Optional<Announcement> optionalAnnouncement = announcementService.findById(AnnouncementId);
         if (optionalAnnouncement.isEmpty()) {
@@ -64,7 +64,7 @@ public class AnnouncementController {
 
 
     @PostMapping(value = "/add")
-    public String saveTest(@Valid @ModelAttribute AnnouncementForm param) throws IOException {
+    public String saveAnnounce(@Valid @ModelAttribute AnnouncementForm param) throws IOException {
         log.info("AnnouncementController.saveTest");
         log.info("{}",param);
         announcementService.save(param);

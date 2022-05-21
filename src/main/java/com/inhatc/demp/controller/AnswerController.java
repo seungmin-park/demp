@@ -26,7 +26,7 @@ public class AnswerController {
     private final QuestionService questionService;
 
     @GetMapping("/{questionId}")
-    public ResponseEntity<List<QuestionAnswer>> answers(@PathVariable Long questionId) {
+    public ResponseEntity<List<QuestionAnswer>> getAnswersByQuestion(@PathVariable Long questionId) {
         log.info("AnswerController.answers");
         List<Answer> answers = answerRepository.findByQuestion_Id(questionId);
         List<QuestionAnswer> result = answers.stream().map(a -> new QuestionAnswer(a)).collect(Collectors.toList());

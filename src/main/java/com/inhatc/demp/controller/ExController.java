@@ -1,5 +1,6 @@
-package com.inhatc.demp.error;
+package com.inhatc.demp.controller;
 
+import com.inhatc.demp.error.ErrorResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;

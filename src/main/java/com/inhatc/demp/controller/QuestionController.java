@@ -20,14 +20,14 @@ public class QuestionController {
     private final QuestionService questionService;
 
     @GetMapping
-    public ResponseEntity<List<QuestionList>> list(@ModelAttribute QuestionSearchCondition searchCondition) {
+    public ResponseEntity<List<QuestionList>> getAllQuestions(@ModelAttribute QuestionSearchCondition searchCondition) {
         log.info("QuestionController.list");
         List<QuestionList> result = questionService.findAllBySearchCondition(searchCondition);
         return new ResponseEntity(result, HttpStatus.OK);
     }
 
     @GetMapping("/{questionId}")
-    public ResponseEntity<QuestionDetail> questionDetail(@PathVariable Long questionId) {
+    public ResponseEntity<QuestionDetail> getQuestion(@PathVariable Long questionId) {
         log.info("QuestionController.questionDetail");
         QuestionDetail questionDetail = questionService.findById(questionId);
         if (questionDetail == null) {
@@ -39,12 +39,12 @@ public class QuestionController {
     }
 
     @GetMapping("/hashtags")
-    public List<String> hashtags() {
+    public List<String> getAllHashtags() {
         return questionService.findAllHashtags();
     }
 
     @PostMapping("/add")
-    public String addQuestion(@Valid @RequestBody QuestionForm questionForm) {
+    public String saveQuestion(@Valid @RequestBody QuestionForm questionForm) {
         log.info("questionForm ={}",questionForm);
         questionService.join(questionForm);
         return "ok";
