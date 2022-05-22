@@ -10,4 +10,6 @@
 
 ### Api docs
 
-![demp_api_docs](https://user-images.githubusercontent.com/78605779/169659648-a700fef8-616c-4b86-91fa-7f62e7cd877c.png)
+![demp_api_docs_announce](https://user-images.githubusercontent.com/78605779/169678360-fd8a9029-1e37-407b-91d0-8c1e54fd2d5e.png)
+![demp_api_docs_answer](https://user-images.githubusercontent.com/78605779/169678359-73a4029b-959e-4d12-83f3-66f9808d3b10.png)
+![demp_api_docs_member_question](https://user-images.githubusercontent.com/78605779/169678358-68c0421f-9889-42e1-a9a1-5b71db5939d0.png)
