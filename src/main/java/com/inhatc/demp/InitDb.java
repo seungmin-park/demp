@@ -57,16 +57,16 @@ public class InitDb {
         hashtagRepository.save(jpa);
         hashtagRepository.save(cs);
         hashtagRepository.save(thread);
-        settingQuestionHashtag(questionA, java);
-        settingQuestionHashtag(questionA, jpa);
+        settingQuestionHashtag(questionA, cs);
+        settingQuestionHashtag(questionA, thread);
         questionRepository.save(questionA);
         answerRepository.save(answerA);
 
         questionB.settingMember(memberB);
         answerB.settingQuestion(questionB);
         answerB.settingMember(memberA);
-        settingQuestionHashtag(questionB, cs);
-        settingQuestionHashtag(questionB, thread);
+        settingQuestionHashtag(questionB, java);
+        settingQuestionHashtag(questionB, jpa);
         questionRepository.save(questionB);
         answerRepository.save(answerB);
     }
