@@ -31,7 +31,7 @@ public class QuestionService {
     @Transactional
     public void join(QuestionForm questionForm) {
         // TODO: 2022-05-03 회원가입 기능 미구현, 임시 회원 객체 대체
-        Member testMember = memberRepository.findById(1L).get();
+        Member testMember = memberRepository.findByUsername(questionForm.getUsername()).orElseThrow();
         Question question = new Question(questionForm.getTitle(), questionForm.getContent(), 0, 0, 0);
         ArrayList<String> hashtags = questionForm.getHashtags();
 
@@ -82,7 +82,7 @@ public class QuestionService {
 
     @Transactional
     public List<QuestionAnswer> saveAnswer(AnswerForm answerForm){
-        Member member = memberRepository.findByEmail(answerForm.getMemberEmail()).orElseThrow(()->new NoSuchElementException("회원 또는 질문 데이터 존재x"));
+        Member member = memberRepository.findByUsername(answerForm.getUsername()).orElseThrow(()->new NoSuchElementException("회원 또는 질문 데이터 존재x"));
         Question question = questionRepository.findById(answerForm.getQuestionId()).orElseThrow(() -> new NoSuchElementException("회원 또는 질문 데이터 존재x"));
         Answer answer = new Answer(answerForm.getAnswerContent(), 0, 0);
         answer.settingQuestion(question);

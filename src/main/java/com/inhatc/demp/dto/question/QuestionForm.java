@@ -13,5 +13,6 @@ public class QuestionForm {
 
     private String title;
     private String content;
+    private String username;
     private ArrayList<String> hashtags = new ArrayList<>();
 }

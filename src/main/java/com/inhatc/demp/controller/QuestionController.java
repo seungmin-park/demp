@@ -26,7 +26,7 @@ public class QuestionController {
         return new ResponseEntity(result, HttpStatus.OK);
     }
 
-    @GetMapping("/{questionId}")
+    @GetMapping("/detail/{questionId}")
     public ResponseEntity<QuestionDetail> getQuestion(@PathVariable Long questionId) {
         log.info("QuestionController.questionDetail");
         QuestionDetail questionDetail = questionService.findById(questionId);
