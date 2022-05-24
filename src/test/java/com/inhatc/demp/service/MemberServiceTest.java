@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -23,7 +24,7 @@ class MemberServiceTest {
     @BeforeEach
     void beforeEach() {
         for (int i = 0; i < 10; i++) {
-            memberService.join(new Member("member"+i, i));
+            memberService.join(new Member("member" + i, String.valueOf(i), Collections.singletonList("ROLE_USER")));
         }
     }
 
@@ -50,7 +51,6 @@ class MemberServiceTest {
         //then
         assertThat(members.size()).isEqualTo(1);
         assertThat(members.get(0).getUsername()).isEqualTo("member2");
-        assertThat(members.get(0).getAge()).isEqualTo(2);
     }
 
     @Test

@@ -11,7 +11,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class AnswerForm {
 
-    private String memberEmail;
+    private String username;
     private Long questionId;
     private String answerContent;
 }

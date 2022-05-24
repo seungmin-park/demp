@@ -1,13 +1,14 @@
 package com.inhatc.demp;
 
 import com.inhatc.demp.domain.*;
-import com.inhatc.demp.dto.member.MemberForm;
+import com.inhatc.demp.dto.member.MemberSaveForm;
 import com.inhatc.demp.repository.AnswerRepository;
 import com.inhatc.demp.repository.HashtagRepository;
 import com.inhatc.demp.repository.question.QuestionRepository;
 import com.inhatc.demp.service.AnnouncementService;
 import com.inhatc.demp.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +27,8 @@ public class InitDb {
     private final AnswerRepository answerRepository;
     private final HashtagRepository hashtagRepository;
 
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
     @PostConstruct
     public void init() {
         initMember();
@@ -43,10 +46,10 @@ public class InitDb {
         Hashtag jpa = new Hashtag("jpa");
         Hashtag cs = new Hashtag("cs");
         Hashtag thread = new Hashtag("thread");
-        MemberForm testMemberA = new MemberForm("testMemberA", "memberA@memberA", 20, 123);
-        MemberForm testMemberB = new MemberForm("testMemberB", "memberB@memberB", 30, 123);
-        Member memberA = new Member(testMemberA);
-        Member memberB = new Member(testMemberB);
+        MemberSaveForm testMemberA = new MemberSaveForm("testMemberA", "11111");
+        MemberSaveForm testMemberB = new MemberSaveForm("testMemberB", "11111");
+        Member memberA = testMemberA.toEntity();
+        Member memberB = testMemberB.toEntity();
 
         questionA.settingMember(memberA);
         answerA.settingQuestion(questionA);
