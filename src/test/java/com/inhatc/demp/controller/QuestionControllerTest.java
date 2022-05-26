@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -46,9 +47,10 @@ class QuestionControllerTest {
         //given
         mockMvc.perform(delete("/api/question/delete").param("questionId","1"));
         //when
-        QuestionDetail questionDetail = questionService.findById(1L);
+
         //then
-        assertThat(questionDetail).isNull();
+        assertThatThrownBy(() -> questionService.findById(1L))
+                .isInstanceOf(NoSuchElementException.class);
     }
 
     @Test

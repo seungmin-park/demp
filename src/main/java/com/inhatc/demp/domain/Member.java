@@ -33,7 +33,6 @@ public class Member implements UserDetails {
     private List<Answer> answers = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
-    @Builder.Default
     private List<String> roles = new ArrayList<>();
 
     public Member() {

@@ -39,47 +39,4 @@ class MemberServiceTest {
         //then
         assertThat(members.size()).isEqualTo(12);
     }
-
-    @Test
-    @DisplayName("findMemberByQuerydslUsername")
-    void findMemberByQuerydslUsername() throws Exception {
-        //given
-        MemberSearchCondition memberSearchCondition = new MemberSearchCondition();
-        memberSearchCondition.setUsername("member2");
-        //when
-        List<Member> members = memberService.findByUsernameOrAge(memberSearchCondition);
-        //then
-        assertThat(members.size()).isEqualTo(1);
-        assertThat(members.get(0).getUsername()).isEqualTo("member2");
-    }
-
-    @Test
-    @DisplayName("findMemberByQuerydslAge")
-    void findMemberByQuerydslAge() throws Exception {
-        //given
-        MemberSearchCondition memberSearchCondition = new MemberSearchCondition();
-        memberSearchCondition.setAgeGoe(7);
-        //when
-        List<Member> members = memberService.findByUsernameOrAge(memberSearchCondition);
-        //then
-        assertThat(members.size()).isEqualTo(5);
-        assertThat(members).extracting("username").contains("member7", "member8", "member9");
-        assertThat(members).extracting("age").contains(7,8,9);
-
-    }
-   @Test
-    @DisplayName("findMemberByQuerydslUsernameAndAge")
-    void findMemberByQuerydslUsernameAndAge() throws Exception {
-        //given
-        MemberSearchCondition memberSearchCondition = new MemberSearchCondition();
-        memberSearchCondition.setUsername("member2");
-        memberSearchCondition.setAgeLoe(7);
-        //when
-        List<Member> members = memberService.findByUsernameOrAge(memberSearchCondition);
-        //then
-        assertThat(members.size()).isEqualTo(1);
-       assertThat(members).extracting("username").contains("member2");
-       assertThat(members).extracting("age").contains(2);
-    }
-
 }

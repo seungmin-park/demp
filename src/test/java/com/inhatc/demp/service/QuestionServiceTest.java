@@ -35,7 +35,7 @@ class QuestionServiceTest {
     @DisplayName("saveQuestion")
     void saveQuestion() throws Exception {
         //given
-        QuestionForm questionForm = new QuestionForm("제목테스트", "내용테스트", new ArrayList<>(Arrays.asList("java", "jpa")));
+        QuestionForm questionForm = new QuestionForm("제목테스트", "내용테스트", "testMemberA", new ArrayList<>(Arrays.asList("java", "jpa")));
         //when
         questionService.join(questionForm);
         List<Question> result = questionService.findAll();
@@ -49,7 +49,7 @@ class QuestionServiceTest {
     @DisplayName("findAllByHashtag")
     void findAllByHashtag() throws Exception {
         //given
-        QuestionForm questionForm = new QuestionForm("제목테스트", "내용테스트", new ArrayList<>(Arrays.asList("java", "jpa")));
+        QuestionForm questionForm = new QuestionForm("제목테스트", "내용테스트", "testMemberA", new ArrayList<>(Arrays.asList("java", "jpa")));
         //when
         questionService.join(questionForm);
         //then
@@ -57,17 +57,17 @@ class QuestionServiceTest {
         questionSearchCondition.getHashtags().add("java");
         List<Question> result = questionService.findAllByHashtags(questionSearchCondition.getHashtags());
         assertThat(result.size()).isEqualTo(2);
-        assertThat(result).extracting("title").containsExactly("접근 제어자가 헷갈려요","제목테스트");
-        assertThat(result).extracting("content").containsExactly("비 전공자라 그런지 CS 부분을 잘 모르겠네요","내용테스트");
+        assertThat(result).extracting("title").containsExactly("Java8에서 뭐가 달라진건가요?","제목테스트");
+        assertThat(result).extracting("content").containsExactly("제곧내","내용테스트");
     }
 
     @Test
     @DisplayName("findAllHashtags")
     void findAllHashtags() throws Exception {
         //given
-        QuestionForm questionForm1 = new QuestionForm("제목테스트1", "내용테스트1", new ArrayList<>(Arrays.asList("java", "jpa")));
-        QuestionForm questionForm2 = new QuestionForm("제목테스트2", "내용테스트2", new ArrayList<>(Arrays.asList("spring", "jpa")));
-        QuestionForm questionForm3 = new QuestionForm("제목테스트3", "내용테스트3", new ArrayList<>(Arrays.asList("html", "css")));
+        QuestionForm questionForm1 = new QuestionForm("제목테스트1", "내용테스트1", "testMemberA",new ArrayList<>(Arrays.asList("java", "jpa")));
+        QuestionForm questionForm2 = new QuestionForm("제목테스트2", "내용테스트2", "testMemberA",new ArrayList<>(Arrays.asList("spring", "jpa")));
+        QuestionForm questionForm3 = new QuestionForm("제목테스트3", "내용테스트3", "testMemberA",new ArrayList<>(Arrays.asList("html", "css")));
         //when
         questionService.join(questionForm1);
         questionService.join(questionForm2);
@@ -95,7 +95,7 @@ class QuestionServiceTest {
     @DisplayName("saveAnswer")
     void saveAnswer() throws Exception {
         //given
-        AnswerForm answerForm = new AnswerForm("memberB@memberB", 1L, "댓글 테스트");
+        AnswerForm answerForm = new AnswerForm("testMemberB", 1L, "댓글 테스트");
         //when
         List<QuestionAnswer> questionAnswers = questionService.saveAnswer(answerForm);
         //then
@@ -107,7 +107,7 @@ class QuestionServiceTest {
     @DisplayName("deleteAnswer")
     void deleteAnswer() throws Exception {
         //given
-        AnswerForm answerForm = new AnswerForm("memberB@memberB", 1L, "댓글 테스트");
+        AnswerForm answerForm = new AnswerForm("testMemberB", 1L, "댓글 테스트");
         questionService.saveAnswer(answerForm);
         //when
         answerRepository.deleteById(7L);
@@ -123,10 +123,10 @@ class QuestionServiceTest {
         //given
         questionService.deleteQuestion(1L);
         //when
-        QuestionDetail questionDetail = questionService.findById(1L);
         List<Answer> answers = answerRepository.findByQuestion_Id(1L);
         //then
-        assertThat(questionDetail).isNull();
+        assertThatThrownBy(() -> questionService.findById(1L))
+                .isInstanceOf(NoSuchElementException.class);
         assertThat(answers.isEmpty()).isTrue();
     }
 

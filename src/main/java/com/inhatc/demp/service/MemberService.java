@@ -47,26 +47,15 @@ public class MemberService {
         return findMember;
     }
 
-    public List<Member> findByUsernameOrAge(MemberSearchCondition condition) {
+    public List<Member> findByUsername(MemberSearchCondition condition) {
 
         return queryFactory
                 .selectFrom(member)
-                .where(usernameEq(condition.getUsername()),
-                        ageGoe(condition.getAgeGoe()),
-                        ageLoe(condition.getAgeLoe())
-                        )
+                .where(usernameEq(condition.getUsername()))
                 .fetch();
     }
 
     private BooleanExpression usernameEq(String username) {
         return hasText(username) ? member.username.eq(username) : null;
-    }
-
-    private BooleanExpression ageGoe(Integer ageGoe) {
-        return ageGoe != null ? member.age.goe(ageGoe) : null;
-    }
-
-    private BooleanExpression ageLoe(Integer ageLoe) {
-        return ageLoe != null ? member.age.loe(ageLoe) : null;
     }
 }

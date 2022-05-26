@@ -43,7 +43,7 @@ class AnswerControllerTest {
     @DisplayName("controllerAnswerSave")
     void controllerAnswerSave() throws Exception {
         //given
-        String content = objectMapper.writeValueAsString(new AnswerForm("memberA@memberA", 1L, "댓글 테스트"));
+        String content = objectMapper.writeValueAsString(new AnswerForm("testMemberA", 1L, "댓글 테스트"));
         //when
         //then
         mockMvc.perform(post("/api/answer/save")

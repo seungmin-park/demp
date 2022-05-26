@@ -15,4 +15,10 @@ public class QuestionForm {
     private String content;
     private String username;
     private ArrayList<String> hashtags = new ArrayList<>();
+
+    public QuestionForm(String title, String content, ArrayList<String> hashtags) {
+        this.title = title;
+        this.content = content;
+        this.hashtags.addAll(hashtags);
+    }
 }

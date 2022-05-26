@@ -2,9 +2,9 @@ spring:
   profiles:
     active: local
   datasource:
-    url: jdbc:mysql://b734f528987e51:3237bca3@us-cdbr-east-05.cleardb.net/heroku_e2fb0516231c116?reconnect=true
-    username: b734f528987e51
-    password: 3237bca3
+    url: jdbc:mysql://127.0.0.1:3306/demp?serverTimezone=UTC&characterEncoding=UTF-8
+    username: inhatc
+    password: inhatc
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
@@ -17,7 +17,7 @@ spring:
         use_sql_comments: true
 
   jwt:
-    secret: pepega524832857240
+    secret: your_secret_key
 
 logging.level:
   org.hibernate.SQL: debug
@@ -25,3 +25,6 @@ logging.level:
 
 file:
   dir: C:/repo/dempfrontend/src/assets/
+
+server:
+  port: 8080
