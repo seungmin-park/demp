@@ -31,8 +31,8 @@ public class QuestionQueryRepository {
                 .join(question.QuestionHashtags, questionHashtag)
                 .join(questionHashtag.hashtag, hashtag)
                 .where(titleContains(questionSearchCondition.getTitle()),
-                        contentContains(questionSearchCondition.getContent())
-                        , hashtagIn(questionSearchCondition.getHashtags()))
+                        contentContains(questionSearchCondition.getContent()),
+                        hashtagIn(questionSearchCondition.getHashtags()))
                 .orderBy(QuestionSort(questionSearchCondition.getOrderBy()))
                 .distinct()
                 .fetch();
