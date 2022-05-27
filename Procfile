@@ -1,1 +1,1 @@
-java -jar ./build/libs/demp-0.0.1-SNAPSHOT.jar
+web: java -jar ./build/libs/demp-0.0.1-SNAPSHOT.jar
