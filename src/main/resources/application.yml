@@ -19,7 +19,12 @@ spring:
   jwt:
     secret: pepega524832857240
 
-#logging.level:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+  #logging.level:
 #  org.hibernate.SQL: debug
   # org.hibernate.type: trace
 
@@ -28,3 +33,15 @@ file:
 
 server:
   port: ${PORT:8080}
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${s3.accessKey}
+      secret-key: ${s3.secretKey}
+    region:
+      static: ${s3.static}
+    s3:
+      bucket: ${s3.bucket}
+    stack:
+      auto: false
