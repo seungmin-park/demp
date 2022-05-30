@@ -17,7 +17,6 @@ public class AwsS3Config {
     private String secretKey;
     @Value("${cloud.aws.region.static}")
     private String region;
-    public static final String BUCKET_URL = "{BUCKET_URL}";
     public static final String BUCKET_URL = "https://inhatc-demp.s3.ap-northeast-2.amazonaws.com/";
 
     @Bean
