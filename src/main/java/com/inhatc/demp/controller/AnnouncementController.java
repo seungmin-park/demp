@@ -40,7 +40,7 @@ public class AnnouncementController {
         log.info("AnnouncementController.scroll");
         List<Announcement> announcements = announcementService.findAll();
         List<AnnouncementScroll> result = announcements.stream()
-                .map(a -> new AnnouncementScroll(a.getId(), a.getTitle(), a.getCompany(),a.getImage().getSaveFileName()))
+                .map(a -> new AnnouncementScroll(a))
                 .collect(Collectors.toList());
         log.info("result={}", result);
         return result;

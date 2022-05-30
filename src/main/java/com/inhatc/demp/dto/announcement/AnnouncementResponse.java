@@ -1,8 +1,11 @@
 package com.inhatc.demp.dto.announcement;
 
+import com.inhatc.demp.config.aws.AwsS3Config;
 import com.inhatc.demp.domain.Announcement;
 import lombok.Getter;
 import lombok.Setter;
+
+import static com.inhatc.demp.config.aws.AwsS3Config.*;
 
 @Getter
 @Setter
@@ -19,6 +22,6 @@ public class AnnouncementResponse {
         this.title = announcement.getTitle();
         this.language = announcement.getLanguages().toString();
         this.position = announcement.getPosition();
-        this.image = announcement.getImage().getSaveFileName();
+        this.image = BUCKET_URL + announcement.getImage().getSaveFileName();
     }
 }

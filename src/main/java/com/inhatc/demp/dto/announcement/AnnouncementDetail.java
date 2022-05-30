@@ -10,6 +10,8 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+import static com.inhatc.demp.config.aws.AwsS3Config.BUCKET_URL;
+
 @Data
 @Builder
 @AllArgsConstructor
@@ -42,7 +44,7 @@ public class AnnouncementDetail {
                 .accessUrl(announcement.getAccessUrl())
                 .startedDate(announcement.getStartedDate())
                 .deadLineDate(announcement.getDeadLineDate())
-                .image(announcement.getImage().getSaveFileName())
+                .image(BUCKET_URL+announcement.getImage().getSaveFileName())
                 .position(announcement.getPosition())
                 .career(announcement.getCareer())
                 .language(announcement.getLanguages().toString())

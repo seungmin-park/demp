@@ -38,6 +38,7 @@ public class AnnouncementQueryRepository {
     }
 
     public Page<Announcement> pagingTest(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
+        // TODO: 2022-05-30 firstResult/maxResults specified with collection fetch; applying in memory! 해결 및 메소드명 리팩토링
         QueryResults<Announcement> result = jpaQueryFactory
                 .selectFrom(announcement)
                 .leftJoin(announcement.languages)
@@ -57,7 +58,6 @@ public class AnnouncementQueryRepository {
 
         return new PageImpl<>(content, pageable, total);
     }
-
 
     private BooleanExpression typeEq(String announcementType) {
         return hasText(announcementType) ? announcement.announcementType.eq(AnnouncementType.valueOf(announcementType)) : null;
