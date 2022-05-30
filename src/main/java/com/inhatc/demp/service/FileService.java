@@ -56,6 +56,10 @@ public class FileService {
         return new UploadFile(originalFilename, saveFileName);
     }
 
+    public void deleteFile(String saveFileName) {
+        amazonS3.deleteObject(new DeleteObjectRequest(bucket, saveFileName));
+    }
+
     private String getSaveFileName(MultipartFile multipartFile) {
         String uuid = UUID.randomUUID().toString();
         String ext = getExt(multipartFile);
