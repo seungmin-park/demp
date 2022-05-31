@@ -32,7 +32,7 @@ file:
   dir: C:/repo/dempfrontend/src/assets/
 
 server:
-  port: ${port:78977}
+  port: ${port:8080}
 
 cloud:
   aws:
