@@ -1,7 +1,6 @@
 package com.inhatc.demp.repository;
 
 import com.inhatc.demp.domain.Announcement;
-import com.inhatc.demp.domain.Language;
 import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.inhatc.demp.repository.announcement.AnnouncementQueryRepository;
 import org.junit.jupiter.api.DisplayName;

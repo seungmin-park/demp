@@ -1,7 +1,6 @@
 package com.inhatc.demp.service;
 
 import com.inhatc.demp.domain.Member;
-import com.inhatc.demp.dto.member.MemberSearchCondition;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

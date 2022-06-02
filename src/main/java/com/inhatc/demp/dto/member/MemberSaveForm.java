@@ -1,7 +1,6 @@
 package com.inhatc.demp.dto.member;
 
 import com.inhatc.demp.domain.Member;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

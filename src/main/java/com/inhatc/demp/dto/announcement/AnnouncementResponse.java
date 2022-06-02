@@ -1,11 +1,10 @@
 package com.inhatc.demp.dto.announcement;
 
-import com.inhatc.demp.config.aws.AwsS3Config;
 import com.inhatc.demp.domain.Announcement;
 import lombok.Getter;
 import lombok.Setter;
 
-import static com.inhatc.demp.config.aws.AwsS3Config.*;
+import static com.inhatc.demp.config.aws.AwsS3Config.BUCKET_URL;
 
 @Getter
 @Setter
