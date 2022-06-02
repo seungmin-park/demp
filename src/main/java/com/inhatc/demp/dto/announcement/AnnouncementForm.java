@@ -2,6 +2,7 @@ package com.inhatc.demp.dto.announcement;
 
 import com.inhatc.demp.domain.AnnouncementType;
 import com.inhatc.demp.domain.Company;
+import com.inhatc.demp.domain.Language;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +16,9 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -30,7 +33,7 @@ public class AnnouncementForm {
     @NotBlank
     private String content;
     @NotNull
-    private List<String> languages = new ArrayList<>();
+    private Set<Language> languages = new HashSet<>();
 
     @URL
     @NotBlank

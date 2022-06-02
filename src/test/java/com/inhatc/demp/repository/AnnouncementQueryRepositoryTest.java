@@ -1,6 +1,7 @@
 package com.inhatc.demp.repository;
 
 import com.inhatc.demp.domain.Announcement;
+import com.inhatc.demp.domain.Language;
 import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.inhatc.demp.repository.announcement.AnnouncementQueryRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 
 import java.util.List;
 
+import static com.inhatc.demp.domain.Language.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -198,7 +200,7 @@ class AnnouncementQueryRepositoryTest {
     void language() throws Exception {
         //given
         AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.getLanguages().add("Java");
+        announcementSearchCondition.getLanguages().add(JAVA);
         //when
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
         //then
@@ -211,8 +213,8 @@ class AnnouncementQueryRepositoryTest {
     void language2() throws Exception {
         //given
         AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.getLanguages().add("Java");
-        announcementSearchCondition.getLanguages().add("Spring");
+        announcementSearchCondition.getLanguages().add(JAVA);
+        announcementSearchCondition.getLanguages().add(SPRING);
         //when
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
         //then
@@ -225,7 +227,7 @@ class AnnouncementQueryRepositoryTest {
     void language3() throws Exception {
         //given
         AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.getLanguages().add("HTML");
+        announcementSearchCondition.getLanguages().add(HTML);
         //when
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
         //then
@@ -238,8 +240,8 @@ class AnnouncementQueryRepositoryTest {
     void language4() throws Exception {
         //given
         AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.getLanguages().add("HTML");
-        announcementSearchCondition.getLanguages().add("CSS");
+        announcementSearchCondition.getLanguages().add(HTML);
+        announcementSearchCondition.getLanguages().add(CSS);
         //when
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
         //then
@@ -252,8 +254,8 @@ class AnnouncementQueryRepositoryTest {
     void language5() throws Exception {
         //given
         AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.getLanguages().add("Java");
-        announcementSearchCondition.getLanguages().add("HTML");
+        announcementSearchCondition.getLanguages().add(JAVA);
+        announcementSearchCondition.getLanguages().add(HTML);
         //when
         List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
         //then

@@ -7,7 +7,9 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
@@ -21,9 +23,10 @@ public class Announcement {
     private Long id;
     private String title;
 
+    @Enumerated(EnumType.STRING)
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(joinColumns = @JoinColumn(name = "announcement_id"), name = "language")
-    private List<String> languages = new ArrayList<>();
+    private Set<Language> languages = new HashSet<>();
     private String position;
     private String career;
     @Lob
@@ -45,7 +48,7 @@ public class Announcement {
     private LocalDateTime createdDate;
 
     @Builder
-    public Announcement(String title, List<String> languages, String position, String career, String content, String accessUrl, int payment, Company company, UploadFile image, AnnouncementType announcementType, LocalDateTime startedDate, LocalDateTime deadLineDate) {
+    public Announcement(String title, Set<Language> languages, String position, String career, String content, String accessUrl, int payment, Company company, UploadFile image, AnnouncementType announcementType, LocalDateTime startedDate, LocalDateTime deadLineDate) {
         this.title = title;
         this.languages.addAll(languages);
         this.position = position;

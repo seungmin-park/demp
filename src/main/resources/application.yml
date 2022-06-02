@@ -37,11 +37,11 @@ server:
 cloud:
   aws:
     credentials:
-      access-key: ${s3.accessKey}
-      secret-key: ${s3.secretKey}
+      access-key: AKIAYGX4NA2A6S6PAWVY
+      secret-key: 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
     region:
-      static: ${s3.static}
+      static: ap-northeast-2
     s3:
-      bucket: ${s3.bucket}
+      bucket: inhatc-demp
     stack:
       auto: false

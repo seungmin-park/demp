@@ -2,6 +2,7 @@ package com.inhatc.demp.repository.announcement;
 
 import com.inhatc.demp.domain.Announcement;
 import com.inhatc.demp.domain.AnnouncementType;
+import com.inhatc.demp.domain.Language;
 import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Predicate;
@@ -15,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 
 import static com.inhatc.demp.domain.QAnnouncement.announcement;
 import static org.springframework.util.StringUtils.hasText;
@@ -67,7 +69,7 @@ public class AnnouncementQueryRepository {
         return positions.isEmpty() ? null : announcement.position.in(positions);
     }
 
-    private BooleanExpression languageIn(List<String> languages) {
+    private BooleanExpression languageIn(Set<Language> languages) {
         return languages.isEmpty() ? null : announcement.languages.any().in(languages);
     }
 
