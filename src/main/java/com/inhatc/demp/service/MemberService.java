@@ -1,5 +1,6 @@
 package com.inhatc.demp.service;
 
+import com.amazonaws.services.kms.model.AlreadyExistsException;
 import com.inhatc.demp.domain.Member;
 import com.inhatc.demp.dto.member.MemberLoginForm;
 import com.inhatc.demp.dto.member.MemberSearchCondition;
@@ -39,7 +40,7 @@ public class MemberService {
     }
 
     public Member login(MemberLoginForm memberLoginForm) {
-        Member findMember = memberRepository.findByUsername(memberLoginForm.getUsername()).orElseThrow();
+        Member findMember = findByUsername(memberLoginForm.getUsername());
         if (!bCryptPasswordEncoder.matches(memberLoginForm.getPassword(), findMember.getPassword())) {
             throw new RuntimeException();
         }
@@ -47,15 +48,11 @@ public class MemberService {
         return findMember;
     }
 
-    public List<Member> findByUsername(MemberSearchCondition condition) {
-
-        return queryFactory
-                .selectFrom(member)
-                .where(usernameEq(condition.getUsername()))
-                .fetch();
+    public Member findByUsername(String username) {
+        return memberRepository.findByUsername(username).orElseThrow(() -> new AlreadyExistsException("존재하지 않는 아이디"));
     }
 
-    private BooleanExpression usernameEq(String username) {
-        return hasText(username) ? member.username.eq(username) : null;
+    public Boolean validationDuplicateUsername(String username) {
+        return memberRepository.findByUsername(username).isEmpty();
     }
 }

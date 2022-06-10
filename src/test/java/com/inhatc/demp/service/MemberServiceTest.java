@@ -27,7 +27,6 @@ class MemberServiceTest {
         }
     }
 
-
     @Test
     @DisplayName("MemberSave")
     void memberSave() throws Exception {
@@ -37,5 +36,17 @@ class MemberServiceTest {
 
         //then
         assertThat(members.size()).isEqualTo(12);
+    }
+
+    @Test
+    @DisplayName("validDuplicateUsernameTrue")
+    void validDuplicateUsernameTrue() throws Exception {
+        assertThat(memberService.validationDuplicateUsername("newMemberTestUsername")).isTrue();
+    }
+
+    @Test
+    @DisplayName("validDuplicateUsernameFalse")
+    void validDuplicateUsernameFalse() throws Exception {
+        assertThat(memberService.validationDuplicateUsername("member0")).isFalse();
     }
 }
