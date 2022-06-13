@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -53,6 +54,6 @@ public class MemberService {
     }
 
     public Boolean validationDuplicateUsername(String username) {
-        return memberRepository.findByUsername(username).isEmpty();
+        return StringUtils.hasText(username) && memberRepository.findByUsername(username).isEmpty();
     }
 }

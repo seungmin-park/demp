@@ -47,4 +47,9 @@ public class MemberController {
         Member findMember = memberService.findById(member.getId());
         return new ResponseEntity<>(findMember, HttpStatus.OK);
     }
+
+    @GetMapping("/validUsername")
+    public boolean validUsername(@RequestParam String username) {
+        return memberService.validationDuplicateUsername(username);
+    }
 }
