@@ -37,7 +37,9 @@ public class AnnouncementForm {
     @NotBlank
     private String accessUrl;
     @NotBlank
-    private String career;
+    private int minCareer;
+    @NotBlank
+    private int maxCareer;
 
     @NotNull
     @Min(2400)

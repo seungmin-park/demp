@@ -29,7 +29,8 @@ public class AnnouncementDetail {
     private String language;
     private String position;
     private int payment;
-    private String career;
+    private int minCareer;
+    private int maxCareer;
     private String content;
     private String accessUrl;
     private AnnouncementType announcementType;
@@ -46,7 +47,8 @@ public class AnnouncementDetail {
                 .deadLineDate(announcement.getDeadLineDate())
                 .image(BUCKET_URL+announcement.getImage().getSaveFileName())
                 .position(announcement.getPosition())
-                .career(announcement.getCareer())
+                .minCareer(announcement.getMinCareer())
+                .maxCareer(announcement.getMaxCareer())
                 .language(announcement.getLanguages().toString())
                 .build();
     }

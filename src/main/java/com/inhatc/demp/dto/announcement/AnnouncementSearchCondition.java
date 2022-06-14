@@ -16,6 +16,7 @@ public class AnnouncementSearchCondition {
     private String typeName;
     private List<String> positions = new ArrayList<>();
     private Set<Language> languages = new HashSet<>();
+    private int career;
     private int payment;
     private String title;
 }

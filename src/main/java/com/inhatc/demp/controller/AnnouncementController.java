@@ -5,8 +5,8 @@ import com.inhatc.demp.dto.announcement.*;
 import com.inhatc.demp.service.AnnouncementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -26,13 +26,9 @@ public class AnnouncementController {
     private final AnnouncementService announcementService;
 
     @GetMapping("")
-    public ListResponse getAllAnnounces(@ModelAttribute AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
+    public Slice<AnnouncementResponse> getAllAnnounces(@ModelAttribute AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
         log.info("AnnouncementController.pageTest");
-        Page<Announcement> announcementPage = announcementService.pageTest(announcementSearchCondition, pageable);
-        List<AnnouncementResponse> announcementResponses = announcementPage.getContent()
-                .stream().map(a -> new AnnouncementResponse(a)).collect(Collectors.toList());
-        int totalPages = announcementPage.getTotalPages();
-        return new ListResponse(announcementResponses, totalPages);
+        return announcementService.getAnnounceScroll(announcementSearchCondition, pageable);
     }
 
     @GetMapping("/scroll")

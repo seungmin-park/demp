@@ -3,18 +3,19 @@ package com.inhatc.demp.repository.announcement;
 import com.inhatc.demp.domain.Announcement;
 import com.inhatc.demp.domain.AnnouncementType;
 import com.inhatc.demp.domain.Language;
+import com.inhatc.demp.dto.announcement.AnnouncementResponse;
 import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -39,6 +40,35 @@ public class AnnouncementQueryRepository {
                 .fetch();
     }
 
+    public Slice<AnnouncementResponse> getAnnounceScroll(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable){
+        QueryResults<Announcement> results = jpaQueryFactory.selectFrom(announcement)
+                .leftJoin(announcement.languages)
+                .fetchJoin()
+                .where(typeEq(announcementSearchCondition.getTypeName()),
+                        positionIn(announcementSearchCondition.getPositions()),
+                        languageIn(announcementSearchCondition.getLanguages()),
+                        paymentGoe(announcementSearchCondition.getPayment()),
+                        minCareerLoe(announcementSearchCondition.getCareer()),
+                        maxCareerGoe(announcementSearchCondition.getCareer()),
+                        titleContain(announcementSearchCondition.getTitle()))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1)
+                .distinct()
+                .fetchResults();
+
+        List<AnnouncementResponse> content = new ArrayList<>();
+        for (Announcement result : results.getResults()) {
+            content.add(new AnnouncementResponse(result));
+        }
+
+        boolean hasNext = false;
+        if (content.size() > pageable.getPageSize()) {
+            content.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+
+        return new SliceImpl<>(content, pageable, hasNext);
+    }
     public Page<Announcement> pagingTest(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
         // TODO: 2022-05-30 firstResult/maxResults specified with collection fetch; applying in memory! 해결 및 메소드명 리팩토링
         QueryResults<Announcement> result = jpaQueryFactory
@@ -75,6 +105,20 @@ public class AnnouncementQueryRepository {
 
     private BooleanExpression paymentGoe(int payment) {
         return payment <= 0 ? null : announcement.payment.goe(payment);
+    }
+
+    private BooleanExpression minCareerLoe(int career) {
+        return career == 0 ? null : announcement.minCareer.loe(career);
+    }
+
+    private BooleanBuilder maxCareerGoe(int career) {
+        BooleanBuilder builder = new BooleanBuilder();
+        if (career != 0) {
+            builder.and(announcement.maxCareer.goe(career));
+            builder.or(announcement.maxCareer.eq(0));
+        }
+
+        return builder;
     }
 
     private Predicate titleContain(String title) {

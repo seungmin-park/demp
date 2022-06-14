@@ -3,12 +3,14 @@ package com.inhatc.demp.service;
 import com.inhatc.demp.domain.Announcement;
 import com.inhatc.demp.domain.UploadFile;
 import com.inhatc.demp.dto.announcement.AnnouncementForm;
+import com.inhatc.demp.dto.announcement.AnnouncementResponse;
 import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.inhatc.demp.repository.announcement.AnnouncementQueryRepository;
 import com.inhatc.demp.repository.announcement.AnnouncementRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,7 +44,8 @@ public class AnnouncementService {
                 .title(announcementForm.getTitle())
                 .announcementType(announcementForm.getType())
                 .accessUrl(announcementForm.getAccessUrl())
-                .career(announcementForm.getCareer())
+                .minCareer(announcementForm.getMinCareer())
+                .maxCareer(announcementForm.getMaxCareer())
                 .company(announcementForm.getCompany())
                 .content(announcementForm.getContent())
                 .startedDate(announcementForm.getStartedDate())
@@ -55,6 +58,10 @@ public class AnnouncementService {
 
 
         announcementRepository.save(announcement);
+    }
+
+    public Slice<AnnouncementResponse> getAnnounceScroll(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
+        return announcementQueryRepository.getAnnounceScroll(announcementSearchCondition, pageable);
     }
 
     public Page<Announcement> pageTest(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {

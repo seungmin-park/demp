@@ -1,6 +1,7 @@
 package com.inhatc.demp.repository;
 
 import com.inhatc.demp.domain.Announcement;
+import com.inhatc.demp.dto.announcement.AnnouncementResponse;
 import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.inhatc.demp.repository.announcement.AnnouncementQueryRepository;
 import org.junit.jupiter.api.DisplayName;
@@ -9,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Slice;
 
 import java.util.List;
 
@@ -300,5 +302,19 @@ class AnnouncementQueryRepositoryTest {
         //then
         assertThat(result.getSize()).isEqualTo(3);
         assertThat(result).extracting("title").contains("2021라인 공채1", "2021라인 공채2", "2021라인 공채3");
+    }
+
+    @Test
+    @DisplayName("scrollTest")
+    void scrollTest() throws Exception {
+        //given
+        AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
+        PageRequest pageRequest = PageRequest.of(0, 3);
+
+        //when
+        Slice<AnnouncementResponse> announceScroll = announcementQueryRepository.getAnnounceScroll(announcementSearchCondition, pageRequest);
+        //then
+        assertThat(announceScroll.getSize()).isEqualTo(3);
+        assertThat(announceScroll).extracting("title").contains("2021라인 공채1", "2021라인 공채2", "2021라인 공채3");
     }
 }

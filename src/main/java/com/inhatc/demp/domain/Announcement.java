@@ -26,7 +26,8 @@ public class Announcement {
     @CollectionTable(joinColumns = @JoinColumn(name = "announcement_id"), name = "language")
     private Set<Language> languages = new HashSet<>();
     private String position;
-    private String career;
+    private int minCareer;
+    private int maxCareer;
     @Lob
     private String content;
     private String accessUrl;
@@ -46,11 +47,12 @@ public class Announcement {
     private LocalDateTime createdDate;
 
     @Builder
-    public Announcement(String title, Set<Language> languages, String position, String career, String content, String accessUrl, int payment, Company company, UploadFile image, AnnouncementType announcementType, LocalDateTime startedDate, LocalDateTime deadLineDate) {
+    public Announcement(String title, Set<Language> languages, String position, int minCareer,int maxCareer, String content, String accessUrl, int payment, Company company, UploadFile image, AnnouncementType announcementType, LocalDateTime startedDate, LocalDateTime deadLineDate) {
         this.title = title;
         this.languages.addAll(languages);
         this.position = position;
-        this.career = career;
+        this.minCareer = minCareer;
+        this.maxCareer = maxCareer;
         this.content = content;
         this.accessUrl = accessUrl;
         this.payment = payment;
