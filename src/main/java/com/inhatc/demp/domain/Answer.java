@@ -25,7 +25,7 @@ public class Answer {
     private Member member;
     @Lob
     private String content;
-    private int recomend;
+    private int recommend;
     private int dislike;
 
     //연관 관계 편의 메소드
@@ -43,9 +43,9 @@ public class Answer {
         this.content = content;
     }
 
-    public Answer(String content, int recomend, int dislike) {
+    public Answer(String content, int recommend, int dislike) {
         this.content = content;
-        this.recomend = recomend;
+        this.recommend = recommend;
         this.dislike = dislike;
     }
 }

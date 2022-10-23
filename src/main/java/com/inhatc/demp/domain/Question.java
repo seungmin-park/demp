@@ -43,7 +43,7 @@ public class Question {
     private String content;
 
     private int hits;
-    private int recomend;
+    private int recommend;
     private int dislike;
 
     @Timestamp
@@ -54,11 +54,11 @@ public class Question {
         questionHashtag.setQuestion(this);
     }
 
-    public Question(String title, String content, int hits, int recomend, int dislike) {
+    public Question(String title, String content, int hits, int recommend, int dislike) {
         this.title = title;
         this.content = content;
         this.hits = hits;
-        this.recomend = recomend;
+        this.recommend = recommend;
         this.dislike = dislike;
     }
 

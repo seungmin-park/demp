@@ -30,7 +30,7 @@ class QuestionRepositoryTest {
         assertThat(questions.size()).isEqualTo(2);
         assertThat(questions).extracting("title").containsExactly("접근 제어자가 헷갈려요", "Java8에서 뭐가 달라진건가요?");
         assertThat(questions).extracting("hits").containsExactly(11, 110);
-        assertThat(questions).extracting("recomend").containsExactly(23, 20);
+        assertThat(questions).extracting("recommend").containsExactly(23, 20);
         assertThat(questions).extracting("member.username").containsExactly("testMemberA","testMemberB");
     }
 }

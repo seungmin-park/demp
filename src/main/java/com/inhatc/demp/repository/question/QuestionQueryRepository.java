@@ -26,7 +26,7 @@ public class QuestionQueryRepository {
     public List<QuestionList> findAllBySearchCondition(QuestionSearchCondition questionSearchCondition) {
         return jpaQueryFactory
                 .select(Projections.fields(QuestionList.class
-                ,question.id,question.title,question.hits,question.recomend))
+                ,question.id,question.title,question.hits,question.recommend))
                 .from(question)
                 .join(question.QuestionHashtags, questionHashtag)
                 .join(questionHashtag.hashtag, hashtag)
@@ -76,8 +76,8 @@ public class QuestionQueryRepository {
             if (orderBy.equals("hits")) {
                 return new OrderByNull(Order.DESC, question.hits);
             }
-            if (orderBy.equals("recomend")) {
-                return new OrderByNull(Order.DESC, question.recomend);
+            if (orderBy.equals("recommend")) {
+                return new OrderByNull(Order.DESC, question.recommend);
             }
         }
         return OrderByNull.DEFAULT;

@@ -10,5 +10,5 @@ public class QuestionList {
     private Long id;
     private String title;
     private int hits;
-    private int recomend;
+    private int recommend;
 }

@@ -18,7 +18,7 @@ public class QuestionDetail {
     private String title;
     private String content;
     private int hits;
-    private int recomend;
+    private int recommend;
     private int dislike;
     private String username;
 
@@ -29,7 +29,7 @@ public class QuestionDetail {
         this.title = question.getTitle();
         this.content = question.getContent();
         this.hits = question.getHits();
-        this.recomend = question.getRecomend();
+        this.recommend = question.getRecommend();
         this.dislike = question.getDislike();
         this.username = question.getMember().getUsername();
         hashtags.addAll(getTagNames(question));
