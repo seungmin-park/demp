@@ -2,6 +2,7 @@ package com.inhatc.demp.controller;
 
 import com.inhatc.demp.config.jwt.JwtTokenProvider;
 import com.inhatc.demp.domain.Member;
+import com.inhatc.demp.dto.member.MemberDto;
 import com.inhatc.demp.dto.member.MemberInfo;
 import com.inhatc.demp.dto.member.MemberLoginForm;
 import com.inhatc.demp.dto.member.MemberSaveForm;
@@ -21,11 +22,12 @@ public class MemberController {
     private final MemberService memberService;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @GetMapping("")
-    public ResponseEntity<Member> Member() {
+    @GetMapping("/{memberId}")
+    public ResponseEntity<MemberDto> Member(@PathVariable Long memberId) {
         log.info("MemberController.Member");
-        Member findMember = memberService.findById(1L);
-        return new ResponseEntity<>(findMember, HttpStatus.OK);
+        Member findMember = memberService.findById(memberId);
+        MemberDto memberDto = new MemberDto(findMember.getId(), findMember.getUsername(), findMember.getPassword());
+        return new ResponseEntity<>(memberDto, HttpStatus.OK);
     }
 
 

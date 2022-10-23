@@ -1,0 +1,6 @@
+[[Member-API]]
+== Member API
+
+[[Member-단일-조회]]
+=== Member 단일 조회
+operation::member-get[snippets='http-request,path-parameters,http-response,response-fields']
