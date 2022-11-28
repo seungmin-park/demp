@@ -32,16 +32,16 @@ file:
   dir: C:/repo/dempfrontend/src/assets/
 
 server:
-  port: ${port:8080}
+  port: ${PORT:8080}
 
 cloud:
   aws:
     credentials:
-      access-key: ${s3.accessKey}
-      secret-key: ${s3.secretKey}
+      access-key: ${S3_ACCESS_KEY}
+      secret-key: ${S3_SECRET_KEY}
     region:
-      static: ${s3.static}
+      static: ${S3_STATIC}
     s3:
-      bucket: ${s3.bucket}
+      bucket: ${S3_BUCKET}
     stack:
       auto: false
