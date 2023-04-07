@@ -1,21 +1,28 @@
 package com.inhatc.demp.repository;
 
-import com.inhatc.demp.domain.Announcement;
+import static com.inhatc.demp.domain.announcemnet.Language.React;
+import static com.inhatc.demp.domain.announcemnet.Language.SPRING;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import com.inhatc.demp.domain.announcemnet.Announcement;
+import com.inhatc.demp.domain.announcemnet.AnnouncementType;
+import com.inhatc.demp.domain.announcemnet.JobPosition;
+import com.inhatc.demp.domain.announcemnet.Language;
 import com.inhatc.demp.dto.announcement.AnnouncementResponse;
 import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.inhatc.demp.repository.announcement.AnnouncementQueryRepository;
+import java.util.List;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
-
-import java.util.List;
-
-import static com.inhatc.demp.domain.Language.*;
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
 class AnnouncementQueryRepositoryTest {
@@ -23,271 +30,132 @@ class AnnouncementQueryRepositoryTest {
     @Autowired
     AnnouncementQueryRepository announcementQueryRepository;
 
-    @Test
-    @DisplayName("typeNameEmp")
-    void typeNameEmp() throws Exception {
+    @ParameterizedTest
+    @MethodSource("generateTypeTestData")
+    void test_announcement_type(AnnouncementType type, int announcementCnt, String... expected) {
         //given
         AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.setTypeName("emp");
-        //when
-        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
-
-        //then
-        assertThat(result.size()).isEqualTo(10);
-        assertThat(result).extracting("title").contains("2021라인 공채1");
-    }
-    
-    @Test
-    @DisplayName("typeNameEdu")
-    void typeNameEdu() throws Exception {
-        //given
-        AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.setTypeName("edu");
-        //when
-        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
-
-        //then
-        assertThat(result.size()).isEqualTo(10);
-        assertThat(result).extracting("title").contains("2021 우아한 테크코스1");
-
-    }
-    
-    @Test
-    @DisplayName("typeNameNull")
-    void typeNameNull() throws Exception {
-        //given
-        AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
+        announcementSearchCondition.setAnnouncementType(type);
 
         //when
-        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
+        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(
+                announcementSearchCondition);
 
         //then
-        assertThat(result.size()).isEqualTo(20);
-        assertThat(result).extracting("title").contains("2021라인 공채1","2021 우아한 테크코스1");
+        assertThat(result.size()).isEqualTo(announcementCnt);
+        assertThat(result).extracting("title").contains(expected);
     }
 
-    @Test
-    @DisplayName("positionFrontend")
-    void positionFrontend() throws Exception {
-        //given
-        AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.getPositions().add("frontend");
-        //when
-        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
-
-        //then
-        assertThat(result.size()).isEqualTo(10);
-        assertThat(result).extracting("title").contains("2021라인 공채1");
+    static Stream<Arguments> generateTypeTestData() {
+        return Stream.of(Arguments.of(AnnouncementType.EMP, 10, new String[]{"2021라인 공채1"}),
+                Arguments.of(AnnouncementType.EDU, 10, new String[]{"2021 우아한 테크코스1"}),
+                Arguments.of(null, 20, new String[]{"2021라인 공채1", "2021 우아한 테크코스1"}));
     }
 
-    @Test
-    @DisplayName("positionBackend")
-    void positionBackend() throws Exception {
+    @ParameterizedTest
+    @MethodSource("generatePositionTestData")
+    void test_announcement_position(List<JobPosition> positions, int announcementCnt, String... expected) {
         //given
         AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.getPositions().add("server/backend");
+        for (JobPosition position : positions) {
+            announcementSearchCondition.getPositions().add(position);
+        }
         //when
-        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
+        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(
+                announcementSearchCondition);
 
         //then
-        assertThat(result.size()).isEqualTo(10);
-        assertThat(result).extracting("title").contains("2021 우아한 테크코스1");
+        assertThat(result.size()).isEqualTo(announcementCnt);
+        assertThat(result).extracting("title").contains(expected);
     }
 
-    @Test
-    @DisplayName("positionBackAndFront")
-    void positionBackAndFront() throws Exception {
-        //given
-        AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.getPositions().add("frontend");
-        announcementSearchCondition.getPositions().add("server/backend");
-
-        //when
-        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
-
-        //then
-        assertThat(result.size()).isEqualTo(20);
-        assertThat(result).extracting("title").contains("2021라인 공채1","2021 우아한 테크코스1");
+    static Stream<Arguments> generatePositionTestData() {
+        return Stream.of(Arguments.of(List.of(JobPosition.FRONTEND), 10, new String[]{"2021라인 공채1"}),
+                Arguments.of(List.of(JobPosition.BACKEND), 10, new String[]{"2021 우아한 테크코스1"}),
+                Arguments.of(List.of(JobPosition.FRONTEND, JobPosition.BACKEND), 20,
+                        new String[]{"2021라인 공채1", "2021 우아한 테크코스1"}),
+                Arguments.of(List.of(), 20, new String[]{"2021라인 공채1", "2021 우아한 테크코스1"}));
     }
 
-    @Test
-    @DisplayName("titleContainLINE")
-    void titleContainLINE() throws Exception {
+    @ParameterizedTest
+    @MethodSource("generateTitleTestData")
+    void test_announcement_title(String title, int announcementCnt, String... expected) {
         //given
         AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.setTitle("공채");
+        announcementSearchCondition.setTitle(title);
         //when
-        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
+        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(
+                announcementSearchCondition);
 
         //then
-        assertThat(result.size()).isEqualTo(10);
-        assertThat(result).extracting("title").contains("2021라인 공채1");
+        assertThat(result.size()).isEqualTo(announcementCnt);
+        assertThat(result).extracting("title").contains(expected);
     }
 
-    @Test
-    @DisplayName("titleContainWOO")
-    void titleContainWOO() throws Exception {
-        //given
-        AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.setTitle("테크");
-        //when
-        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
-
-        //then
-        assertThat(result.size()).isEqualTo(10);
-        assertThat(result).extracting("title").contains("2021 우아한 테크코스1");
+    static Stream<Arguments> generateTitleTestData() {
+        return Stream.of(Arguments.of("공채", 10, new String[]{"2021라인 공채1"}),
+                Arguments.of("테크", 10, new String[]{"2021 우아한 테크코스1"}));
     }
 
-    @Test
-    @DisplayName("typeAndPosition")
-    void typeAndPosition() throws Exception {
+    @ParameterizedTest
+    @MethodSource("generateTypeAndPositionData")
+    void test_announcement_type_and_position(AnnouncementType type, JobPosition position, int expectedCnt) {
         //given
         AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.setTypeName("emp");
-        announcementSearchCondition.getPositions().add("server/backend");
+        announcementSearchCondition.setAnnouncementType(type);
+        announcementSearchCondition.getPositions().add(position);
 
         //when
-        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
+        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(
+                announcementSearchCondition);
         //then
-        assertThat(result.size()).isEqualTo(0);
+        assertThat(result.size()).isEqualTo(expectedCnt);
     }
 
-    @Test
-    @DisplayName("typeAndPosition2")
-    void typeAndPosition2() throws Exception {
-        //given
-        AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.setTypeName("emp");
-        announcementSearchCondition.getPositions().add("frontend");
-
-        //when
-        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
-        //then
-        assertThat(result.size()).isEqualTo(10);
-        assertThat(result).extracting("title").contains("2021라인 공채1");
+    static Stream<Arguments> generateTypeAndPositionData() {
+        return Stream.of(Arguments.of(AnnouncementType.EMP, JobPosition.BACKEND, 0),
+                Arguments.of(AnnouncementType.EMP, JobPosition.FRONTEND, 10),
+                Arguments.of(AnnouncementType.EDU, JobPosition.FRONTEND, 0),
+                Arguments.of(AnnouncementType.EDU, JobPosition.BACKEND, 10));
     }
 
-    @Test
-    @DisplayName("typeAndPosition3")
-    void typeAndPosition3() throws Exception {
+    @ParameterizedTest
+    @MethodSource("generateLanguageData")
+    void test_announcement_language(Language language, int expectedCnt, String... expectedTitle) {
         //given
         AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.setTypeName("edu");
-        announcementSearchCondition.getPositions().add("frontend");
-
+        announcementSearchCondition.setLanguage(language);
         //when
-        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
+        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(
+                announcementSearchCondition);
         //then
-        assertThat(result.size()).isEqualTo(0);
+        assertThat(result.size()).isEqualTo(expectedCnt);
+        assertThat(result).extracting("title").contains(expectedTitle);
     }
 
-    @Test
-    @DisplayName("typeAndPosition4")
-    void typeAndPosition4() throws Exception {
-        //given
-        AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.setTypeName("edu");
-        announcementSearchCondition.getPositions().add("server/backend");
-
-        //when
-        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
-        //then
-        assertThat(result.size()).isEqualTo(10);
-        assertThat(result).extracting("title").contains("2021 우아한 테크코스1");
+    static Stream<Arguments> generateLanguageData() {
+        return Stream.of(Arguments.of(React, 10, new String[]{"2021라인 공채1"}),
+                Arguments.of(SPRING, 10, new String[]{"2021 우아한 테크코스1"}),
+                Arguments.of(null, 20, new String[]{"2021라인 공채1", "2021 우아한 테크코스1"}));
     }
 
-    @Test
-    @DisplayName("language")
-    void language() throws Exception {
+    @ParameterizedTest
+    @MethodSource("generatePaymentData")
+    void test_announcement_payment(int payment, int expectedCnt, String... expectedTitle) {
         //given
         AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.getLanguages().add(JAVA);
+        announcementSearchCondition.setPayment(payment);
         //when
-        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
+        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(
+                announcementSearchCondition);
         //then
-        assertThat(result.size()).isEqualTo(10);
-        assertThat(result).extracting("title").contains("2021 우아한 테크코스1");
+        assertThat(result.size()).isEqualTo(expectedCnt);
+        assertThat(result).extracting("title").contains(expectedTitle);
     }
 
-    @Test
-    @DisplayName("language2")
-    void language2() throws Exception {
-        //given
-        AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.getLanguages().add(JAVA);
-        announcementSearchCondition.getLanguages().add(SPRING);
-        //when
-        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
-        //then
-        assertThat(result.size()).isEqualTo(10);
-        assertThat(result).extracting("title").contains("2021 우아한 테크코스1");
-    }
-
-    @Test
-    @DisplayName("language3")
-    void language3() throws Exception {
-        //given
-        AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.getLanguages().add(HTML);
-        //when
-        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
-        //then
-        assertThat(result.size()).isEqualTo(10);
-        assertThat(result).extracting("title").contains("2021라인 공채1");
-    }
-
-    @Test
-    @DisplayName("language4")
-    void language4() throws Exception {
-        //given
-        AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.getLanguages().add(HTML);
-        announcementSearchCondition.getLanguages().add(CSS);
-        //when
-        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
-        //then
-        assertThat(result.size()).isEqualTo(10);
-        assertThat(result).extracting("title").contains("2021라인 공채1");
-    }
-
-    @Test
-    @DisplayName("language5")
-    void language5() throws Exception {
-        //given
-        AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.getLanguages().add(JAVA);
-        announcementSearchCondition.getLanguages().add(HTML);
-        //when
-        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
-        //then
-        assertThat(result.size()).isEqualTo(20);
-        assertThat(result).extracting("title").contains("2021라인 공채1","2021 우아한 테크코스1");
-    }
-
-    @Test
-    @DisplayName("paymentZero")
-    void paymentZero() throws Exception {
-        //given
-        AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.setPayment(0);
-        //when
-        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
-        //then
-        assertThat(result.size()).isEqualTo(20);
-        assertThat(result).extracting("title").contains("2021라인 공채1", "2021 우아한 테크코스1");
-    }
-
-    @Test
-    @DisplayName("payment5000")
-    void payment5000() throws Exception {
-        //given
-        AnnouncementSearchCondition announcementSearchCondition = new AnnouncementSearchCondition();
-        announcementSearchCondition.setPayment(5000);
-        //when
-        List<Announcement> result = announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
-        //then
-        assertThat(result.size()).isEqualTo(6);
-        assertThat(result).extracting("title").contains("2021라인 공채6");
+    static Stream<Arguments> generatePaymentData() {
+        return Stream.of(Arguments.of(0, 20, new String[]{"2021라인 공채1", "2021 우아한 테크코스1"}),
+                Arguments.of(5000, 6, new String[]{"2021라인 공채6"}));
     }
 
     @Test
@@ -312,7 +180,8 @@ class AnnouncementQueryRepositoryTest {
         PageRequest pageRequest = PageRequest.of(0, 3);
 
         //when
-        Slice<AnnouncementResponse> announceScroll = announcementQueryRepository.getAnnounceScroll(announcementSearchCondition, pageRequest);
+        Slice<AnnouncementResponse> announceScroll = announcementQueryRepository.getAnnounceScroll(
+                announcementSearchCondition, pageRequest);
         //then
         assertThat(announceScroll.getSize()).isEqualTo(3);
         assertThat(announceScroll).extracting("title").contains("2021라인 공채1", "2021라인 공채2", "2021라인 공채3");
