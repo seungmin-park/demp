@@ -1,7 +1,7 @@
 package com.inhatc.demp.repository.announcement;
 
-import com.inhatc.demp.domain.Announcement;
-import com.inhatc.demp.domain.AnnouncementType;
+import com.inhatc.demp.domain.announcemnet.Announcement;
+import com.inhatc.demp.domain.announcemnet.AnnouncementType;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

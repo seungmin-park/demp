@@ -1,8 +1,8 @@
 package com.inhatc.demp.service;
 
-import com.inhatc.demp.domain.Announcement;
-import com.inhatc.demp.domain.UploadFile;
-import com.inhatc.demp.dto.announcement.AnnouncementForm;
+import com.inhatc.demp.domain.announcemnet.Announcement;
+import com.inhatc.demp.domain.announcemnet.UploadFile;
+import com.inhatc.demp.dto.announcement.AnnouncementCreateRequest;
 import com.inhatc.demp.dto.announcement.AnnouncementResponse;
 import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.inhatc.demp.repository.announcement.AnnouncementQueryRepository;
@@ -32,28 +32,23 @@ public class AnnouncementService {
     }
 
     @Transactional
-    public void save(AnnouncementForm announcementForm) throws IOException {
-        UploadFile image = fileService.saveFile(announcementForm.getImage());
-        Optional<Announcement> optional = announcementRepository.findByTitle(announcementForm.getTitle());
+    public void save(AnnouncementCreateRequest announcementCreateRequest) throws IOException {
+        UploadFile image = fileService.saveFile(announcementCreateRequest.getImage());
+        Optional<Announcement> optional = announcementRepository.findByTitle(announcementCreateRequest.getTitle());
 
         if (optional.isPresent()) {
             throw new IllegalStateException("이미 존재하는 공고 입니다.");
         }
 
         Announcement announcement = Announcement.builder()
-                .title(announcementForm.getTitle())
-                .announcementType(announcementForm.getType())
-                .accessUrl(announcementForm.getAccessUrl())
-                .minCareer(announcementForm.getMinCareer())
-                .maxCareer(announcementForm.getMaxCareer())
-                .company(announcementForm.getCompany())
-                .content(announcementForm.getContent())
-                .startedDate(announcementForm.getStartedDate())
-                .deadLineDate(announcementForm.getDeadLineDate())
+                .title(announcementCreateRequest.getTitle())
+                .announcementType(announcementCreateRequest.getType())
+                .career(announcementCreateRequest.getCareer())
+                .recruitPeriod(announcementCreateRequest.getRecruitPeriod())
+                .description(announcementCreateRequest.getDescription())
+                .company(announcementCreateRequest.getCompany())
                 .image(image)
-                .languages(announcementForm.getLanguages())
-                .payment(announcementForm.getPayment())
-                .position(announcementForm.getPosition())
+                .jobPosition(announcementCreateRequest.getPosition())
                 .build();
 
 

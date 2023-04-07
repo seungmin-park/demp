@@ -1,21 +1,20 @@
 package com.inhatc.demp.dto.announcement;
 
-import com.inhatc.demp.domain.Language;
+import com.inhatc.demp.domain.announcemnet.AnnouncementType;
+import com.inhatc.demp.domain.announcemnet.JobPosition;
+import com.inhatc.demp.domain.announcemnet.Language;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
 public class AnnouncementSearchCondition {
 
-    private String typeName;
-    private List<String> positions = new ArrayList<>();
-    private Set<Language> languages = new HashSet<>();
+    private AnnouncementType announcementType;
+    private List<JobPosition> positions = new ArrayList<>();
+    private Language language;
     private int career;
     private int payment;
     private String title;
