@@ -1,10 +1,9 @@
-package com.inhatc.demp.domain;
+package com.inhatc.demp.domain.announcemnet;
 
+import javax.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import javax.persistence.Embeddable;
 
 @Getter
 @Embeddable
