@@ -64,7 +64,7 @@ public class QuestionService {
 
     public QuestionDetail findById(Long id) {
         return questionRepository.findById(id)
-                .map(q->new QuestionDetail(q))
+                .map(QuestionDetail::new)
                 .orElseThrow(()->new NoSuchElementException("회원 또는 질문 데이터 존재x"));
     }
 

@@ -8,12 +8,10 @@ import com.inhatc.demp.dto.member.MemberLoginForm;
 import com.inhatc.demp.dto.member.MemberSaveForm;
 import com.inhatc.demp.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@Slf4j
 @RestController
 @RequestMapping("/api/member")
 @RequiredArgsConstructor
@@ -24,7 +22,7 @@ public class MemberController {
 
     @GetMapping("/{memberId}")
     public ResponseEntity<MemberDto> Member(@PathVariable Long memberId) {
-        log.info("MemberController.Member");
+
         Member findMember = memberService.findById(memberId);
         MemberDto memberDto = new MemberDto(findMember.getId(), findMember.getUsername(), findMember.getPassword());
         return new ResponseEntity<>(memberDto, HttpStatus.OK);

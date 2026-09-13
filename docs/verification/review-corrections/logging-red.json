@@ -1,0 +1,18 @@
+[
+  {
+    "test": "[1] controller=MemberController, path=/api/member/41",
+    "failure": "java.lang.AssertionError: \nExpecting empty but was: [\"MemberController.Member\"]"
+  },
+  {
+    "test": "[2] controller=AnnouncementController, path=/api/announce/scroll",
+    "failure": "java.lang.AssertionError: \nExpecting empty but was: [\"AnnouncementController.scroll\", \"result=[]\"]"
+  },
+  {
+    "test": "[3] controller=QuestionController, path=/api/question",
+    "failure": "java.lang.AssertionError: \nExpecting empty but was: [\"QuestionController.list\"]"
+  },
+  {
+    "test": "[4] controller=AnswerController, path=/api/answer/41",
+    "failure": "java.lang.AssertionError: \nExpecting empty but was: [\"AnswerController.answers\"]"
+  }
+]

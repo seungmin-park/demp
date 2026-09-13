@@ -3,7 +3,6 @@ package com.inhatc.demp.controller;
 import com.inhatc.demp.dto.question.*;
 import com.inhatc.demp.service.QuestionService;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
 
-@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/question")
@@ -21,20 +19,17 @@ public class QuestionController {
 
     @GetMapping
     public ResponseEntity<List<QuestionList>> getAllQuestions(@ModelAttribute QuestionSearchCondition searchCondition) {
-        log.info("QuestionController.list");
         List<QuestionList> result = questionService.findAllBySearchCondition(searchCondition);
         return new ResponseEntity(result, HttpStatus.OK);
     }
 
     @GetMapping("/detail/{questionId}")
     public ResponseEntity<QuestionDetail> getQuestion(@PathVariable Long questionId) {
-        log.info("QuestionController.questionDetail");
         QuestionDetail questionDetail = questionService.findById(questionId);
         if (questionDetail == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
 
-        log.info("questionDetail={}", questionDetail);
         return new ResponseEntity<>(questionDetail, HttpStatus.OK);
     }
 
@@ -45,7 +40,6 @@ public class QuestionController {
 
     @PostMapping("/add")
     public String saveQuestion(@Valid @RequestBody QuestionForm questionForm) {
-        log.info("questionForm ={}",questionForm);
         questionService.join(questionForm);
         return "ok";
     }

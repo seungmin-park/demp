@@ -12,7 +12,7 @@
 
 ## 실행 규칙과 경로
 
-B=`demp`, F=`../dempfrontend`. 아래 B Java 경로는 `src/main/java/com/inhatc/demp/`, 테스트 경로는 `src/test/java/com/inhatc/demp/` 아래다. F 경로는 저장소 루트 기준이다. 생성/수정 표시를 구분한다. 계획의 메서드명은 새로 도입할 계약이며 이미 존재한다고 가정하지 않는다.
+B=`demp`, F=`../dempfrontend`가 원본 저장소다. Phase 0은 사용자 요청에 따라 원본 저장소에서 checkout하여 리뷰할 수 있도록 미커밋 변경으로 옮겼고 별도 worktree는 제거했다. 아래 B Java 경로는 `src/main/java/com/inhatc/demp/`, 테스트 경로는 `src/test/java/com/inhatc/demp/` 아래다. F 경로는 저장소 루트 기준이다. 생성/수정 표시를 구분한다. 계획의 메서드명은 새로 도입할 계약이며 이미 존재한다고 가정하지 않는다.
 
 매 작업은 작은 시나리오 하나씩 반복한다:
 
@@ -28,7 +28,9 @@ B=`demp`, F=`../dempfrontend`. 아래 B Java 경로는 `src/main/java/com/inhatc
 
 서버 전체 명령은 B에서 `./gradlew test`, 대상은 `./gradlew test --tests 'com.inhatc.demp.<package>.<Class>'`다. 프런트 표준 명령은 Phase 0에서 도입할 F의 `npm test -- --runInBand`다. 각 프런트 작업은 전체 테스트와 `npm run lint -- --no-fix`, `npm run build`를 수행한다. 아래 assertion 예시는 새 테스트에 넣을 핵심이며, setup/fixture는 해당 계층 규칙에 맞춰 구현한다.
 
-Domain: Spring 없이. Repository: @DataJpaTest, 관행적 flush/clear 없음. Service: 테스트 @Transactional 없음, 서비스 실제 commit 확인, @AfterEach에서 생성한 자식부터 부모까지 cleanup. Controller: Mockito+standalone MockMvc, DB 없음. 실제 인증 필터 테스트는 별도 최소 보안 테스트로 분리한다. 테스트에 쓰는 외부 저장은 fake이며 운영 S3를 호출하지 않는다.
+테스트 계층별 경계와 한글 `@DisplayName` 규칙은 `AGENTS.md`를 따른다. Controller와 REST Docs는 Spring MVC 컨텍스트를 사용하고 Service 및 직접 의존하는 하위 계층을 mock으로 교체한다.
+
+T10 전에는 전체 컨텍스트 테스트에서 InitDb를 제외하거나 mock으로 교체하지 않는다. 테스트가 생성한 데이터만 cleanup하고 초기 회원·질문·답변·태그를 보존한다. InitDb 삭제 시 seed 관련 기대값도 함께 변경한다.
 
 추가 요구사항: 모든 테스트의 데이터 setup용 `@BeforeEach`를 제거하고 필요한 객체는 각 테스트 본문에서 직접 생성한다. 공통 데이터 필드·상위 setup·자동 data.sql 로딩으로 대체하지 않는다. MockMvc와 REST Docs 실행 도구 초기화만 데이터 생성과 구분해 유지할 수 있고 `@AfterEach` cleanup은 유지한다. API 변경 작업은 Controller 테스트와 별도로 T02의 REST Docs 테스트도 함께 작성·갱신한다.
 
@@ -40,20 +42,20 @@ Domain: Spring 없이. Repository: @DataJpaTest, 관행적 flush/clear 없음. S
 
 현재 이미 `./gradlew test`가 compileQuerydsl에서 실패했다. 이는 기능 Red가 아니다. 어떤 새 JUnit 테스트도 실행되지 않는 상황이므로, 구현자는 사용자와 **“기계적 타입/생성자 정합성 복원에 한해 compileJava/compileTestJava를 가장 가까운 검증으로 사용하고, 동작 변경은 그 후 실패 테스트부터 시작한다”**는 예외를 먼저 합의해야 한다. 이번 문서 작성은 그 예외 승인이나 코드 수정이 아니다.
 
-- [ ] 실행 환경·실패 로그를 기록하고 위 예외를 합의한다. 합의 전 프로덕션 수정 금지.
-- [ ] Announcement → domain.announcemnet.Announcement, AnnouncementForm → AnnouncementCreateRequest, AnnouncementDetail → AnnouncementDetailResponse로 참조 정합성을 맞춘다.
-- [ ] InitDb는 T10에서 삭제할 대상이다. 테스트 실행을 가능하게 하는 데 꼭 필요한 타입 참조만 임시 정합화하고, seed 기능 확장이나 구조 개선은 하지 않는다. 삭제와 local SQL 대체의 동작 검증은 T10에서 수행한다.
-- [ ] `./gradlew compileJava compileTestJava`를 실행해 후속 컴파일 오류를 모두 확인·해소한다.
-- [ ] `./gradlew test`로 기존 테스트 상태를 확정한다. 환경 실패·기존 테스트 실패는 각각 원인을 남긴다.
-- [ ] 다음 계약 테스트를 작성하고 의도한 404 assertion 실패를 실행 확인한다. mock 서비스는 Optional.empty를 반환한다.
+- [x] 실행 환경·실패 로그를 기록하고 위 예외를 합의한다. 합의 전 프로덕션 수정 금지.
+- [x] Announcement → domain.announcemnet.Announcement, AnnouncementForm → AnnouncementCreateRequest, AnnouncementDetail → AnnouncementDetailResponse로 참조 정합성을 맞춘다.
+- [x] InitDb는 T10에서 삭제할 대상이다. 테스트 실행을 가능하게 하는 데 꼭 필요한 타입 참조만 임시 정합화하고, seed 기능 확장이나 구조 개선은 하지 않는다. 삭제와 local SQL 대체의 동작 검증은 T10에서 수행한다.
+- [x] `./gradlew compileJava compileTestJava`를 실행해 후속 컴파일 오류를 모두 확인·해소한다.
+- [x] `./gradlew test`로 기존 테스트 상태를 확정한다. 환경 실패·기존 테스트 실패는 각각 원인을 남긴다.
+- [x] 다음 계약 테스트를 작성·실행한다. mock 서비스는 Optional.empty를 반환하며, 이번 실행은 처음부터 404로 통과하여 기존 동작 특성화로 기록했다.
 
 ```java
 mockMvc.perform(get("/api/announce/detail/999"))
     .andExpect(status().isNotFound());
 ```
 
-- [ ] 이미 통과하면 기존 동작 특성화 테스트로 기록한다. 이를 Red라고 부르지 않고 이후 계약 변경의 실패 테스트를 별도로 만든다.
-- [ ] 동작을 바꾸지 않는 참조 정리만 마무리하고 전체 테스트 결과를 남긴다.
+- [x] 이미 통과하면 기존 동작 특성화 테스트로 기록한다. 이를 Red라고 부르지 않고 이후 계약 변경의 실패 테스트를 별도로 만든다.
+- [x] 동작을 바꾸지 않는 참조 정리만 마무리하고 전체 테스트 결과를 남긴다.
 
 산출 계약: 컴파일 가능한 기존 API와 실패/통과가 명확한 기준선. 다음 Phase로 넘어가려면 테스트 실행 기반이 작동해야 한다.
 
@@ -61,9 +63,9 @@ mockMvc.perform(get("/api/announce/detail/999"))
 
 수정 F: `package.json`, `package-lock.json`, `babel.config.js`. 생성 F: `jest.config.js`, `tests/unit/test-environment.spec.js`. 수정 B 테스트: `controller/MemberControllerTest.java`, `controller/QuestionControllerTest.java`, `controller/AnswerControllerTest.java`, `service/MemberServiceTest.java`, `service/QuestionServiceTest.java`, `repository/AnnouncementQueryRepositoryTest.java`, `repository/QuestionRepositoryTest.java`, `repository/AnswerRepositoryTest.java`.
 
-- [ ] F에서 `node --version`, `npm --version`, lockfileVersion과 Vue 해석 버전을 기록하고 `npm ci`로 설치한다. 설치 실패 시 버전/의존성 원인을 해결하고 lockfile만 임의 삭제하지 않는다.
-- [ ] Vue CLI 5용 unit-jest 플러그인 및 Vue 3용 Vue Test Utils 2, SFC/DOM 변환 설정을 추가한다. `test`는 `vue-cli-service test:unit`로 등록한다. Vue 런타임 의존성이 직접 선언되어 있지 않은 점도 lockfile과 대조해 명시한다.
-- [ ] 다음 테스트를 먼저 실행하여 실제 `false → true` assertion 실패를 확인한다.
+- [x] F에서 `node --version`, `npm --version`, lockfileVersion과 Vue 해석 버전을 기록하고 `npm ci`로 설치한다. 설치 실패 시 버전/의존성 원인을 해결하고 lockfile만 임의 삭제하지 않는다.
+- [x] Vue CLI 5용 unit-jest 플러그인 및 Vue 3용 Vue Test Utils 2, SFC/DOM 변환 설정을 추가한다. `test`는 `vue-cli-service test:unit`로 등록한다. Vue 런타임 의존성이 직접 선언되어 있지 않은 점도 lockfile과 대조해 명시한다.
+- [x] 다음 테스트를 먼저 실행하여 실제 `false → true` assertion 실패를 확인한다.
 
 ```js
 test('테스트 러너가 assertion 실패를 보고한다', () => {
@@ -71,13 +73,13 @@ test('테스트 러너가 assertion 실패를 보고한다', () => {
 });
 ```
 
-- [ ] 위 의도적 실패 사례를 `mount({ template: '<button>질문하기</button>' })`의 `wrapper.get('button').text()`가 `질문하기`인지 확인하는 실사용 smoke 테스트로 교체하여 Green을 확인한다. 제품 버그 수정의 Red로 계산하지 않는다.
-- [ ] B Controller를 mock Service와 standalone MockMvc로 바꾸고, Repository는 @DataJpaTest로 한 클래스씩 전환한다.
-- [ ] `rg -n -A 25 '@BeforeEach' src/test/java`로 데이터 생성·저장·공유 fixture 할당을 조사한다. MemberServiceTest와 나머지 테스트 전체의 데이터 setup을 제거하고 각 테스트 본문의 Given에서 필요한 객체를 직접 생성한다. MockMvc 구성만 하는 메서드는 데이터 setup으로 간주하지 않는다.
-- [ ] 데이터 생성을 공통 필드 초기화나 상위 클래스·숨겨진 fixture helper로 옮기지 않는다. 각 테스트를 단독 실행한 결과와 전체 실행 결과가 같고, 불필요한 다른 테스트 데이터가 없어도 통과하는지 확인한다.
-- [ ] Service 테스트의 @Transactional을 제거하고 테스트별로 실제 생성한 Repository만 주입해 @AfterEach cleanup한다. Member는 Answer/Question/QuestionHashtag보다 나중에 지운다.
-- [ ] 각 클래스 전환 전후 전체 테스트를 실행한다. 드러난 생산 코드 오류는 별도 실패 테스트를 먼저 남기고 해당 후속 작업으로 연결한다.
-- [ ] 양쪽 전체 검증 결과와 설치 명령을 README에 기록한다.
+- [x] 위 의도적 실패 사례를 `mount({ template: '<button>질문하기</button>' })`의 `wrapper.get('button').text()`가 `질문하기`인지 확인하는 실사용 smoke 테스트로 교체하여 Green을 확인한다. 제품 버그 수정의 Red로 계산하지 않는다.
+- [x] B Controller를 Spring MVC 컨텍스트와 mock Service/하위 계층으로 바꾸고, Repository는 @DataJpaTest로 전환한다.
+- [x] `rg -n -A 25 '@BeforeEach' src/test/java`로 데이터 생성·저장·공유 fixture 할당을 조사한다. MemberServiceTest와 나머지 테스트 전체의 데이터 setup을 제거하고 각 테스트 본문의 Given에서 필요한 객체를 직접 생성한다. MockMvc 구성만 하는 메서드는 데이터 setup으로 간주하지 않는다.
+- [x] 데이터 생성을 공통 필드 초기화나 상위 클래스·숨겨진 fixture helper로 옮기지 않는다. 각 테스트를 단독 실행한 결과와 전체 실행 결과가 같고, 불필요한 다른 테스트 데이터가 없어도 통과하는지 확인한다.
+- [x] Service 테스트의 @Transactional을 제거하고 테스트별로 실제 생성한 Repository만 주입해 @AfterEach cleanup한다. Member는 Answer/Question/QuestionHashtag보다 나중에 지운다.
+- [x] 각 클래스 전환 전후 전체 테스트를 실행한다. 드러난 생산 코드 오류는 별도 실패 테스트를 먼저 남기고 해당 후속 작업으로 연결한다.
+- [x] 양쪽 전체 검증 결과와 설치 명령을 README에 기록한다.
 
 산출 계약: F `npm test -- --runInBand`, B 계층별 실행·격리 기반. Refactor이므로 기존 Green 확인 전 테스트 구조를 일괄 교체하지 않는다.
 
@@ -85,15 +87,32 @@ test('테스트 러너가 assertion 실패를 보고한다', () => {
 
 선행: T01. 수정 B 테스트: `controller/MemberControllerTest.java`. 생성 B 테스트: `docs/MemberRestDocsTest.java`, `docs/QuestionRestDocsTest.java`, `docs/AnswerRestDocsTest.java`, `docs/AnnouncementRestDocsTest.java`. 수정 B: `build.gradle`, `src/docs/asciidoc/index.adoc`, `Member-API.adoc`. 생성 B 문서: `src/docs/asciidoc/Question-API.adoc`, `Answer-API.adoc`, `Announcement-API.adoc`.
 
-- [ ] 기존 MemberControllerTest의 document 호출을 독립 docs 테스트로 옮기고 Controller의 상태·응답 assertion은 보존한다. docs 테스트도 Mockito+standalone MockMvc와 REST Docs 확장을 사용하며 DB에 의존하지 않는다.
-- [ ] 각 docs 테스트 본문에서 요청 DTO·응답 객체·서비스 stub을 직접 만든다. 문서의 예제 계정과 토큰은 테스트 전용 값만 사용한다.
-- [ ] 회원·공고·질문·답변별로 요청 헤더/경로/쿼리/본문·multipart·응답 필드·상태를 문서화한다. 실제 구현된 계약부터 작성하며 향후 변경된 계약을 먼저 사실처럼 게시하지 않는다.
-- [ ] 응답 필드를 일부러 문서에서 빠뜨린 최소 사례를 실행해 REST Docs의 미문서화 필드 실패를 확인한 뒤 정확한 descriptor로 Green을 확인한다. relaxed 필드 검사나 광범위 ignored로 실패를 숨기지 않는다.
-- [ ] `./gradlew test --tests 'com.inhatc.demp.docs.*RestDocsTest'`로 snippets 생성을 확인하고 `./gradlew asciidoctor`로 HTML을 생성한다. include 누락·문서 경고도 확인한다.
-- [ ] T11/T12/T14/T20/T30/T32의 API 계약 변경 시 Controller 회귀 테스트와 해당 docs 테스트를 같은 작업에서 갱신한다. T14의 공통 오류 응답도 문서화한다.
-- [ ] 전체 테스트 후 생성된 HTML의 예제와 실제 snippets를 대조한다. 산출물을 만들기 위해 추적 중인 정적 문서를 자동 삭제·덮어쓰는 build.gradle 작업은 출력 디렉터리 기반으로 정리한다.
+- [x] 기존 MemberControllerTest의 document 호출을 독립 docs 테스트로 옮기고 Controller의 상태·응답 assertion은 보존한다. docs 테스트도 @WebMvcTest와 @AutoConfigureRestDocs를 사용하며 하위 계층을 mock으로 교체하여 DB에 의존하지 않는다.
+- [x] 각 docs 테스트 본문에서 요청 DTO·응답 객체·서비스 stub을 직접 만든다. 문서의 예제 계정과 토큰은 테스트 전용 값만 사용한다.
+- [x] 회원·공고·질문·답변의 현재 실행 가능한 요청 헤더/경로/쿼리/본문·응답 필드·상태를 문서화한다. multipart는 실제 검증기에서 발생하는 등록 실패 계약을 문서화했다. 정상 등록·정상 공고 상세의 문서화는 T20에 남아 있으며 성공을 검증한 것으로 간주하지 않는다.
+- [x] 응답 필드를 일부러 문서에서 빠뜨린 최소 사례를 실행해 REST Docs의 미문서화 필드 실패를 확인한 뒤 정확한 descriptor로 Green을 확인한다. relaxed 필드 검사나 광범위 ignored로 실패를 숨기지 않는다.
+- [x] `./gradlew test --tests 'com.inhatc.demp.docs.*RestDocsTest'`로 snippets 생성을 확인하고 `./gradlew asciidoctor`로 HTML을 생성한다. include 누락·문서 경고도 확인한다.
+- [x] T11/T12/T14/T20/T30/T32에서 Controller 회귀 테스트와 docs 테스트를 함께 갱신하도록 실행 규칙과 후속 작업에 연결했다. 실제 후속 API 변경 및 T14 공통 오류 문서화는 각 Phase에서 수행한다.
+- [x] 전체 테스트 후 생성된 HTML의 예제와 실제 snippets를 대조한다. 산출물을 만들기 위해 추적 중인 정적 문서를 자동 삭제·덮어쓰는 build.gradle 작업은 출력 디렉터리 기반으로 정리한다.
 
 산출 계약: `build/generated-snippets` → Asciidoctor → `build/docs/asciidoc`의 API 문서. 동작 검증과 문서 검증이 별도 테스트 클래스로 실행된다.
+
+### Phase 0 실행 기록 · 2026-09-14
+
+- 전체 백엔드 테스트 14개 클래스 리뷰 개선 완료: 95개 테스트와 clean test asciidoctor bootJar 통과. 세부 근거는 [전체 테스트 리뷰](docs/verification/review-corrections/full-test-review.md)를 참조한다.
+
+- 브랜치: 양쪽 `refactor/build-and-test-foundation`.
+- 현재 Backend 리뷰 경로: `/Users/seungmin/Desktop/repo/archive/demp`.
+- 현재 Frontend 리뷰 경로: `/Users/seungmin/Desktop/repo/archive/dempfrontend`.
+- T00: 기존에 합의한 기계적 컴파일 복원 예외 적용. 초기 missing symbol 4건 → 타입·생성자 참조만 복원. 404는 처음부터 통과한 특성화이며 Red가 아니다.
+- T01: 환경변수 누락으로 43개 중 42개 실패 → 테스트 전용 H2/JWT/S3 설정으로 43개 통과. 이후 테스트 클래스 9개를 하나씩 전환하고 매번 전체 통과. 최종 Controller 4개·Repository 3개·Service 2개·기동 1개는 각각 단독 실행도 통과.
+- T01 프런트: Node 18.18.2/npm 9.8.1, lock v2. `false → true` assertion Red 실행 후 버튼 mount Green. 전체 1개, lint, build 성공.
+- T02: `MemberRestDocsTest.documentsMemberGet`의 username descriptor를 누락시켜 `SnippetException` Red를 확인하고 복원하여 Green. Controller와 문서 테스트 분리 및 build 출력 경로 정리.
+- 범위: 실제 multipart 등록 실패(HTTP 200/본문 400, 서비스 미호출)를 재현·문서화했다. 정상 multipart와 정상 상세는 T20, 오류 상태 정합성은 T14, 태그 교체는 T31, 공고 정렬은 T32에 남는다.
+- 상세 명령·결과·재사용 근거: [검증 기록](docs/verification/build-and-test-foundation/README.md).
+- 사용자 요청에 따라 구현 커밋을 되돌리고 구현과 체크만 미커밋 상태로 보존했다. 이번 리뷰 수정도 commit하지 않는다.
+- 리뷰 수정: InitDb 유지 시 전체 테스트 61개 중 4개 실패를 재현했다. 테스트 전용 데이터만 삭제하고 seed를 고려하도록 조회 기대값을 수정했다. Controller·REST Docs는 Spring MVC로 전환했고, 모든 테스트에 한글 DisplayName을 추가했다. 개발 확인용 로그는 제거하고 생성자 참조를 적용했다. 로그 전용 테스트는 사용자 요청으로 제거했다.
+- IntelliJ 미리보기: REST Docs 전용 operation 매크로를 표준 include와 소스 기준 snippet 경로로 교체했다. 최초 미리보기 전에 test로 snippet을 생성한다. 실제 IDE 화면 확인과 Gradle 문서 생성 결과는 구분하여 보고한다.
 
 ## Phase 1 · 데이터 보존과 보안 경계
 
@@ -356,4 +375,4 @@ npx playwright test
 
 각 작업 완료 시 이 파일의 해당 항목 아래에 실행 날짜, Red 명령/실패 assertion, Green 최소 변경, Refactor 변경 이유, 대상/전체 검증 결과, 커밋 SHA를 추가한다. Red가 처음부터 통과하면 회귀 재현에 실패한 것이므로 사례를 다시 구성한다. T00의 합의된 컴파일 복원은 이 기능 Red 기록과 분리한다.
 
-현재 상태: 초기화·정적 분석·기준 검증·계획 작성만 완료. T00~T50 구현은 모두 미착수다.
+현재 상태: Phase 0 실행·테스트·문서 기반 구현 및 검증 완료. 위 기록의 정상 공고 등록·상세 문서 범위는 T20에서 완료한다. Phase 1~5는 미착수다.

@@ -1,0 +1,93 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+
+[[Question-API]]
+== Question API
+
+[[Question-목록]]
+=== 질문 목록과 검색
+.HTTP 요청
+include::{snippets}/question-list/http-request.adoc[]
+
+.요청 파라미터
+include::{snippets}/question-list/request-parameters.adoc[]
+
+.HTTP 응답
+include::{snippets}/question-list/http-response.adoc[]
+
+.응답 필드
+include::{snippets}/question-list/response-fields.adoc[]
+
+[[Question-상세]]
+=== 질문 상세 조회
+.HTTP 요청
+include::{snippets}/question-detail/http-request.adoc[]
+
+.요청 헤더
+include::{snippets}/question-detail/request-headers.adoc[]
+
+.경로 파라미터
+include::{snippets}/question-detail/path-parameters.adoc[]
+
+.HTTP 응답
+include::{snippets}/question-detail/http-response.adoc[]
+
+.응답 필드
+include::{snippets}/question-detail/response-fields.adoc[]
+
+[[Question-태그]]
+=== 태그 목록
+.HTTP 요청
+include::{snippets}/question-hashtags/http-request.adoc[]
+
+.HTTP 응답
+include::{snippets}/question-hashtags/http-response.adoc[]
+
+.응답 필드
+include::{snippets}/question-hashtags/response-fields.adoc[]
+
+[[Question-등록]]
+=== 질문 등록
+.HTTP 요청
+include::{snippets}/question-add/http-request.adoc[]
+
+.요청 헤더
+include::{snippets}/question-add/request-headers.adoc[]
+
+.요청 필드
+include::{snippets}/question-add/request-fields.adoc[]
+
+.HTTP 응답
+include::{snippets}/question-add/http-response.adoc[]
+
+.응답 본문
+include::{snippets}/question-add/response-body.adoc[]
+
+[[Question-수정]]
+=== 질문 수정
+.HTTP 요청
+include::{snippets}/question-update/http-request.adoc[]
+
+.요청 헤더
+include::{snippets}/question-update/request-headers.adoc[]
+
+.요청 필드
+include::{snippets}/question-update/request-fields.adoc[]
+
+.HTTP 응답
+include::{snippets}/question-update/http-response.adoc[]
+
+[[Question-삭제]]
+=== 질문 삭제
+.HTTP 요청
+include::{snippets}/question-delete/http-request.adoc[]
+
+.요청 헤더
+include::{snippets}/question-delete/request-headers.adoc[]
+
+.요청 파라미터
+include::{snippets}/question-delete/request-parameters.adoc[]
+
+.HTTP 응답
+include::{snippets}/question-delete/http-response.adoc[]

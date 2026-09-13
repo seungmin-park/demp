@@ -1,0 +1,6 @@
+./gradlew test --tests com.inhatc.demp.docs.MemberRestDocsTest.documentsMemberGet --console=plain
+Exit 1, 1 test failed
+org.springframework.restdocs.snippet.SnippetException: The following parts of the payload were not documented:
+{
+  "username" : "docs-member"
+}

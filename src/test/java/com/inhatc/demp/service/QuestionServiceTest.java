@@ -1,156 +1,207 @@
 package com.inhatc.demp.service;
 
 import com.inhatc.demp.domain.Answer;
+import com.inhatc.demp.domain.Hashtag;
+import com.inhatc.demp.domain.Member;
 import com.inhatc.demp.domain.Question;
+import com.inhatc.demp.domain.QuestionHashtag;
 import com.inhatc.demp.dto.answer.AnswerForm;
-import com.inhatc.demp.dto.question.*;
+import com.inhatc.demp.dto.question.QuestionAnswer;
+import com.inhatc.demp.dto.question.QuestionDetail;
+import com.inhatc.demp.dto.question.QuestionForm;
+import com.inhatc.demp.dto.question.QuestionUpdateForm;
 import com.inhatc.demp.repository.AnswerRepository;
 import com.inhatc.demp.repository.HashtagRepository;
+import com.inhatc.demp.repository.MemberRepository;
+import com.inhatc.demp.repository.question.QuestionRepository;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
+import static org.assertj.core.api.Assertions.*;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-
-@Transactional
 @SpringBootTest
 class QuestionServiceTest {
 
     @Autowired
-    QuestionService questionService;
+    private QuestionService questionService;
     @Autowired
-    AnswerRepository answerRepository;
+    private AnswerRepository answerRepository;
     @Autowired
-    HashtagRepository hashtagRepository;
+    private QuestionRepository questionRepository;
+    @Autowired
+    private HashtagRepository hashtagRepository;
+    @Autowired
+    private MemberRepository memberRepository;
 
-    @Test
-    @DisplayName("saveQuestion")
-    void saveQuestion() throws Exception {
-        //given
-        QuestionForm questionForm = new QuestionForm("제목테스트", "내용테스트", "testMemberA", new ArrayList<>(Arrays.asList("java", "jpa")));
-        //when
-        questionService.join(questionForm);
-        List<Question> result = questionService.findAll();
-        //then
-        assertThat(result.size()).isEqualTo(3);
-        assertThat(result.get(2).getTitle()).isEqualTo(questionForm.getTitle());
-        assertThat(result.get(2).getContent()).isEqualTo(questionForm.getContent());
+    @AfterEach
+    void cleanUp() {
+        memberRepository.findByUsername("question-service-member").ifPresent(member -> {
+            answerRepository.deleteAll(answerRepository.findAll().stream()
+                    .filter(answer -> answer.getMember().getId().equals(member.getId()))
+                    .collect(Collectors.toList()));
+            // 질문 삭제 시 연결된 QuestionHashtag도 함께 삭제된다.
+            questionRepository.deleteAll(questionRepository.findAll().stream()
+                    .filter(question -> question.getMember().getId().equals(member.getId()))
+                    .collect(Collectors.toList()));
+            hashtagRepository.deleteAll(hashtagRepository.findAll().stream()
+                    .filter(hashtag -> hashtag.getTagName().startsWith("test-"))
+                    .collect(Collectors.toList()));
+            memberRepository.delete(member);
+        });
     }
 
     @Test
-    @DisplayName("findAllByHashtag")
-    void findAllByHashtag() throws Exception {
-        //given
-        QuestionForm questionForm = new QuestionForm("제목테스트", "내용테스트", "testMemberA", new ArrayList<>(Arrays.asList("java", "jpa")));
-        //when
-        questionService.join(questionForm);
-        //then
-        QuestionSearchCondition questionSearchCondition = new QuestionSearchCondition();
-        questionSearchCondition.getHashtags().add("java");
-        List<Question> result = questionService.findAllByHashtags(questionSearchCondition.getHashtags());
-        assertThat(result.size()).isEqualTo(2);
-        assertThat(result).extracting("title").containsExactly("Java8에서 뭐가 달라진건가요?","제목테스트");
-        assertThat(result).extracting("content").containsExactly("제곧내","내용테스트");
+    @DisplayName("질문과 해시태그를 저장한 결과를 다시 조회한다")
+    void saveQuestion() {
+        Member member = memberRepository.save(new Member("question-service-member", "password", List.of("ROLE_USER")));
+        QuestionForm form = new QuestionForm("제목테스트", "내용테스트", "question-service-member", new ArrayList<>(List.of("test-java", "test-jpa")));
+
+        questionService.join(form);
+
+        List<Question> result = questionRepository.findAll().stream()
+                .filter(question -> question.getTitle().equals("제목테스트"))
+                .collect(Collectors.toList());
+        assertThat(result).hasSize(1);
+        QuestionDetail saved = questionService.findById(result.get(0).getId());
+        assertThat(saved.getTitle()).isEqualTo("제목테스트");
+        assertThat(saved.getContent()).isEqualTo("내용테스트");
+        assertThat(saved.getUsername()).isEqualTo("question-service-member");
+        assertThat(saved.getHashtags()).containsExactlyInAnyOrder("test-java", "test-jpa");
     }
 
     @Test
-    @DisplayName("findAllHashtags")
-    void findAllHashtags() throws Exception {
-        //given
-        QuestionForm questionForm1 = new QuestionForm("제목테스트1", "내용테스트1", "testMemberA",new ArrayList<>(Arrays.asList("java", "jpa")));
-        QuestionForm questionForm2 = new QuestionForm("제목테스트2", "내용테스트2", "testMemberA",new ArrayList<>(Arrays.asList("spring", "jpa")));
-        QuestionForm questionForm3 = new QuestionForm("제목테스트3", "내용테스트3", "testMemberA",new ArrayList<>(Arrays.asList("html", "css")));
-        //when
-        questionService.join(questionForm1);
-        questionService.join(questionForm2);
-        questionService.join(questionForm3);
+    @DisplayName("선택한 해시태그에 해당하는 질문만 조회한다")
+    void findAllByHashtag() {
+        Member member = memberRepository.save(new Member("question-service-member", "password", List.of("ROLE_USER")));
+        saveQuestion(member, "Java 질문", "Java 내용", "test-java", "test-jpa");
+        saveQuestion(member, "두 번째 Java 질문", "두 번째 Java 내용", "test-java");
+        saveQuestion(member, "CSS 질문", "CSS 내용", "test-css");
 
-        List<String> result = questionService.findAllHashtags();
-        //then
-        assertThat(result.size()).isEqualTo(7);
-        assertThat(result).contains("java", "jpa","cs","thread", "spring", "html", "css");
+        List<Question> result = questionService.findAllByHashtags(List.of("test-java"));
+
+        assertThat(result).extracting(Question::getTitle, Question::getContent)
+                .containsExactlyInAnyOrder(
+                        tuple("Java 질문", "Java 내용"),
+                        tuple("두 번째 Java 질문", "두 번째 Java 내용"));
     }
 
     @Test
-    @DisplayName("saveAnswerException")
-    void saveAnswerException() throws Exception {
-        //given
-        AnswerForm answerForm = new AnswerForm("memberC@memberC", 3L, "댓글 테스트");
-        //when
+    @DisplayName("초기 해시태그와 새 해시태그를 중복 없이 조회한다")
+    void findAllHashtags() {
+        Member member = memberRepository.save(new Member("question-service-member", "password", List.of("ROLE_USER")));
+        saveQuestion(member, "질문1", "내용1", "test-java", "test-jpa");
+        saveQuestion(member, "질문2", "내용2", "test-spring", "test-jpa");
+        saveQuestion(member, "질문3", "내용3", "test-html", "test-css");
 
-        //then
-        assertThatThrownBy(() -> questionService.saveAnswer(answerForm))
-                .isInstanceOf(NoSuchElementException.class);
+        assertThat(questionService.findAllHashtags()).containsExactlyInAnyOrder("java", "jpa", "cs", "thread", "test-java", "test-jpa", "test-spring", "test-html", "test-css");
     }
 
     @Test
-    @DisplayName("saveAnswer")
-    void saveAnswer() throws Exception {
-        //given
-        AnswerForm answerForm = new AnswerForm("testMemberB", 1L, "댓글 테스트");
-        //when
-        List<QuestionAnswer> questionAnswers = questionService.saveAnswer(answerForm);
-        //then
-        assertThat(questionAnswers.size()).isEqualTo(2);
-        assertThat(questionAnswers).extracting("content").containsExactly("질문\\n 답변\\n 테스트","댓글 테스트");
+    @DisplayName("회원이 없으면 답변을 저장하지 않고 기존 답변을 유지한다")
+    void saveAnswerException() {
+        List<Long> existingIds = answerRepository.findAll().stream().map(Answer::getId).collect(Collectors.toList());
+        Member member = memberRepository.save(new Member("question-service-member", "password", List.of("ROLE_USER")));
+        Question question = saveQuestion(member, "질문", "내용");
+        AnswerForm form = new AnswerForm("missing-member", question.getId(), "댓글 테스트");
+
+        assertThatThrownBy(() -> questionService.saveAnswer(form)).isInstanceOf(NoSuchElementException.class);
+        assertThat(answerRepository.findAll()).extracting(Answer::getId).containsExactlyInAnyOrderElementsOf(existingIds);
     }
 
     @Test
-    @DisplayName("deleteAnswer")
-    void deleteAnswer() throws Exception {
-        //given
-        AnswerForm answerForm = new AnswerForm("testMemberB", 1L, "댓글 테스트");
-        questionService.saveAnswer(answerForm);
-        //when
-        answerRepository.deleteById(7L);
-        List<Answer> answers = answerRepository.findByQuestion_Id(1L);
-        //then
-        assertThat(answers.size()).isEqualTo(1);
-        assertThat(answers).extracting("content").containsExactly("댓글 테스트");
+    @DisplayName("답변을 저장하고 해당 질문의 답변 목록을 반환한다")
+    void saveAnswer() {
+        Member member = memberRepository.save(new Member("question-service-member", "password", List.of("ROLE_USER")));
+        Question question = new Question("질문", "내용", 0, 0, 0);
+        question.settingMember(member);
+        questionRepository.save(question);
+        Answer existingAnswer = new Answer("기존 댓글", 2, 1);
+        existingAnswer.settingMember(member);
+        existingAnswer.settingQuestion(question);
+        answerRepository.save(existingAnswer);
+
+        List<QuestionAnswer> result = questionService.saveAnswer(new AnswerForm("question-service-member", question.getId(), "댓글 테스트"));
+
+        assertThat(result).extracting(QuestionAnswer::getContent, QuestionAnswer::getUsername)
+                .containsExactlyInAnyOrder(tuple("기존 댓글", "question-service-member"), tuple("댓글 테스트", "question-service-member"));
+        assertThat(answerRepository.findByQuestion_Id(question.getId())).extracting(Answer::getContent)
+                .containsExactlyInAnyOrder("기존 댓글", "댓글 테스트");
     }
 
     @Test
-    @DisplayName("deleteQuestion")
-    void deleteQuestion() throws Exception {
-        //given
-        questionService.deleteQuestion(1L);
-        //when
-        List<Answer> answers = answerRepository.findByQuestion_Id(1L);
-        //then
-        assertThatThrownBy(() -> questionService.findById(1L))
-                .isInstanceOf(NoSuchElementException.class);
-        assertThat(answers.isEmpty()).isTrue();
+    @DisplayName("질문 삭제 시 연결된 답변도 삭제한다")
+    void deleteQuestion() {
+        Member member = memberRepository.save(new Member("question-service-member", "password", List.of("ROLE_USER")));
+        Question question = saveQuestion(member, "질문", "내용", "test-java");
+        Long questionId = question.getId();
+        Answer answer = new Answer("댓글", 0, 0);
+        answer.settingMember(member);
+        answer.settingQuestion(question);
+        answerRepository.save(answer);
+
+        questionService.deleteQuestion(questionId);
+
+        assertThatThrownBy(() -> questionService.findById(questionId)).isInstanceOf(NoSuchElementException.class);
+        assertThat(questionRepository.findById(questionId)).isEmpty();
+        assertThat(answerRepository.findByQuestion_Id(questionId)).isEmpty();
     }
 
     @Test
-    @DisplayName("updateQuestion")
-    void updateQuestion() throws Exception {
-        //given
-        QuestionUpdateForm questionUpdateForm = new QuestionUpdateForm(1L, "제목 수정 테스트용 텍스트", "내용 수정 테스트용 텍스트", new ArrayList<>(Arrays.asList("1", "2")));
-        //when
-        questionService.updateQuestion(questionUpdateForm);
-        QuestionDetail questionDetail = questionService.findById(questionUpdateForm.getQuestionId());
-        List<String> hashtags = questionService.findAllHashtags();
-        //then
-        assertThat(questionDetail.getTitle()).isEqualTo("제목 수정 테스트용 텍스트");
-        assertThat(questionDetail.getContent()).isEqualTo("내용 수정 테스트용 텍스트");
-        assertThat(hashtags.size()).isEqualTo(6);
-        assertThat(hashtags).contains("java", "jpa", "cs", "thread", "1", "2");
+    @DisplayName("질문 제목과 내용을 수정하고 해시태그를 추가한다")
+    void updateQuestion() {
+        Member member = memberRepository.save(new Member("question-service-member", "password", List.of("ROLE_USER")));
+        Question question = saveQuestion(member, "원래 제목", "원래 내용", "test-java");
+        Long questionId = question.getId();
+
+        questionService.updateQuestion(new QuestionUpdateForm(questionId, "수정 제목", "수정 내용", new ArrayList<>(List.of("test-jpa"))));
+
+        QuestionDetail saved = questionService.findById(questionId);
+        assertThat(saved.getTitle()).isEqualTo("수정 제목");
+        assertThat(saved.getContent()).isEqualTo("수정 내용");
+        // Existing behavior appends tags; replacement semantics belong to T31.
+        assertThat(saved.getHashtags()).containsExactlyInAnyOrder("test-java", "test-jpa");
+        assertThat(questionService.findAllHashtags()).containsExactlyInAnyOrder("java", "jpa", "cs", "thread", "test-java", "test-jpa");
     }
 
     @Test
-    @DisplayName("updateQuestionFail")
-    void updateQuestionFail() throws Exception {
-        QuestionUpdateForm questionUpdateForm = new QuestionUpdateForm(100L, "제목 수정 테스트용 텍스트", "내용 수정 테스트용 텍스트", new ArrayList<>(Arrays.asList("1", "2")));
-        assertThatThrownBy(() -> questionService.updateQuestion(questionUpdateForm))
-                .isInstanceOf(NoSuchElementException.class);
+    @DisplayName("없는 질문을 수정하면 예외가 발생하고 기존 질문은 유지된다")
+    void updateQuestionFail() {
+        List<Long> existingIds = questionRepository.findAll().stream().map(Question::getId).collect(Collectors.toList());
+        QuestionUpdateForm form = new QuestionUpdateForm(999L, "수정 제목", "수정 내용", new ArrayList<>(List.of("test-jpa")));
+
+        assertThatThrownBy(() -> questionService.updateQuestion(form)).isInstanceOf(NoSuchElementException.class);
+        assertThat(questionRepository.findAll()).extracting(Question::getId).containsExactlyInAnyOrderElementsOf(existingIds);
     }
+    @Test
+    @DisplayName("질문이 없으면 답변을 저장하지 않고 기존 답변을 유지한다")
+    void rejectsAnswerForMissingQuestion() {
+        memberRepository.save(new Member("question-service-member", "password", List.of("ROLE_USER")));
+        List<Long> existingIds = answerRepository.findAll().stream().map(Answer::getId).collect(Collectors.toList());
+        AnswerForm request = new AnswerForm("question-service-member", -1L, "댓글");
+
+        assertThatThrownBy(() -> questionService.saveAnswer(request)).isInstanceOf(NoSuchElementException.class);
+
+        assertThat(answerRepository.findAll()).extracting(Answer::getId)
+                .containsExactlyInAnyOrderElementsOf(existingIds);
+    }
+
+    private Question saveQuestion(Member member, String title, String content, String... tags) {
+        Question question = new Question(title, content, 0, 0, 0);
+        question.settingMember(member);
+        for (String tag : tags) {
+            Hashtag hashtag = hashtagRepository.save(new Hashtag(tag));
+            QuestionHashtag relation = new QuestionHashtag();
+            hashtag.addQuestionHashtag(relation);
+            question.addQuestionHashtag(relation);
+        }
+        return questionRepository.save(question);
+    }
+
 }

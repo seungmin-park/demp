@@ -1,79 +1,61 @@
 package com.inhatc.demp.controller;
 
+import com.inhatc.demp.config.SecurityConfiguration;
+import com.inhatc.demp.config.WebConfig;
 import com.inhatc.demp.config.jwt.JwtTokenProvider;
+import com.inhatc.demp.controller.ExController;
+import com.inhatc.demp.domain.Member;
+import com.inhatc.demp.service.MemberService;
+import java.util.List;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.access.AccessDeniedHandler;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
-import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@SpringBootTest
-@AutoConfigureMockMvc
-@AutoConfigureRestDocs // rest docs 자동 설정
-public class MemberControllerTest {
-
-    /**
-     * Spring Security + JWT을 위한 Mock
-     */
+@MockBean(JwtTokenProvider.class)
+@WebMvcTest(MemberController.class)
+@ContextConfiguration(classes = {MemberController.class, ExController.class, SecurityConfiguration.class, WebConfig.class})
+@WithMockUser(roles = "USER")
+class MemberControllerTest {
     @MockBean
-    private JwtTokenProvider jwtProvider;
-
-    @MockBean
-    private BCryptPasswordEncoder passwordEncoder;
-
-    @MockBean
-    private UserDetailsService userDetailsService;
-
-    @MockBean
-    private AuthenticationEntryPoint authenticationEntryPoint;
-
-    @MockBean
-    private AuthenticationSuccessHandler authenticationSuccessHandler;
-
-    @MockBean
-    private AuthenticationFailureHandler authenticationFailureHandler;
-
-    @MockBean
-    private AccessDeniedHandler accessDeniedHandler;
-
+    private MemberService memberService;
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Test
-    void memberGet() throws Exception{
-        mockMvc.perform(
-                        get("/api/member/{memberId}", 1L)
-                                .contentType(MediaType.APPLICATION_JSON)
-                )
+    @DisplayName("회원 조회 결과를 현재 응답 형식으로 반환한다")
+    void memberGet() throws Exception {
+        Member member = new Member("member-a", "test-password", List.of("ROLE_USER"));
+        ReflectionTestUtils.setField(member, "id", 41L);
+        when(memberService.findById(41L)).thenReturn(member);
+
+        mockMvc.perform(get("/api/member/{memberId}", 41L))
                 .andExpect(status().isOk())
-                .andDo( // rest docs 문서 작성 시작
-                        document("member-get", // 문서 조각 디렉토리 명
-                                pathParameters( // path 파라미터 정보 입력
-                                        parameterWithName("memberId").description("Member ID")
-                                ),
-                                responseFields( // response 필드 정보 입력
-                                        fieldWithPath("id").description("ID"),
-                                        fieldWithPath("username").description("name"),
-                                        fieldWithPath("password").description("password")
-                                )
-                        )
-                );
+                .andExpect(jsonPath("$.id").value(41))
+                .andExpect(jsonPath("$.username").value("member-a"))
+                .andExpect(jsonPath("$.password").value("test-password"));
     }
+    @ParameterizedTest
+    @DisplayName("회원 이름 중복 확인 결과를 응답 본문으로 반환한다")
+    @ValueSource(booleans = {true, false})
+    void returnsUsernameAvailability(boolean available) throws Exception {
+        when(memberService.validationDuplicateUsername("member-a")).thenReturn(available);
+
+        mockMvc.perform(get("/api/member/validUsername").param("username", "member-a"))
+                .andExpect(status().isOk())
+                .andExpect(content().string(Boolean.toString(available)));
+        verify(memberService).validationDuplicateUsername("member-a");
+    }
+
 }

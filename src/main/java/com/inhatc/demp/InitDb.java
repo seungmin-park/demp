@@ -1,6 +1,7 @@
 package com.inhatc.demp;
 
 import com.inhatc.demp.domain.*;
+import com.inhatc.demp.domain.announcemnet.*;
 import com.inhatc.demp.dto.member.MemberSaveForm;
 import com.inhatc.demp.repository.AnswerRepository;
 import com.inhatc.demp.repository.HashtagRepository;
@@ -17,7 +18,7 @@ import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.inhatc.demp.domain.Language.*;
+import static com.inhatc.demp.domain.announcemnet.Language.*;
 
 @Component
 @RequiredArgsConstructor
@@ -95,15 +96,17 @@ public class InitDb {
         woowahanImage.setUploadFileName("wootech.jpg");
 
         for (int i = 1; i <= 10; i++) {
-            announcementService.join(new Announcement("2021라인 공채" + i, new HashSet<>(Set.of(HTML, CSS, React)), "frontend", 0, 3, "채용 공고에\r\n대한 설명",
-                    "https://recruit.linepluscorp.com/lineplus/login/login?annoId=20007660&classId=&jobId=&entTypeCd=001&sysCompanyCd=LP", i * 1000, line, lineImage,
-                    AnnouncementType.emp, LocalDateTime.of(2021, 03, 04, 0, 0), LocalDateTime.of(2021, 03, 21, 0, 0)));
+            announcementService.join(new Announcement("2021라인 공채" + i, new Career(0, 3),
+                    new Description("채용 공고에\r\n대한 설명", "https://recruit.linepluscorp.com/lineplus/login/login?annoId=20007660&classId=&jobId=&entTypeCd=001&sysCompanyCd=LP", i * 1000, new HashSet<>(Set.of(HTML, CSS, React))),
+                    line, lineImage, new RecruitPeriod(LocalDateTime.of(2021, 03, 04, 0, 0), LocalDateTime.of(2021, 03, 21, 0, 0)),
+                    AnnouncementType.EMP, JobPosition.FRONTEND));
         }
 
         for (int i = 1; i <= 10; i++) {
-            announcementService.join(new Announcement("2021 우아한 테크코스" + i, new HashSet<>(Set.of(JAVA, JPA, SPRING)), "server/backend", 0, 0, "모집 요강에 대한 설명",
-                    "https://woowacourse.github.io/apply.html", 0, woowahan, woowahanImage, AnnouncementType.edu,
-                    LocalDateTime.of(2021, 10, 03, 0, 0), LocalDateTime.of(2021, 10, 27, 0, 0)));
+            announcementService.join(new Announcement("2021 우아한 테크코스" + i, new Career(0, 0),
+                    new Description("모집 요강에 대한 설명", "https://woowacourse.github.io/apply.html", 0, new HashSet<>(Set.of(JAVA, JPA, SPRING))),
+                    woowahan, woowahanImage, new RecruitPeriod(LocalDateTime.of(2021, 10, 03, 0, 0), LocalDateTime.of(2021, 10, 27, 0, 0)),
+                    AnnouncementType.EDU, JobPosition.BACKEND));
         }
     }
 }
