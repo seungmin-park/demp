@@ -1,0 +1,79 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+
+[[Announcement-API]]
+== Announcement API
+
+NOTE: Phase 0에서 실행 검증한 계약은 목록·스크롤·없는 상세의 404 응답과 현재 multipart 등록 실패다.
+정상 multipart 등록과 정상 상세 응답의 문서화는 T20에서 계약 수정과 함께 완료한다.
+등록 DTO의 enum에 문자열용 검증 제약이 적용되어 있고, 상세 값 객체의 직렬화 계약도 정리가 필요하다.
+이 문서는 등록 성공이나 정상 상세 응답을 보장하지 않는다.
+목록의 `sort` 값은 수신되지만 현재 조회 쿼리에 적용되지 않는다(T32 예정).
+
+[[Announcement-등록-현재-실패]]
+=== multipart 등록 요청: 현재 구현의 실패 응답
+
+아래 예제는 등록 성공이 아니다. 실제 검증기에서 enum에 적용된 문자열 제약으로 실패하며,
+저장 서비스가 호출되지 않는다. 검증 설정 오류는 HTTP 500과 고정 오류 안내를 반환한다.
+정상 등록 계약은 T20에서 수정한다.
+
+.HTTP 요청
+include::{snippets}/announcement-add-validation-failure/http-request.adoc[]
+
+.요청 헤더
+include::{snippets}/announcement-add-validation-failure/request-headers.adoc[]
+
+.요청 파라미터
+include::{snippets}/announcement-add-validation-failure/request-parameters.adoc[]
+
+.요청 파트
+include::{snippets}/announcement-add-validation-failure/request-parts.adoc[]
+
+.HTTP 응답
+include::{snippets}/announcement-add-validation-failure/http-response.adoc[]
+
+.응답 필드
+include::{snippets}/announcement-add-validation-failure/response-fields.adoc[]
+
+[[Announcement-목록]]
+=== 공고 목록과 검색
+.HTTP 요청
+include::{snippets}/announcement-list/http-request.adoc[]
+
+.요청 파라미터
+include::{snippets}/announcement-list/request-parameters.adoc[]
+
+.HTTP 응답
+include::{snippets}/announcement-list/http-response.adoc[]
+
+.응답 필드
+include::{snippets}/announcement-list/response-fields.adoc[]
+
+[[Announcement-스크롤]]
+=== 공고 스크롤 목록
+.HTTP 요청
+include::{snippets}/announcement-scroll/http-request.adoc[]
+
+.요청 헤더
+include::{snippets}/announcement-scroll/request-headers.adoc[]
+
+.HTTP 응답
+include::{snippets}/announcement-scroll/http-response.adoc[]
+
+.응답 필드
+include::{snippets}/announcement-scroll/response-fields.adoc[]
+
+[[Announcement-없는-상세]]
+=== 없는 공고 상세 조회
+.HTTP 요청
+include::{snippets}/announcement-detail-not-found/http-request.adoc[]
+
+.요청 헤더
+include::{snippets}/announcement-detail-not-found/request-headers.adoc[]
+
+.경로 파라미터
+include::{snippets}/announcement-detail-not-found/path-parameters.adoc[]
+
+.HTTP 응답
+include::{snippets}/announcement-detail-not-found/http-response.adoc[]

@@ -1,0 +1,11 @@
+{
+  "suites": 14,
+  "tests": 61,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "snippet_references": 79,
+  "missing_references": [],
+  "html_exists": true,
+  "multipart_failure_in_html": true
+}

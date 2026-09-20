@@ -1,0 +1,42 @@
+> Task :initQuerydslSourcesDir
+> Task :compileQuerydsl UP-TO-DATE
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :compileTestJava
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+
+> Task :test
+
+ApiSecurityTest > 만료되었거나 만료 시간이 없는 서명 토큰은 401이다 > com.inhatc.demp.config.ApiSecurityTest.rejectsExpiredOrUndatedToken(boolean)[2] FAILED
+    java.lang.AssertionError at ApiSecurityTest.java:180
+2026-09-14 04:00:57.397  INFO 87353 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-14 04:00:57.398  INFO 87353 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-09-14 04:00:57.400  INFO 87353 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+
+2 tests completed, 1 failed
+
+> Task :test FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///Users/seungmin/Desktop/repo/archive/demp/.worktrees/data-preservation-and-security/backend/build/reports/tests/test/index.html
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+
+* Get more help at https://help.gradle.org
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 8.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+See https://docs.gradle.org/7.4/userguide/command_line_interface.html#sec:command_line_warnings
+
+BUILD FAILED in 4s
+7 actionable tasks: 3 executed, 4 up-to-date

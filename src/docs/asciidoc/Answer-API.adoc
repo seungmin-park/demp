@@ -1,0 +1,70 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+
+[[Answer-API]]
+== Answer API
+
+작성자와 수정·삭제 권한은 JWT의 인증 회원 ID로 판정한다. 요청 username은 호환을 위해 받지만 작성자 판정에 사용하지 않는다.
+
+[[Answer-목록]]
+=== 질문의 답변 목록
+.HTTP 요청
+include::{snippets}/answer-list/http-request.adoc[]
+
+.요청 헤더
+include::{snippets}/answer-list/request-headers.adoc[]
+
+.경로 파라미터
+include::{snippets}/answer-list/path-parameters.adoc[]
+
+.HTTP 응답
+include::{snippets}/answer-list/http-response.adoc[]
+
+.응답 필드
+include::{snippets}/answer-list/response-fields.adoc[]
+
+[[Answer-등록]]
+=== 답변 등록
+.HTTP 요청
+include::{snippets}/answer-save/http-request.adoc[]
+
+.요청 헤더
+include::{snippets}/answer-save/request-headers.adoc[]
+
+.요청 필드
+include::{snippets}/answer-save/request-fields.adoc[]
+
+.HTTP 응답
+include::{snippets}/answer-save/http-response.adoc[]
+
+.응답 필드
+include::{snippets}/answer-save/response-fields.adoc[]
+
+[[Answer-수정]]
+=== 답변 수정
+.HTTP 요청
+include::{snippets}/answer-update/http-request.adoc[]
+
+.요청 헤더
+include::{snippets}/answer-update/request-headers.adoc[]
+
+.요청 필드
+include::{snippets}/answer-update/request-fields.adoc[]
+
+.HTTP 응답
+include::{snippets}/answer-update/http-response.adoc[]
+
+[[Answer-삭제]]
+=== 답변 삭제
+.HTTP 요청
+include::{snippets}/answer-delete/http-request.adoc[]
+
+.요청 헤더
+include::{snippets}/answer-delete/request-headers.adoc[]
+
+.요청 파라미터
+include::{snippets}/answer-delete/request-parameters.adoc[]
+
+.HTTP 응답
+include::{snippets}/answer-delete/http-response.adoc[]

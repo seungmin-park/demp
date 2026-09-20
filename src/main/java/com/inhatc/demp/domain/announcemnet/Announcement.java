@@ -41,8 +41,12 @@ public class Announcement {
     private JobPosition jobPosition;
 
 
+    public void changeDescription(Description description) {
+        this.description = description;
+    }
+
     @Builder
-    public Announcement(String title, Career career, Description description, Company company, UploadFile image,
+    private Announcement(String title, Career career, Description description, Company company, UploadFile image,
                         RecruitPeriod recruitPeriod, AnnouncementType announcementType, JobPosition jobPosition) {
         this.title = title;
         this.career = career;

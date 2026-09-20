@@ -1,0 +1,7 @@
+2026-09-14
+JDK: Zulu 11.74.15 / Java 11
+Initial ./gradlew test: compileQuerydsl missing symbol 4, no tests executed.
+Mechanical type fixes from 735e768. compileJava/compileTestJava pass.
+First test run: 43 executed, 42 failed: missing S3_ACCESS_KEY placeholder.
+Test-only config and EC2 metadata lookup disable from ed673f1: 43 tests pass.
+Announcement missing ID 404: passed initially; characterization, not feature Red.

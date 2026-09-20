@@ -1,83 +1,109 @@
 package com.inhatc.demp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inhatc.demp.config.SecurityConfiguration;
+import com.inhatc.demp.config.WebConfig;
+import com.inhatc.demp.config.jwt.JwtTokenProvider;
+import com.inhatc.demp.controller.ExController;
 import com.inhatc.demp.domain.Answer;
+import com.inhatc.demp.domain.Member;
 import com.inhatc.demp.dto.answer.AnswerForm;
 import com.inhatc.demp.dto.answer.UpdateAnswerForm;
+import com.inhatc.demp.dto.question.QuestionAnswer;
 import com.inhatc.demp.repository.AnswerRepository;
-import org.junit.jupiter.api.BeforeEach;
+import com.inhatc.demp.service.AnswerService;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import com.inhatc.demp.support.WithMember;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.NoSuchElementException;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@Transactional
-@SpringBootTest
+@MockBean(JwtTokenProvider.class)
+@WebMvcTest(AnswerController.class)
+@ContextConfiguration(classes = {AnswerController.class, ExController.class, SecurityConfiguration.class, WebConfig.class})
+@WithMember
 class AnswerControllerTest {
-
+    @MockBean
+    private AnswerService answerService;
     @Autowired
-    AnswerController answerController;
+    private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
-    @Autowired
-    private AnswerRepository answerRepository;
-    private MockMvc mockMvc;
-
-    @BeforeEach
-    void beforeEach() {
-        mockMvc = MockMvcBuilders.standaloneSetup(answerController).build();
-    }
 
     @Test
-    @DisplayName("controllerAnswerSave")
+    @DisplayName("답변 등록 요청을 서비스에 전달하고 저장 결과를 반환한다")
     void controllerAnswerSave() throws Exception {
-        //given
-        String content = objectMapper.writeValueAsString(new AnswerForm("testMemberA", 1L, "댓글 테스트"));
-        //when
-        //then
-        mockMvc.perform(post("/api/answer/save")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
-                        .accept(MediaType.APPLICATION_JSON))
+        Answer answer = new Answer("댓글 테스트", 0, 0);
+        answer.settingMember(new Member("member-a", "password", List.of("ROLE_USER")));
+        when(answerService.save(eq(41L), any())).thenReturn(List.of(new QuestionAnswer(answer)));
+
+        mockMvc.perform(post("/api/answer/save").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new AnswerForm("member-a", 41L, "댓글 테스트"))))
                 .andExpect(status().isOk())
-                .andDo(print());
+                .andExpect(jsonPath("$[0].username").value("member-a"))
+                .andExpect(jsonPath("$[0].content").value("댓글 테스트"))
+                .andExpect(jsonPath("$[0].recommend").value(0))
+                .andExpect(jsonPath("$[0].dislike").value(0));
+        ArgumentCaptor<AnswerForm> form = ArgumentCaptor.forClass(AnswerForm.class);
+        verify(answerService).save(eq(41L), form.capture());
+        assertThat(form.getValue().getUsername()).isEqualTo("member-a");
+        assertThat(form.getValue().getQuestionId()).isEqualTo(41L);
+        assertThat(form.getValue().getAnswerContent()).isEqualTo("댓글 테스트");
     }
 
     @Test
-    @DisplayName("updateAnswer")
+    @DisplayName("답변 수정 요청의 내용을 조회한 답변에 반영한다")
     void updateAnswer() throws Exception {
-        //given
-        String content = objectMapper.writeValueAsString(new UpdateAnswerForm(7L, "댓글 수정 테스트를 위한 텍스트"));
-        //when
-        mockMvc.perform(patch("/api/answer/update")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(content)
-                .accept(MediaType.APPLICATION_JSON));
-        Answer answer = answerRepository.findById(7L).orElseThrow(() -> new NoSuchElementException("해당 데이터 존재x"));
-        //then
-        assertThat(answer.getContent()).isEqualTo("댓글 수정 테스트를 위한 텍스트");
+        Answer answer = new Answer("원래 댓글", 0, 0);
+
+        mockMvc.perform(patch("/api/answer/update").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(new UpdateAnswerForm(73L, "수정 댓글"))))
+                .andExpect(status().isOk());
+        // This proves HTTP binding and the in-memory change, not a database commit.
+        ArgumentCaptor<UpdateAnswerForm> form = ArgumentCaptor.forClass(UpdateAnswerForm.class);
+        verify(answerService).update(eq(41L), form.capture());
+        assertThat(form.getValue().getAnswerId()).isEqualTo(73L);
+        assertThat(form.getValue().getAnswerContent()).isEqualTo("수정 댓글");
     }
 
     @Test
-    @DisplayName("deleteAnswer")
+    @DisplayName("답변 삭제 요청의 ID를 저장소에 전달한다")
     void deleteAnswer() throws Exception {
-        //given
-        mockMvc.perform(delete("/api/answer/delete")
-                .param("answerId", "7"));
-        //when
-        Answer answer = answerRepository.findById(7L).orElse(null);
-        //then
-        assertThat(answer).isNull();
+        mockMvc.perform(delete("/api/answer/delete").param("answerId", "73"))
+                .andExpect(status().isOk());
+        verify(answerService).delete(41L, 73L);
     }
+    @Test
+    @DisplayName("답변이 없는 질문의 조회 응답은 빈 배열이다")
+    void returnsEmptyAnswers() throws Exception {
+        when(answerService.findByQuestion(41L)).thenReturn(List.of());
+
+        mockMvc.perform(get("/api/answer/41"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("[]", true));
+    }
+
+    @Test
+    @DisplayName("답변 ID가 없는 삭제 요청은 저장소를 호출하지 않고 거절한다")
+    void rejectsMissingAnswerId() throws Exception {
+        mockMvc.perform(delete("/api/answer/delete"))
+                .andExpect(status().isBadRequest());
+
+        verifyNoInteractions(answerService);
+    }
+
 }

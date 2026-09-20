@@ -3,6 +3,9 @@ package com.inhatc.demp.config;
 import com.inhatc.demp.config.jwt.JwtAuthenticationFilter;
 import com.inhatc.demp.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inhatc.demp.config.security.SecurityErrorWriter;
+import org.springframework.http.HttpStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,6 +25,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapper objectMapper;
 
     @Bean
     @Override
@@ -48,8 +52,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .anyRequest().hasRole("USER")
                 // 그 외 나머지 요청은 모두 인증된 회원만 접근 가능
                 .and()
-                .cors().and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
+                .exceptionHandling()
+                .authenticationEntryPoint((req, res, ex) -> SecurityErrorWriter.write(objectMapper, req, res, HttpStatus.UNAUTHORIZED))
+                .accessDeniedHandler((req, res, ex) -> SecurityErrorWriter.write(objectMapper, req, res, HttpStatus.FORBIDDEN))
+                .and().cors().and()
+                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider, objectMapper),
                         UsernamePasswordAuthenticationFilter.class);
         // jwt token 필터를 id/password 인증 필터 전에 넣는다.
     }

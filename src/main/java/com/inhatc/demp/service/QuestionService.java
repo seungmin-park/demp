@@ -1,6 +1,8 @@
 package com.inhatc.demp.service;
 
 import com.inhatc.demp.domain.*;
+import com.inhatc.demp.error.ResourceNotFoundException;
+import org.springframework.security.access.AccessDeniedException;
 import com.inhatc.demp.dto.answer.AnswerForm;
 import com.inhatc.demp.dto.question.*;
 import com.inhatc.demp.repository.AnswerRepository;
@@ -28,15 +30,15 @@ public class QuestionService {
     private final MemberRepository memberRepository;
     private final HashtagRepository hashtagRepository;
     private final AnswerRepository answerRepository;
+    private final ContentSanitizer contentSanitizer;
     @Transactional
-    public void join(QuestionForm questionForm) {
-        // TODO: 2022-05-03 회원가입 기능 미구현, 임시 회원 객체 대체
-        Member testMember = memberRepository.findByUsername(questionForm.getUsername()).orElseThrow();
-        Question question = new Question(questionForm.getTitle(), questionForm.getContent(), 0, 0, 0);
+    public void join(Long actorId, QuestionForm questionForm) {
+        Member author = memberRepository.findById(actorId).orElseThrow(ResourceNotFoundException::new);
+        Question question = new Question(questionForm.getTitle(), contentSanitizer.sanitize(questionForm.getContent()), 0, 0, 0);
         ArrayList<String> hashtags = questionForm.getHashtags();
 
         setHashtags(question, hashtags);
-        question.settingMember(testMember);
+        question.settingMember(author);
         questionRepository.save(question);
     }
 
@@ -64,32 +66,27 @@ public class QuestionService {
 
     public QuestionDetail findById(Long id) {
         return questionRepository.findById(id)
-                .map(q->new QuestionDetail(q))
-                .orElseThrow(()->new NoSuchElementException("회원 또는 질문 데이터 존재x"));
+                .map(QuestionDetail::new)
+                .orElseThrow(ResourceNotFoundException::new);
     }
 
     @Transactional
-    public void updateQuestion(QuestionUpdateForm questionUpdateForm) {
-        Question question = questionRepository.findById(questionUpdateForm.getQuestionId()).orElseThrow(() -> new NoSuchElementException("데이터 존재X"));
-        question.updateQuestion(questionUpdateForm.getTitle(), questionUpdateForm.getContent());
+    public void updateQuestion(Long actorId, QuestionUpdateForm questionUpdateForm) {
+        Question question = questionRepository.findById(questionUpdateForm.getQuestionId()).orElseThrow(ResourceNotFoundException::new);
+        requireOwner(actorId, question);
+        question.updateQuestion(questionUpdateForm.getTitle(), contentSanitizer.sanitize(questionUpdateForm.getContent()));
         setHashtags(question,questionUpdateForm.getHashtags());
     }
 
     @Transactional
-    public void deleteQuestion(Long id) {
-        questionRepository.deleteById(id);
+    public void deleteQuestion(Long actorId, Long id) {
+        Question question = questionRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
+        requireOwner(actorId, question);
+        questionRepository.delete(question);
     }
 
-    @Transactional
-    public List<QuestionAnswer> saveAnswer(AnswerForm answerForm){
-        Member member = memberRepository.findByUsername(answerForm.getUsername()).orElseThrow(()->new NoSuchElementException("회원 또는 질문 데이터 존재x"));
-        Question question = questionRepository.findById(answerForm.getQuestionId()).orElseThrow(() -> new NoSuchElementException("회원 또는 질문 데이터 존재x"));
-        Answer answer = new Answer(answerForm.getAnswerContent(), 0, 0);
-        answer.settingQuestion(question);
-        answer.settingMember(member);
-        answerRepository.save(answer);
-
-        return convertQuestionAnswer(answerForm);
+    private void requireOwner(Long actorId, Question question) {
+        if (!question.getMember().getId().equals(actorId)) throw new AccessDeniedException("Not owner");
     }
 
     private void setHashtags(Question question, ArrayList<String> hashtags) {
@@ -109,9 +106,4 @@ public class QuestionService {
         question.addQuestionHashtag(questionHashtag);
     }
 
-    private List<QuestionAnswer> convertQuestionAnswer(AnswerForm answerForm) {
-        return answerRepository.findByQuestion_Id(answerForm.getQuestionId())
-                .stream().map(QuestionAnswer::new)
-                .collect(Collectors.toList());
-    }
 }

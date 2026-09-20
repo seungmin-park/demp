@@ -1,0 +1,57 @@
+> Task :cleanQuerydslSourcesDir
+> Task :clean
+> Task :initQuerydslSourcesDir
+
+> Task :compileQuerydsl
+Note: Running JPAAnnotationProcessor
+Note: Serializing Entity types
+Note: Generating com.inhatc.demp.domain.QQuestionHashtag for [com.inhatc.demp.domain.QuestionHashtag]
+Note: Generating com.inhatc.demp.domain.QMember for [com.inhatc.demp.domain.Member]
+Note: Generating com.inhatc.demp.domain.QQuestion for [com.inhatc.demp.domain.Question]
+Note: Generating com.inhatc.demp.domain.QAnswer for [com.inhatc.demp.domain.Answer]
+Note: Generating com.inhatc.demp.domain.announcemnet.QAnnouncement for [com.inhatc.demp.domain.announcemnet.Announcement]
+Note: Generating com.inhatc.demp.domain.QHashtag for [com.inhatc.demp.domain.Hashtag]
+Note: Serializing Embeddable types
+Note: Generating com.inhatc.demp.domain.announcemnet.QCareer for [com.inhatc.demp.domain.announcemnet.Career]
+Note: Generating com.inhatc.demp.domain.announcemnet.QCompany for [com.inhatc.demp.domain.announcemnet.Company]
+Note: Generating com.inhatc.demp.domain.announcemnet.QDescription for [com.inhatc.demp.domain.announcemnet.Description]
+Note: Generating com.inhatc.demp.domain.announcemnet.QUploadFile for [com.inhatc.demp.domain.announcemnet.UploadFile]
+Note: Generating com.inhatc.demp.domain.announcemnet.QRecruitPeriod for [com.inhatc.demp.domain.announcemnet.RecruitPeriod]
+Note: Running JPAAnnotationProcessor
+Note: Running JPAAnnotationProcessor
+
+> Task :compileJava
+Note: Some input files use unchecked or unsafe operations.
+Note: Recompile with -Xlint:unchecked for details.
+
+> Task :processResources
+> Task :classes
+> Task :compileTestJava
+> Task :processTestResources
+> Task :testClasses
+
+> Task :test
+2026-09-21 03:01:32.177  INFO 65263 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-21 03:01:32.178  INFO 65263 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-09-21 03:01:32.178  INFO 65263 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-09-21 03:01:32.180  INFO 65263 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-21 03:01:32.181  INFO 65263 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2026-09-21 03:01:32.181  INFO 65263 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+2026-09-21 03:01:32.185  INFO 65263 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-21 03:01:32.186  INFO 65263 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-21 03:01:32.188  INFO 65263 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-21 03:01:32.188  INFO 65263 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-11 - Shutdown initiated...
+2026-09-21 03:01:32.188  INFO 65263 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-11 - Shutdown completed.
+
+> Task :asciidoctor
+> Task :bootJarMainClassName
+> Task :bootJar
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 8.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+See https://docs.gradle.org/7.4/userguide/command_line_interface.html#sec:command_line_warnings
+
+BUILD SUCCESSFUL in 17s
+12 actionable tasks: 12 executed

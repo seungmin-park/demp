@@ -1,0 +1,105 @@
+> Task :initQuerydslSourcesDir
+> Task :compileQuerydsl UP-TO-DATE
+> Task :compileJava UP-TO-DATE
+> Task :processResources
+> Task :classes
+> Task :compileTestJava
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+
+> Task :test
+
+ApiSecurityTest > 변조된 토큰은 401이다 FAILED
+    java.lang.AssertionError at ApiSecurityTest.java:165
+
+ApiSecurityTest > 타인의 질문 수정과 삭제는 403이고 원본을 유지한다 FAILED
+    java.lang.AssertionError at ApiSecurityTest.java:109
+
+ApiSecurityTest > 중복 회원 가입은 409를 반환하고 기존 회원을 유지한다 FAILED
+    java.lang.AssertionError at ApiSecurityTest.java:63
+
+ApiSecurityTest > 질문 작성자는 요청 이름 대신 인증된 회원으로 저장한다 FAILED
+    org.opentest4j.AssertionFailedError at ApiSecurityTest.java:98
+
+ApiSecurityTest > 사용자 권한이 없는 유효 토큰은 403이다 FAILED
+    java.lang.AssertionError at ApiSecurityTest.java:150
+        Caused by: java.lang.IllegalArgumentException at ApiSecurityTest.java:150
+
+ApiSecurityTest > 가입 응답에서 비밀번호를 제외하고 암호화된 비밀번호를 저장한다 FAILED
+    java.lang.AssertionError at ApiSecurityTest.java:49
+
+ApiSecurityTest > 빈 가입 필드는 400을 반환한다 > com.inhatc.demp.config.ApiSecurityTest.rejectsBlankSignup(String)[1] FAILED
+    java.lang.AssertionError at ApiSecurityTest.java:73
+
+ApiSecurityTest > 빈 가입 필드는 400을 반환한다 > com.inhatc.demp.config.ApiSecurityTest.rejectsBlankSignup(String)[2] FAILED
+    java.lang.AssertionError at ApiSecurityTest.java:73
+
+ApiSecurityTest > 토큰 없는 쓰기 요청은 401이다 FAILED
+    java.lang.AssertionError at ApiSecurityTest.java:142
+
+ApiSecurityTest > 타인의 답변 수정과 삭제는 403이고 원본을 유지한다 FAILED
+    java.lang.AssertionError at ApiSecurityTest.java:124
+
+ApiSecurityTest > 숫자가 아닌 subject와 삭제된 회원 토큰은 401이다 > com.inhatc.demp.config.ApiSecurityTest.invalidSubjectIsUnauthorized(String)[1] FAILED
+    java.lang.NumberFormatException at ApiSecurityTest.java:157
+
+ApiSecurityTest > 숫자가 아닌 subject와 삭제된 회원 토큰은 401이다 > com.inhatc.demp.config.ApiSecurityTest.invalidSubjectIsUnauthorized(String)[2] FAILED
+    java.util.NoSuchElementException at ApiSecurityTest.java:157
+
+ApiSecurityTest > 없는 계정과 잘못된 비밀번호는 동일한 인증 실패를 반환한다 FAILED
+    org.springframework.web.util.NestedServletException at ApiSecurityTest.java:81
+        Caused by: java.lang.RuntimeException at ApiSecurityTest.java:81
+
+ApiSecurityTest > 존재하지 않는 질문은 404를 반환한다 FAILED
+    org.springframework.web.util.NestedServletException at ApiSecurityTest.java:134
+        Caused by: org.springframework.dao.EmptyResultDataAccessException at ApiSecurityTest.java:134
+
+MemberControllerTest > internal error details are not exposed FAILED
+    java.lang.AssertionError at MemberControllerTest.java:66
+
+MemberControllerTest > 회원 조회 결과를 현재 응답 형식으로 반환한다 FAILED
+    java.lang.AssertionError at MemberControllerTest.java:47
+
+AnnouncementServiceTest > 공고 엔티티 저장 경로도 본문을 정제한 새 설명을 저장한다 FAILED
+    org.opentest4j.AssertionFailedError at AnnouncementServiceTest.java:69
+
+AnnouncementServiceTest > 공고 생성 요청의 본문은 정제해서 저장하고 입력 설명은 보존한다 FAILED
+    org.opentest4j.AssertionFailedError at AnnouncementServiceTest.java:69
+
+CustomUserDetailServiceTest > 인증 정보는 회원 엔티티가 아닌 독립 객체이며 이름과 권한을 유지한다 FAILED
+    java.lang.AssertionError at CustomUserDetailServiceTest.java:34
+2026-09-14 03:47:17.568  INFO 81956 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-14 03:47:17.569  INFO 81956 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-09-14 03:47:17.572  INFO 81956 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-09-14 03:47:17.575  INFO 81956 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-14 03:47:17.576  INFO 81956 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2026-09-14 03:47:17.577  INFO 81956 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+2026-09-14 03:47:17.580  INFO 81956 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-14 03:47:17.580  INFO 81956 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown initiated...
+2026-09-14 03:47:17.581  INFO 81956 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown completed.
+
+21 tests completed, 19 failed
+
+> Task :test FAILED
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///Users/seungmin/Desktop/repo/archive/demp/.worktrees/data-preservation-and-security/backend/build/reports/tests/test/index.html
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+
+* Get more help at https://help.gradle.org
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 8.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+See https://docs.gradle.org/7.4/userguide/command_line_interface.html#sec:command_line_warnings
+
+BUILD FAILED in 8s
+7 actionable tasks: 4 executed, 3 up-to-date

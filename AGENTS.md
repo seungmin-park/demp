@@ -9,6 +9,14 @@
 - 객체의 책임과 협력, 실행 흐름은 간단한 도식으로 설명한다.
 - 정적 분석으로 발견한 위험과 실제 실행으로 재현한 결과를 구분한다.
 
+## Phase별 브랜치와 worktree
+
+- 각 Phase 작업은 별도의 `refactor/<작업을 설명하는 이름>` 브랜치와 worktree를 만들어 수행한다.
+- 브랜치와 worktree 디렉터리 이름은 변경 목적과 내용을 드러내는 의미 있는 이름으로 짓는다. `refactor/phase0`, `refactor/phase1`처럼 단계 번호만으로 이름 짓지 않는다.
+- 예: 실행·테스트 기반 복원은 `refactor/build-and-test-foundation`, 데이터 보존·보안 경계 정리는 `refactor/data-preservation-and-security`로 이름 짓는다. worktree 디렉터리에도 같은 작업 이름을 사용한다.
+- 작업을 시작할 때 Phase, 브랜치 이름, worktree 경로를 함께 알리고 계획 문서에 기록한다.
+- 구현과 체크 요청은 commit 승인이 아니다. 명시적인 commit 요청이 없으면 변경을 미커밋 상태로 둔다.
+
 ## TDD: Red → Green → Refactor
 
 모든 기능 추가·버그 수정·동작 변경은 테스트를 먼저 작성한다. 구현 후 테스트를 덧붙이는 방식은 TDD로 간주하지 않는다.
@@ -40,10 +48,17 @@ Refactor: 동작을 유지하며 책임·이름·중복 개선 → 전체 테스
 | Domain | Spring·DB 없는 순수 단위 테스트 |
 | Repository | `@DataJpaTest`; 명시적 `flush()`·`clear()`를 기본적으로 호출하지 않음 |
 | Service | 실제 production 트랜잭션 commit; 테스트용 `@Transactional` 금지 |
-| Controller | Mockito + standalone MockMvc; 실제 Repository·DB·cleanup 없음 |
+| Controller / REST Docs | `@WebMvcTest` + Spring이 구성한 MockMvc; Service 및 직접 의존하는 하위 계층은 `@MockBean`; 실제 DB·cleanup 없음 |
 
+- 모든 테스트 메서드에 동작을 설명하는 한글 `@DisplayName`을 작성한다.
+- 테스트 애너테이션은 `@Test` → `@DisplayName` 순서로 작성한다. 파라미터 테스트도 `@ParameterizedTest` → `@DisplayName` → `@MethodSource` 등 인자 제공 애너테이션 순서로 통일한다.
+- Controller와 REST Docs는 실제 Spring MVC 바인딩·검증·직렬화 구성을 사용한다. `standaloneSetup`으로 대체하지 않는다. JPA 설정을 로딩하지 않도록 MVC에 필요한 구성만 지정한다.
 - Service 테스트 데이터는 `@AfterEach`에서 자식부터 부모 순서로 삭제한다. 해당 테스트가 실제 생성하는 엔티티의 Repository만 주입한다.
 - `@BeforeEach`는 MockMvc 구성 등 실행 준비에 사용할 수 있지만 데이터 cleanup에는 사용하지 않는다.
+- 반복되는 테스트 데이터 생성은 테스트 클래스 내부의 private 메서드로 추출할 수 있다. 각 테스트 본문에서 명시적으로 호출하고, 호출할 때마다 새 데이터를 생성한다.
+- 테스트 데이터는 해당 동작을 설명하는 최소 개수로 준비한다. 검색 조건·경계값은 본문에 드러내고, 모든 테스트가 대량의 고정 데이터에 의존하게 만들지 않는다.
+- 조회 결과는 가능한 한 전체 원소를 검증한다. 정렬 계약이 없는 조회는 순서를 가정하지 않는다. 페이지·슬라이스는 실제 내용 개수와 전체 개수 또는 `hasNext`를 검증한다.
+- Controller의 JSON 요청은 주입받은 `ObjectMapper`로 직렬화한다. REST Docs도 문서 생성뿐 아니라 응답값과 필요한 요청 전달 계약을 검증한다.
 - 저장 변경은 서비스 호출 종료 후 별도 조회 결과로 검증한다. 테스트 트랜잭션이 production의 트랜잭션 누락을 가리지 않게 한다.
 - HTTP 계약·validation·직렬화는 MockMvc로, 실제 보안 필터는 필요한 최소 범위의 Spring Security Test로 검증한다.
 - 외부 시스템·시간·난수·파일·네트워크는 경계 뒤로 격리한다. 테스트가 운영 DB·S3, 실행 순서에 의존하지 않게 한다.

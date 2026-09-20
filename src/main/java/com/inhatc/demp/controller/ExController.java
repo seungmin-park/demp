@@ -1,34 +1,42 @@
 package com.inhatc.demp.controller;
 
-import com.inhatc.demp.error.ErrorResult;
-import lombok.extern.slf4j.Slf4j;
+import com.inhatc.demp.error.*;
+import javax.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.AuthenticationException;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.UnexpectedTypeException;
-
-@Slf4j
 @RestControllerAdvice
 public class ExController {
-
-    @ExceptionHandler
-    public ErrorResult illegalExHandle(HttpServletRequest request, IllegalStateException e) {
-//        log.error("[exceptionHandle] ex", e);
-        return new ErrorResult(e.getMessage(), HttpStatus.BAD_REQUEST.value(), request.getRequestURI());
+    @ExceptionHandler(ApiException.class)
+    public ResponseEntity<ErrorResult> business(ApiException ex, HttpServletRequest request) {
+        return error(ex.getStatus(), request);
     }
-
-    @ExceptionHandler
-    public ErrorResult UnexpectedTypeHandle(HttpServletRequest request, UnexpectedTypeException e) {
-        log.error("[exceptionHandle] ex", e);
-        return new ErrorResult(e.getMessage(), HttpStatus.BAD_REQUEST.value(), request.getRequestURI());
+    @ExceptionHandler({BindException.class, HttpMessageNotReadableException.class,
+            MissingServletRequestParameterException.class, MethodArgumentTypeMismatchException.class})
+    public ResponseEntity<ErrorResult> invalid(Exception ex, HttpServletRequest request) {
+        return error(HttpStatus.BAD_REQUEST, request);
     }
-
-    @ExceptionHandler
-    public ErrorResult bindingExHandle(HttpServletRequest request, BindException e) {
-        log.error("[exceptionHandle] ex", e);
-        return new ErrorResult(e.getFieldError().getDefaultMessage(), HttpStatus.BAD_REQUEST.value(), request.getRequestURI());
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<ErrorResult> unauthenticated(Exception ex, HttpServletRequest request) {
+        return error(HttpStatus.UNAUTHORIZED, request);
+    }
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResult> forbidden(Exception ex, HttpServletRequest request) {
+        return error(HttpStatus.FORBIDDEN, request);
+    }
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ErrorResult> internal(Exception ex, HttpServletRequest request) {
+        return error(HttpStatus.INTERNAL_SERVER_ERROR, request);
+    }
+    private ResponseEntity<ErrorResult> error(HttpStatus status, HttpServletRequest request) {
+        return ResponseEntity.status(status).body(ApiErrors.body(status, request.getRequestURI()));
     }
 }

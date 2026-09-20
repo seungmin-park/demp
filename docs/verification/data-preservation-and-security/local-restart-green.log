@@ -1,0 +1,27 @@
+boot1: seeded local-member BCrypt login succeeded
+boot1: positive generated member id=1; signup persisted
+NAME             | N
+member           | 2
+announcement     | 1
+question         | 1
+hashtag          | 1
+answer           | 1
+question_hashtag | 1
+language         | 1
+member_roles     | 2
+(8 rows, 6 ms)
+
+boot2: seeded local-member BCrypt login succeeded
+boot2: same member retained after restart
+NAME             | N
+member           | 2
+announcement     | 1
+question         | 1
+hashtag          | 1
+answer           | 1
+question_hashtag | 1
+language         | 1
+member_roles     | 2
+(8 rows, 6 ms)
+
+ARTIFACT_DIR=/private/tmp/demp-local-verification-ei0fd2dj

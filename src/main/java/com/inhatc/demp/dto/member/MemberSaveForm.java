@@ -3,7 +3,7 @@ package com.inhatc.demp.dto.member;
 import com.inhatc.demp.domain.Member;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import javax.validation.constraints.NotBlank;
 
 import java.util.Collections;
 
@@ -11,10 +11,11 @@ import java.util.Collections;
 @Getter
 public class MemberSaveForm {
 
+    @NotBlank
     private String username;
+    @NotBlank
     private String password;
 
-    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
 
     public MemberSaveForm(String username, String password) {
         this.username = username;
@@ -24,7 +25,7 @@ public class MemberSaveForm {
     public Member toEntity() {
         return Member.builder()
                 .username(username)
-                .password(bCryptPasswordEncoder.encode(password))
+                .password(password)
                 .roles(Collections.singletonList("ROLE_USER"))
                 .build();
     }

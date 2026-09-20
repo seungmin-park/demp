@@ -1,0 +1,22 @@
+[
+  {
+    "class": "com.inhatc.demp.service.MemberServiceTest",
+    "test": "memberSave()",
+    "message": "java.lang.AssertionError: \nExpecting:\n  [\"testMemberA\", \"testMemberB\", \"member-a\"]\nto contain exactly (and in same order):\n  [\"member-a\"]\nbut some elements were not expected:\n  [\"testMemberA\", \"testMemberB\"]\n"
+  },
+  {
+    "class": "com.inhatc.demp.service.MemberServiceTest",
+    "test": "validDuplicateUsernameFalse()",
+    "message": "org.springframework.dao.IncorrectResultSizeDataAccessException: query did not return a unique result: 2; nested exception is javax.persistence.NonUniqueResultException: query did not return a unique result: 2"
+  },
+  {
+    "class": "com.inhatc.demp.service.MemberServiceTest",
+    "test": "validDuplicateUsernameTrue()",
+    "message": "org.springframework.dao.DataIntegrityViolationException: could not execute statement; SQL [n/a]; constraint [\"FKN2SP5PA6H0U2KIXJL2R4VFLUF: PUBLIC.ANSWER FOREIGN KEY(MEMBER_ID) REFERENCES PUBLIC.MEMBER(MEMBER_ID) (1)\"; SQL statement:\n/* delete com.inhatc.demp.domain.Member */ delete from member where member_id=? [23503-200]]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement"
+  },
+  {
+    "class": "com.inhatc.demp.service.QuestionServiceTest",
+    "test": "findAllByHashtag()",
+    "message": "org.springframework.dao.IncorrectResultSizeDataAccessException: query did not return a unique result: 3; nested exception is javax.persistence.NonUniqueResultException: query did not return a unique result: 3"
+  }
+]
