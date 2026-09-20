@@ -3,6 +3,8 @@ package com.inhatc.demp.controller;
 import com.inhatc.demp.dto.question.*;
 import com.inhatc.demp.service.QuestionService;
 import lombok.RequiredArgsConstructor;
+import com.inhatc.demp.config.security.MemberPrincipal;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,12 +27,7 @@ public class QuestionController {
 
     @GetMapping("/detail/{questionId}")
     public ResponseEntity<QuestionDetail> getQuestion(@PathVariable Long questionId) {
-        QuestionDetail questionDetail = questionService.findById(questionId);
-        if (questionDetail == null) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-
-        return new ResponseEntity<>(questionDetail, HttpStatus.OK);
+        return ResponseEntity.ok(questionService.findById(questionId));
     }
 
     @GetMapping("/hashtags")
@@ -39,18 +36,18 @@ public class QuestionController {
     }
 
     @PostMapping("/add")
-    public String saveQuestion(@Valid @RequestBody QuestionForm questionForm) {
-        questionService.join(questionForm);
+    public String saveQuestion(@AuthenticationPrincipal MemberPrincipal principal, @Valid @RequestBody QuestionForm questionForm) {
+        questionService.join(principal.getMemberId(), questionForm);
         return "ok";
     }
 
     @PatchMapping("/update")
-    public void updateQuestion(@RequestBody QuestionUpdateForm questionUpdateForm) {
-        questionService.updateQuestion(questionUpdateForm);
+    public void updateQuestion(@AuthenticationPrincipal MemberPrincipal principal, @RequestBody QuestionUpdateForm questionUpdateForm) {
+        questionService.updateQuestion(principal.getMemberId(), questionUpdateForm);
     }
 
     @DeleteMapping("/delete")
-    public void deleteQuestion(@RequestParam Long questionId) {
-        questionService.deleteQuestion(questionId);
+    public void deleteQuestion(@AuthenticationPrincipal MemberPrincipal principal, @RequestParam Long questionId) {
+        questionService.deleteQuestion(principal.getMemberId(), questionId);
     }
 }

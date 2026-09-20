@@ -1,6 +1,11 @@
 package com.inhatc.demp.service;
 
 import com.inhatc.demp.domain.Member;
+import com.inhatc.demp.dto.member.MemberDto;
+import com.inhatc.demp.dto.member.MemberInfo;
+import com.inhatc.demp.dto.member.MemberLoginForm;
+import com.inhatc.demp.config.jwt.JwtTokenProvider;
+import com.inhatc.demp.dto.member.MemberSaveForm;
 import com.inhatc.demp.repository.MemberRepository;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
@@ -22,22 +27,39 @@ class MemberServiceTest {
     @Autowired
     private MemberRepository memberRepository;
 
+    @Autowired
+    private JwtTokenProvider jwtTokenProvider;
+
     @AfterEach
     void cleanUp() {
-        memberRepository.findByUsername("member-a").ifPresent(memberRepository::delete);
+        memberRepository.deleteAll();
     }
 
     @Test
-    @DisplayName("가입한 회원과 초기 회원이 함께 조회된다")
+    @DisplayName("로그인은 인증한 회원의 이름과 유효한 회원 ID 토큰을 반환한다")
+    void returnsAuthenticatedLoginResult() {
+        MemberDto saved = memberService.join(new MemberSaveForm("login-member", "password"));
+        MemberLoginForm form = new MemberLoginForm();
+        form.setUsername("login-member");
+        form.setPassword("password");
+
+        MemberInfo result = memberService.login(form);
+
+        assertThat(result.getUsername()).isEqualTo("login-member");
+        assertThat(jwtTokenProvider.validateToken(result.getJwt())).isTrue();
+        assertThat(jwtTokenProvider.getUserPk(result.getJwt())).isEqualTo(saved.getId().toString());
+    }
+
+    @Test
+    @DisplayName("가입한 회원이 조회된다")
     void memberSave() {
-        Member member = new Member("member-a", "password", List.of("ROLE_USER"));
-        memberService.join(member);
+        MemberDto member = memberService.join(new MemberSaveForm("member-a", "password"));
 
         Member saved = memberRepository.findById(member.getId()).orElseThrow();
         assertThat(saved.getUsername()).isEqualTo("member-a");
-        assertThat(saved.getPassword()).isEqualTo("password");
+        assertThat(new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder().matches("password", saved.getPassword())).isTrue();
         assertThat(saved.getRoles()).containsExactly("ROLE_USER");
-        assertThat(memberService.findAll()).extracting(Member::getUsername).containsExactlyInAnyOrder("testMemberA", "testMemberB", "member-a");
+        assertThat(memberService.findAll()).extracting(Member::getUsername).containsExactlyInAnyOrder("member-a");
     }
 
     @Test
@@ -49,7 +71,7 @@ class MemberServiceTest {
     @Test
     @DisplayName("이미 사용 중인 회원 이름은 가입할 수 없다")
     void validDuplicateUsernameFalse() {
-        memberService.join(new Member("member-a", "password", List.of("ROLE_USER")));
+        memberService.join(new MemberSaveForm("member-a", "password"));
         assertThat(memberService.validationDuplicateUsername("member-a")).isFalse();
     }
     @ParameterizedTest

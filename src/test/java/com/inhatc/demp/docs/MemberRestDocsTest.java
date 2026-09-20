@@ -6,6 +6,8 @@ import com.inhatc.demp.config.jwt.JwtTokenProvider;
 import com.inhatc.demp.controller.ExController;
 import com.inhatc.demp.controller.MemberController;
 import com.inhatc.demp.domain.Member;
+import com.inhatc.demp.dto.member.MemberDto;
+import com.inhatc.demp.dto.member.MemberInfo;
 import com.inhatc.demp.dto.member.MemberLoginForm;
 import com.inhatc.demp.dto.member.MemberSaveForm;
 import com.inhatc.demp.service.MemberService;
@@ -17,15 +19,16 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import com.inhatc.demp.support.WithMember;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.refEq;
-import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
@@ -42,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(MemberController.class)
 @ContextConfiguration(classes = {MemberController.class, ExController.class, SecurityConfiguration.class, WebConfig.class})
-@WithMockUser(roles = "USER")
+@WithMember
 @AutoConfigureRestDocs
 class MemberRestDocsTest {
 
@@ -68,8 +71,7 @@ class MemberRestDocsTest {
                         pathParameters(parameterWithName("memberId").description("회원 ID")),
                         responseFields(
                                 fieldWithPath("id").description("회원 ID"),
-                                fieldWithPath("username").description("로그인 이름"),
-                                fieldWithPath("password").description("현재 응답에 포함되는 비밀번호 값(T11에서 제거 예정)"))));
+                                fieldWithPath("username").description("로그인 이름"))));
     }
 
     @Test
@@ -78,10 +80,10 @@ class MemberRestDocsTest {
         MemberLoginForm request = new MemberLoginForm();
         request.setUsername("docs-member");
         request.setPassword("docs-login-password");
-        Member authenticatedMember = new Member("docs-member", "docs-password-hash", List.of("ROLE_USER"));
-        ReflectionTestUtils.setField(authenticatedMember, "id", 42L);
-        when(memberService.login(refEq(request))).thenReturn(authenticatedMember);
-        when(jwtTokenProvider.createToken("42", List.of("ROLE_USER"))).thenReturn("docs-only-jwt-token");
+        MemberInfo response = new MemberInfo();
+        response.setUsername("docs-member");
+        response.setJwt("docs-only-jwt-token");
+        when(memberService.login(refEq(request))).thenReturn(response);
 
         mockMvc.perform(post("/api/member/login")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -98,20 +100,15 @@ class MemberRestDocsTest {
                         responseFields(
                                 fieldWithPath("username").description("로그인한 회원 이름"),
                                 fieldWithPath("jwt").description("테스트 예시 JWT"))));
+        verify(memberService).login(refEq(request));
+        verifyNoMoreInteractions(memberService);
     }
 
     @Test
     @DisplayName("회원 가입 요청과 현재 응답을 문서화한다")
     void documentsMemberSave() throws Exception {
         MemberSaveForm request = new MemberSaveForm("docs-new-member", "docs-signup-password");
-        Member savedMember = new Member("docs-new-member", "docs-password-hash", List.of("ROLE_USER"));
-        ReflectionTestUtils.setField(savedMember, "id", 43L);
-        doAnswer(invocation -> {
-            Member joiningMember = invocation.getArgument(0);
-            ReflectionTestUtils.setField(joiningMember, "id", 43L);
-            return null;
-        }).when(memberService).join(any(Member.class));
-        when(memberService.findById(43L)).thenReturn(savedMember);
+        when(memberService.join(refEq(request))).thenReturn(new MemberDto(43L, "docs-new-member"));
 
         mockMvc.perform(post("/api/member/save")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -127,16 +124,9 @@ class MemberRestDocsTest {
                                 parameterWithName("password").description("가입할 비밀번호")),
                         responseFields(
                                 fieldWithPath("id").description("회원 ID"),
-                                fieldWithPath("username").description("로그인 이름"),
-                                fieldWithPath("password").description("현재 응답에 포함되는 비밀번호 해시(T11에서 제거 예정)"),
-                                fieldWithPath("questions").description("작성 질문 목록"),
-                                fieldWithPath("answers").description("작성 답변 목록"),
-                                fieldWithPath("roles").description("권한 문자열 목록"),
-                                fieldWithPath("authorities[].authority").description("Spring Security 권한"),
-                                fieldWithPath("accountNonExpired").description("계정 만료 여부"),
-                                fieldWithPath("accountNonLocked").description("계정 잠금 여부"),
-                                fieldWithPath("credentialsNonExpired").description("자격 증명 만료 여부"),
-                                fieldWithPath("enabled").description("계정 활성 여부"))));
+                                fieldWithPath("username").description("로그인 이름"))));
+        verify(memberService).join(refEq(request));
+        verifyNoMoreInteractions(memberService);
     }
 
     @Test

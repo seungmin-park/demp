@@ -12,7 +12,7 @@ import com.inhatc.demp.dto.answer.AnswerForm;
 import com.inhatc.demp.dto.answer.UpdateAnswerForm;
 import com.inhatc.demp.dto.question.QuestionAnswer;
 import com.inhatc.demp.repository.AnswerRepository;
-import com.inhatc.demp.service.QuestionService;
+import com.inhatc.demp.service.AnswerService;
 import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
@@ -22,12 +22,13 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import com.inhatc.demp.support.WithMember;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.refEq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -50,16 +51,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockBean(JwtTokenProvider.class)
 @WebMvcTest(AnswerController.class)
 @ContextConfiguration(classes = {AnswerController.class, ExController.class, SecurityConfiguration.class, WebConfig.class})
-@WithMockUser(roles = "USER")
+@WithMember
 @AutoConfigureRestDocs
 class AnswerRestDocsTest {
 
     private static final String DOCS_TOKEN = "docs-only-jwt-token";
 
     @MockBean
-    private AnswerRepository answerRepository;
-    @MockBean
-    private QuestionService questionService;
+    private AnswerService answerService;
     @Autowired
     private ObjectMapper objectMapper;
     @Autowired
@@ -73,7 +72,7 @@ class AnswerRestDocsTest {
         ReflectionTestUtils.setField(answer, "id", 61L);
         answer.settingMember(member);
         List<Answer> response = List.of(answer);
-        when(answerRepository.findByQuestion_Id(51L)).thenReturn(response);
+        when(answerService.findByQuestion(51L)).thenReturn(List.of(new QuestionAnswer(answer)));
 
         mockMvc.perform(get("/api/answer/{questionId}", 51L)
                         .header("X-AUTH-TOKEN", DOCS_TOKEN))
@@ -102,7 +101,7 @@ class AnswerRestDocsTest {
         ReflectionTestUtils.setField(savedAnswer, "id", 61L);
         savedAnswer.settingMember(member);
         QuestionAnswer response = new QuestionAnswer(savedAnswer);
-        when(questionService.saveAnswer(refEq(request))).thenReturn(List.of(response));
+        when(answerService.save(eq(41L), refEq(request))).thenReturn(List.of(response));
 
         mockMvc.perform(post("/api/answer/save")
                         .header("X-AUTH-TOKEN", DOCS_TOKEN)
@@ -117,7 +116,7 @@ class AnswerRestDocsTest {
                                 headerWithName("X-AUTH-TOKEN").description("로그인 시 발급된 JWT"),
                                 headerWithName("Content-Type").description("JSON 요청 형식")),
                         requestFields(
-                                fieldWithPath("username").description("현재 요청에 포함되는 작성자 이름(T12에서 principal 기준으로 변경 예정)"),
+                                fieldWithPath("username").description("호환 입력이며 작성자는 인증 회원으로 결정한다"),
                                 fieldWithPath("questionId").description("답변을 추가할 질문 ID"),
                                 fieldWithPath("answerContent").description("답변 본문")),
                         responseFields(
@@ -133,7 +132,6 @@ class AnswerRestDocsTest {
     void documentsAnswerUpdate() throws Exception {
         UpdateAnswerForm request = new UpdateAnswerForm(61L, "docs-updated-answer");
         Answer answer = new Answer("docs-answer", 0, 0);
-        when(answerRepository.findById(61L)).thenReturn(Optional.of(answer));
 
         mockMvc.perform(patch("/api/answer/update")
                         .header("X-AUTH-TOKEN", DOCS_TOKEN)
@@ -148,7 +146,7 @@ class AnswerRestDocsTest {
                         requestFields(
                                 fieldWithPath("answerId").description("수정할 답변 ID"),
                                 fieldWithPath("answerContent").description("수정할 답변 본문"))));
-        org.assertj.core.api.Assertions.assertThat(answer.getContent()).isEqualTo(request.getAnswerContent());
+        verify(answerService).update(eq(41L), refEq(request));
     }
 
     @Test
@@ -164,6 +162,6 @@ class AnswerRestDocsTest {
                 .andDo(document("answer-delete",
                         requestHeaders(headerWithName("X-AUTH-TOKEN").description("로그인 시 발급된 JWT")),
                         requestParameters(parameterWithName("answerId").description("삭제할 답변 ID"))));
-        verify(answerRepository).deleteById(answerId);
+        verify(answerService).delete(41L, answerId);
     }
 }

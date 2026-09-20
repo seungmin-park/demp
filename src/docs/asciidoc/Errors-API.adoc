@@ -1,0 +1,43 @@
+ifndef::snippets[]
+:snippets: ../../../build/generated-snippets
+endif::[]
+
+== 공통 오류 응답
+
+HTTP 상태와 errorCode가 일치하며 내부 예외 원문은 응답하지 않는다.
+
+=== 400 입력 오류
+
+include::{snippets}/error-400/http-response.adoc[]
+
+include::{snippets}/error-400/response-fields.adoc[]
+
+=== 401 인증 실패
+
+include::{snippets}/error-401/http-response.adoc[]
+
+include::{snippets}/error-401/response-fields.adoc[]
+
+=== 403 권한 없음
+
+include::{snippets}/error-403/http-response.adoc[]
+
+include::{snippets}/error-403/response-fields.adoc[]
+
+=== 404 자원 없음
+
+include::{snippets}/error-404/http-response.adoc[]
+
+include::{snippets}/error-404/response-fields.adoc[]
+
+=== 409 중복
+
+include::{snippets}/error-409/http-response.adoc[]
+
+include::{snippets}/error-409/response-fields.adoc[]
+
+=== 500 내부 오류
+
+include::{snippets}/error-500/http-response.adoc[]
+
+include::{snippets}/error-500/response-fields.adoc[]

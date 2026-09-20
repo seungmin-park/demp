@@ -36,3 +36,6 @@ out/
 
 ### VS Code ###
 .vscode/
+
+# Local-only persistent H2 database
+.local/

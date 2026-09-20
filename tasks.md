@@ -118,24 +118,24 @@ test('테스트 러너가 assertion 실패를 보고한다', () => {
 
 ### T10 · InitDb 삭제와 local 실행 전용 data.sql — R02 / S02
 
-삭제 B: `InitDb.java`. 수정 B: `src/main/resources/application.yml`, `src/test/resources/application.yml`, `build.gradle`, `README.md`. 생성 B: `src/main/resources/application-local.yml`, `src/main/resources/local/data.sql`, `src/main/resources/db/migration/V1__baseline.sql`, 테스트 `config/DatabaseLifecycleTest.java`, `config/LocalDataInitializationTest.java`.
+삭제 B: `InitDb.java`. 수정 B: `src/main/resources/application.yml`, `src/test/resources/application.yml`, `build.gradle`. 생성 B: `src/main/resources/application-local.yml`, `src/main/resources/local/data.sql`, 테스트 `config/DatabaseLifecycleTest.java`, `config/LocalDataInitializationTest.java`.
 
-- [ ] 격리 DB에 회원 한 건을 넣고 기본 프로필 컨텍스트를 재시작한 뒤 회원이 남는 테스트를 작성·실행한다. 현재 create로 데이터가 사라지는 assertion 실패를 확인한다.
-- [ ] 기본·test 프로필에서 시작 후 예제 회원/공고가 없는 검증을 먼저 실패시킨다. 공통 설정의 `spring.profiles.active: local`을 제거하고 기본 및 테스트 `spring.sql.init.mode: never`를 명시한다.
-- [ ] InitDb와 관련 빈 참조를 삭제한다. 자동 테스트가 기존 seed에 의존해 실패하면 해당 테스트 본문에 필요한 객체를 직접 생성하고 다시 검증한다.
-- [ ] local 실제 실행 확인용으로 회원·권한·공고·질문·태그·답변의 최소 예제를 data.sql에 작성한다. FK 순서와 ID/sequence 충돌을 고려하고, 암호는 local 전용 BCrypt 해시를 사용한다. 외부 S3 업로드는 하지 않는다.
-- [ ] application-local.yml에만 `spring.sql.init.mode: always`, `spring.sql.init.data-locations: classpath:local/data.sql`을 지정한다. local 전용 DB와 스키마 생성/migration 이후 SQL 실행 순서를 정하고 실제 기동으로 검증한다. 공통 루트 data.sql이나 테스트 fixture로 복사하지 않는다.
-- [ ] README에 local 명시 실행 명령과 전용 DB 조건을 기록한다. local 재실행 시 seed 중복·키 충돌이 없도록 SQL을 작성하고 두 번 기동해 확인한다. 데이터 삭제로 중복을 해결하지 않는다.
-- [ ] 기본 ddl-auto는 validate로 전환한다. 자동 테스트는 data.sql을 로드하지 않으며, LocalDataInitializationTest도 격리 DB에서 프로필/초기화 계약만 검증한다. local 기동 확인은 별도 실행 검증으로 기록한다.
-- [ ] 현재 엔티티와 대상 DB에 맞는 초기 migration을 작성한다. 기존 DB에는 백업/스키마 대조 및 baseline 절차를 문서화하고 자동 적용하지 않는다.
-- [ ] 같은 격리 DB에 두 번 기동해 데이터와 스키마가 유지되는 Green을 확인한다.
-- [ ] InitDb 소스·빈 부재, local 외 SQL 초기화 비활성, 자동 테스트의 직접 fixture 생성을 확인하고 전체 테스트를 재실행한다.
+- [x] 격리 DB에 회원 한 건을 넣고 기본 프로필 컨텍스트를 재시작한 뒤 회원이 남는 테스트를 작성·실행한다. 현재 create로 데이터가 사라지는 assertion 실패를 확인한다.
+- [x] 기본·test 프로필에서 시작 후 예제 회원/공고가 없는 검증을 먼저 실패시킨다. 공통 설정의 `spring.profiles.active: local`을 제거하고 기본 및 테스트 `spring.sql.init.mode: never`를 명시한다.
+- [x] InitDb와 관련 빈 참조를 삭제한다. 자동 테스트가 기존 seed에 의존해 실패하면 해당 테스트 본문에 필요한 객체를 직접 생성하고 다시 검증한다.
+- [x] local 실제 실행 확인용으로 회원·권한·공고·질문·태그·답변의 최소 예제를 data.sql에 작성한다. FK 순서와 ID/sequence 충돌을 고려하고, 암호는 local 전용 BCrypt 해시를 사용한다. 외부 S3 업로드는 하지 않는다.
+- [x] application-local.yml에만 `spring.sql.init.mode: always`, `spring.sql.init.data-locations: classpath:local/data.sql`을 지정한다. local 전용 DB와 Hibernate 스키마 생성 이후 SQL 실행 순서를 정하고 실제 기동으로 검증한다. 공통 루트 data.sql이나 테스트 fixture로 복사하지 않는다.
+- [x] 검증 문서에 local 명시 실행 명령과 전용 DB 조건을 기록한다. README는 변경하지 않는다. local 재실행 시 seed 중복·키 충돌이 없도록 SQL을 작성하고 두 번 기동해 확인한다. 데이터 삭제로 중복을 해결하지 않는다.
+- [x] 기본 ddl-auto는 validate로 전환한다. 자동 테스트는 data.sql을 로드하지 않으며, LocalDataInitializationTest도 격리 DB에서 프로필/초기화 계약만 검증한다. local 기동 확인은 별도 실행 검증으로 기록한다.
+- [x] 2026-09-21 사용자 요청으로 Flyway 의존성·설정·migration을 제거했다. local H2는 update와 지연 SQL 초기화, 기본은 validate를 사용한다. 테스트 스키마는 테스트 준비에서 생성하며 MySQL은 검증하지 않는다.
+- [x] 같은 격리 DB에 두 번 기동해 데이터와 스키마가 유지되는 Green을 확인한다.
+- [x] InitDb 소스·빈 부재, local 외 SQL 초기화 비활성, 자동 테스트의 직접 fixture 생성을 확인하고 전체 테스트를 재실행한다.
 
 ### T11 · 회원 응답·가입·로그인 — R03, R08 / S03, S07
 
-수정 B: `controller/MemberController.java`, `controller/ExController.java`, `service/MemberService.java`, `dto/member/MemberSaveForm.java`, `dto/member/MemberDto.java`, `domain/Member.java`. 생성 B migration: `V2__unique_member_username.sql`. 수정 B 테스트: `controller/MemberControllerTest.java`, `service/MemberServiceTest.java`. 수정 F: `src/components/LoginForm.vue`. 생성 F: `tests/unit/LoginForm.spec.js`.
+수정 B: `controller/MemberController.java`, `controller/ExController.java`, `service/MemberService.java`, `dto/member/MemberSaveForm.java`, `dto/member/MemberDto.java`, `domain/Member.java`. 수정 B 테스트: `controller/MemberControllerTest.java`, `service/MemberServiceTest.java`. 수정 F: `src/components/LoginForm.vue`. 생성 F: `tests/unit/LoginForm.spec.js`.
 
-- [ ] 다음 응답 검사를 가입과 회원 조회 각각에 작성해 password가 존재하여 실패하는지 확인한다.
+- [x] 다음 응답 검사를 가입과 회원 조회 각각에 작성해 password가 존재하여 실패하는지 확인한다.
 
 ```java
 mockMvc.perform(get("/api/member/1"))
@@ -143,11 +143,11 @@ mockMvc.perform(get("/api/member/1"))
     .andExpect(jsonPath("$.password").doesNotExist());
 ```
 
-- [ ] MemberDto는 id/username만 포함하도록 만들고 가입도 동일 DTO로 반환한다.
-- [ ] 빈 username/password는 400, 동일 username 재가입은 409, 비밀번호 불일치는 401인 테스트를 각각 Red→Green으로 진행한다.
-- [ ] 암호화는 MemberService의 주입 PasswordEncoder로 옮기고 DB username unique를 추가한다. 기존 중복 데이터가 있으면 migration 전에 충돌 목록·정리 절차를 준비한다.
-- [ ] F 로그인 제출 테스트에서 console.log spy에 입력 비밀번호가 전달되지 않음을 검증하고 로그를 제거한다. 로그인 성공/실패 안내도 유지되는지 확인한다.
-- [ ] 전체 검증 후 DTO/서비스 책임을 정리한다.
+- [x] MemberDto는 id/username만 포함하도록 만들고 가입도 동일 DTO로 반환한다.
+- [x] 빈 username/password는 400, 동일 username 재가입은 409, 비밀번호 불일치는 401인 테스트를 각각 Red→Green으로 진행한다.
+- [x] 암호화는 MemberService의 주입 PasswordEncoder로 옮기고 DB username unique를 추가한다. H2의 JPA 매핑으로 NOT NULL/UNIQUE를 생성한다. 기존 외부 DB의 스키마 변경은 이번 범위에 포함하지 않는다.
+- [x] F 로그인 제출 테스트에서 console.log spy에 입력 비밀번호가 전달되지 않음을 검증하고 로그를 제거한다. 로그인 성공/실패 안내도 유지되는지 확인한다.
+- [x] 전체 검증 후 DTO/서비스 책임을 정리한다.
 
 ### T11A · Member와 UserDetails 분리 — R15 / S03, S04
 
@@ -155,11 +155,11 @@ mockMvc.perform(get("/api/member/1"))
 
 계약: `MemberPrincipal implements UserDetails`, `Long getMemberId()`, `static MemberPrincipal from(Member member)`. memberId/username/password hash/권한 값을 복사하고 엔티티 자체를 보유하지 않는다. Member는 JPA 엔티티로 남고 Spring Security 타입·상태 메서드·GrantedAuthority 변환을 알지 않는다.
 
-- [ ] 현재 로그인·JWT 인증의 ID·username·ROLE_USER 동작을 특성화 테스트로 보호한다. 각 테스트 본문에서 Member를 생성한다.
-- [ ] CustomUserDetailService 반환값이 Member 엔티티가 아닌 인증 객체여야 한다는 assertion을 작성하고 현재 직접 반환 때문에 실패함을 확인한다.
-- [ ] MemberPrincipal과 변환을 최소 구현하고 인증 ID·암호 비교·권한이 유지되는지 검증한다. 존재하지 않거나 잘못된 토큰 subject의 처리도 T14와 연계한다.
-- [ ] Green에서 Member의 `implements UserDetails`, Security import와 전용 override를 제거한다. 회원 필드와 JPA 매핑은 유지한다.
-- [ ] `rg -n 'org.springframework.security|UserDetails|GrantedAuthority' src/main/java/com/inhatc/demp/domain`으로 도메인 결합 제거를 확인하고 전체 테스트를 실행한다. principal을 API 응답으로 반환하지 않는지도 확인한다.
+- [x] 현재 로그인·JWT 인증의 ID·username·ROLE_USER 동작을 특성화 테스트로 보호한다. 각 테스트 본문에서 Member를 생성한다.
+- [x] CustomUserDetailService 반환값이 Member 엔티티가 아닌 인증 객체여야 한다는 assertion을 작성하고 현재 직접 반환 때문에 실패함을 확인한다.
+- [x] MemberPrincipal과 변환을 최소 구현하고 인증 ID·암호 비교·권한이 유지되는지 검증한다. 존재하지 않거나 잘못된 토큰 subject의 처리도 T14와 연계한다.
+- [x] Green에서 Member의 `implements UserDetails`, Security import와 전용 override를 제거한다. 회원 필드와 JPA 매핑은 유지한다.
+- [x] `rg -n 'org.springframework.security|UserDetails|GrantedAuthority' src/main/java/com/inhatc/demp/domain`으로 도메인 결합 제거를 확인하고 전체 테스트를 실행한다. principal을 API 응답으로 반환하지 않는지도 확인한다.
 
 ### T12 · principal 기반 작성·소유권·오류 계약 — R04, R08 / S04, S07
 
@@ -167,18 +167,18 @@ mockMvc.perform(get("/api/member/1"))
 
 새 서비스 계약: `QuestionService.join(Long actorId, QuestionForm form)`, `updateQuestion(Long actorId, QuestionUpdateForm form)`, `deleteQuestion(Long actorId, Long questionId)`. AnswerService의 `save(Long actorId, AnswerForm form)`, `update(Long actorId, UpdateAnswerForm form)`, `delete(Long actorId, Long answerId)`가 답변 쓰기를 소유한다. principal ID는 T11A의 MemberPrincipal.getMemberId()로 구한다. Member 엔티티를 principal로 캐스팅하지 않는다.
 
-- [ ] A principal + B username 입력으로 생성한 질문의 작성자가 A여야 한다는 테스트를 작성·실행한다.
-- [ ] Controller가 actorId를 전달하고 Service가 actorId로 회원을 조회하도록 최소 변경한다. 요청 username은 호환을 위해 수신해도 신뢰하지 않는다.
-- [ ] 타인 질문/답변 수정·삭제 각각 403이고 원본이 유지되는 테스트를 Red→Green으로 진행한다.
-- [ ] 없는 자원 404, 비인증 쓰기 401을 별도 테스트한다. 권한 판정은 객체를 조회한 서비스 경계에서 수행한다.
-- [ ] ErrorResult와 실제 HTTP 상태를 ResponseEntity로 일치시키고 Security의 AuthenticationEntryPoint/AccessDeniedHandler도 동일 형식을 사용한다.
-- [ ] Controller에서 Repository 의존성을 제거하고 대상/전체 테스트를 재실행한다.
+- [x] A principal + B username 입력으로 생성한 질문의 작성자가 A여야 한다는 테스트를 작성·실행한다.
+- [x] Controller가 actorId를 전달하고 Service가 actorId로 회원을 조회하도록 최소 변경한다. 요청 username은 호환을 위해 수신해도 신뢰하지 않는다.
+- [x] 타인 질문/답변 수정·삭제 각각 403이고 원본이 유지되는 테스트를 Red→Green으로 진행한다.
+- [x] 없는 자원 404, 비인증 쓰기 401을 별도 테스트한다. 권한 판정은 객체를 조회한 서비스 경계에서 수행한다.
+- [x] ErrorResult와 실제 HTTP 상태를 ResponseEntity로 일치시키고 Security의 AuthenticationEntryPoint/AccessDeniedHandler도 동일 형식을 사용한다.
+- [x] Controller에서 Repository 의존성을 제거하고 대상/전체 테스트를 재실행한다.
 
 ### T13 · HTML 콘텐츠 보호 — R05 / S05
 
 생성 B: `service/ContentSanitizer.java`, 테스트 `service/ContentSanitizerTest.java`. 수정 B: `build.gradle`, QuestionService/AnswerService/AnnouncementService. 생성 F: `src/components/SafeHtml.vue`, `tests/unit/SafeHtml.spec.js`. 수정 F: 질문 상세/답변 및 공고 상세의 HTML 출력 지점.
 
-- [ ] 악성 입력과 허용 서식을 같이 제공하는 테스트를 작성한다.
+- [x] 악성 입력과 허용 서식을 같이 제공하는 테스트를 작성한다.
 
 ```js
 const raw = '<b>설명</b><img src=x onerror="alert(1)"><a href="javascript:alert(1)">링크</a>';
@@ -186,9 +186,9 @@ const raw = '<b>설명</b><img src=x onerror="alert(1)"><a href="javascript:aler
 // b의 텍스트는 설명으로 남는지 각각 assertion한다.
 ```
 
-- [ ] 검증된 sanitizer 라이브러리와 명시적 허용목록으로 script/이벤트 속성/위험 URL을 제거한다. 서버 계약은 `String sanitize(String html)`이다.
-- [ ] 질문·답변·공고 저장 후 응답과 기존 저장 콘텐츠 렌더링 모두 안전한지 각각 Red→Green으로 확인한다.
-- [ ] 공통 렌더러로 중복을 모으고 전체 테스트를 실행한다. 정규식 필터나 안전성 없는 문자열 교체로 대체하지 않는다.
+- [x] 검증된 sanitizer 라이브러리와 명시적 허용목록으로 script/이벤트 속성/위험 URL을 제거한다. 서버 계약은 `String sanitize(String html)`이다.
+- [x] 질문·답변·공고 저장 후 응답과 기존 저장 콘텐츠 렌더링 모두 안전한지 각각 Red→Green으로 확인한다.
+- [x] 공통 렌더러로 중복을 모으고 전체 테스트를 실행한다. 정규식 필터나 안전성 없는 문자열 교체로 대체하지 않는다.
 
 ### T14 · ExController 단순화와 예외·보안 점검 — R08 / S03, S04, S07
 
@@ -196,13 +196,15 @@ const raw = '<b>설명</b><img src=x onerror="alert(1)"><a href="javascript:aler
 
 오류 계약은 HTTP 상태와 공개 오류 코드/안내 문구를 대응시킨다. 400 입력 오류, 401 인증 실패, 403 권한 없음, 404 자원 없음, 409 중복, 500 내부 오류를 구분한다. 일반 IllegalStateException을 전부 400으로 해석하지 않고, 필요한 업무 예외만 명시적으로 매핑한다.
 
-- [ ] `e.getMessage()`에 가짜 SQL/클래스명/비밀번호/토큰을 넣은 예외를 발생시켜 공개 응답에 내부 문자열이 없어야 한다는 회귀 테스트를 실행한다. 내부 500은 고정 안내 문구로 처리한다.
-- [ ] validation에 field error가 없는 경우, JSON 파싱/타입 오류, 존재하지 않는 자원과 중복 요청의 상태·본문을 각각 테스트한다. 잘못된 validation annotation 등 서버 설정 오류는 클라이언트 400으로 숨기지 않는다.
-- [ ] 없는 계정과 비밀번호 불일치가 동일한 401 본문을 반환하는지 검증한다. SQL 예외·엔티티·스택 트레이스를 직렬화하지 않는다.
-- [ ] 누락/만료/변조 JWT, 숫자가 아닌 subject, 삭제된 회원의 유효 서명 JWT가 보호 API에서 500 대신 401로 끝나는지 실제 필터 경계 테스트로 검증한다. 유효 토큰의 권한 부족은 403이다.
-- [ ] Advice는 MVC 예외, AuthenticationEntryPoint/AccessDeniedHandler는 보안 오류를 처리하게 한다. 모든 Exception을 인증 실패로 치환하지 않고 내부 장애는 500으로 유지한다.
-- [ ] ExController는 예외→안전한 응답 변환만 맡도록 단순화한다. 로그에는 비밀번호·Authorization/X-AUTH-TOKEN·요청 본문을 남기지 않으며 오류 추적에 필요한 정보만 기록하는지 검사한다.
-- [ ] 대상/전체 테스트와 REST Docs 오류 응답 생성을 실행하고 상태·문구·노출 필드가 동일한지 확인한다.
+- [x] `e.getMessage()`에 가짜 SQL/클래스명/비밀번호/토큰을 넣은 예외를 발생시켜 공개 응답에 내부 문자열이 없어야 한다는 회귀 테스트를 실행한다. 내부 500은 고정 안내 문구로 처리한다.
+- [x] validation에 field error가 없는 경우, JSON 파싱/타입 오류, 존재하지 않는 자원과 중복 요청의 상태·본문을 각각 테스트한다. 잘못된 validation annotation 등 서버 설정 오류는 클라이언트 400으로 숨기지 않는다.
+- [x] 없는 계정과 비밀번호 불일치가 동일한 401 본문을 반환하는지 검증한다. SQL 예외·엔티티·스택 트레이스를 직렬화하지 않는다.
+- [x] 누락/만료/변조 JWT, 숫자가 아닌 subject, 삭제된 회원의 유효 서명 JWT가 보호 API에서 500 대신 401로 끝나는지 실제 필터 경계 테스트로 검증한다. 유효 토큰의 권한 부족은 403이다.
+- [x] Advice는 MVC 예외, AuthenticationEntryPoint/AccessDeniedHandler는 보안 오류를 처리하게 한다. 모든 Exception을 인증 실패로 치환하지 않고 내부 장애는 500으로 유지한다.
+- [x] ExController는 예외→안전한 응답 변환만 맡도록 단순화한다. 로그에는 비밀번호·Authorization/X-AUTH-TOKEN·요청 본문을 남기지 않으며 오류 추적에 필요한 정보만 기록하는지 검사한다.
+- [x] 대상/전체 테스트와 REST Docs 오류 응답 생성을 실행하고 상태·문구·노출 필드가 동일한지 확인한다.
+
+Phase 1 최초 검증: 백엔드 141개·프런트 21개 테스트, 문서·jar·프런트 lint/build 및 local 재기동 통과. [구현과 검증 기록](docs/verification/data-preservation-and-security/README.md)을 참조한다.
 
 ## Phase 2 · 공고 API와 업로드 계약
 
@@ -247,6 +249,8 @@ const raw = '<b>설명</b><img src=x onerror="alert(1)"><a href="javascript:aler
 
 ### T30 · 답변 수정 실제 commit — R07 / S07
 
+Phase 1 선행 반영: AnswerService.update의 실제 트랜잭션, commit 뒤 재조회, 타인 403/없는 답변 404를 검증했다. 이 항목 실행 시 현재 통과 동작을 대조하고 남은 검증만 수행한다. 이미 있는 트랜잭션을 제거해 인위적인 Red를 만들지 않는다.
+
 수정 B: T12에서 만든 AnswerService. 테스트: `service/AnswerServiceTest.java`, `controller/AnswerControllerTest.java`.
 
 - [ ] 테스트 @Transactional 없이 답변을 만들고 서비스 update 호출 후 Repository에서 다시 조회한다.
@@ -263,7 +267,7 @@ assertThat(answerRepository.findById(answerId).orElseThrow().getContent())
 
 ### T31 · 태그 교체와 질문 검색 — R09 / S08
 
-수정 B: QuestionService, `domain/Question.java`, `repository/HashtagRepository.java`, `repository/question/QuestionQueryRepository.java`. 생성 B: migration `V3__unique_hashtags.sql`, 테스트 `domain/QuestionTest.java`, `repository/QuestionQueryRepositoryTest.java`. 수정 B 테스트: QuestionServiceTest.
+수정 B: QuestionService, `domain/Question.java`, `repository/HashtagRepository.java`, `repository/question/QuestionQueryRepository.java`. 생성 B: 테스트 `domain/QuestionTest.java`, `repository/QuestionQueryRepositoryTest.java`. 수정 B 테스트: QuestionServiceTest.
 
 새 계약: `HashtagRepository.findByTagName(String tagName)` → Optional<Hashtag>, `Question.replaceHashtags(List<Hashtag> tags)`는 기존 관계를 제거하고 새 관계를 연결한다. trim 후 빈 태그 제거, 중복 제거, 대소문자 보존을 기본 정책으로 한다.
 
@@ -272,7 +276,7 @@ assertThat(answerRepository.findById(answerId).orElseThrow().getContent())
 - [ ] 동일 이름 태그를 두 질문에 등록해 Hashtag 레코드 1개를 assertion한 뒤 조회/재사용·unique 제약을 구현한다.
 - [ ] 무태그 질문이 무필터 검색에 포함되는 테스트를 작성한 뒤 조건 없는 inner join을 제거한다.
 - [ ] 여러 태그 OR 필터와 title/content AND 필터, 중복 질문 부재를 각각 검증한다.
-- [ ] migration 전 기존 중복 이름을 대표 ID로 합치고 관계를 이관하는 절차를 작성한다. 전체 테스트를 실행한다.
+- [ ] 향후 유일 제약 적용 전 기존 중복 이름을 대표 ID로 합치고 관계를 이관하는 절차를 작성한다. 전체 테스트를 실행한다.
 
 ### T32 · 안정된 페이지 조회 — R10 / S09
 
@@ -375,4 +379,12 @@ npx playwright test
 
 각 작업 완료 시 이 파일의 해당 항목 아래에 실행 날짜, Red 명령/실패 assertion, Green 최소 변경, Refactor 변경 이유, 대상/전체 검증 결과, 커밋 SHA를 추가한다. Red가 처음부터 통과하면 회귀 재현에 실패한 것이므로 사례를 다시 구성한다. T00의 합의된 컴파일 복원은 이 기능 Red 기록과 분리한다.
 
-현재 상태: Phase 0 실행·테스트·문서 기반 구현 및 검증 완료. 위 기록의 정상 공고 등록·상세 문서 범위는 T20에서 완료한다. Phase 1~5는 미착수다.
+현재 상태: Phase 0과 Phase 1 구현·검증 완료. 정상 공고 등록·상세 문서 범위는 T20에 남는다. Phase 2~5는 미착수이며 T30의 트랜잭션·재조회 검증은 T12에서 선행 적용했다.
+
+### 2026-09-21 Phase 1 리뷰 반영
+
+작업 위치는 사용자 리뷰를 위해 전환한 원본 `/Users/seungmin/Desktop/repo/archive/demp`, 브랜치는 `refactor/data-preservation-and-security`다. 이전 worktree는 보관본이며 현재 리뷰 수정의 기준은 원본이다. README 변경을 원복하고 Flyway/migration을 제거했다. 회원 가입·로그인 응답 조립은 서비스로 이동하고, 질문 상세의 도달 불가능한 null 분기와 완료된 임시 회원 TODO를 제거했다. 답변 배열 응답의 wrapper 변경은 기존 계획에 없으며 현재 계약을 유지한다. 상세 검증은 [리뷰 수정 기록](docs/verification/data-preservation-and-security/review-2026-09-21.md)을 참조한다.
+
+- [ ] 사용자 결정으로 생성자 제한·builder 통일은 후속 리팩터링에 보류한다. 기존 동작 테스트가 통과하는 상태에서 적용 범위를 합의하고 별도로 수행한다. JPA 기본 생성자 및 Spring/Jackson 바인딩 요구를 보존한다. 기존 private Announcement 생성자는 유지한다.
+
+리뷰 수정 최종 검증: H2 백엔드 144개 테스트와 clean test asciidoctor bootJar 통과. REST Docs 91개 참조 누락 없음. 프런트는 이번 리뷰에서 변경하지 않았다.

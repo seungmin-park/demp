@@ -13,3 +13,5 @@ include::Member-API.adoc[]
 include::Question-API.adoc[]
 include::Answer-API.adoc[]
 include::Announcement-API.adoc[]
+
+include::Errors-API.adoc[]

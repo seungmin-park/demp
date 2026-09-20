@@ -31,7 +31,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.test.context.support.WithMockUser;
+import com.inhatc.demp.support.WithMember;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -54,7 +54,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockBean(JwtTokenProvider.class)
 @WebMvcTest(AnnouncementController.class)
 @ContextConfiguration(classes = {AnnouncementController.class, ExController.class, SecurityConfiguration.class, WebConfig.class})
-@WithMockUser(roles = "USER")
+@WithMember
 @AutoConfigureRestDocs
 class AnnouncementRestDocsTest {
 
@@ -79,8 +79,8 @@ class AnnouncementRestDocsTest {
                         .param("position", "BACKEND")
                         .param("type", "EMP")
                         .param("company.name", "docs-company"))
-                .andExpect(status().isOk())
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.errorCode").value(400))
+                .andExpect(status().isInternalServerError())
+                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.errorCode").value(500))
                 .andExpect(result -> org.assertj.core.api.Assertions.assertThat(result.getResolvedException())
                         .isInstanceOf(javax.validation.UnexpectedTypeException.class))
                 .andDo(document("announcement-add-validation-failure",
@@ -93,8 +93,8 @@ class AnnouncementRestDocsTest {
                         org.springframework.restdocs.request.RequestDocumentation.requestParts(
                                 org.springframework.restdocs.request.RequestDocumentation.partWithName("image").description("공고 이미지 파일")),
                         responseFields(
-                                fieldWithPath("errorCode").description("현재 오류 본문의 코드 400. HTTP 상태는 200인 기존 결함"),
-                                fieldWithPath("errorMessage").description("현재 노출되는 검증 예외 원문. 안전한 오류 응답은 T14에서 변경"),
+                                fieldWithPath("errorCode").description("내부 검증 설정 오류 코드 500"),
+                                fieldWithPath("errorMessage").description("내부 정보를 포함하지 않는 고정 오류 안내"),
                                 fieldWithPath("instance").description("요청 경로"))));
         org.mockito.Mockito.verifyNoInteractions(announcementService);
     }

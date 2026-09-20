@@ -1,29 +1,43 @@
 package com.inhatc.demp.config.jwt;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.inhatc.demp.config.security.SecurityErrorWriter;
+import io.jsonwebtoken.JwtException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.filter.GenericFilterBean;
-
+import org.springframework.web.filter.OncePerRequestFilter;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends GenericFilterBean {
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    private final JwtTokenProvider jwtTokenProvider;
+    private final ObjectMapper objectMapper;
 
-    private final JwtTokenProvider jwtTokenProvider; // Jwt 토큰 생성 및 검증 모듈 클래스
-
-    //Request로 들어오는 Jwt Token의 유효성을 검증하는 filter
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String token = jwtTokenProvider.resolveToken((HttpServletRequest) request);
-        if (token != null && jwtTokenProvider.validateToken(token)) {
-            Authentication auth = jwtTokenProvider.getAuthentication(token);
-            SecurityContextHolder.getContext().setAuthentication(auth);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws IOException, ServletException {
+        String token = jwtTokenProvider.resolveToken(request);
+        if (token != null) {
+            try {
+                if (!jwtTokenProvider.validateToken(token)) {
+                    SecurityErrorWriter.write(objectMapper, request, response, HttpStatus.UNAUTHORIZED);
+                    return;
+                }
+                SecurityContextHolder.getContext().setAuthentication(jwtTokenProvider.getAuthentication(token));
+            } catch (AuthenticationException | JwtException | IllegalArgumentException ex) {
+                SecurityContextHolder.clearContext();
+                SecurityErrorWriter.write(objectMapper, request, response, HttpStatus.UNAUTHORIZED);
+                return;
+            } catch (RuntimeException ex) {
+                SecurityContextHolder.clearContext();
+                SecurityErrorWriter.write(objectMapper, request, response, HttpStatus.INTERNAL_SERVER_ERROR);
+                return;
+            }
         }
         chain.doFilter(request, response);
     }

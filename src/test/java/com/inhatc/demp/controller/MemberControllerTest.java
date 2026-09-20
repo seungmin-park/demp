@@ -14,7 +14,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.security.test.context.support.WithMockUser;
+import com.inhatc.demp.support.WithMember;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,7 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockBean(JwtTokenProvider.class)
 @WebMvcTest(MemberController.class)
 @ContextConfiguration(classes = {MemberController.class, ExController.class, SecurityConfiguration.class, WebConfig.class})
-@WithMockUser(roles = "USER")
+@WithMember
 class MemberControllerTest {
     @MockBean
     private MemberService memberService;
@@ -44,7 +44,7 @@ class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(41))
                 .andExpect(jsonPath("$.username").value("member-a"))
-                .andExpect(jsonPath("$.password").value("test-password"));
+                .andExpect(jsonPath("$.password").doesNotExist());
     }
     @ParameterizedTest
     @DisplayName("회원 이름 중복 확인 결과를 응답 본문으로 반환한다")
@@ -56,6 +56,16 @@ class MemberControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(content().string(Boolean.toString(available)));
         verify(memberService).validationDuplicateUsername("member-a");
+    }
+
+    @Test
+    @DisplayName("내부 오류의 상세 정보를 응답에 노출하지 않는다")
+    void hidesInternalErrorDetails() throws Exception {
+        when(memberService.findById(99L)).thenThrow(new IllegalStateException("SQL secret-password private-token"));
+        mockMvc.perform(get("/api/member/99"))
+                .andExpect(status().isInternalServerError())
+                .andExpect(jsonPath("$.errorCode").value(500))
+                .andExpect(content().string(org.hamcrest.Matchers.not(org.hamcrest.Matchers.containsString("secret-password"))));
     }
 
 }

@@ -20,13 +20,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import com.inhatc.demp.support.WithMember;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.util.NestedServletException;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -34,7 +35,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockBean(JwtTokenProvider.class)
 @WebMvcTest(QuestionController.class)
 @ContextConfiguration(classes = {QuestionController.class, ExController.class, SecurityConfiguration.class, WebConfig.class})
-@WithMockUser(roles = "USER")
+@WithMember
 class QuestionControllerTest {
     @MockBean
     private QuestionService questionService;
@@ -44,11 +45,33 @@ class QuestionControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
+    @DisplayName("없는 질문의 상세 조회는 공통 오류 본문과 404를 반환한다")
+    void missingQuestionDetail() throws Exception {
+        when(questionService.findById(999L)).thenThrow(new com.inhatc.demp.error.ResourceNotFoundException());
+
+        mockMvc.perform(get("/api/question/detail/999"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errorCode").value(404))
+                .andExpect(jsonPath("$.errorMessage").value("Resource not found"));
+    }
+
+    @Test
+    @DisplayName("깨진 JSON 요청은 안전한 400으로 거절하고 서비스를 호출하지 않는다")
+    void rejectsMalformedJson() throws Exception {
+        mockMvc.perform(patch("/api/question/update")
+                        .contentType(MediaType.APPLICATION_JSON).content("{"))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value(400))
+                .andExpect(jsonPath("$.errorMessage").value("Invalid request"));
+        verifyNoInteractions(questionService);
+    }
+
+    @Test
     @DisplayName("질문 삭제 요청의 ID를 서비스에 전달한다")
     void deleteQuestion() throws Exception {
         mockMvc.perform(delete("/api/question/delete").param("questionId", "41"))
                 .andExpect(status().isOk());
-        verify(questionService).deleteQuestion(41L);
+        verify(questionService).deleteQuestion(41L, 41L);
     }
 
     @Test
@@ -59,7 +82,7 @@ class QuestionControllerTest {
                         .content(objectMapper.writeValueAsString(new QuestionUpdateForm(41L, "수정 제목", "수정 내용", new ArrayList<>(List.of("java", "jpa"))))))
                 .andExpect(status().isOk());
         ArgumentCaptor<QuestionUpdateForm> form = ArgumentCaptor.forClass(QuestionUpdateForm.class);
-        verify(questionService).updateQuestion(form.capture());
+        verify(questionService).updateQuestion(eq(41L), form.capture());
         assertThat(form.getValue().getQuestionId()).isEqualTo(41L);
         assertThat(form.getValue().getTitle()).isEqualTo("수정 제목");
         assertThat(form.getValue().getContent()).isEqualTo("수정 내용");
@@ -68,13 +91,12 @@ class QuestionControllerTest {
 
     @Test
     @DisplayName("질문 수정 중 발생한 현재 예외가 전파된다")
-    void updateQuestionFail() {
-        doThrow(new NoSuchElementException("데이터 존재X")).when(questionService).updateQuestion(any());
-        assertThatThrownBy(() -> mockMvc.perform(patch("/api/question/update")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsString(new QuestionUpdateForm(200L, "수정 제목", "수정 내용", new ArrayList<>(List.of()))))))
-                .isInstanceOf(NestedServletException.class)
-                .hasRootCauseInstanceOf(NoSuchElementException.class);
+    void updateQuestionFail() throws Exception {
+        doThrow(new com.inhatc.demp.error.ResourceNotFoundException()).when(questionService).updateQuestion(eq(41L), any());
+        QuestionUpdateForm request = new QuestionUpdateForm(200L, "title", "content", new ArrayList<>());
+        mockMvc.perform(patch("/api/question/update").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(request)))
+                .andExpect(status().isNotFound()).andExpect(jsonPath("$.errorCode").value(404));
     }
     @Test
     @DisplayName("질문 등록 요청의 모든 필드를 서비스로 전달한다")
@@ -89,7 +111,7 @@ class QuestionControllerTest {
                 .andExpect(content().string("ok"));
 
         ArgumentCaptor<QuestionForm> form = ArgumentCaptor.forClass(QuestionForm.class);
-        verify(questionService).join(form.capture());
+        verify(questionService).join(eq(41L), form.capture());
         assertThat(form.getValue()).usingRecursiveComparison().isEqualTo(request);
     }
 

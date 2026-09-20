@@ -32,6 +32,8 @@ class QuestionServiceTest {
     @Autowired
     private QuestionService questionService;
     @Autowired
+    private AnswerService answerService;
+    @Autowired
     private AnswerRepository answerRepository;
     @Autowired
     private QuestionRepository questionRepository;
@@ -42,19 +44,10 @@ class QuestionServiceTest {
 
     @AfterEach
     void cleanUp() {
-        memberRepository.findByUsername("question-service-member").ifPresent(member -> {
-            answerRepository.deleteAll(answerRepository.findAll().stream()
-                    .filter(answer -> answer.getMember().getId().equals(member.getId()))
-                    .collect(Collectors.toList()));
-            // 질문 삭제 시 연결된 QuestionHashtag도 함께 삭제된다.
-            questionRepository.deleteAll(questionRepository.findAll().stream()
-                    .filter(question -> question.getMember().getId().equals(member.getId()))
-                    .collect(Collectors.toList()));
-            hashtagRepository.deleteAll(hashtagRepository.findAll().stream()
-                    .filter(hashtag -> hashtag.getTagName().startsWith("test-"))
-                    .collect(Collectors.toList()));
-            memberRepository.delete(member);
-        });
+        answerRepository.deleteAllInBatch();
+        questionRepository.deleteAll();
+        hashtagRepository.deleteAllInBatch();
+        memberRepository.deleteAll();
     }
 
     @Test
@@ -63,7 +56,7 @@ class QuestionServiceTest {
         Member member = memberRepository.save(new Member("question-service-member", "password", List.of("ROLE_USER")));
         QuestionForm form = new QuestionForm("제목테스트", "내용테스트", "question-service-member", new ArrayList<>(List.of("test-java", "test-jpa")));
 
-        questionService.join(form);
+        questionService.join(member.getId(), form);
 
         List<Question> result = questionRepository.findAll().stream()
                 .filter(question -> question.getTitle().equals("제목테스트"))
@@ -93,14 +86,14 @@ class QuestionServiceTest {
     }
 
     @Test
-    @DisplayName("초기 해시태그와 새 해시태그를 중복 없이 조회한다")
+    @DisplayName("저장한 해시태그를 중복 없이 조회한다")
     void findAllHashtags() {
         Member member = memberRepository.save(new Member("question-service-member", "password", List.of("ROLE_USER")));
         saveQuestion(member, "질문1", "내용1", "test-java", "test-jpa");
         saveQuestion(member, "질문2", "내용2", "test-spring", "test-jpa");
         saveQuestion(member, "질문3", "내용3", "test-html", "test-css");
 
-        assertThat(questionService.findAllHashtags()).containsExactlyInAnyOrder("java", "jpa", "cs", "thread", "test-java", "test-jpa", "test-spring", "test-html", "test-css");
+        assertThat(questionService.findAllHashtags()).containsExactlyInAnyOrder("test-java", "test-jpa", "test-spring", "test-html", "test-css");
     }
 
     @Test
@@ -111,7 +104,7 @@ class QuestionServiceTest {
         Question question = saveQuestion(member, "질문", "내용");
         AnswerForm form = new AnswerForm("missing-member", question.getId(), "댓글 테스트");
 
-        assertThatThrownBy(() -> questionService.saveAnswer(form)).isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> answerService.save(-1L, form)).isInstanceOf(com.inhatc.demp.error.ResourceNotFoundException.class);
         assertThat(answerRepository.findAll()).extracting(Answer::getId).containsExactlyInAnyOrderElementsOf(existingIds);
     }
 
@@ -127,7 +120,7 @@ class QuestionServiceTest {
         existingAnswer.settingQuestion(question);
         answerRepository.save(existingAnswer);
 
-        List<QuestionAnswer> result = questionService.saveAnswer(new AnswerForm("question-service-member", question.getId(), "댓글 테스트"));
+        List<QuestionAnswer> result = answerService.save(member.getId(), new AnswerForm("question-service-member", question.getId(), "댓글 테스트"));
 
         assertThat(result).extracting(QuestionAnswer::getContent, QuestionAnswer::getUsername)
                 .containsExactlyInAnyOrder(tuple("기존 댓글", "question-service-member"), tuple("댓글 테스트", "question-service-member"));
@@ -146,9 +139,9 @@ class QuestionServiceTest {
         answer.settingQuestion(question);
         answerRepository.save(answer);
 
-        questionService.deleteQuestion(questionId);
+        questionService.deleteQuestion(member.getId(), questionId);
 
-        assertThatThrownBy(() -> questionService.findById(questionId)).isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> questionService.findById(questionId)).isInstanceOf(com.inhatc.demp.error.ResourceNotFoundException.class);
         assertThat(questionRepository.findById(questionId)).isEmpty();
         assertThat(answerRepository.findByQuestion_Id(questionId)).isEmpty();
     }
@@ -160,14 +153,14 @@ class QuestionServiceTest {
         Question question = saveQuestion(member, "원래 제목", "원래 내용", "test-java");
         Long questionId = question.getId();
 
-        questionService.updateQuestion(new QuestionUpdateForm(questionId, "수정 제목", "수정 내용", new ArrayList<>(List.of("test-jpa"))));
+        questionService.updateQuestion(member.getId(), new QuestionUpdateForm(questionId, "수정 제목", "수정 내용", new ArrayList<>(List.of("test-jpa"))));
 
         QuestionDetail saved = questionService.findById(questionId);
         assertThat(saved.getTitle()).isEqualTo("수정 제목");
         assertThat(saved.getContent()).isEqualTo("수정 내용");
         // Existing behavior appends tags; replacement semantics belong to T31.
         assertThat(saved.getHashtags()).containsExactlyInAnyOrder("test-java", "test-jpa");
-        assertThat(questionService.findAllHashtags()).containsExactlyInAnyOrder("java", "jpa", "cs", "thread", "test-java", "test-jpa");
+        assertThat(questionService.findAllHashtags()).containsExactlyInAnyOrder("test-java", "test-jpa");
     }
 
     @Test
@@ -176,7 +169,7 @@ class QuestionServiceTest {
         List<Long> existingIds = questionRepository.findAll().stream().map(Question::getId).collect(Collectors.toList());
         QuestionUpdateForm form = new QuestionUpdateForm(999L, "수정 제목", "수정 내용", new ArrayList<>(List.of("test-jpa")));
 
-        assertThatThrownBy(() -> questionService.updateQuestion(form)).isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> questionService.updateQuestion(-1L, form)).isInstanceOf(com.inhatc.demp.error.ResourceNotFoundException.class);
         assertThat(questionRepository.findAll()).extracting(Question::getId).containsExactlyInAnyOrderElementsOf(existingIds);
     }
     @Test
@@ -186,10 +179,24 @@ class QuestionServiceTest {
         List<Long> existingIds = answerRepository.findAll().stream().map(Answer::getId).collect(Collectors.toList());
         AnswerForm request = new AnswerForm("question-service-member", -1L, "댓글");
 
-        assertThatThrownBy(() -> questionService.saveAnswer(request)).isInstanceOf(NoSuchElementException.class);
+        assertThatThrownBy(() -> answerService.save(memberRepository.findByUsername("question-service-member").orElseThrow().getId(), request)).isInstanceOf(com.inhatc.demp.error.ResourceNotFoundException.class);
 
         assertThat(answerRepository.findAll()).extracting(Answer::getId)
                 .containsExactlyInAnyOrderElementsOf(existingIds);
+    }
+
+
+    @Test
+    @DisplayName("질문 등록과 수정은 HTML을 정제하고 별도 조회에 반영한다")
+    void persistsSanitizedContent() {
+        Member member = memberRepository.save(new Member("question-service-member", "hash", List.of("ROLE_USER")));
+        questionService.join(member.getId(), new QuestionForm("safe-question", "<b>safe</b><script>bad()</script>", "forged", new ArrayList<>()));
+        Question saved = questionRepository.findAll().get(0);
+        assertThat(saved.getContent()).isEqualTo("<b>safe</b>");
+        assertThat(questionService.findById(saved.getId()).getContent()).isEqualTo("<b>safe</b>");
+        questionService.updateQuestion(member.getId(), new QuestionUpdateForm(saved.getId(), "safe-question", "<p onclick='bad()'>changed</p>", new ArrayList<>()));
+        assertThat(questionRepository.findById(saved.getId()).orElseThrow().getContent()).isEqualTo("<p>changed</p>");
+        assertThat(questionService.findById(saved.getId()).getContent()).isEqualTo("<p>changed</p>");
     }
 
     private Question saveQuestion(Member member, String title, String content, String... tags) {

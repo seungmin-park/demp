@@ -8,7 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 class DempApplicationTests {
 
     @Test
-    @DisplayName("InitDb를 포함한 애플리케이션 컨텍스트가 기동된다")
+    @DisplayName("예제 데이터 초기화 없이 애플리케이션 컨텍스트가 기동된다")
     void contextLoads() {
     }
 

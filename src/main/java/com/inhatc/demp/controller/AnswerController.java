@@ -1,50 +1,32 @@
 package com.inhatc.demp.controller;
 
-import com.inhatc.demp.domain.Answer;
+import com.inhatc.demp.config.security.MemberPrincipal;
 import com.inhatc.demp.dto.answer.AnswerForm;
 import com.inhatc.demp.dto.answer.UpdateAnswerForm;
 import com.inhatc.demp.dto.question.QuestionAnswer;
-import com.inhatc.demp.repository.AnswerRepository;
-import com.inhatc.demp.service.QuestionService;
+import com.inhatc.demp.service.AnswerService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/answer")
 public class AnswerController {
-
-    private final AnswerRepository answerRepository;
-    private final QuestionService questionService;
-
+    private final AnswerService answerService;
     @GetMapping("/{questionId}")
-    public ResponseEntity<List<QuestionAnswer>> getAnswersByQuestion(@PathVariable Long questionId) {
-
-        List<Answer> answers = answerRepository.findByQuestion_Id(questionId);
-        List<QuestionAnswer> result = answers.stream().map(QuestionAnswer::new).collect(Collectors.toList());
-
-        return new ResponseEntity<>(result, HttpStatus.OK);
-    }
-
+    public List<QuestionAnswer> getAnswersByQuestion(@PathVariable Long questionId) { return answerService.findByQuestion(questionId); }
     @PostMapping("/save")
-    public List<QuestionAnswer> saveAnswer(@RequestBody AnswerForm answerForm) {
-        return questionService.saveAnswer(answerForm);
+    public List<QuestionAnswer> saveAnswer(@AuthenticationPrincipal MemberPrincipal principal, @RequestBody AnswerForm form) {
+        return answerService.save(principal.getMemberId(), form);
     }
-
     @PatchMapping("/update")
-    public void updateAnswer(@RequestBody UpdateAnswerForm updateAnswerForm) {
-        Answer answer = answerRepository.findById(updateAnswerForm.getAnswerId()).orElseThrow(() -> new NoSuchElementException("해당 데이터 존재x"));
-        answer.updateAnswer(updateAnswerForm.getAnswerContent());
+    public void updateAnswer(@AuthenticationPrincipal MemberPrincipal principal, @RequestBody UpdateAnswerForm form) {
+        answerService.update(principal.getMemberId(), form);
     }
-
     @DeleteMapping("/delete")
-    public void deleteAnswer(@RequestParam Long answerId) {
-        answerRepository.deleteById(answerId);
+    public void deleteAnswer(@AuthenticationPrincipal MemberPrincipal principal, @RequestParam Long answerId) {
+        answerService.delete(principal.getMemberId(), answerId);
     }
 }

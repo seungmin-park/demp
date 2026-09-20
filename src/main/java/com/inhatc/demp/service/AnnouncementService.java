@@ -1,6 +1,7 @@
 package com.inhatc.demp.service;
 
 import com.inhatc.demp.domain.announcemnet.Announcement;
+import com.inhatc.demp.domain.announcemnet.Description;
 import com.inhatc.demp.domain.announcemnet.UploadFile;
 import com.inhatc.demp.dto.announcement.AnnouncementCreateRequest;
 import com.inhatc.demp.dto.announcement.AnnouncementResponse;
@@ -26,8 +27,10 @@ public class AnnouncementService {
     private final AnnouncementRepository announcementRepository;
     private final AnnouncementQueryRepository announcementQueryRepository;
     private final FileService fileService;
+    private final ContentSanitizer contentSanitizer;
     @Transactional
     public void join(Announcement announcement) {
+        announcement.changeDescription(sanitizeDescription(announcement.getDescription()));
         announcementRepository.save(announcement);
     }
 
@@ -45,7 +48,7 @@ public class AnnouncementService {
                 .announcementType(announcementCreateRequest.getType())
                 .career(announcementCreateRequest.getCareer())
                 .recruitPeriod(announcementCreateRequest.getRecruitPeriod())
-                .description(announcementCreateRequest.getDescription())
+                .description(sanitizeDescription(announcementCreateRequest.getDescription()))
                 .company(announcementCreateRequest.getCompany())
                 .image(image)
                 .jobPosition(announcementCreateRequest.getPosition())
@@ -53,6 +56,14 @@ public class AnnouncementService {
 
 
         announcementRepository.save(announcement);
+    }
+
+    private Description sanitizeDescription(Description description) {
+        if (description == null) {
+            return null;
+        }
+        return new Description(contentSanitizer.sanitize(description.getContent()), description.getAccessUrl(),
+                description.getPayment(), description.getLanguages());
     }
 
     public Slice<AnnouncementResponse> getAnnounceScroll(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {

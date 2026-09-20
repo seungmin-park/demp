@@ -15,8 +15,8 @@ NOTE: Phase 0에서 실행 검증한 계약은 목록·스크롤·없는 상세�
 === multipart 등록 요청: 현재 구현의 실패 응답
 
 아래 예제는 등록 성공이 아니다. 실제 검증기에서 enum에 적용된 문자열 제약으로 실패하며,
-저장 서비스가 호출되지 않는다. 현재 예외 처리기는 HTTP 200과 본문 오류 코드 400을 반환한다.
-정상 등록은 T20, HTTP 상태와 안전한 오류 메시지의 정합성은 T14에서 수정한다.
+저장 서비스가 호출되지 않는다. 검증 설정 오류는 HTTP 500과 고정 오류 안내를 반환한다.
+정상 등록 계약은 T20에서 수정한다.
 
 .HTTP 요청
 include::{snippets}/announcement-add-validation-failure/http-request.adoc[]

@@ -5,6 +5,8 @@ endif::[]
 [[Question-API]]
 == Question API
 
+작성자와 수정·삭제 권한은 JWT의 인증 회원 ID로 판정한다. 요청 username은 호환을 위해 받지만 작성자 판정에 사용하지 않는다.
+
 [[Question-목록]]
 === 질문 목록과 검색
 .HTTP 요청

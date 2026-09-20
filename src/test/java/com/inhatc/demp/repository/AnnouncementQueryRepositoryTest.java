@@ -265,10 +265,11 @@ class AnnouncementQueryRepositoryTest {
 
     private Announcement saveAnnouncement(String title, AnnouncementType type, JobPosition position,
                                           Set<Language> languages, int payment) {
-        return announcementRepository.save(new Announcement(title, new Career(0, 3),
-                new Description("description", "https://example.test/jobs", payment, new HashSet<>(languages)),
-                new Company("company"), new UploadFile(),
-                new RecruitPeriod(LocalDateTime.of(2021, 3, 4, 0, 0), LocalDateTime.of(2021, 3, 21, 0, 0)),
-                type, position));
+        return announcementRepository.save(Announcement.builder()
+                .title(title).career(new Career(0, 3))
+                .description(new Description("description", "https://example.test/jobs", payment, new HashSet<>(languages)))
+                .company(new Company("company")).image(new UploadFile())
+                .recruitPeriod(new RecruitPeriod(LocalDateTime.of(2021, 3, 4, 0, 0), LocalDateTime.of(2021, 3, 21, 0, 0)))
+                .announcementType(type).jobPosition(position).build());
     }
 }

@@ -25,12 +25,13 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.context.support.WithMockUser;
+import com.inhatc.demp.support.WithMember;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.refEq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
@@ -53,7 +54,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockBean(JwtTokenProvider.class)
 @WebMvcTest(QuestionController.class)
 @ContextConfiguration(classes = {QuestionController.class, ExController.class, SecurityConfiguration.class, WebConfig.class})
-@WithMockUser(roles = "USER")
+@WithMember
 @AutoConfigureRestDocs
 class QuestionRestDocsTest {
 
@@ -171,9 +172,9 @@ class QuestionRestDocsTest {
                         requestFields(
                                 fieldWithPath("title").description("질문 제목"),
                                 fieldWithPath("content").description("질문 본문"),
-                                fieldWithPath("username").description("현재 요청에 포함되는 작성자 이름(T12에서 principal 기준으로 변경 예정)"),
+                                fieldWithPath("username").description("호환 입력이며 작성자는 인증 회원으로 결정한다"),
                                 fieldWithPath("hashtags").description("태그 목록"))));
-        verify(questionService).join(refEq(request));
+        verify(questionService).join(eq(41L), refEq(request));
     }
 
     @Test
@@ -198,7 +199,7 @@ class QuestionRestDocsTest {
                                 fieldWithPath("title").description("수정할 제목"),
                                 fieldWithPath("content").description("수정할 본문"),
                                 fieldWithPath("hashtags").description("기존 태그에 추가할 목록. 태그 교체는 T31에서 변경 예정"))));
-        verify(questionService).updateQuestion(refEq(request));
+        verify(questionService).updateQuestion(eq(41L), refEq(request));
     }
 
     @Test
@@ -214,6 +215,6 @@ class QuestionRestDocsTest {
                 .andDo(document("question-delete",
                         requestHeaders(headerWithName("X-AUTH-TOKEN").description("로그인 시 발급된 JWT")),
                         requestParameters(parameterWithName("questionId").description("삭제할 질문 ID"))));
-        verify(questionService).deleteQuestion(questionId);
+        verify(questionService).deleteQuestion(41L, questionId);
     }
 }
