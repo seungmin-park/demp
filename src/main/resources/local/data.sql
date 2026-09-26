@@ -5,9 +5,11 @@ SELECT -1, 'local-member', '$2a$10$oU7dWyYnUSLfcCU0.7Zffep0oc0YcId/ILnao2ahXC0ww
 WHERE NOT EXISTS (SELECT 1 FROM member WHERE member_id = -1);
 INSERT INTO member_roles (member_member_id, roles)
 SELECT -1, 'ROLE_USER' WHERE NOT EXISTS (SELECT 1 FROM member_roles WHERE member_member_id = -1 AND roles = 'ROLE_USER');
-INSERT INTO announcement (id, title, announcement_type, min_career, max_career, name, content, payment, job_position, started_date, dead_line_date)
-SELECT -1, '로컬 개발자 모집 예제', 'EMP', 0, 3, 'Local Company', '로컬 화면 확인용 공고입니다.', 0, 'BACKEND', '2026-01-01 00:00:00', '2030-12-31 00:00:00'
+INSERT INTO announcement (id, title, announcement_type, min_career, max_career, name, content, payment, job_position, started_date, dead_line_date, upload_file_name, save_file_name)
+SELECT -1, '로컬 개발자 모집 예제', 'EMP', 0, 3, 'Local Company', '로컬 화면 확인용 공고입니다.', 0, 'BACKEND', '2026-01-01 00:00:00', '2030-12-31 00:00:00', 'noimg.jpg', 'noimg.jpg'
 WHERE NOT EXISTS (SELECT 1 FROM announcement WHERE id = -1);
+UPDATE announcement SET upload_file_name = 'noimg.jpg', save_file_name = 'noimg.jpg'
+WHERE id = -1 AND save_file_name IS NULL;
 INSERT INTO language (announcement_id, languages)
 SELECT -1, 'JAVA' WHERE NOT EXISTS (SELECT 1 FROM language WHERE announcement_id = -1 AND languages = 'JAVA');
 INSERT INTO question (question_id, title, content, created_date, hits, recommend, dislike, member_id)

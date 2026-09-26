@@ -410,16 +410,18 @@ assertThat(answerRepository.findById(answerId).orElseThrow().getContent())
 
 ## Phase 6 · 통합 검증과 인수
 
+작업 브랜치(양쪽 저장소): `refactor/integration-ci-and-user-flows`. worktree: B `/Users/seungmin/Desktop/repo/archive/demp/.worktrees/integration-ci-and-user-flows/backend`, F `/Users/seungmin/Desktop/repo/archive/dempfrontend/.worktrees/integration-ci-and-user-flows/frontend`. Phase 5 완료 커밋 B `3c0ac02`, F `fd26a50`에서 시작한다.
+
 ### T50 · 전체 사용자 흐름과 CI — S01~S13
 
 생성 B/F: `.github/workflows/ci.yml`. 생성 F: `tests/e2e/community.spec.js`, `playwright.config.js`. 수정 B/F: README.md. 외부 시스템은 격리된 테스트 DB/파일 저장 대역을 사용한다.
 
-- [ ] 양쪽 CI에서 lockfile 설치, B `./gradlew test`, F 테스트/lint/build를 실행한다. 실패 단계에서 pipeline이 종료되는지 확인한다.
-- [ ] B REST Docs 테스트도 전체 test에 포함하고 `./gradlew asciidoctor`로 API HTML을 생성한다. 문서 테스트 실패·누락 snippet·내부 정보가 포함된 예제가 있으면 인수하지 않는다.
-- [ ] 회원가입→로그인→공고 필터→상세→질문 작성→답변→별도 재조회 흐름의 E2E를 작성한다.
-- [ ] 다른 회원의 수정 거절, 만료 로그인, HTML 콘텐츠, 검색 응답 역전, 새로고침 후 상태를 추가한다.
-- [ ] 테스트 fixture를 독립적으로 생성·정리하고 생산 데이터/운영 S3 접근이 없는지 확인한다.
-- [ ] 아래 명령 결과를 날짜·실제 건수와 함께 기록한다. 실행하지 않은 명령을 통과로 적지 않는다.
+- [x] 양쪽 CI에서 lockfile 설치, B `./gradlew test`, F 테스트/lint/build를 실행한다. 실패 단계에서 pipeline이 종료되는지 확인한다.
+- [x] B REST Docs 테스트도 전체 test에 포함하고 `./gradlew asciidoctor`로 API HTML을 생성한다. 문서 테스트 실패·누락 snippet·내부 정보가 포함된 예제가 있으면 인수하지 않는다.
+- [x] 회원가입→로그인→공고 필터→상세→질문 작성→답변→별도 재조회 흐름의 E2E를 작성한다.
+- [x] 다른 회원의 수정 거절, 만료 로그인, HTML 콘텐츠, 검색 응답 역전, 새로고침 후 상태를 추가한다.
+- [x] 테스트 fixture를 독립적으로 생성·정리하고 생산 데이터/운영 S3 접근이 없는지 확인한다.
+- [x] 아래 명령 결과를 날짜·실제 건수와 함께 기록한다. 실행하지 않은 명령을 통과로 적지 않는다.
 
 ```sh
 # B
@@ -433,7 +435,9 @@ npm run build
 npx playwright test
 ```
 
-- [ ] 변경된 API fixture와 spec.md를 대조하고 양쪽 동시 배포/rollback 순서를 README에 기록한다. GitHub push·배포는 이 문서 작성 요청의 실행 범위에 포함하지 않는다.
+- [x] 변경된 API fixture와 spec.md를 대조하고 양쪽 동시 배포/rollback 순서를 README에 기록한다. GitHub push·배포는 이 문서 작성 요청의 실행 범위에 포함하지 않는다.
+
+2026-09-26: [T50 검증 기록](docs/verification/integration-ci-and-user-flows/README.md)에 실제 Red·Green·Refactor, API fixture 대조, 정적 CI 판정과 실행 결과를 기록했다. B `clean test` 33 suite·195 test·실패 0, `asciidoctor` HTML·누락 참조·내부 키 검사 통과. 별도 임시 H2 Spring API 점검 14개 요청으로 공고·가입·로그인·질문·답변 재조회 및 403/401을 확인했다. F `npm ci` 성공, 17 suite·45 test, lint·build, Chromium E2E 4개 통과. 실제 GitHub Actions 실행과 브라우저→실제 Spring 단일 연결 실행은 하지 않았으며 각각 workflow 구성 및 분리된 브라우저/API 검증으로 범위를 명시했다. 프런트 커밋 `4cded55`. Phase 7 버전 갱신과 TypeScript 체크리스트는 T50 이후 작업으로 유지한다.
 
 ## Phase 7 · 런타임·프레임워크 갱신과 TypeScript 도입 (T50 완료 후)
 

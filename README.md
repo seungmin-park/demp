@@ -1,5 +1,18 @@
 # DEMP
 
+## Phase 6 CI 및 인수 절차
+
+CI는 Java 11과 Gradle wrapper, `gradle.lockfile`의 고정 의존성을 사용해 `./gradlew clean test` 후 `./gradlew asciidoctor`를 실행한다. 전체 테스트에 REST Docs 생성 테스트가 포함되며, 생성 HTML의 존재, unresolved snippet 표기, 테스트 전용 내부 키 노출을 검사한다. 테스트 설정은 고유 H2 메모리 DB와 테스트 전용 S3 설정을 사용하며 파일 저장은 테스트 대역으로 격리한다. 운영 DB와 S3에 접속하는 테스트 명령은 없다.
+
+실제 Spring API 흐름은 별도 프로세스에서 임시 메모리 H2로 검증할 수 있다. 첫 터미널에서 다음 서버를 시작하고, 둘째 터미널에서 `python3 scripts/verify_local_flow.py`를 실행한 뒤 서버를 종료한다. 이 스크립트는 loopback 주소만 허용하며 공고 이미지를 업로드하지 않는다. 서버 종료 시 임시 DB fixture가 사라진다.
+
+```sh
+SPRING_PROFILES_ACTIVE=local SPRING_DATASOURCE_URL='jdbc:h2:mem:t50;MODE=MySQL;DB_CLOSE_DELAY=-1' PORT=18080 AWS_EC2_METADATA_DISABLED=true ./gradlew bootRun
+python3 scripts/verify_local_flow.py
+```
+
+양쪽 저장소의 같은 API 계약 커밋을 확인한 뒤 백엔드와 프런트 CI를 모두 통과시킨다. 운영 배포는 기존 클라이언트와 호환되는 백엔드를 먼저 배포하고 인증·공고·질문·답변 API를 확인한 뒤 프런트 산출물을 교체한다. 실패 시 프런트 산출물을 직전 버전으로 되돌리고, 이어 백엔드를 직전 호환 버전으로 되돌린다. 스키마 변경이 포함되면 배포 전 백업과 변경별 복구 절차를 준비한다. 이 문서는 배포 수행 기록이 아니다.
+
 ## CORS 설정 (Phase 4 T41)
 
 `APP_CORS_ALLOWED_ORIGINS`에 브라우저가 직접 호출하는 프런트엔드 Origin을 쉼표로 구분해 지정한다. 기본값은 로컬 개발용 `http://localhost:5050`이다. 예: `APP_CORS_ALLOWED_ORIGINS=https://demp.example,https://admin.demp.example`. 요청 Origin은 목록과 정확히 일치해야 하며, 허용되지 않은 사전 요청은 403이다. 같은 출처의 `/api` reverse proxy를 사용하면 브라우저 CORS 설정이 필요하지 않다.
