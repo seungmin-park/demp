@@ -42,7 +42,7 @@ public class AnnouncementQueryRepository {
                 .fetch();
     }
 
-    public Slice<AnnouncementResponse> getAnnounceScroll(AnnouncementSearchCondition announcementSearchCondition,
+    public Slice<AnnouncementResponse> findAnnouncementSlice(AnnouncementSearchCondition announcementSearchCondition,
                                                          Pageable pageable) {
         List<Long> ids = jpaQueryFactory.select(announcement.id).from(announcement)
                 .where(typeEq(announcementSearchCondition.getAnnouncementType()),
@@ -76,7 +76,7 @@ public class AnnouncementQueryRepository {
         return ids.stream().map(byId::get).collect(Collectors.toList());
     }
 
-    public Page<Announcement> pagingTest(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
+    public Page<Announcement> findAnnouncementPage(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
         List<Long> ids = jpaQueryFactory.select(announcement.id).from(announcement)
                 .where(typeEq(announcementSearchCondition.getAnnouncementType()),
                         positionIn(announcementSearchCondition.getPositions()),

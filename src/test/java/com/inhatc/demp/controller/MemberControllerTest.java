@@ -50,12 +50,12 @@ class MemberControllerTest {
     @DisplayName("회원 이름 중복 확인 결과를 응답 본문으로 반환한다")
     @ValueSource(booleans = {true, false})
     void returnsUsernameAvailability(boolean available) throws Exception {
-        when(memberService.validationDuplicateUsername("member-a")).thenReturn(available);
+        when(memberService.isUsernameAvailable("member-a")).thenReturn(available);
 
         mockMvc.perform(get("/api/member/validUsername").param("username", "member-a"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(Boolean.toString(available)));
-        verify(memberService).validationDuplicateUsername("member-a");
+        verify(memberService).isUsernameAvailable("member-a");
     }
 
     @Test

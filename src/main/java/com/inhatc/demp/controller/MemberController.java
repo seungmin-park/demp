@@ -20,7 +20,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/{memberId}")
-    public ResponseEntity<MemberDto> Member(@PathVariable Long memberId) {
+    public ResponseEntity<MemberDto> getMember(@PathVariable Long memberId) {
         Member findMember = memberService.findById(memberId);
         MemberDto memberDto = new MemberDto(findMember.getId(), findMember.getUsername());
         return new ResponseEntity<>(memberDto, HttpStatus.OK);
@@ -35,11 +35,11 @@ public class MemberController {
 
     @PostMapping("/save")
     public ResponseEntity<MemberDto> saveMember(@Valid @ModelAttribute MemberSaveForm memberSaveForm) {
-        return ResponseEntity.ok(memberService.join(memberSaveForm));
+        return ResponseEntity.ok(memberService.registerMember(memberSaveForm));
     }
 
     @GetMapping("/validUsername")
-    public boolean validUsername(@RequestParam String username) {
-        return memberService.validationDuplicateUsername(username);
+    public boolean isUsernameAvailable(@RequestParam String username) {
+        return memberService.isUsernameAvailable(username);
     }
 }

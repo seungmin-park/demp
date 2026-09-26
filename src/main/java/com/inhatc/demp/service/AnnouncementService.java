@@ -14,7 +14,6 @@ import com.inhatc.demp.repository.announcement.AnnouncementQueryRepository;
 import com.inhatc.demp.repository.announcement.AnnouncementRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.http.HttpStatus;
@@ -41,13 +40,13 @@ public class AnnouncementService {
     private final PlatformTransactionManager transactionManager;
 
     @Transactional
-    public void join(Announcement announcement) {
+    public void saveAnnouncementEntity(Announcement announcement) {
         announcement.changeDescription(sanitizeDescription(announcement.getDescription()));
         announcementRepository.save(announcement);
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public void save(AnnouncementCreateRequest announcementCreateRequest) throws IOException {
+    public void createAnnouncement(AnnouncementCreateRequest announcementCreateRequest) throws IOException {
         Career career = new Career(announcementCreateRequest.getMinCareer(), announcementCreateRequest.getMaxCareer());
         RecruitPeriod recruitPeriod = new RecruitPeriod(announcementCreateRequest.getStartedDate(),
                 announcementCreateRequest.getDeadLineDate());
@@ -95,16 +94,8 @@ public class AnnouncementService {
                 description.getPayment(), description.getLanguages());
     }
 
-    public Slice<AnnouncementResponse> getAnnounceScroll(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
-        return announcementQueryRepository.getAnnounceScroll(announcementSearchCondition, pageable);
-    }
-
-    public Page<Announcement> pageTest(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
-        return announcementQueryRepository.pagingTest(announcementSearchCondition, pageable);
-    }
-
-    public List<Announcement> findAllByAnnouncementCondition(AnnouncementSearchCondition announcementSearchCondition) {
-        return announcementQueryRepository.findAllByAnnouncementCondition(announcementSearchCondition);
+    public Slice<AnnouncementResponse> findAnnouncementSlice(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
+        return announcementQueryRepository.findAnnouncementSlice(announcementSearchCondition, pageable);
     }
 
     public Optional<Announcement> findById(Long id) {

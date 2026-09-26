@@ -164,7 +164,7 @@ class QuestionControllerTest {
                 .andExpect(content().string("ok"));
 
         ArgumentCaptor<QuestionForm> form = ArgumentCaptor.forClass(QuestionForm.class);
-        verify(questionService).join(eq(41L), form.capture());
+        verify(questionService).createQuestion(eq(41L), form.capture());
         assertThat(form.getValue()).usingRecursiveComparison().isEqualTo(request);
     }
 

@@ -24,13 +24,54 @@ class AnswerServiceTest {
         answers.deleteAllInBatch(); questions.deleteAll(); members.deleteAll();
     }
     @Test
+    @DisplayName("회원이 없으면 답변을 저장하지 않고 기존 답변을 유지한다")
+    void rejectsMissingAuthor() {
+        Member member = members.save(new Member("answer-member", "hash", List.of("ROLE_USER")));
+        Question question = new Question("질문", "본문", 0, 0, 0);
+        question.assignMember(member); questions.save(question);
+
+        assertThatThrownBy(() -> service.createAnswerAndList(-1L,
+                new AnswerForm("missing", question.getId(), "답변")))
+                .isInstanceOf(ResourceNotFoundException.class);
+        assertThat(answers.findAll()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("답변 저장 결과는 같은 질문의 기존 답변과 새 답변을 반환한다")
+    void returnsAnswersAfterSave() {
+        Member member = members.save(new Member("answer-member", "hash", List.of("ROLE_USER")));
+        Question question = new Question("질문", "본문", 0, 0, 0);
+        question.assignMember(member); questions.save(question);
+        Answer existing = new Answer("기존", 2, 1);
+        existing.assignMember(member); existing.assignQuestion(question); answers.save(existing);
+
+        List<QuestionAnswer> result = service.createAnswerAndList(member.getId(),
+                new AnswerForm(member.getUsername(), question.getId(), "새 답변"));
+
+        assertThat(result).extracting(QuestionAnswer::getContent)
+                .containsExactlyInAnyOrder("기존", "새 답변");
+        assertThat(answers.findByQuestion_Id(question.getId())).extracting(Answer::getContent)
+                .containsExactlyInAnyOrder("기존", "새 답변");
+    }
+
+    @Test
+    @DisplayName("질문이 없으면 답변을 저장하지 않는다")
+    void rejectsMissingQuestion() {
+        Member member = members.save(new Member("answer-member", "hash", List.of("ROLE_USER")));
+
+        assertThatThrownBy(() -> service.createAnswerAndList(member.getId(),
+                new AnswerForm(member.getUsername(), -1L, "답변")))
+                .isInstanceOf(ResourceNotFoundException.class);
+        assertThat(answers.findAll()).isEmpty();
+    }
+    @Test
     @DisplayName("답변 작성자는 인증 회원이며 정제된 내용을 실제 저장한다")
     void savesSanitizedAnswerWithAuthenticatedAuthor() {
         Member actor = members.save(new Member("answer-actor", "hash", List.of("ROLE_USER")));
         Question question = new Question("title", "body", 0, 0, 0);
         question.assignMember(actor); questions.save(question);
 
-        List<QuestionAnswer> response = service.save(actor.getId(), new AnswerForm("forged", question.getId(), "<b>safe</b><script>bad()</script>"));
+        List<QuestionAnswer> response = service.createAnswerAndList(actor.getId(), new AnswerForm("forged", question.getId(), "<b>safe</b><script>bad()</script>"));
 
         assertThat(response).extracting(QuestionAnswer::getUsername).containsExactly("answer-actor");
         assertThat(answers.findByQuestion_Id(question.getId())).extracting(Answer::getContent).containsExactly("<b>safe</b>");

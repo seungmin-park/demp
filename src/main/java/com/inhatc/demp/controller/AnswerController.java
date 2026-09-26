@@ -19,7 +19,7 @@ public class AnswerController {
     public List<QuestionAnswer> getAnswersByQuestion(@PathVariable Long questionId) { return answerService.findByQuestion(questionId); }
     @PostMapping("/save")
     public List<QuestionAnswer> saveAnswer(@AuthenticationPrincipal MemberPrincipal principal, @RequestBody AnswerForm form) {
-        return answerService.save(principal.getMemberId(), form);
+        return answerService.createAnswerAndList(principal.getMemberId(), form);
     }
     @PatchMapping("/update")
     public void updateAnswer(@AuthenticationPrincipal MemberPrincipal principal, @RequestBody UpdateAnswerForm form) {

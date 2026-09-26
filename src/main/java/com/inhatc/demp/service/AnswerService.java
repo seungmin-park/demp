@@ -26,7 +26,7 @@ public class AnswerService {
         return answers.findByQuestion_Id(questionId).stream().map(QuestionAnswer::new).collect(Collectors.toList());
     }
     @Transactional
-    public List<QuestionAnswer> save(Long actorId, AnswerForm form) {
+    public List<QuestionAnswer> createAnswerAndList(Long actorId, AnswerForm form) {
         Member member = members.findById(actorId).orElseThrow(ResourceNotFoundException::new);
         Question question = questions.findById(form.getQuestionId()).orElseThrow(ResourceNotFoundException::new);
         Answer answer = new Answer(sanitizer.sanitize(form.getAnswerContent()), 0, 0);

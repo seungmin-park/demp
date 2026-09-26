@@ -108,7 +108,7 @@ class AnnouncementRestDocsTest {
                                 parameterWithName("payment").description("연봉 또는 교육비, 만원 단위"),
                                 parameterWithName("language").description("기술 언어 목록")),
                         requestParts(partWithName("image").description("필수 JPEG 또는 PNG 이미지"))));
-        verify(announcementService).save(org.mockito.ArgumentMatchers.any());
+        verify(announcementService).createAnnouncement(org.mockito.ArgumentMatchers.any());
     }
 
     @Test
@@ -181,7 +181,7 @@ class AnnouncementRestDocsTest {
         AnnouncementResponse responseItem = new AnnouncementResponse(announcement);
         PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("title").ascending());
         Slice<AnnouncementResponse> response = new SliceImpl<>(List.of(responseItem), pageRequest, false);
-        when(announcementService.getAnnounceScroll(refEq(request), org.mockito.ArgumentMatchers.eq(pageRequest)))
+        when(announcementService.findAnnouncementSlice(refEq(request), org.mockito.ArgumentMatchers.eq(pageRequest)))
                 .thenReturn(response);
 
         mockMvc.perform(get("/api/announce")

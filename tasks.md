@@ -382,9 +382,11 @@ assertThat(answerRepository.findById(answerId).orElseThrow().getContent())
 
 수정 후보 B: `service/QuestionService.java`, `AnnouncementService.java`, `MemberService.java`, `FileService.java`, `repository/question/QuestionQueryRepository.java`, `repository/announcement/AnnouncementQueryRepository.java`, `controller/MemberController.java` 및 호출부/관련 테스트. 실제 수정 목록은 T45 판정표로 확정한다.
 
-- [ ] `join`, `setHashtags`, `save`, `pageTest/pagingTest`, `validationDuplicateUsername`, `QuestionSort`, `getFullPath`의 호출부·반환값·부작용을 추적하고 유지/이름 변경/메서드 추출/클래스 추출 중 하나를 근거와 함께 결정한다.
-- [ ] 질문 생성/태그 관리, 공고 입력 변환/저장·보상, 파일 검증/전송이 각각 독립된 변경 이유를 가진 경우에만 협력 클래스를 추출한다. 새 클래스의 입력·출력·소유 규칙·트랜잭션/외부 효과를 판정표에 명시한다. 서비스는 유스케이스의 순서와 트랜잭션을 조정할 수 있으므로 단계 수만으로 분리하지 않는다.
-- [ ] 기존 결과·상태 코드·트랜잭션 commit·파일 삭제 보상 테스트를 먼저 실행해 기준선을 확보한다. 책임 이동 뒤 대상 테스트와 `./gradlew test`를 다시 실행하고, 동작 오류가 새로 발견되면 별도 실패 테스트를 먼저 작성한다.
+- [x] `join`, `setHashtags`, `save`, `pageTest/pagingTest`, `validationDuplicateUsername`, `QuestionSort`, `getFullPath`의 호출부·반환값·부작용을 추적하고 유지/이름 변경/메서드 추출/클래스 추출 중 하나를 근거와 함께 결정한다.
+- [x] 질문 생성/태그 관리, 공고 입력 변환/저장·보상, 파일 검증/전송이 각각 독립된 변경 이유를 가진 경우에만 협력 클래스를 추출한다. 새 클래스의 입력·출력·소유 규칙·트랜잭션/외부 효과를 판정표에 명시한다. 서비스는 유스케이스의 순서와 트랜잭션을 조정할 수 있으므로 단계 수만으로 분리하지 않는다.
+- [x] 기존 결과·상태 코드·트랜잭션 commit·파일 삭제 보상 테스트를 먼저 실행해 기준선을 확보한다. 책임 이동 뒤 대상 테스트와 `./gradlew test`를 다시 실행하고, 동작 오류가 새로 발견되면 별도 실패 테스트를 먼저 작성한다.
+
+2026-09-26: 기준선은 T46 완료의 `clean test asciidoctor bootJar` 192개 통과다. T47은 공개 동작을 바꾸지 않는 이름·책임 정리여서 새 기능 Red를 주장하지 않는다. `join`은 회원 등록/질문 생성/준비된 공고 엔티티 저장으로 구분했고, 요청 DTO 공고 저장은 `createAnnouncement`, 답변 저장·목록 반환은 `createAnswerAndList`로 명명했다. `validationDuplicateUsername`은 실제 반환값인 `isUsernameAvailable`, 운영 `pagingTest/getAnnounceScroll`은 `findAnnouncementPage/findAnnouncementSlice`로 바꿨다. T31의 `setHashtags`와 T32의 `QuestionSort`는 이미 제거되었음을 호출부에서 확인했다. 사용처가 없는 서비스 페이지 전달·전체 조회와 `getFullPath`를 제거했다. `HashtagResolver`는 `List<String> → List<Hashtag>` 정규화·조회·저장을 맡고 질문 서비스의 트랜잭션 안에서 호출된다. `ImageValidator`는 `MultipartFile → 검증된 확장자`의 무상태 파일 정책을 맡고 S3 전송은 `FileService`에 남긴다. 공고 DTO 변환·업로드·DB commit·실패 보상은 하나의 생성 유스케이스에 속하므로 `AnnouncementService`에 유지했다. Controller 테스트 이름을 HTTP 전달 assertion에 맞추고 답변 서비스 사례 세 개를 `AnswerServiceTest`로 옮겼다. 이 이름 변경은 HTTP route, JSON, DB 컬럼을 바꾸지 않는다. 파일 형식·업로드 보상·서비스 대상 테스트 통과, Refactor 후 전체 `./gradlew test` 31 suite·192 test·실패 0, 직전 `clean test asciidoctor bootJar` 성공.
 
 ### T48 · 프런트 도메인 이름과 상태·API 경계 — T40~T42 이후
 

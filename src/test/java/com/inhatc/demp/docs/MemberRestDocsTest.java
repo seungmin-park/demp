@@ -108,7 +108,7 @@ class MemberRestDocsTest {
     @DisplayName("회원 가입 요청과 현재 응답을 문서화한다")
     void documentsMemberSave() throws Exception {
         MemberSaveForm request = new MemberSaveForm("docs-new-member", "docs-signup-password");
-        when(memberService.join(refEq(request))).thenReturn(new MemberDto(43L, "docs-new-member"));
+        when(memberService.registerMember(refEq(request))).thenReturn(new MemberDto(43L, "docs-new-member"));
 
         mockMvc.perform(post("/api/member/save")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
@@ -125,7 +125,7 @@ class MemberRestDocsTest {
                         responseFields(
                                 fieldWithPath("id").description("회원 ID"),
                                 fieldWithPath("username").description("로그인 이름"))));
-        verify(memberService).join(refEq(request));
+        verify(memberService).registerMember(refEq(request));
         verifyNoMoreInteractions(memberService);
     }
 
@@ -133,7 +133,7 @@ class MemberRestDocsTest {
     @DisplayName("회원 이름 중복 확인 요청을 문서화한다")
     void documentsUsernameValidation() throws Exception {
         String username = "docs-available-member";
-        when(memberService.validationDuplicateUsername(username)).thenReturn(true);
+        when(memberService.isUsernameAvailable(username)).thenReturn(true);
 
         mockMvc.perform(get("/api/member/validUsername").param("username", username))
                 .andExpect(status().isOk())

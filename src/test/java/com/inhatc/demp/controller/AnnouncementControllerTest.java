@@ -84,7 +84,7 @@ class AnnouncementControllerTest {
                 .andExpect(status().isOk());
 
         ArgumentCaptor<AnnouncementCreateRequest> request = ArgumentCaptor.forClass(AnnouncementCreateRequest.class);
-        verify(announcementService).save(request.capture());
+        verify(announcementService).createAnnouncement(request.capture());
         BeanWrapper fields = new BeanWrapperImpl(request.getValue());
         assertThat(fields.getPropertyValue("title")).isEqualTo("백엔드 채용");
         assertThat(fields.getPropertyValue("company")).isEqualTo("DEMP");
@@ -197,7 +197,7 @@ class AnnouncementControllerTest {
     @Test
     @DisplayName("공고 검색어와 페이지 요청을 서비스에 전달한다")
     void passesSearchAndPagination() throws Exception {
-        when(announcementService.getAnnounceScroll(any(), any())).thenReturn(new SliceImpl<>(List.of()));
+        when(announcementService.findAnnouncementSlice(any(), any())).thenReturn(new SliceImpl<>(List.of()));
 
         mockMvc.perform(get("/api/announce").param("title", "backend")
                         .param("page", "1").param("size", "3"))
@@ -205,7 +205,7 @@ class AnnouncementControllerTest {
 
         ArgumentCaptor<AnnouncementSearchCondition> condition = ArgumentCaptor.forClass(AnnouncementSearchCondition.class);
         ArgumentCaptor<Pageable> pageable = ArgumentCaptor.forClass(Pageable.class);
-        verify(announcementService).getAnnounceScroll(condition.capture(), pageable.capture());
+        verify(announcementService).findAnnouncementSlice(condition.capture(), pageable.capture());
         assertThat(condition.getValue().getTitle()).isEqualTo("backend");
         assertThat(pageable.getValue().getPageNumber()).isEqualTo(1);
         assertThat(pageable.getValue().getPageSize()).isEqualTo(3);

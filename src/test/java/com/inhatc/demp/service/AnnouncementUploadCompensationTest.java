@@ -51,7 +51,7 @@ class AnnouncementUploadCompensationTest {
         when(fileStorage.save(request.getImage())).thenReturn(new UploadFile("image.png", "saved.png"));
         doThrow(failure).when(announcementRepository).saveAndFlush(any(Announcement.class));
 
-        assertThatThrownBy(() -> announcementService.save(request)).isSameAs(failure);
+        assertThatThrownBy(() -> announcementService.createAnnouncement(request)).isSameAs(failure);
 
         verify(fileStorage).delete("saved.png");
     }
@@ -64,7 +64,7 @@ class AnnouncementUploadCompensationTest {
         when(fileStorage.save(request.getImage())).thenReturn(new UploadFile("image.png", "saved.png"));
         doThrow(failure).when(transactionManager).commit(any());
 
-        assertThatThrownBy(() -> announcementService.save(request)).isSameAs(failure);
+        assertThatThrownBy(() -> announcementService.createAnnouncement(request)).isSameAs(failure);
 
         verify(fileStorage).delete("saved.png");
     }
@@ -79,7 +79,7 @@ class AnnouncementUploadCompensationTest {
         doThrow(failure).when(announcementRepository).saveAndFlush(any(Announcement.class));
         doThrow(compensationFailure).when(fileStorage).delete("traceable-key.png");
 
-        assertThatThrownBy(() -> announcementService.save(request))
+        assertThatThrownBy(() -> announcementService.createAnnouncement(request))
                 .isSameAs(failure)
                 .satisfies(exception -> assertThat(exception.getSuppressed()).containsExactly(compensationFailure));
 

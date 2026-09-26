@@ -93,10 +93,10 @@ class FileServiceTest {
     }
 
     private FileService fileService() {
-        FileService service = new FileService(amazonS3);
+        ImageValidator validator = new ImageValidator();
+        ReflectionTestUtils.setField(validator, "maxSizeBytes", 5L * 1024 * 1024);
+        FileService service = new FileService(amazonS3, validator);
         ReflectionTestUtils.setField(service, "bucket", "test-bucket");
-        ReflectionTestUtils.setField(service, "fileDir", "/tmp/");
-        ReflectionTestUtils.setField(service, "maxSizeBytes", 5L * 1024 * 1024);
         return service;
     }
 }

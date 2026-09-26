@@ -54,7 +54,7 @@ class AnnouncementServiceTest {
         request.setPayment(description.getPayment());
         when(fileService.save(request.getImage())).thenReturn(new UploadFile("image.png", "saved.png"));
 
-        announcementService.save(request);
+        announcementService.createAnnouncement(request);
 
         assertSanitized("본문 정제 공고");
         assertThat(description.getContent()).contains("<script>", "onclick");
@@ -63,14 +63,14 @@ class AnnouncementServiceTest {
     @Test
     @DisplayName("중복 공고는 파일을 업로드하기 전에 409로 거절한다")
     void rejectsDuplicateBeforeUpload() {
-        announcementService.join(Announcement.builder()
+        announcementService.saveAnnouncementEntity(Announcement.builder()
                 .title("중복 공고")
                 .career(new Career(0, 1))
                 .description(description())
                 .company(new Company("DEMP"))
                 .build());
 
-        assertThatThrownBy(() -> announcementService.save(request("중복 공고")))
+        assertThatThrownBy(() -> announcementService.createAnnouncement(request("중복 공고")))
                 .isInstanceOfSatisfying(ApiException.class,
                         exception -> assertThat(exception.getStatus()).isEqualTo(HttpStatus.CONFLICT));
         verifyNoInteractions(fileService);
@@ -83,7 +83,7 @@ class AnnouncementServiceTest {
         Announcement announcement = Announcement.builder().title("엔티티 정제 공고")
                 .description(description).career(new Career(0, 1)).build();
 
-        announcementService.join(announcement);
+        announcementService.saveAnnouncementEntity(announcement);
 
         assertSanitized("엔티티 정제 공고");
         assertThat(description.getContent()).contains("<script>", "onclick");

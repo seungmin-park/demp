@@ -45,7 +45,7 @@ public class QuestionController {
 
     @PostMapping("/add")
     public String saveQuestion(@AuthenticationPrincipal MemberPrincipal principal, @Valid @RequestBody QuestionForm questionForm) {
-        questionService.join(principal.getMemberId(), questionForm);
+        questionService.createQuestion(principal.getMemberId(), questionForm);
         return "ok";
     }
 

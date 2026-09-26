@@ -49,7 +49,7 @@ class AnswerControllerTest {
     void controllerAnswerSave() throws Exception {
         Answer answer = new Answer("댓글 테스트", 0, 0);
         answer.assignMember(new Member("member-a", "password", List.of("ROLE_USER")));
-        when(answerService.save(eq(41L), any())).thenReturn(List.of(new QuestionAnswer(answer)));
+        when(answerService.createAnswerAndList(eq(41L), any())).thenReturn(List.of(new QuestionAnswer(answer)));
 
         mockMvc.perform(post("/api/answer/save").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new AnswerForm("member-a", 41L, "댓글 테스트"))))
@@ -59,21 +59,18 @@ class AnswerControllerTest {
                 .andExpect(jsonPath("$[0].recommend").value(0))
                 .andExpect(jsonPath("$[0].dislike").value(0));
         ArgumentCaptor<AnswerForm> form = ArgumentCaptor.forClass(AnswerForm.class);
-        verify(answerService).save(eq(41L), form.capture());
+        verify(answerService).createAnswerAndList(eq(41L), form.capture());
         assertThat(form.getValue().getUsername()).isEqualTo("member-a");
         assertThat(form.getValue().getQuestionId()).isEqualTo(41L);
         assertThat(form.getValue().getAnswerContent()).isEqualTo("댓글 테스트");
     }
 
     @Test
-    @DisplayName("답변 수정 요청의 내용을 조회한 답변에 반영한다")
+    @DisplayName("답변 수정 요청의 ID와 내용을 서비스에 전달한다")
     void updateAnswer() throws Exception {
-        Answer answer = new Answer("원래 댓글", 0, 0);
-
         mockMvc.perform(patch("/api/answer/update").contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(new UpdateAnswerForm(73L, "수정 댓글"))))
                 .andExpect(status().isOk());
-        // This proves HTTP binding and the in-memory change, not a database commit.
         ArgumentCaptor<UpdateAnswerForm> form = ArgumentCaptor.forClass(UpdateAnswerForm.class);
         verify(answerService).update(eq(41L), form.capture());
         assertThat(form.getValue().getAnswerId()).isEqualTo(73L);
@@ -81,7 +78,7 @@ class AnswerControllerTest {
     }
 
     @Test
-    @DisplayName("답변 삭제 요청의 ID를 저장소에 전달한다")
+    @DisplayName("답변 삭제 요청의 ID를 서비스에 전달한다")
     void deleteAnswer() throws Exception {
         mockMvc.perform(delete("/api/answer/delete").param("answerId", "73"))
                 .andExpect(status().isOk());

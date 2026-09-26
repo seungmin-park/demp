@@ -24,8 +24,8 @@ public class AnnouncementController {
     private final AnnouncementService announcementService;
 
     @GetMapping("")
-    public Slice<AnnouncementResponse> getAllAnnounces(@ModelAttribute AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
-        return announcementService.getAnnounceScroll(announcementSearchCondition, pageable);
+    public Slice<AnnouncementResponse> listAnnouncements(@ModelAttribute AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
+        return announcementService.findAnnouncementSlice(announcementSearchCondition, pageable);
     }
 
     @GetMapping("/scroll")
@@ -39,8 +39,8 @@ public class AnnouncementController {
     }
 
     @GetMapping("/detail/{AnnouncementId}")
-    public ResponseEntity<AnnouncementDetailResponse> getDetailAnnounce(@PathVariable Long AnnouncementId) {
-        Optional<Announcement> optionalAnnouncement = announcementService.findById(AnnouncementId);
+    public ResponseEntity<AnnouncementDetailResponse> getAnnouncementDetail(@PathVariable("AnnouncementId") Long announcementId) {
+        Optional<Announcement> optionalAnnouncement = announcementService.findById(announcementId);
         if (optionalAnnouncement.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
@@ -52,8 +52,8 @@ public class AnnouncementController {
     }
 
     @PostMapping(value = "/add")
-    public String saveAnnounce(@Valid @ModelAttribute AnnouncementCreateRequest param) throws IOException {
-        announcementService.save(param);
+    public String createAnnouncement(@Valid @ModelAttribute AnnouncementCreateRequest param) throws IOException {
+        announcementService.createAnnouncement(param);
         return "ok";
     }
 }

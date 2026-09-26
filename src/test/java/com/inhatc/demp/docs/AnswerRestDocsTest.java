@@ -101,7 +101,7 @@ class AnswerRestDocsTest {
         ReflectionTestUtils.setField(savedAnswer, "id", 61L);
         savedAnswer.assignMember(member);
         QuestionAnswer response = new QuestionAnswer(savedAnswer);
-        when(answerService.save(eq(41L), refEq(request))).thenReturn(List.of(response));
+        when(answerService.createAnswerAndList(eq(41L), refEq(request))).thenReturn(List.of(response));
 
         mockMvc.perform(post("/api/answer/save")
                         .header("X-AUTH-TOKEN", DOCS_TOKEN)

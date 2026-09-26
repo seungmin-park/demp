@@ -182,7 +182,7 @@ class QuestionRestDocsTest {
                                 fieldWithPath("content").description("질문 본문"),
                                 fieldWithPath("username").description("호환 입력이며 작성자는 인증 회원으로 결정한다"),
                                 fieldWithPath("hashtags").description("태그 목록"))));
-        verify(questionService).join(eq(41L), refEq(request));
+        verify(questionService).createQuestion(eq(41L), refEq(request));
     }
 
     @Test

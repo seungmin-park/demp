@@ -198,7 +198,7 @@ class AnnouncementQueryRepositoryTest {
                     Set.of(Language.JAVA, SPRING), 0);
         }
 
-        Page<Announcement> result = announcementQueryRepository.pagingTest(
+        Page<Announcement> result = announcementQueryRepository.findAnnouncementPage(
                 new AnnouncementSearchCondition(), PageRequest.of(pageNumber, 3));
 
         assertThat(result.getContent()).hasSize(expectedCount);
@@ -217,7 +217,7 @@ class AnnouncementQueryRepositoryTest {
                     Set.of(Language.JAVA, SPRING), 0);
         }
 
-        Slice<AnnouncementResponse> result = announcementQueryRepository.getAnnounceScroll(
+        Slice<AnnouncementResponse> result = announcementQueryRepository.findAnnouncementSlice(
                 new AnnouncementSearchCondition(), PageRequest.of(pageNumber, 3));
 
         assertThat(result.getContent()).hasSize(expectedCount);
@@ -246,7 +246,7 @@ class AnnouncementQueryRepositoryTest {
         AnnouncementSearchCondition condition = new AnnouncementSearchCondition();
         condition.setTitle("matching");
 
-        Page<Announcement> result = announcementQueryRepository.pagingTest(condition, PageRequest.of(0, 3));
+        Page<Announcement> result = announcementQueryRepository.findAnnouncementPage(condition, PageRequest.of(0, 3));
 
         assertThat(result.getContent()).extracting(Announcement::getId).containsExactly(matching.getId());
         assertThat(result.getTotalElements()).isEqualTo(1);
@@ -261,7 +261,7 @@ class AnnouncementQueryRepositoryTest {
         AnnouncementSearchCondition condition = new AnnouncementSearchCondition();
         condition.setTitle("matching");
 
-        Slice<AnnouncementResponse> result = announcementQueryRepository.getAnnounceScroll(condition, PageRequest.of(0, 3));
+        Slice<AnnouncementResponse> result = announcementQueryRepository.findAnnouncementSlice(condition, PageRequest.of(0, 3));
 
         assertThat(result.getContent()).extracting(AnnouncementResponse::getId).containsExactly(matching.getId());
         assertThat(result.hasNext()).isFalse();
@@ -277,8 +277,8 @@ class AnnouncementQueryRepositoryTest {
         AnnouncementSearchCondition condition = new AnnouncementSearchCondition();
 
         SqlCaptureInspector.clear();
-        Slice<AnnouncementResponse> first = announcementQueryRepository.getAnnounceScroll(condition, PageRequest.of(0, 2));
-        Slice<AnnouncementResponse> second = announcementQueryRepository.getAnnounceScroll(condition, PageRequest.of(1, 2));
+        Slice<AnnouncementResponse> first = announcementQueryRepository.findAnnouncementSlice(condition, PageRequest.of(0, 2));
+        Slice<AnnouncementResponse> second = announcementQueryRepository.findAnnouncementSlice(condition, PageRequest.of(1, 2));
         List<String> paginationSql = SqlCaptureInspector.statements();
         List<Long> ids = announcementRepository.findAll().stream().map(Announcement::getId)
                 .sorted(java.util.Comparator.reverseOrder()).collect(java.util.stream.Collectors.toList());
@@ -311,8 +311,8 @@ class AnnouncementQueryRepositoryTest {
         condition.getPositions().add(JobPosition.BACKEND);
         condition.setLanguage(SPRING);
 
-        Slice<AnnouncementResponse> page0 = announcementQueryRepository.getAnnounceScroll(condition, PageRequest.of(0, 2));
-        Slice<AnnouncementResponse> page1 = announcementQueryRepository.getAnnounceScroll(condition, PageRequest.of(1, 2));
+        Slice<AnnouncementResponse> page0 = announcementQueryRepository.findAnnouncementSlice(condition, PageRequest.of(0, 2));
+        Slice<AnnouncementResponse> page1 = announcementQueryRepository.findAnnouncementSlice(condition, PageRequest.of(1, 2));
 
         assertThat(page0.getContent()).extracting(AnnouncementResponse::getId)
                 .containsExactly(third.getId(), second.getId());

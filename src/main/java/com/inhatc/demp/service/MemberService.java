@@ -27,7 +27,7 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public MemberDto join(MemberSaveForm form) {
+    public MemberDto registerMember(MemberSaveForm form) {
         Member member = form.toEntity();
         if (!StringUtils.hasText(member.getUsername()) || !StringUtils.hasText(member.getPassword())) {
             throw new ApiException(HttpStatus.BAD_REQUEST);
@@ -68,7 +68,7 @@ public class MemberService {
         return memberRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
     }
 
-    public Boolean validationDuplicateUsername(String username) {
+    public Boolean isUsernameAvailable(String username) {
         return StringUtils.hasText(username) && memberRepository.findByUsername(username).isEmpty();
     }
 }
