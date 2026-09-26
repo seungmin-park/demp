@@ -10,12 +10,13 @@ import com.inhatc.demp.domain.announcemnet.Language;
 import com.inhatc.demp.dto.announcement.AnnouncementResponse;
 import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.QueryResults;
 import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -43,9 +44,7 @@ public class AnnouncementQueryRepository {
 
     public Slice<AnnouncementResponse> getAnnounceScroll(AnnouncementSearchCondition announcementSearchCondition,
                                                          Pageable pageable) {
-        QueryResults<Announcement> results = jpaQueryFactory.selectFrom(announcement)
-                .leftJoin(announcement.description.languages)
-                .fetchJoin()
+        List<Long> ids = jpaQueryFactory.select(announcement.id).from(announcement)
                 .where(typeEq(announcementSearchCondition.getAnnouncementType()),
                         positionIn(announcementSearchCondition.getPositions()),
                         languageIn(announcementSearchCondition.getLanguage()),
@@ -53,45 +52,49 @@ public class AnnouncementQueryRepository {
                         minCareerLoe(announcementSearchCondition.getCareer()),
                         maxCareerGoe(announcementSearchCondition.getCareer()),
                         titleContain(announcementSearchCondition.getTitle()))
+                .orderBy(announcement.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
-                .distinct()
-                .fetchResults();
-
-        List<AnnouncementResponse> content = new ArrayList<>();
-        for (Announcement result : results.getResults()) {
-            content.add(new AnnouncementResponse(result));
-        }
-
-        boolean hasNext = false;
-        if (content.size() > pageable.getPageSize()) {
-            content.remove(pageable.getPageSize());
-            hasNext = true;
-        }
-
+                .fetch();
+        boolean hasNext = ids.size() > pageable.getPageSize();
+        List<Long> contentIds = ids.subList(0, Math.min(ids.size(), pageable.getPageSize()));
+        List<AnnouncementResponse> content = loadWithLanguages(contentIds).stream()
+                .map(AnnouncementResponse::new)
+                .collect(Collectors.toList());
         return new SliceImpl<>(content, pageable, hasNext);
     }
 
+    private List<Announcement> loadWithLanguages(List<Long> ids) {
+        if (ids.isEmpty()) {
+            return List.of();
+        }
+        Map<Long, Announcement> byId = jpaQueryFactory.selectFrom(announcement)
+                .leftJoin(announcement.description.languages).fetchJoin()
+                .where(announcement.id.in(ids))
+                .distinct().fetch().stream()
+                .collect(Collectors.toMap(Announcement::getId, Function.identity()));
+        return ids.stream().map(byId::get).collect(Collectors.toList());
+    }
+
     public Page<Announcement> pagingTest(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
-        // TODO: 2022-05-30 firstResult/maxResults specified with collection fetch; applying in memory! 해결 및 메소드명 리팩토링
-        QueryResults<Announcement> result = jpaQueryFactory
-                .selectFrom(announcement)
-                .leftJoin(announcement.description.languages)
-                .fetchJoin()
+        List<Long> ids = jpaQueryFactory.select(announcement.id).from(announcement)
                 .where(typeEq(announcementSearchCondition.getAnnouncementType()),
                         positionIn(announcementSearchCondition.getPositions()),
                         languageIn(announcementSearchCondition.getLanguage()),
                         paymentGoe(announcementSearchCondition.getPayment()),
                         titleContain(announcementSearchCondition.getTitle()))
+                .orderBy(announcement.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .distinct()
-                .fetchResults();
-
-        List<Announcement> content = result.getResults();
-        long total = result.getTotal();
-
-        return new PageImpl<>(content, pageable, total);
+                .fetch();
+        Long total = jpaQueryFactory.select(announcement.count()).from(announcement)
+                .where(typeEq(announcementSearchCondition.getAnnouncementType()),
+                        positionIn(announcementSearchCondition.getPositions()),
+                        languageIn(announcementSearchCondition.getLanguage()),
+                        paymentGoe(announcementSearchCondition.getPayment()),
+                        titleContain(announcementSearchCondition.getTitle()))
+                .fetchOne();
+        return new PageImpl<>(loadWithLanguages(ids), pageable, total == null ? 0 : total);
     }
 
     private BooleanExpression typeEq(AnnouncementType announcementType) {

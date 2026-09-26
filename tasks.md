@@ -255,7 +255,7 @@ Phase 1 최초 검증: 백엔드 141개·프런트 21개 테스트, 문서·jar�
 
 ## Phase 3 · 저장·관계·조회 정확성
 
-작업 브랜치: `refactor/answer-tag-and-pagination-accuracy`. Backend worktree: `/Users/seungmin/Desktop/repo/archive/demp/.worktrees/answer-tag-and-pagination-accuracy/backend`. Frontend 작업이 필요한 T32는 해당 저장소의 별도 worktree에서 수행한다.
+작업 브랜치: `refactor/answer-tag-and-pagination-accuracy`. Backend worktree: `/Users/seungmin/Desktop/repo/archive/demp/.worktrees/answer-tag-and-pagination-accuracy/backend`. Frontend worktree: `/Users/seungmin/Desktop/repo/archive/dempfrontend/.worktrees/answer-tag-and-pagination-accuracy/frontend`.
 
 ### T30 · 답변 수정 실제 commit — R07 / S07
 
@@ -298,11 +298,13 @@ assertThat(answerRepository.findById(answerId).orElseThrow().getContent())
 
 계약: 공고는 기존 Slice content/last 유지. 질문은 `GET /api/question?page=0&size=20` → `{content:[...], last:boolean, number:0}`로 양쪽 동시 전환한다. size 범위 1~100, 기본 20. 공고 정렬 id DESC, 질문 기본 createdDate DESC/id DESC, hits·recommend 정렬에도 id DESC 동률 기준을 둔다.
 
-- [ ] 복수 언어 공고와 동일 정렬값 질문을 page size보다 많이 만들고 두 페이지 ID가 겹치지 않는 테스트를 작성한다.
-- [ ] 공고 ID만 size+1 조회하고 해당 ID의 연관 데이터를 별도 조회한다. Slice에서 불필요한 count를 제거한다.
-- [ ] Hibernate 테스트 설정에서 collection fetch pagination을 실패 처리하여 메모리 페이징 재발을 검출한다. 실제 SQL에 limit이 적용되는지도 확인한다.
-- [ ] 질문의 페이지 결과·경계·빈 마지막 페이지 테스트를 먼저 실패시킨 뒤 B/F 계약을 함께 변경한다.
-- [ ] 제목·직군·태그 필터가 페이지 변경 후에도 유지되는지 확인하고 전체 검증한다.
+- [x] 복수 언어 공고와 동일 정렬값 질문을 page size보다 많이 만들고 두 페이지 ID가 겹치지 않는 테스트를 작성한다.
+- [x] 공고 ID만 size+1 조회하고 해당 ID의 연관 데이터를 별도 조회한다. Slice에서 불필요한 count를 제거한다.
+- [x] Hibernate 테스트 설정에서 collection fetch pagination을 실패 처리하여 메모리 페이징 재발을 검출한다. 실제 SQL에 limit이 적용되는지도 확인한다.
+- [x] 질문의 페이지 결과·경계·빈 마지막 페이지 테스트를 먼저 실패시킨 뒤 B/F 계약을 함께 변경한다.
+- [x] 제목·직군·태그 필터가 페이지 변경 후에도 유지되는지 확인하고 전체 검증한다.
+
+2026-09-26: Red는 공고 컬렉션 fetch 페이지의 Hibernate 예외, 질문 HTTP 배열 응답의 `$.content` 부재, 프런트 목록의 새 페이지 객체 미표시였다. Green은 공고 ID 선조회·별도 언어 로드, 질문 조건부 EXISTS와 ID 동률 정렬·Slice DTO, 프런트 API 모듈·페이지 버튼이다. Refactor에서 질문 Controller 이름과 미사용 서비스 전체 목록 메서드, 정렬 메서드·클래스를 정리했다. [T32 검증 기록](docs/verification/answer-tag-and-pagination-accuracy/T32-pagination.md)에 SQL·REST Docs·양쪽 화면 흐름을 기록했다. Backend `clean test asciidoctor bootJar`와 Refactor 후 `test asciidoctor bootJar` 29 suite·187 test·실패/오류/건너뜀 0, Frontend 8 suite·27 test, lint·build 성공. Frontend 커밋 `2180693`.
 
 ## Phase 4 · 화면 상태와 실행 연결
 
@@ -447,7 +449,7 @@ npx playwright test
 
 각 작업 완료 시 이 파일의 해당 항목 아래에 실행 날짜, Red 명령/실패 assertion, Green 최소 변경, Refactor 변경 이유, 대상/전체 검증 결과를 추가한다. 커밋을 명시적으로 요청받아 생성한 경우에만 SHA를 적는다. 순수 이름·구조 정리는 기존 Green 계약을 먼저 기록한다. 동작 변경의 Red가 처음부터 통과하면 회귀 재현에 실패한 것이므로 사례를 다시 구성한다. T00의 합의된 컴파일 복원은 이 기능 Red 기록과 분리한다.
 
-현재 상태: Phase 0, Phase 1, Phase 2와 T30~T31 구현·검증 완료. Phase 3의 T32, Phase 4, Phase 5의 T46~T49, Phase 6은 미착수다. T30의 트랜잭션·재조회 검증은 T12에서 선행 적용했고 2026-09-26에 원본 보존 검증을 보강했다. 같은 날 `refactor/announcement-upload-contract` 브랜치의 원본 작업 디렉터리에서 Phase 5의 T45 정적 전수 검토를 선행했다.
+현재 상태: Phase 0~3 구현·검증 완료. Phase 4, Phase 5의 T46~T49, Phase 6은 미착수다. T30의 트랜잭션·재조회 검증은 T12에서 선행 적용했고 2026-09-26에 원본 보존 검증을 보강했다. 같은 날 `refactor/announcement-upload-contract` 브랜치의 원본 작업 디렉터리에서 Phase 5의 T45 정적 전수 검토를 선행했다.
 
 ### 2026-09-21 Phase 1 리뷰 반영
 

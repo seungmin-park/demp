@@ -10,6 +10,8 @@ import com.inhatc.demp.repository.question.QuestionQueryRepository;
 import com.inhatc.demp.repository.question.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,8 +55,8 @@ public class QuestionService {
         return questionQueryRepository.findAllByHashtags(hashtags);
     }
 
-    public List<QuestionList> findAllBySearchCondition(QuestionSearchCondition questionSearchCondition) {
-        return questionQueryRepository.findAllBySearchCondition(questionSearchCondition);
+    public Slice<QuestionList> findSliceBySearchCondition(QuestionSearchCondition condition, Pageable pageable) {
+        return questionQueryRepository.findSliceBySearchCondition(condition, pageable);
     }
 
     public List<String> findAllHashtags() {

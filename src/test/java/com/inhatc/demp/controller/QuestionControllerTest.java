@@ -6,6 +6,8 @@ import com.inhatc.demp.config.WebConfig;
 import com.inhatc.demp.config.jwt.JwtTokenProvider;
 import com.inhatc.demp.controller.ExController;
 import com.inhatc.demp.dto.question.QuestionForm;
+import com.inhatc.demp.dto.question.QuestionList;
+import com.inhatc.demp.dto.question.QuestionSearchCondition;
 import com.inhatc.demp.dto.question.QuestionUpdateForm;
 import com.inhatc.demp.service.QuestionService;
 import java.util.ArrayList;
@@ -20,9 +22,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.SliceImpl;
 import com.inhatc.demp.support.WithMember;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.util.NestedServletException;
 
 import static org.assertj.core.api.Assertions.*;
@@ -43,6 +48,54 @@ class QuestionControllerTest {
     private MockMvc mockMvc;
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Test
+    @DisplayName("질문 목록은 내용과 마지막 여부 및 페이지 번호를 반환한다")
+    void returnsQuestionSlice() throws Exception {
+        QuestionList question = new QuestionList();
+        ReflectionTestUtils.setField(question, "id", 51L);
+        ReflectionTestUtils.setField(question, "title", "페이지 질문");
+        when(questionService.findSliceBySearchCondition(any(), eq(PageRequest.of(0, 2))))
+                .thenReturn(new SliceImpl<>(List.of(question), PageRequest.of(0, 2), false));
+
+        mockMvc.perform(get("/api/question").param("page", "0").param("size", "2"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.content[0].id").value(51))
+                .andExpect(jsonPath("$.last").value(true))
+                .andExpect(jsonPath("$.number").value(0));
+    }
+
+    @ParameterizedTest
+    @DisplayName("질문 페이지 크기는 1부터 100까지만 허용한다")
+    @ValueSource(strings = {"0", "-1", "101"})
+    void rejectsInvalidQuestionPageSize(String size) throws Exception {
+        mockMvc.perform(get("/api/question").param("size", size))
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value(400));
+        verifyNoInteractions(questionService);
+    }
+
+    @Test
+    @DisplayName("음수 질문 페이지 번호를 거절한다")
+    void rejectsNegativeQuestionPage() throws Exception {
+        mockMvc.perform(get("/api/question").param("page", "-1"))
+                .andExpect(status().isBadRequest());
+        verifyNoInteractions(questionService);
+    }
+
+    @Test
+    @DisplayName("프런트 Axios 배열 쿼리의 태그를 검색 조건에 바인딩한다")
+    void bindsArrayStyleHashtagQuery() throws Exception {
+        when(questionService.findSliceBySearchCondition(any(), any()))
+                .thenReturn(new SliceImpl<>(List.of(), PageRequest.of(0, 20), false));
+
+        mockMvc.perform(get("/api/question").param("hashtags[]", "JAVA", "SPRING"))
+                .andExpect(status().isOk());
+
+        ArgumentCaptor<QuestionSearchCondition> condition = ArgumentCaptor.forClass(QuestionSearchCondition.class);
+        verify(questionService).findSliceBySearchCondition(condition.capture(), eq(PageRequest.of(0, 20)));
+        assertThat(condition.getValue().getHashtags()).containsExactly("JAVA", "SPRING");
+    }
 
     @Test
     @DisplayName("없는 질문의 상세 조회는 공통 오류 본문과 404를 반환한다")

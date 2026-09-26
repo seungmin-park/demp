@@ -25,6 +25,8 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.SliceImpl;
 import com.inhatc.demp.support.WithMember;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -80,29 +82,37 @@ class QuestionRestDocsTest {
         ReflectionTestUtils.setField(response, "title", "docs-question");
         ReflectionTestUtils.setField(response, "hits", 7);
         ReflectionTestUtils.setField(response, "recommend", 3);
-        when(questionService.findAllBySearchCondition(refEq(request)))
-                .thenReturn(List.of(response));
+        when(questionService.findSliceBySearchCondition(refEq(request), eq(PageRequest.of(0, 20))))
+                .thenReturn(new SliceImpl<>(List.of(response), PageRequest.of(0, 20), false));
 
         mockMvc.perform(get("/api/question")
                         .param("title", request.getTitle())
                         .param("content", request.getContent())
                         .param("orderBy", request.getOrderBy())
-                        .param("hashtags", request.getHashtags().toArray(new String[0])))
+                        .param("hashtags", request.getHashtags().toArray(new String[0]))
+                        .param("page", "0")
+                        .param("size", "20"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].id").value(51))
-                .andExpect(jsonPath("$[0].title").value("docs-question"))
+                .andExpect(jsonPath("$.content.length()").value(1))
+                .andExpect(jsonPath("$.content[0].id").value(51))
+                .andExpect(jsonPath("$.content[0].title").value("docs-question"))
+                .andExpect(jsonPath("$.last").value(true))
+                .andExpect(jsonPath("$.number").value(0))
                 .andDo(document("question-list",
                         requestParameters(
                                 parameterWithName("title").description("제목 검색어"),
                                 parameterWithName("content").description("본문 검색어"),
                                 parameterWithName("orderBy").description("정렬 기준"),
-                                parameterWithName("hashtags").description("하나 이상 일치할 태그 목록")),
+                                parameterWithName("hashtags").description("하나 이상 일치할 태그 목록"),
+                                parameterWithName("page").description("0부터 시작하는 페이지 번호"),
+                                parameterWithName("size").description("페이지 크기 1~100, 기본값 20")),
                         responseFields(
-                                fieldWithPath("[].id").description("질문 ID"),
-                                fieldWithPath("[].title").description("질문 제목"),
-                                fieldWithPath("[].hits").description("조회 수"),
-                                fieldWithPath("[].recommend").description("추천 수"))));
+                                fieldWithPath("content[].id").description("질문 ID"),
+                                fieldWithPath("content[].title").description("질문 제목"),
+                                fieldWithPath("content[].hits").description("조회 수"),
+                                fieldWithPath("content[].recommend").description("추천 수"),
+                                fieldWithPath("last").description("마지막 페이지 여부"),
+                                fieldWithPath("number").description("현재 페이지 번호"))));
     }
 
     @Test
@@ -198,7 +208,7 @@ class QuestionRestDocsTest {
                                 fieldWithPath("questionId").description("수정할 질문 ID"),
                                 fieldWithPath("title").description("수정할 제목"),
                                 fieldWithPath("content").description("수정할 본문"),
-                                fieldWithPath("hashtags").description("기존 태그에 추가할 목록. 태그 교체는 T31에서 변경 예정"))));
+                                fieldWithPath("hashtags").description("기존 태그를 대체할 목록"))));
         verify(questionService).updateQuestion(eq(41L), refEq(request));
     }
 

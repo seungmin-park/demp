@@ -13,6 +13,7 @@ import com.inhatc.demp.dto.announcement.AnnouncementResponse;
 import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.inhatc.demp.repository.announcement.AnnouncementQueryRepository;
 import com.inhatc.demp.repository.announcement.AnnouncementRepository;
+import com.inhatc.demp.support.SqlCaptureInspector;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -34,7 +35,10 @@ import static com.inhatc.demp.domain.announcemnet.Language.React;
 import static com.inhatc.demp.domain.announcemnet.Language.SPRING;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
+@DataJpaTest(properties = {
+        "spring.jpa.properties.hibernate.query.fail_on_pagination_over_collection_fetch=true",
+        "spring.jpa.properties.hibernate.session_factory.statement_inspector=com.inhatc.demp.support.SqlCaptureInspector"
+})
 @Import(AnnouncementQueryRepository.class)
 class AnnouncementQueryRepositoryTest {
 
@@ -261,6 +265,61 @@ class AnnouncementQueryRepositoryTest {
 
         assertThat(result.getContent()).extracting(AnnouncementResponse::getId).containsExactly(matching.getId());
         assertThat(result.hasNext()).isFalse();
+    }
+
+    @Test
+    @DisplayName("복수 언어 공고의 슬라이스는 ID 내림차순으로 겹치지 않고 다음 페이지를 찾는다")
+    void slicesMultipleLanguagesWithoutOverlappingPages() {
+        for (int i = 0; i < 5; i++) {
+            saveAnnouncement("ordered-" + i, AnnouncementType.EMP, JobPosition.BACKEND,
+                    Set.of(Language.JAVA, SPRING), 0);
+        }
+        AnnouncementSearchCondition condition = new AnnouncementSearchCondition();
+
+        SqlCaptureInspector.clear();
+        Slice<AnnouncementResponse> first = announcementQueryRepository.getAnnounceScroll(condition, PageRequest.of(0, 2));
+        Slice<AnnouncementResponse> second = announcementQueryRepository.getAnnounceScroll(condition, PageRequest.of(1, 2));
+        List<String> paginationSql = SqlCaptureInspector.statements();
+        List<Long> ids = announcementRepository.findAll().stream().map(Announcement::getId)
+                .sorted(java.util.Comparator.reverseOrder()).collect(java.util.stream.Collectors.toList());
+
+        assertThat(first.getContent()).extracting(AnnouncementResponse::getId)
+                .containsExactly(ids.get(0), ids.get(1));
+        assertThat(second.getContent()).extracting(AnnouncementResponse::getId)
+                .containsExactly(ids.get(2), ids.get(3));
+        assertThat(first.hasNext()).isTrue();
+        assertThat(second.hasNext()).isTrue();
+        assertThat(paginationSql).anySatisfy(sql -> assertThat(sql.toLowerCase()).contains("limit"));
+        assertThat(paginationSql).noneMatch(sql -> sql.toLowerCase().contains("count("));
+    }
+
+    @Test
+    @DisplayName("공고 슬라이스의 다음 페이지도 제목·직군·언어 조건을 유지한다")
+    void keepsFiltersAcrossAnnouncementPages() {
+        Announcement first = saveAnnouncement("Java backend one", AnnouncementType.EMP, JobPosition.BACKEND,
+                Set.of(Language.JAVA, SPRING), 0);
+        Announcement second = saveAnnouncement("Java backend two", AnnouncementType.EMP, JobPosition.BACKEND,
+                Set.of(Language.JAVA, SPRING), 0);
+        Announcement third = saveAnnouncement("Java backend three", AnnouncementType.EMP, JobPosition.BACKEND,
+                Set.of(Language.JAVA, SPRING), 0);
+        saveAnnouncement("Java frontend", AnnouncementType.EMP, JobPosition.FRONTEND,
+                Set.of(Language.JAVA, SPRING), 0);
+        saveAnnouncement("Kotlin backend", AnnouncementType.EMP, JobPosition.BACKEND,
+                Set.of(Language.JAVA, SPRING), 0);
+        AnnouncementSearchCondition condition = new AnnouncementSearchCondition();
+        condition.setTitle("Java");
+        condition.getPositions().add(JobPosition.BACKEND);
+        condition.setLanguage(SPRING);
+
+        Slice<AnnouncementResponse> page0 = announcementQueryRepository.getAnnounceScroll(condition, PageRequest.of(0, 2));
+        Slice<AnnouncementResponse> page1 = announcementQueryRepository.getAnnounceScroll(condition, PageRequest.of(1, 2));
+
+        assertThat(page0.getContent()).extracting(AnnouncementResponse::getId)
+                .containsExactly(third.getId(), second.getId());
+        assertThat(page1.getContent()).extracting(AnnouncementResponse::getId)
+                .containsExactly(first.getId());
+        assertThat(page0.hasNext()).isTrue();
+        assertThat(page1.isLast()).isTrue();
     }
 
     private Announcement saveAnnouncement(String title, AnnouncementType type, JobPosition position,
