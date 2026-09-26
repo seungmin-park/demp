@@ -3,9 +3,7 @@ package com.inhatc.demp.service;
 import com.inhatc.demp.domain.*;
 import com.inhatc.demp.error.ResourceNotFoundException;
 import org.springframework.security.access.AccessDeniedException;
-import com.inhatc.demp.dto.answer.AnswerForm;
 import com.inhatc.demp.dto.question.*;
-import com.inhatc.demp.repository.AnswerRepository;
 import com.inhatc.demp.repository.HashtagRepository;
 import com.inhatc.demp.repository.MemberRepository;
 import com.inhatc.demp.repository.question.QuestionQueryRepository;
@@ -16,9 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @Service
 @Transactional(readOnly = true)
@@ -29,7 +27,6 @@ public class QuestionService {
     private final QuestionQueryRepository questionQueryRepository;
     private final MemberRepository memberRepository;
     private final HashtagRepository hashtagRepository;
-    private final AnswerRepository answerRepository;
     private final ContentSanitizer contentSanitizer;
     @Transactional
     public void join(Long actorId, QuestionForm questionForm) {
@@ -37,7 +34,7 @@ public class QuestionService {
         Question question = new Question(questionForm.getTitle(), contentSanitizer.sanitize(questionForm.getContent()), 0, 0, 0);
         ArrayList<String> hashtags = questionForm.getHashtags();
 
-        setHashtags(question, hashtags);
+        question.replaceHashtags(resolveHashtags(hashtags));
         question.settingMember(author);
         questionRepository.save(question);
     }
@@ -75,7 +72,7 @@ public class QuestionService {
         Question question = questionRepository.findById(questionUpdateForm.getQuestionId()).orElseThrow(ResourceNotFoundException::new);
         requireOwner(actorId, question);
         question.updateQuestion(questionUpdateForm.getTitle(), contentSanitizer.sanitize(questionUpdateForm.getContent()));
-        setHashtags(question,questionUpdateForm.getHashtags());
+        question.replaceHashtags(resolveHashtags(questionUpdateForm.getHashtags()));
     }
 
     @Transactional
@@ -89,21 +86,21 @@ public class QuestionService {
         if (!question.getMember().getId().equals(actorId)) throw new AccessDeniedException("Not owner");
     }
 
-    private void setHashtags(Question question, ArrayList<String> hashtags) {
-        List<Hashtag> hashtagList = hashtagRepository.findAll();
-        for (String formHashtag : hashtags) {
-            Hashtag hashtag = new Hashtag(formHashtag);
-            if (!hashtagList.contains(hashtag)) {
-                hashtagRepository.save(hashtag);
+    private List<Hashtag> resolveHashtags(ArrayList<String> hashtags) {
+        Set<String> names = new LinkedHashSet<>();
+        if (hashtags != null) {
+            for (String rawName : hashtags) {
+                if (rawName != null && !rawName.trim().isEmpty()) {
+                    names.add(rawName.trim());
+                }
             }
-            settingQuestionHashtag(question, hashtag);
         }
-    }
-
-    private void settingQuestionHashtag(Question question, Hashtag hashtag) {
-        QuestionHashtag questionHashtag = new QuestionHashtag();
-        hashtag.addQuestionHashtag(questionHashtag);
-        question.addQuestionHashtag(questionHashtag);
+        List<Hashtag> resolved = new ArrayList<>();
+        for (String name : names) {
+            resolved.add(hashtagRepository.findByTagName(name)
+                    .orElseGet(() -> hashtagRepository.save(new Hashtag(name))));
+        }
+        return resolved;
     }
 
 }

@@ -283,12 +283,14 @@ assertThat(answerRepository.findById(answerId).orElseThrow().getContent())
 
 새 계약: `HashtagRepository.findByTagName(String tagName)` → Optional<Hashtag>, `Question.replaceHashtags(List<Hashtag> tags)`는 기존 관계를 제거하고 새 관계를 연결한다. trim 후 빈 태그 제거, 중복 제거, 대소문자 보존을 기본 정책으로 한다.
 
-- [ ] `[JAVA] → [SPRING]` 수정 후 JAVA 관계가 남지 않는 테스트를 작성해 실패를 확인한다.
-- [ ] 관계 교체를 도메인 메서드로 구현하고 다른 질문의 JAVA 관계가 보존되는지 검증한다.
-- [ ] 동일 이름 태그를 두 질문에 등록해 Hashtag 레코드 1개를 assertion한 뒤 조회/재사용·unique 제약을 구현한다.
-- [ ] 무태그 질문이 무필터 검색에 포함되는 테스트를 작성한 뒤 조건 없는 inner join을 제거한다.
-- [ ] 여러 태그 OR 필터와 title/content AND 필터, 중복 질문 부재를 각각 검증한다.
-- [ ] 향후 유일 제약 적용 전 기존 중복 이름을 대표 ID로 합치고 관계를 이관하는 절차를 작성한다. 전체 테스트를 실행한다.
+- [x] `[JAVA] → [SPRING]` 수정 후 JAVA 관계가 남지 않는 테스트를 작성해 실패를 확인한다.
+- [x] 관계 교체를 도메인 메서드로 구현하고 다른 질문의 JAVA 관계가 보존되는지 검증한다.
+- [x] 동일 이름 태그를 두 질문에 등록해 Hashtag 레코드 1개를 assertion한 뒤 조회/재사용·unique 제약을 구현한다.
+- [x] 무태그 질문이 무필터 검색에 포함되는 테스트를 작성한 뒤 조건 없는 inner join을 제거한다.
+- [x] 여러 태그 OR 필터와 title/content AND 필터, 중복 질문 부재를 각각 검증한다.
+- [x] 향후 유일 제약 적용 전 기존 중복 이름을 대표 ID로 합치고 관계를 이관하는 절차를 작성한다. 전체 테스트를 실행한다.
+
+2026-09-26: Red는 태그 누적, 이름 중복 저장, 두 조회 경로의 무태그 질문 누락에서 각각 assertion 실패를 확인했다. Green은 `Question.replaceHashtags`, `HashtagRepository.findByTagName`, 이름 unique 제약, 두 쿼리의 LEFT JOIN이다. Refactor에서 서비스의 미사용 답변 저장소 의존성과 오래된 테스트 fixture를 정리했다. 관계 공유·trim/중복·대소문자·OR/AND·동일 태그 재수정은 통과 상태를 추가 고정한 사례다. 대상 테스트 성공, Refactor 후 전체 `./gradlew test` 29 suite·176 test·실패/오류/건너뜀 0. 상세 명령, 기존 데이터 이관 순서와 운영 DB 미검증 범위는 [T31 검증 기록](docs/verification/answer-tag-and-pagination-accuracy/T31-tags.md)에 남긴다. `QuestionHashtags` 필드명은 JPA/QueryDSL 참조와 함께 T46에서 변경 여부를 결정한다.
 
 ### T32 · 안정된 페이지 조회 — R10 / S09
 
@@ -445,7 +447,7 @@ npx playwright test
 
 각 작업 완료 시 이 파일의 해당 항목 아래에 실행 날짜, Red 명령/실패 assertion, Green 최소 변경, Refactor 변경 이유, 대상/전체 검증 결과를 추가한다. 커밋을 명시적으로 요청받아 생성한 경우에만 SHA를 적는다. 순수 이름·구조 정리는 기존 Green 계약을 먼저 기록한다. 동작 변경의 Red가 처음부터 통과하면 회귀 재현에 실패한 것이므로 사례를 다시 구성한다. T00의 합의된 컴파일 복원은 이 기능 Red 기록과 분리한다.
 
-현재 상태: Phase 0, Phase 1, Phase 2와 T30 구현·검증 완료. Phase 3의 T31~T32, Phase 4, Phase 5의 T46~T49, Phase 6은 미착수다. T30의 트랜잭션·재조회 검증은 T12에서 선행 적용했고 2026-09-26에 원본 보존 검증을 보강했다. 같은 날 `refactor/announcement-upload-contract` 브랜치의 원본 작업 디렉터리에서 Phase 5의 T45 정적 전수 검토를 선행했다.
+현재 상태: Phase 0, Phase 1, Phase 2와 T30~T31 구현·검증 완료. Phase 3의 T32, Phase 4, Phase 5의 T46~T49, Phase 6은 미착수다. T30의 트랜잭션·재조회 검증은 T12에서 선행 적용했고 2026-09-26에 원본 보존 검증을 보강했다. 같은 날 `refactor/announcement-upload-contract` 브랜치의 원본 작업 디렉터리에서 Phase 5의 T45 정적 전수 검토를 선행했다.
 
 ### 2026-09-21 Phase 1 리뷰 반영
 

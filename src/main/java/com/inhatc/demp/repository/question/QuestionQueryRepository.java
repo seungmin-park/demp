@@ -28,8 +28,8 @@ public class QuestionQueryRepository {
                 .select(Projections.fields(QuestionList.class
                 ,question.id,question.title,question.hits,question.recommend))
                 .from(question)
-                .join(question.QuestionHashtags, questionHashtag)
-                .join(questionHashtag.hashtag, hashtag)
+                .leftJoin(question.QuestionHashtags, questionHashtag)
+                .leftJoin(questionHashtag.hashtag, hashtag)
                 .where(titleContains(questionSearchCondition.getTitle()),
                         contentContains(questionSearchCondition.getContent()),
                         hashtagIn(questionSearchCondition.getHashtags()))
@@ -41,8 +41,8 @@ public class QuestionQueryRepository {
     public List<Question> findAllByHashtags(List<String> hashtags) {
         return jpaQueryFactory
                 .selectFrom(question)
-                .join(question.QuestionHashtags, questionHashtag)
-                .join(questionHashtag.hashtag, hashtag)
+                .leftJoin(question.QuestionHashtags, questionHashtag)
+                .leftJoin(questionHashtag.hashtag, hashtag)
                 .where(hashtagIn(hashtags))
                 .distinct()
                 .fetch();

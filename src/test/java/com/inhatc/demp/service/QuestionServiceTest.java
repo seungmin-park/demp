@@ -4,7 +4,6 @@ import com.inhatc.demp.domain.Answer;
 import com.inhatc.demp.domain.Hashtag;
 import com.inhatc.demp.domain.Member;
 import com.inhatc.demp.domain.Question;
-import com.inhatc.demp.domain.QuestionHashtag;
 import com.inhatc.demp.dto.answer.AnswerForm;
 import com.inhatc.demp.dto.question.QuestionAnswer;
 import com.inhatc.demp.dto.question.QuestionDetail;
@@ -16,7 +15,6 @@ import com.inhatc.demp.repository.MemberRepository;
 import com.inhatc.demp.repository.question.QuestionRepository;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -97,6 +95,66 @@ class QuestionServiceTest {
     }
 
     @Test
+    @DisplayName("같은 이름의 태그를 두 질문에 등록해도 태그는 하나만 저장한다")
+    void reusesHashtagByName() {
+        Member member = memberRepository.save(new Member("question-service-member", "hash", List.of("ROLE_USER")));
+        questionService.join(member.getId(), new QuestionForm("첫 질문", "내용", member.getUsername(),
+                new ArrayList<>(List.of("JAVA"))));
+        questionService.join(member.getId(), new QuestionForm("둘째 질문", "내용", member.getUsername(),
+                new ArrayList<>(List.of("JAVA"))));
+
+        assertThat(hashtagRepository.findAll()).extracting(Hashtag::getTagName).containsExactly("JAVA");
+        assertThat(questionRepository.findAll()).hasSize(2);
+    }
+
+    @Test
+    @DisplayName("한 질문의 태그를 교체해도 다른 질문의 같은 이름 태그 연결은 유지된다")
+    void replacingOneQuestionsTagsKeepsOtherQuestionsRelation() {
+        Member member = memberRepository.save(new Member("question-service-member", "hash", List.of("ROLE_USER")));
+        questionService.join(member.getId(), new QuestionForm("첫 질문", "내용", member.getUsername(),
+                new ArrayList<>(List.of("JAVA"))));
+        questionService.join(member.getId(), new QuestionForm("둘째 질문", "내용", member.getUsername(),
+                new ArrayList<>(List.of("JAVA"))));
+        List<Question> saved = questionRepository.findAll();
+
+        questionService.updateQuestion(member.getId(), new QuestionUpdateForm(saved.get(0).getId(),
+                "첫 질문", "내용", new ArrayList<>(List.of("SPRING"))));
+
+        assertThat(questionService.findById(saved.get(0).getId()).getHashtags()).containsExactly("SPRING");
+        assertThat(questionService.findById(saved.get(1).getId()).getHashtags()).containsExactly("JAVA");
+        assertThat(hashtagRepository.findAll()).extracting(Hashtag::getTagName)
+                .containsExactlyInAnyOrder("JAVA", "SPRING");
+    }
+
+    @Test
+    @DisplayName("태그는 공백과 중복을 제거하고 대소문자 차이는 보존한다")
+    void normalizesTagNamesWithoutChangingCase() {
+        Member member = memberRepository.save(new Member("question-service-member", "hash", List.of("ROLE_USER")));
+        questionService.join(member.getId(), new QuestionForm("질문", "내용", member.getUsername(),
+                new ArrayList<>(List.of(" JAVA ", "JAVA", " ", "java"))));
+        Question saved = questionRepository.findAll().get(0);
+
+        assertThat(questionService.findById(saved.getId()).getHashtags()).containsExactlyInAnyOrder("JAVA", "java");
+        assertThat(hashtagRepository.findAll()).extracting(Hashtag::getTagName)
+                .containsExactlyInAnyOrder("JAVA", "java");
+    }
+
+    @Test
+    @DisplayName("동일한 태그로 질문을 수정해도 관계와 태그는 중복되지 않는다")
+    void updatingWithSameTagKeepsSingleRelation() {
+        Member member = memberRepository.save(new Member("question-service-member", "hash", List.of("ROLE_USER")));
+        questionService.join(member.getId(), new QuestionForm("질문", "내용", member.getUsername(),
+                new ArrayList<>(List.of("JAVA"))));
+        Question question = questionRepository.findAll().get(0);
+
+        questionService.updateQuestion(member.getId(), new QuestionUpdateForm(question.getId(), "질문", "내용",
+                new ArrayList<>(List.of("JAVA"))));
+
+        assertThat(questionService.findById(question.getId()).getHashtags()).containsExactly("JAVA");
+        assertThat(hashtagRepository.findAll()).extracting(Hashtag::getTagName).containsExactly("JAVA");
+    }
+
+    @Test
     @DisplayName("회원이 없으면 답변을 저장하지 않고 기존 답변을 유지한다")
     void saveAnswerException() {
         List<Long> existingIds = answerRepository.findAll().stream().map(Answer::getId).collect(Collectors.toList());
@@ -134,10 +192,7 @@ class QuestionServiceTest {
         Member member = memberRepository.save(new Member("question-service-member", "password", List.of("ROLE_USER")));
         Question question = saveQuestion(member, "질문", "내용", "test-java");
         Long questionId = question.getId();
-        Answer answer = new Answer("댓글", 0, 0);
-        answer.settingMember(member);
-        answer.settingQuestion(question);
-        answerRepository.save(answer);
+        answerService.save(member.getId(), new AnswerForm(member.getUsername(), questionId, "댓글"));
 
         questionService.deleteQuestion(member.getId(), questionId);
 
@@ -147,7 +202,7 @@ class QuestionServiceTest {
     }
 
     @Test
-    @DisplayName("질문 제목과 내용을 수정하고 해시태그를 추가한다")
+    @DisplayName("질문 제목과 내용을 수정하고 기존 해시태그를 교체한다")
     void updateQuestion() {
         Member member = memberRepository.save(new Member("question-service-member", "password", List.of("ROLE_USER")));
         Question question = saveQuestion(member, "원래 제목", "원래 내용", "test-java");
@@ -158,8 +213,7 @@ class QuestionServiceTest {
         QuestionDetail saved = questionService.findById(questionId);
         assertThat(saved.getTitle()).isEqualTo("수정 제목");
         assertThat(saved.getContent()).isEqualTo("수정 내용");
-        // Existing behavior appends tags; replacement semantics belong to T31.
-        assertThat(saved.getHashtags()).containsExactlyInAnyOrder("test-java", "test-jpa");
+        assertThat(saved.getHashtags()).containsExactly("test-jpa");
         assertThat(questionService.findAllHashtags()).containsExactlyInAnyOrder("test-java", "test-jpa");
     }
 
@@ -200,15 +254,11 @@ class QuestionServiceTest {
     }
 
     private Question saveQuestion(Member member, String title, String content, String... tags) {
-        Question question = new Question(title, content, 0, 0, 0);
-        question.settingMember(member);
-        for (String tag : tags) {
-            Hashtag hashtag = hashtagRepository.save(new Hashtag(tag));
-            QuestionHashtag relation = new QuestionHashtag();
-            hashtag.addQuestionHashtag(relation);
-            question.addQuestionHashtag(relation);
-        }
-        return questionRepository.save(question);
+        questionService.join(member.getId(), new QuestionForm(title, content, member.getUsername(),
+                new ArrayList<>(List.of(tags))));
+        return questionRepository.findAll().stream()
+                .filter(question -> question.getTitle().equals(title))
+                .findFirst().orElseThrow();
     }
 
 }

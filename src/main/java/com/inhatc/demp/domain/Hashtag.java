@@ -20,11 +20,17 @@ public class Hashtag {
     @OneToMany(mappedBy = "hashtag", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QuestionHashtag> questionHashtags = new ArrayList<>();
 
+    @Column(nullable = false, unique = true)
     private String tagName;
 
     public void addQuestionHashtag(QuestionHashtag questionHashtag) {
         questionHashtags.add(questionHashtag);
         questionHashtag.setHashtag(this);
+    }
+
+    public void removeQuestionHashtag(QuestionHashtag questionHashtag) {
+        questionHashtags.remove(questionHashtag);
+        questionHashtag.setHashtag(null);
     }
 
     public Hashtag(String tagName) {

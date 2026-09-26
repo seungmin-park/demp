@@ -54,6 +54,19 @@ public class Question {
         questionHashtag.setQuestion(this);
     }
 
+    public void replaceHashtags(List<Hashtag> hashtags) {
+        for (QuestionHashtag relation : new ArrayList<>(QuestionHashtags)) {
+            relation.getHashtag().removeQuestionHashtag(relation);
+            QuestionHashtags.remove(relation);
+            relation.setQuestion(null);
+        }
+        for (Hashtag hashtag : hashtags) {
+            QuestionHashtag relation = new QuestionHashtag();
+            hashtag.addQuestionHashtag(relation);
+            addQuestionHashtag(relation);
+        }
+    }
+
     public Question(String title, String content, int hits, int recommend, int dislike) {
         this.title = title;
         this.content = content;
