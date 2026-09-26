@@ -342,10 +342,12 @@ assertThat(answerRepository.findById(answerId).orElseThrow().getContent())
 
 수정 F: `src/components/question/QuestionMenu.vue`, `QuestionList.vue`, `QuestionDetail.vue`, `QuestionAnswer.vue`. 생성/수정 F 테스트: `tests/unit/QuestionDetail.spec.js`, `QuestionMenu.spec.js`, `QuestionAnswer.spec.js`.
 
-- [ ] 서버 `{recommend:3}` fixture가 3으로 표시되고 추천 메뉴가 orderBy=recommend를 전달하는 테스트를 작성한다.
-- [ ] recomend 오타를 통일하고 로컬 카운터 증가를 제거한다.
-- [ ] 반응 버튼이 disabled이며 저장되지 않는 기능임을 사용자에게 표시하는 테스트를 작성·통과시킨다. 실제 투표 API는 추가하지 않는다.
-- [ ] 목록·상세·답변을 모두 검증하고 전체 테스트/lint/build를 실행한다.
+- [x] 서버 `{recommend:3}` fixture가 3으로 표시되고 추천 메뉴가 orderBy=recommend를 전달하는 테스트를 작성한다.
+- [x] recomend 오타를 통일하고 로컬 카운터 증가를 제거한다.
+- [x] 반응 버튼이 disabled이며 저장되지 않는 기능임을 사용자에게 표시하는 테스트를 작성·통과시킨다. 실제 투표 API는 추가하지 않는다.
+- [x] 목록·상세·답변을 모두 검증하고 전체 테스트/lint/build를 실행한다.
+
+2026-09-26: Red `npm test -- --runInBand QuestionMenu QuestionDetail QuestionAnswer QuestionList`에서 `{recommend:3}`의 추천 표시가 비고 추천 메뉴가 `recomend`를 전달하는 assertion 실패를 확인했다. 메뉴 테스트의 초기 stub 오류를 고친 뒤 실제 정렬값 실패를 다시 확인했다. Green은 네 화면의 필드·정렬 이름을 `recommend`로 통일하고 질문·답변 반응 버튼에 `disabled`와 “반응 저장 기능 준비 중” 안내를 추가했다. Refactor에서는 저장 없이 숫자만 늘리던 상세 화면 메서드 두 개를 제거했다. 화면은 서버 값을 표시하며 반응 저장 책임을 가장하지 않는다. API·JSON 필드와 라우트 query는 컴포넌트 테스트로 검증했고, 독립 TypeScript 객체는 현재 없다. F 전체 16 suite·42 test, lint·build 성공(기존 번들 크기 권고 경고). 프런트 커밋 `07020c0`.
 
 ## Phase 5 · 도메인 언어와 책임 전수 검토 — R16 / S13
 
