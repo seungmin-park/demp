@@ -2,7 +2,7 @@
 
 > **For agentic workers:** superpowers:executing-plans를 사용해 한 작업씩 실행한다. 체크하지 않은 항목은 아직 수행하지 않은 계획이다.
 
-**Goal:** spec.md S01~S12를 테스트로 보장한다.
+**Goal:** spec.md S01~S13을 테스트와 파일별 검토 기록으로 보장한다.
 
 **Architecture:** 서버는 HTTP → 서비스 트랜잭션/권한 → 도메인/저장소, 화면은 Component → 상태 → API 경계를 따른다.
 
@@ -23,7 +23,7 @@ B=`demp`, F=`../dempfrontend`가 원본 저장소다. Phase 0은 사용자 요�
  → 대상 테스트 + 전체 테스트
  → 책임·이름·중복 정리
  → 전체 테스트 재실행
- → 변경/검증 로그와 작업별 커밋
+ → 변경/검증 로그 (커밋은 명시적 요청이 있을 때만)
 ```
 
 서버 전체 명령은 B에서 `./gradlew test`, 대상은 `./gradlew test --tests 'com.inhatc.demp.<package>.<Class>'`다. 프런트 표준 명령은 Phase 0에서 도입할 F의 `npm test -- --runInBand`다. 각 프런트 작업은 전체 테스트와 `npm run lint -- --no-fix`, `npm run build`를 수행한다. 아래 assertion 예시는 새 테스트에 넣을 핵심이며, setup/fixture는 해당 계층 규칙에 맞춰 구현한다.
@@ -33,6 +33,8 @@ B=`demp`, F=`../dempfrontend`가 원본 저장소다. Phase 0은 사용자 요�
 T10 전에는 전체 컨텍스트 테스트에서 InitDb를 제외하거나 mock으로 교체하지 않는다. 테스트가 생성한 데이터만 cleanup하고 초기 회원·질문·답변·태그를 보존한다. InitDb 삭제 시 seed 관련 기대값도 함께 변경한다.
 
 추가 요구사항: 모든 테스트의 데이터 setup용 `@BeforeEach`를 제거하고 필요한 객체는 각 테스트 본문에서 직접 생성한다. 공통 데이터 필드·상위 setup·자동 data.sql 로딩으로 대체하지 않는다. MockMvc와 REST Docs 실행 도구 초기화만 데이터 생성과 구분해 유지할 수 있고 `@AfterEach` cleanup은 유지한다. API 변경 작업은 Controller 테스트와 별도로 T02의 REST Docs 테스트도 함께 작성·갱신한다.
+
+상시 검토: 모든 T 작업에서 변경 파일과 호출부의 클래스·메서드·필드·매개변수 이름, 이름과 실제 효과, 메서드의 소속 클래스와 추출 필요성을 [AGENTS.md의 이름과 책임의 상시 검토](AGENTS.md#이름과-책임의-상시-검토)에 따라 기록한다. 백엔드와 독립 TypeScript 객체에는 SOLID를, Vue 컴포넌트에는 props/event·렌더링·상태·API 경계를 적용한다. 단순 이름/구조 변경은 기존 공개 동작을 먼저 특성화하고 Green을 유지한다. 동작을 고칠 때는 별도 Red→Green 사이클을 만든다.
 
 ## Phase 0 · 실행·검증 기반 복원
 
@@ -208,6 +210,8 @@ Phase 1 최초 검증: 백엔드 141개·프런트 21개 테스트, 문서·jar�
 
 ## Phase 2 · 공고 API와 업로드 계약
 
+작업 브랜치: `refactor/announcement-upload-contract`. Backend worktree: `/Users/seungmin/Desktop/repo/archive/demp/.worktrees/announcement-upload-contract/backend`. Frontend worktree: `/Users/seungmin/Desktop/repo/archive/demp/.worktrees/announcement-upload-contract/frontend`. 이후 원본 저장소로 옮겨 리뷰했다. 2026-09-26 사용자 요청에 따라 완료 작업을 커밋한다.
+
 ### T20 · 공고 DTO 계약 일치 — R06 / S06
 
 수정 B: `dto/announcement/AnnouncementCreateRequest.java`, `AnnouncementDetailResponse.java`, `service/AnnouncementService.java`, `controller/AnnouncementController.java`. 생성 B 테스트: `controller/AnnouncementControllerTest.java`에 사례 추가, `domain/announcemnet/AnnouncementValuesTest.java`. 수정 F: `src/components/announcement/AnnouncementWrite.vue`, `AnnouncementDetail.vue`, `AnnouncementHeader.vue`. 생성 F: `src/api/announcements.js`, `tests/unit/AnnouncementDetail.spec.js`, `tests/unit/AnnouncementWrite.spec.js`.
@@ -226,11 +230,13 @@ Phase 1 최초 검증: 백엔드 141개·프런트 21개 테스트, 문서·jar�
 
 생성 요청은 위 이름을 가진 multipart 필드와 image 파일이다. company는 문자열이다. 상세 응답은 동일 평면 필드 중 type 대신 announcementType, company 대신 `{ "name": "DEMP" }`를 사용하고 image URL을 추가한다. 이 차이는 API 모듈에서 명시적으로 매핑한다. 최소/최대 경력과 날짜는 응답 DTO 자체에 두어 값 객체 getter 유무에 의존하지 않는다. 금액 단위는 현재 UI의 만원 표기를 유지한다.
 
-- [ ] 위 fixture로 상세 화면에 기간·금액·회사·본문이 표시되는 테스트를 작성해 현재 필드 불일치를 확인한다.
-- [ ] 서버 multipart 바인딩과 응답 JSON 계약 테스트를 작성한다. 잘못된 enum은 400, EMP/EDU 정상 입력은 성공이어야 한다.
-- [ ] DTO에서 문자열/숫자/날짜를 검증하고 Service에서 Company/Career/Description/RecruitPeriod로 변환한다. enum @NotBlank를 @NotNull로 교체한다.
-- [ ] 날짜 역전·음수 경력·min>max(max=0 상한 없음 예외)의 순수 도메인 테스트를 각각 Red→Green으로 진행한다.
-- [ ] F 요청 조립과 응답 사용을 fixture에 맞추고 양쪽 전체 검증을 실행한다.
+- [x] 위 fixture로 상세 화면에 기간·금액·회사·본문이 표시되는 테스트를 작성해 현재 필드 불일치를 확인한다.
+- [x] 서버 multipart 바인딩과 응답 JSON 계약 테스트를 작성한다. 잘못된 enum은 400, EMP/EDU 정상 입력은 성공이어야 한다.
+- [x] DTO에서 문자열/숫자/날짜를 검증하고 Service에서 Company/Career/Description/RecruitPeriod로 변환한다. enum @NotBlank를 @NotNull로 교체한다.
+- [x] 날짜 역전·음수 경력·min>max(max=0 상한 없음 예외)의 순수 도메인 테스트를 각각 Red→Green으로 진행한다.
+- [x] F 요청 조립과 응답 사용을 fixture에 맞추고 양쪽 전체 검증을 실행한다.
+
+2026-09-21 완료. Red는 백엔드 대상 10건 중 7건과 프런트 상세·작성 2건의 실패로 계약 불일치를 재현했다. Green에서 평면 DTO·값 객체 변환·명시적 프런트 매핑을 적용했다. Refactor에서 경력/날짜 교차 필드도 HTTP 400으로 막고 도메인 불변식을 유지했다. 최종 검증과 상세 실행 근거는 [Phase 2 검증 기록](docs/verification/announcement-upload-contract/README.md)에 남겼다. 선행 완료된 T20·T21의 백엔드 변경은 2026-09-26에 함께 `4699a51`로 소급 커밋했다.
 
 ### T21 · 파일 저장과 실패 보상 — R11 / S06
 
@@ -238,12 +244,14 @@ Phase 1 최초 검증: 백엔드 141개·프런트 21개 테스트, 문서·jar�
 
 새 포트 계약: `UploadFile save(MultipartFile file) throws IOException`, `void delete(String key)`. 기존 FileService가 구현한다. 필수 이미지 입력은 null/빈 파일을 400으로 거절한다. 허용 유형은 JPEG/PNG, 최대 5 MiB를 계획 기본값으로 명시하고 설정으로 관리한다.
 
-- [ ] 중복 공고 요청 시 fake storage에 업로드된 파일이 0개인 테스트를 작성하고 실제 실패를 확인한다.
-- [ ] 검증·중복 조회를 업로드보다 앞에 배치한다.
-- [ ] 업로드 성공 후 DB 저장 실패를 주입하고 저장 키의 삭제 보상을 assertion한다. DB transaction commit 실패까지 보상 경계에 포함시킨다.
-- [ ] null/빈 이미지, 크기 초과, 확장자와 MIME 불일치 실패를 각각 검증한다. 파일 내용 시그니처도 확인한다.
-- [ ] 보상 삭제도 실패할 때 원래 오류를 유지하고 키를 추적 가능하게 기록하는 테스트를 추가한다. 실제 S3 호출은 하지 않는다.
-- [ ] 외부 저장 인터페이스와 업무 흐름을 정리하고 전체 검증한다.
+- [x] 중복 공고 요청 시 fake storage에 업로드된 파일이 0개인 테스트를 작성하고 실제 실패를 확인한다.
+- [x] 검증·중복 조회를 업로드보다 앞에 배치한다.
+- [x] 업로드 성공 후 DB 저장 실패를 주입하고 저장 키의 삭제 보상을 assertion한다. DB transaction commit 실패까지 보상 경계에 포함시킨다.
+- [x] null/빈 이미지, 크기 초과, 확장자와 MIME 불일치 실패를 각각 검증한다. 파일 내용 시그니처도 확인한다.
+- [x] 보상 삭제도 실패할 때 원래 오류를 유지하고 키를 추적 가능하게 기록하는 테스트를 추가한다. 실제 S3 호출은 하지 않는다.
+- [x] 외부 저장 인터페이스와 업무 흐름을 정리하고 전체 검증한다.
+
+2026-09-21 완료. Red는 대상 13건 중 11건 실패로 업로드 순서·보상·파일 검증 부재를 재현했다. Green에서 `FileStorage`, commit을 포함한 보상 경계, JPEG/PNG·5 MiB 검증을 구현했다. Refactor에서 잘못된 Spring Data spy를 제거하고 실제 H2 commit 통합 테스트와 실패 주입 단위 테스트를 분리했다. 파일 UI도 필수 JPEG/PNG 선택 계약으로 맞췄다. 제목 사전 조회는 순차 중복 업로드를 막지만 동시 요청의 유일성을 보장하지 않는다. DB unique 제약은 제목의 업무상 유일성 결정과 운영 스키마 변경 절차가 필요하므로 이번 범위에 추가하지 않았다. 백엔드 소급 커밋은 T20과 함께 `4699a51`이다.
 
 ## Phase 3 · 저장·관계·조회 정확성
 
@@ -325,9 +333,60 @@ assertThat(answerRepository.findById(answerId).orElseThrow().getContent())
 - [ ] 반응 버튼이 disabled이며 저장되지 않는 기능임을 사용자에게 표시하는 테스트를 작성·통과시킨다. 실제 투표 API는 추가하지 않는다.
 - [ ] 목록·상세·답변을 모두 검증하고 전체 테스트/lint/build를 실행한다.
 
-## Phase 5 · 통합 검증과 인수
+## Phase 5 · 도메인 언어와 책임 전수 검토 — R16 / S13
 
-### T50 · 전체 사용자 흐름과 CI — S01~S12
+실행 예정 브랜치: `refactor/domain-language-and-responsibility`. 백엔드 worktree: `demp/.worktrees/domain-language-and-responsibility/backend`; 프런트 worktree: `dempfrontend/.worktrees/domain-language-and-responsibility/frontend`. 작업 시작 시 각 저장소의 실제 경로·브랜치·기준 커밋을 기록하고 해당 Phase 전용 worktree에서 수행한다. 현재 브랜치의 미커밋 변경을 암묵적으로 옮기지 않는다. T31·T32·T40~T42와 겹치는 변경은 해당 작업에서 먼저 해결하고 T45에서 재검토한다. 완료 작업은 2026-09-26 사용자 요청에 따라 커밋한다.
+
+판정 단위는 **파일 → 선언된 이름 → 메서드의 실제 효과 → 현재 클래스의 책임 → 함께 옮길 협력자 → 공개 계약**이다. `rg --files`로 B의 `src/main/java`, `src/test/java`와 F의 `src`, `tests`, 실행 스크립트를 목록화한다. 생성 코드·의존성·빌드 산출물은 제외 사유를 적는다. 모든 파일에 `검토 완료/후속 작업/유지`와 근거를 남기고 새 파일도 확인한다. 이전 R01~R15나 아래 후보 몇 개를 전수 검사로 간주하지 않는다.
+
+### T45 · 파일별 전수 인벤토리와 이름·책임 판정표
+
+생성 B: `docs/verification/domain-language-and-responsibility/inventory.md`. 수정 B: `tasks.md`. F는 읽기 범위이며 F의 AGENTS.md와 코드가 허용하는 작업 범위를 시작 시 확인한다.
+
+2026-09-26 현재 미커밋 코드의 선행 정적 리뷰를 [파일별 판정표와 N01~N15](docs/verification/domain-language-and-responsibility/inventory.md)에 기록했다. B Java 96개, F Vue/JS 40개, 빌드·실행 스크립트 6개의 목록과 제외 대상을 대조했다. Java 11의 B `./gradlew test`는 168개 통과했고 F `npm test -- --runInBand`는 의존성 부재로 실행되지 않았다. 실제 T46~T49 구현과 동작 재현은 별도 worktree에서 수행한다.
+
+후속 환경 복원 뒤 F 테스트 24개, lint, build를 실행해 통과했다. 설치 실패 원인과 Sass 교체는 판정표의 후속 검증에 기록했다. T45의 정적 발견을 실행 재현으로 바꾸어 해석하지 않는다.
+
+- [x] 양쪽 저장소의 추적 대상 파일 목록과 개수를 기록하고, 각 파일의 클래스/컴포넌트/모듈 역할과 선언된 이름을 검토한다. 생성 코드와 산출물 제외 목록도 적어 누락을 검증한다.
+- [x] 각 메서드에 대해 이름이 반환값·부작용·예외·트랜잭션을 드러내는지, 실제 행위가 한 유스케이스의 조정인지 여러 독립 규칙인지, 현재 클래스가 그 규칙을 소유해야 하는지 판정한다. 필드는 도메인 용어·단위·컬렉션 단복수·HTTP/DB 이름과 대조한다.
+- [x] Java 객체와 독립 TypeScript 모듈에 대해 변경 이유(SRP), 확장 지점(OCP), 치환 가능성(LSP), 필요한 계약만 노출하는지(ISP), 외부 경계 의존 방향(DIP)을 **해당되는 관계에서만** 판정한다. 현재 F에는 `.ts/.tsx`가 0개이므로 TypeScript 판정은 대상 없음으로 기록하고, Vue 컴포넌트에는 SOLID 판정을 하지 않는다.
+- [x] 각 지적에 `파일:줄`, 호출부, 실제 동작, 제안 이름 또는 책임 이동, 유지/수정 이유, 호환성 위험, 담당 T46~T49를 적는다. 지적이 없는 파일도 `검토 완료·유지`로 남긴다. 파일 목록과 판정 행의 누락이 0개인지 재대조한다.
+
+### T46 · 도메인 용어와 관계 불변식 — T31 이후
+
+수정 후보 B: `domain/Question.java`, `Answer.java`, `QuestionHashtag.java`, `Hashtag.java`, `domain/announcemnet/*`, `dto/announcement/AnnouncementDetailResponse.java` 및 호출부/관련 테스트. 실제 수정 목록은 T45 판정표로 확정한다.
+
+- [ ] 관계 연결·교체, 값 객체 불변식, 응답 매핑의 현재 공개 동작을 Domain/Repository/Controller 테스트로 먼저 고정한다. `QuestionHashtags`, `settingMember`, `getBuild`, `announcemnet`의 변경이 JPA 필드명·QueryDSL 생성형·JSON 키를 바꾸는지 확인한다.
+- [ ] 서로 연동되는 관계 변경은 소유 엔티티의 하나의 연산으로 모으고, 태그 탐색·저장은 도메인 엔티티로 옮기지 않는다. 도메인에서 상태 변경과 양방향 관계를 보장하는 테스트를 통과시킨다. 새 동작이 필요하면 그 사례만 별도 Red→Green으로 진행한다.
+- [ ] 이름을 의미에 맞게 바꾸고 호출부를 함께 정리한다. 외부 계약 변경이 불필요하면 명시적 JPA/JSON 매핑으로 호환성을 유지한다. 대상 및 `./gradlew test`를 실행한다.
+
+### T47 · 서비스·저장소 메서드의 효과와 클래스 소속 — T32 이후
+
+수정 후보 B: `service/QuestionService.java`, `AnnouncementService.java`, `MemberService.java`, `FileService.java`, `repository/question/QuestionQueryRepository.java`, `repository/announcement/AnnouncementQueryRepository.java`, `controller/MemberController.java` 및 호출부/관련 테스트. 실제 수정 목록은 T45 판정표로 확정한다.
+
+- [ ] `join`, `setHashtags`, `save`, `pageTest/pagingTest`, `validationDuplicateUsername`, `QuestionSort`, `getFullPath`의 호출부·반환값·부작용을 추적하고 유지/이름 변경/메서드 추출/클래스 추출 중 하나를 근거와 함께 결정한다.
+- [ ] 질문 생성/태그 관리, 공고 입력 변환/저장·보상, 파일 검증/전송이 각각 독립된 변경 이유를 가진 경우에만 협력 클래스를 추출한다. 새 클래스의 입력·출력·소유 규칙·트랜잭션/외부 효과를 판정표에 명시한다. 서비스는 유스케이스의 순서와 트랜잭션을 조정할 수 있으므로 단계 수만으로 분리하지 않는다.
+- [ ] 기존 결과·상태 코드·트랜잭션 commit·파일 삭제 보상 테스트를 먼저 실행해 기준선을 확보한다. 책임 이동 뒤 대상 테스트와 `./gradlew test`를 다시 실행하고, 동작 오류가 새로 발견되면 별도 실패 테스트를 먼저 작성한다.
+
+### T48 · 프런트 도메인 이름과 상태·API 경계 — T40~T42 이후
+
+수정 후보 F: `src/data/positon.js`, `src/router/index.js`, `src/components/announcement/AnnouncementList.vue`, `src/api/*`, `src/store/*`, `src/fontAwesomeIcon.js`, 미사용 예제 컴포넌트 및 관련 테스트. 실제 수정 목록은 T45 판정표로 확정한다.
+
+- [ ] 모든 Vue/JavaScript 파일에서 컴포넌트명·props·emits·상태 필드·함수명·라우트명을 화면 도메인과 실제 효과에 대조한다. `positon`, `Test*`, `loadDataFromServer` 후보의 외부 참조를 확인한다.
+- [ ] 비동기 요청·상태 전이·렌더링이 한 메서드에 섞인 경우 API 호출은 API 모듈, 공유 상태 전이는 store, 표현은 컴포넌트에 배치할지 결정한다. 단일 화면의 지역 상태만 필요한 경우 불필요한 store 추출을 하지 않는다.
+- [ ] 사용자에게 보이는 결과와 라우트/이벤트 계약을 컴포넌트 테스트로 고정한 뒤 이름·책임을 바꾼다. F 전체 `npm test -- --runInBand`, `npm run lint -- --no-fix`, `npm run build`를 실행한다.
+
+### T49 · 감사 누락·공개 계약 재검증
+
+수정 B: `docs/verification/domain-language-and-responsibility/inventory.md`, `tasks.md`. 필요한 경우 B/F의 테스트·API 문서.
+
+- [ ] T45 파일 목록을 현재 양쪽 추적 대상 파일과 재대조하고 모든 판정·후속 조치·유지 이유를 닫는다. 새로 생긴 파일도 이름·효과·소속 책임을 검사한다.
+- [ ] REST Docs/JSON 키, DB 매핑, 라우트, 파일 저장 경로, 검색·페이지 결과를 변경 전 계약과 대조한다. 의도한 변경은 양쪽 테스트와 문서에 반영한다.
+- [ ] B `./gradlew test`와 `./gradlew asciidoctor`, F 전체 테스트/lint/build를 실행하고 실제 명령·결과를 기록한다. 정적 위험과 실행 재현 결과를 구분한다.
+
+## Phase 6 · 통합 검증과 인수
+
+### T50 · 전체 사용자 흐름과 CI — S01~S13
 
 생성 B/F: `.github/workflows/ci.yml`. 생성 F: `tests/e2e/community.spec.js`, `playwright.config.js`. 수정 B/F: README.md. 외부 시스템은 격리된 테스트 DB/파일 저장 대역을 사용한다.
 
@@ -368,6 +427,7 @@ npx playwright test
 | S10 | T40 | R12 |
 | S11 | T41 | R14 |
 | S12 | T42 | R13 |
+| S13 | T45~T49 및 모든 T의 상시 검토 | R16 |
 
 | 추가 요구사항 | 실행 위치 | 인수 기준 |
 | --- | --- | --- |
@@ -376,10 +436,12 @@ npx playwright test
 | 별도 REST Docs 테스트 | T02 및 API 변경 작업,T50 | Controller/docs 테스트 분리, snippets와 HTML 생성 |
 | 데이터 setup @BeforeEach 제거 | T01 및 모든 후속 테스트 | 각 테스트 본문에서 필요한 객체 직접 생성, 숨은 공유 fixture 없음 |
 | ExController·Exception 보안 | T14 | 안전한 상태/본문, 내부 정보 미노출, 필터·MVC 경계 모두 검증 |
+| 이름·메서드 효과·클래스 소속 상시 검토 | 모든 T, T45~T49 | 변경 파일·호출부 기록과 양쪽 저장소 파일별 판정 완료 |
+| SOLID 적용 범위 | T45~T49 | 백엔드·독립 TypeScript 객체만 판정, Vue는 역할 경계 검토 |
 
-각 작업 완료 시 이 파일의 해당 항목 아래에 실행 날짜, Red 명령/실패 assertion, Green 최소 변경, Refactor 변경 이유, 대상/전체 검증 결과, 커밋 SHA를 추가한다. Red가 처음부터 통과하면 회귀 재현에 실패한 것이므로 사례를 다시 구성한다. T00의 합의된 컴파일 복원은 이 기능 Red 기록과 분리한다.
+각 작업 완료 시 이 파일의 해당 항목 아래에 실행 날짜, Red 명령/실패 assertion, Green 최소 변경, Refactor 변경 이유, 대상/전체 검증 결과를 추가한다. 커밋을 명시적으로 요청받아 생성한 경우에만 SHA를 적는다. 순수 이름·구조 정리는 기존 Green 계약을 먼저 기록한다. 동작 변경의 Red가 처음부터 통과하면 회귀 재현에 실패한 것이므로 사례를 다시 구성한다. T00의 합의된 컴파일 복원은 이 기능 Red 기록과 분리한다.
 
-현재 상태: Phase 0과 Phase 1 구현·검증 완료. 정상 공고 등록·상세 문서 범위는 T20에 남는다. Phase 2~5는 미착수이며 T30의 트랜잭션·재조회 검증은 T12에서 선행 적용했다.
+현재 상태: Phase 0, Phase 1, Phase 2 구현·검증 완료. Phase 3~4와 Phase 5의 T46~T49, Phase 6은 미착수이며 T30의 트랜잭션·재조회 검증은 T12에서 선행 적용했다. 2026-09-26에 현재 `refactor/announcement-upload-contract` 브랜치의 원본 작업 디렉터리에서 Phase 5의 T45 정적 전수 검토를 선행했다. 구현/동작 수정은 하지 않았다.
 
 ### 2026-09-21 Phase 1 리뷰 반영
 

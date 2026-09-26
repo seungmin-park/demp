@@ -120,6 +120,25 @@ Member (JPA·회원 도메인)
                                               └── 인증 → Controller → actorId → Service
 ```
 
+### R16 · P2 · 전체 이름·메서드·클래스 책임 검토의 빈칸
+
+근거: 기존 R01~R15는 기능·보안 문제 중심의 선별 리뷰다. 당시 `tasks.md`의 공통 절차에는 “책임·이름·중복 정리” 한 줄만 있었으므로 이전 리뷰를 전체 코드의 네이밍·책임·SOLID 감사로 설명할 수 없다. 2026-09-26의 현재 미커밋 코드에 대해 B Java 96개, F Vue/JS 40개 및 빌드·실행 스크립트 6개를 정적으로 검토한 결과와 파일별 목록은 [전수 리뷰 기록](docs/verification/domain-language-and-responsibility/inventory.md)에 남겼다. 아래는 그중 대표 사례이며 실행으로 재현한 결과는 아니다.
+
+| 코드 근거 | 검토할 불일치와 판단할 책임 |
+| --- | --- |
+| B `domain/announcemnet/`, `Question.QuestionHashtags`, `Question/Answer.settingMember`, `AnnouncementDetailResponse.getBuild` | 오탈자·대문자 필드·모호한 동사를 도메인 및 응답 변환 의미에 맞게 정리하되 JPA 매핑과 JSON 호환성을 확인한다. |
+| B `QuestionService.join`, `setHashtags`, `settingQuestionHashtag` | 질문 생성 유스케이스와 태그 조회·생성·관계 변경을 구별한다. 관계 불변식은 도메인에, 태그 탐색은 적절한 저장 경계에 두고 별도 협력 객체 추출 필요성을 검토한다. T31 동작 수정과 순서를 맞춘다. |
+| B `AnnouncementService.save`, `join`, `pageTest`, `AnnouncementQueryRepository.pagingTest/getAnnounceScroll` | 저장·파일 보상은 하나의 유스케이스 조정인지, 입력 변환·콘텐츠 정제·파일/DB 보상 규칙을 묶어 추출할지 검토한다. `*Test`라는 운영 메서드명과 실제 페이지 계약을 T32와 함께 정리한다. |
+| B `MemberService.validationDuplicateUsername`, `MemberController.Member`, `QuestionQueryRepository.QuestionSort`, `FileService.getFullPath` | 반환값과 효과가 드러나는 이름으로 바꿀 후보를 검토하고 실제 호출 여부·계약을 확인한다. |
+| F `src/data/positon.js`, `router/index.js`의 `Test*` 경로명, `AnnouncementList.loadDataFromServer` | 도메인 오탈자·임시 이름·로딩/페이지 상태 책임을 T40~T42와 함께 검토한다. 프런트 현재 소스에는 TypeScript 파일이 없다. |
+
+개선: `tasks.md` Phase 5에 **파일별 전수 인벤토리 → 도메인 이름·관계 책임 → 유스케이스/저장 경계 → 프런트 책임 → 전체 계약 검증**의 독립 작업을 추가했다. 정적 인벤토리는 선행 작성했고 구현·동작 수정·브라우저 재현은 아직 남았다. 모든 이름 변경 후보를 기계적으로 치환하지 않는다. 외부 계약을 보존하고 테스트가 확인한 동작을 유지하며, 실제 분리가 필요한 경우 객체가 소유할 불변식·의존성·트랜잭션 경계를 먼저 명시한다. 매 작업의 상시 검토 규칙은 [AGENTS.md](AGENTS.md#이름과-책임의-상시-검토)에 둔다.
+
+```text
+HTTP/화면 계약 → 유스케이스 조정 → 도메인 불변식 → 저장·외부 시스템
+       이름 검토       효과·소속 검토      상태 책임 검토      경계·의존성 검토
+```
+
 ## 개선 순서와 설계 이유
 
 ```text
@@ -133,11 +152,13 @@ Phase 3: 답변·태그·검색 정확성 (R07, R09, R10)
     ↓
 Phase 4: 화면 상태·연결·반응 표시 (R12~R14)
     ↓
-Phase 5: 전체 흐름·배포 검증
+Phase 5: 전체 이름·메서드·클래스 책임 검토와 정리 (R16)
+    ↓
+Phase 6: 전체 흐름·배포 검증
 ```
 
 실행할 수 없으면 회귀 테스트를 믿을 수 없고, 인증 주체가 불명확하면 CRUD를 정리해도 권한 버그가 남는다. 계약을 먼저 확정해야 프런트와 서버를 각각 고쳐 놓고 다시 맞추는 일을 줄일 수 있다.
 
 ## 완료 조건
 
-spec.md의 S01~S12 및 이번 추가 요구사항 5개를 tasks.md에서 모두 추적하고, [AGENTS.md의 완료 판정](AGENTS.md#완료-판정)에 따라 검증 결과를 기록한다. InitDb 삭제/local 실행 전용 SQL, Member와 UserDetails 분리, 독립 REST Docs 테스트, 테스트별 직접 데이터 생성, 예외·보안 검증을 인수 조건에 포함한다. 이번 리뷰에서는 테스트 실행 전에 막혔으므로 취약 경로의 런타임 재현과 브라우저 E2E는 아직 검증되지 않았다.
+spec.md의 S01~S13 및 기존 추가 요구사항 5개를 tasks.md에서 모두 추적하고, [AGENTS.md의 완료 판정](AGENTS.md#완료-판정)에 따라 검증 결과를 기록한다. InitDb 삭제/local 실행 전용 SQL, Member와 UserDetails 분리, 독립 REST Docs 테스트, 테스트별 직접 데이터 생성, 예외·보안 검증, 파일별 이름·책임 판정 기록을 인수 조건에 포함한다. R16의 정적 검토는 파일 목록 기준으로 완료했으며, 발견된 동작의 재현과 리팩터링 완료는 별도 작업이다.
