@@ -70,7 +70,7 @@ class AnswerRestDocsTest {
         Member member = new Member("docs-member", "docs-password-hash", List.of("ROLE_USER"));
         Answer answer = new Answer("docs-answer", 2, 1);
         ReflectionTestUtils.setField(answer, "id", 61L);
-        answer.settingMember(member);
+        answer.assignMember(member);
         List<Answer> response = List.of(answer);
         when(answerService.findByQuestion(51L)).thenReturn(List.of(new QuestionAnswer(answer)));
 
@@ -99,7 +99,7 @@ class AnswerRestDocsTest {
         Member member = new Member("docs-member", "docs-password-hash", List.of("ROLE_USER"));
         Answer savedAnswer = new Answer("docs-answer", 0, 0);
         ReflectionTestUtils.setField(savedAnswer, "id", 61L);
-        savedAnswer.settingMember(member);
+        savedAnswer.assignMember(member);
         QuestionAnswer response = new QuestionAnswer(savedAnswer);
         when(answerService.save(eq(41L), refEq(request))).thenReturn(List.of(response));
 

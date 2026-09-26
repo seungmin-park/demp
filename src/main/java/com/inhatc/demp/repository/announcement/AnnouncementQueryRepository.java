@@ -1,12 +1,12 @@
 package com.inhatc.demp.repository.announcement;
 
-import static com.inhatc.demp.domain.announcemnet.QAnnouncement.announcement;
+import static com.inhatc.demp.domain.announcement.QAnnouncement.announcement;
 import static org.springframework.util.StringUtils.hasText;
 
-import com.inhatc.demp.domain.announcemnet.Announcement;
-import com.inhatc.demp.domain.announcemnet.AnnouncementType;
-import com.inhatc.demp.domain.announcemnet.JobPosition;
-import com.inhatc.demp.domain.announcemnet.Language;
+import com.inhatc.demp.domain.announcement.Announcement;
+import com.inhatc.demp.domain.announcement.AnnouncementType;
+import com.inhatc.demp.domain.announcement.JobPosition;
+import com.inhatc.demp.domain.announcement.Language;
 import com.inhatc.demp.dto.announcement.AnnouncementResponse;
 import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.querydsl.core.BooleanBuilder;

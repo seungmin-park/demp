@@ -351,7 +351,7 @@ assertThat(answerRepository.findById(answerId).orElseThrow().getContent())
 
 ## Phase 5 · 도메인 언어와 책임 전수 검토 — R16 / S13
 
-실행 예정 브랜치: `refactor/domain-language-and-responsibility`. 백엔드 worktree: `demp/.worktrees/domain-language-and-responsibility/backend`; 프런트 worktree: `dempfrontend/.worktrees/domain-language-and-responsibility/frontend`. 작업 시작 시 각 저장소의 실제 경로·브랜치·기준 커밋을 기록하고 해당 Phase 전용 worktree에서 수행한다. 현재 브랜치의 미커밋 변경을 암묵적으로 옮기지 않는다. T31·T32·T40~T42와 겹치는 변경은 해당 작업에서 먼저 해결하고 T45에서 재검토한다. 완료 작업은 2026-09-26 사용자 요청에 따라 커밋한다.
+실행 브랜치: `refactor/domain-language-and-responsibility`. 백엔드 worktree: `demp/.worktrees/domain-language-and-responsibility/backend`(Phase 4 B `93ca588` 기준); 프런트 worktree: `dempfrontend/.worktrees/domain-language-and-responsibility/frontend`(Phase 4 F `07020c0` 기준). 두 브랜치는 생성 직후 Phase 4 완료 커밋까지 fast-forward했다. 완료 작업은 2026-09-26 사용자 요청에 따라 커밋한다.
 
 판정 단위는 **파일 → 선언된 이름 → 메서드의 실제 효과 → 현재 클래스의 책임 → 함께 옮길 협력자 → 공개 계약**이다. `rg --files`로 B의 `src/main/java`, `src/test/java`와 F의 `src`, `tests`, 실행 스크립트를 목록화한다. 생성 코드·의존성·빌드 산출물은 제외 사유를 적는다. 모든 파일에 `검토 완료/후속 작업/유지`와 근거를 남기고 새 파일도 확인한다. 이전 R01~R15나 아래 후보 몇 개를 전수 검사로 간주하지 않는다.
 
@@ -372,9 +372,11 @@ assertThat(answerRepository.findById(answerId).orElseThrow().getContent())
 
 수정 후보 B: `domain/Question.java`, `Answer.java`, `QuestionHashtag.java`, `Hashtag.java`, `domain/announcemnet/*`, `dto/announcement/AnnouncementDetailResponse.java` 및 호출부/관련 테스트. 실제 수정 목록은 T45 판정표로 확정한다.
 
-- [ ] 관계 연결·교체, 값 객체 불변식, 응답 매핑의 현재 공개 동작을 Domain/Repository/Controller 테스트로 먼저 고정한다. `QuestionHashtags`, `settingMember`, `getBuild`, `announcemnet`의 변경이 JPA 필드명·QueryDSL 생성형·JSON 키를 바꾸는지 확인한다.
-- [ ] 서로 연동되는 관계 변경은 소유 엔티티의 하나의 연산으로 모으고, 태그 탐색·저장은 도메인 엔티티로 옮기지 않는다. 도메인에서 상태 변경과 양방향 관계를 보장하는 테스트를 통과시킨다. 새 동작이 필요하면 그 사례만 별도 Red→Green으로 진행한다.
-- [ ] 이름을 의미에 맞게 바꾸고 호출부를 함께 정리한다. 외부 계약 변경이 불필요하면 명시적 JPA/JSON 매핑으로 호환성을 유지한다. 대상 및 `./gradlew test`를 실행한다.
+- [x] 관계 연결·교체, 값 객체 불변식, 응답 매핑의 현재 공개 동작을 Domain/Repository/Controller 테스트로 먼저 고정한다. `QuestionHashtags`, `settingMember`, `getBuild`, `announcemnet`의 변경이 JPA 필드명·QueryDSL 생성형·JSON 키를 바꾸는지 확인한다.
+- [x] 서로 연동되는 관계 변경은 소유 엔티티의 하나의 연산으로 모으고, 태그 탐색·저장은 도메인 엔티티로 옮기지 않는다. 도메인에서 상태 변경과 양방향 관계를 보장하는 테스트를 통과시킨다. 새 동작이 필요하면 그 사례만 별도 Red→Green으로 진행한다.
+- [x] 이름을 의미에 맞게 바꾸고 호출부를 함께 정리한다. 외부 계약 변경이 불필요하면 명시적 JPA/JSON 매핑으로 호환성을 유지한다. 대상 및 `./gradlew test`를 실행한다.
+
+2026-09-26: Red `./gradlew test --tests 'com.inhatc.demp.domain.QuestionTest' --tests 'com.inhatc.demp.domain.AnswerTest'`에서 작성자·질문 재지정 세 사례 모두 이전 객체 목록의 낡은 참조 때문에 실패했다. Green은 관계를 재지정할 때 이전 목록에서 제거하고 새 목록에 한 번만 추가하는 엔티티 연산이다. Refactor에서 질문의 `addHashtag`가 양방향 태그 연결을 한 번에 수행하게 하고 관계 setter를 package 범위로 제한했다. `settingMember/settingQuestion`은 `assignMember/assignQuestion`, `getBuild`는 `from`, `QuestionHashtags`는 `questionHashtags`, `announcemnet` 패키지는 `announcement`로 이름과 호출부를 바꿨다. 태그 이름 탐색·저장은 서비스/저장소에 유지했다. 관계의 JPA `mappedBy` 필드와 join column은 동일하고, DTO 필드·JSON 키는 변경하지 않았다. QueryDSL 재생성, Repository/Controller/REST Docs 및 값 객체 테스트를 포함한 `clean test asciidoctor bootJar`는 31 suite·192 test·실패 0으로 통과했다. 운영 DB 스키마 검증은 T49/T50에서 별도 환경 대상으로 남긴다.
 
 ### T47 · 서비스·저장소 메서드의 효과와 클래스 소속 — T32 이후
 

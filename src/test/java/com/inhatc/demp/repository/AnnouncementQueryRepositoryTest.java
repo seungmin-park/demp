@@ -1,14 +1,14 @@
 package com.inhatc.demp.repository;
 
-import com.inhatc.demp.domain.announcemnet.Announcement;
-import com.inhatc.demp.domain.announcemnet.AnnouncementType;
-import com.inhatc.demp.domain.announcemnet.Career;
-import com.inhatc.demp.domain.announcemnet.Company;
-import com.inhatc.demp.domain.announcemnet.Description;
-import com.inhatc.demp.domain.announcemnet.JobPosition;
-import com.inhatc.demp.domain.announcemnet.Language;
-import com.inhatc.demp.domain.announcemnet.RecruitPeriod;
-import com.inhatc.demp.domain.announcemnet.UploadFile;
+import com.inhatc.demp.domain.announcement.Announcement;
+import com.inhatc.demp.domain.announcement.AnnouncementType;
+import com.inhatc.demp.domain.announcement.Career;
+import com.inhatc.demp.domain.announcement.Company;
+import com.inhatc.demp.domain.announcement.Description;
+import com.inhatc.demp.domain.announcement.JobPosition;
+import com.inhatc.demp.domain.announcement.Language;
+import com.inhatc.demp.domain.announcement.RecruitPeriod;
+import com.inhatc.demp.domain.announcement.UploadFile;
 import com.inhatc.demp.dto.announcement.AnnouncementResponse;
 import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.inhatc.demp.repository.announcement.AnnouncementQueryRepository;
@@ -31,8 +31,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 
-import static com.inhatc.demp.domain.announcemnet.Language.React;
-import static com.inhatc.demp.domain.announcemnet.Language.SPRING;
+import static com.inhatc.demp.domain.announcement.Language.React;
+import static com.inhatc.demp.domain.announcement.Language.SPRING;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest(properties = {

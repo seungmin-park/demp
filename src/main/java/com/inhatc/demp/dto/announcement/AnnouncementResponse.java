@@ -2,9 +2,9 @@ package com.inhatc.demp.dto.announcement;
 
 import static com.inhatc.demp.config.aws.AwsS3Config.BUCKET_URL;
 
-import com.inhatc.demp.domain.announcemnet.Announcement;
-import com.inhatc.demp.domain.announcemnet.JobPosition;
-import com.inhatc.demp.domain.announcemnet.Language;
+import com.inhatc.demp.domain.announcement.Announcement;
+import com.inhatc.demp.domain.announcement.JobPosition;
+import com.inhatc.demp.domain.announcement.Language;
 import java.util.HashSet;
 import java.util.Set;
 import lombok.Getter;

@@ -30,7 +30,7 @@ public class AnswerService {
         Member member = members.findById(actorId).orElseThrow(ResourceNotFoundException::new);
         Question question = questions.findById(form.getQuestionId()).orElseThrow(ResourceNotFoundException::new);
         Answer answer = new Answer(sanitizer.sanitize(form.getAnswerContent()), 0, 0);
-        answer.settingMember(member); answer.settingQuestion(question); answers.save(answer);
+        answer.assignMember(member); answer.assignQuestion(question); answers.save(answer);
         return findByQuestion(question.getId());
     }
     @Transactional

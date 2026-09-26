@@ -1,6 +1,6 @@
 package com.inhatc.demp.controller;
 
-import com.inhatc.demp.domain.announcemnet.Announcement;
+import com.inhatc.demp.domain.announcement.Announcement;
 import com.inhatc.demp.dto.announcement.*;
 import com.inhatc.demp.service.AnnouncementService;
 import lombok.RequiredArgsConstructor;
@@ -46,7 +46,7 @@ public class AnnouncementController {
         }
 
         Announcement announcement = optionalAnnouncement.get();
-        AnnouncementDetailResponse result = AnnouncementDetailResponse.getBuild(announcement);
+        AnnouncementDetailResponse result = AnnouncementDetailResponse.from(announcement);
 
         return new ResponseEntity<>(result, HttpStatus.OK);
     }

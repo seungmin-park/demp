@@ -1,6 +1,6 @@
 package com.inhatc.demp.service;
 
-import com.inhatc.demp.domain.announcemnet.UploadFile;
+import com.inhatc.demp.domain.announcement.UploadFile;
 import java.io.IOException;
 import org.springframework.web.multipart.MultipartFile;
 

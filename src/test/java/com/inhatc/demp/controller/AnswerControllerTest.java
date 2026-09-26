@@ -48,7 +48,7 @@ class AnswerControllerTest {
     @DisplayName("답변 등록 요청을 서비스에 전달하고 저장 결과를 반환한다")
     void controllerAnswerSave() throws Exception {
         Answer answer = new Answer("댓글 테스트", 0, 0);
-        answer.settingMember(new Member("member-a", "password", List.of("ROLE_USER")));
+        answer.assignMember(new Member("member-a", "password", List.of("ROLE_USER")));
         when(answerService.save(eq(41L), any())).thenReturn(List.of(new QuestionAnswer(answer)));
 
         mockMvc.perform(post("/api/answer/save").contentType(MediaType.APPLICATION_JSON)

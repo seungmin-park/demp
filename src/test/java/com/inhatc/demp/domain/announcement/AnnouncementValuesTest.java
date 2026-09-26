@@ -1,4 +1,4 @@
-package com.inhatc.demp.domain.announcemnet;
+package com.inhatc.demp.domain.announcement;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

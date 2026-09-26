@@ -27,9 +27,9 @@ class QuestionRepositoryTest {
         Member memberA = memberRepository.save(new Member("testMemberA", "password", List.of("ROLE_USER")));
         Member memberB = memberRepository.save(new Member("testMemberB", "password", List.of("ROLE_USER")));
         Question questionA = new Question("접근 제어자가 헷갈려요", "CS 내용", 11, 23, 1);
-        questionA.settingMember(memberA);
+        questionA.assignMember(memberA);
         Question questionB = new Question("Java8에서 뭐가 달라진건가요?", "Java 내용", 110, 20, 10);
-        questionB.settingMember(memberB);
+        questionB.assignMember(memberB);
         questionRepository.saveAll(List.of(questionA, questionB));
         //when
         List<Question> questions = questionRepository.findAll();

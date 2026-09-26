@@ -2,11 +2,11 @@ package com.inhatc.demp.dto.announcement;
 
 import static com.inhatc.demp.config.aws.AwsS3Config.BUCKET_URL;
 
-import com.inhatc.demp.domain.announcemnet.Announcement;
-import com.inhatc.demp.domain.announcemnet.AnnouncementType;
-import com.inhatc.demp.domain.announcemnet.Company;
-import com.inhatc.demp.domain.announcemnet.JobPosition;
-import com.inhatc.demp.domain.announcemnet.Language;
+import com.inhatc.demp.domain.announcement.Announcement;
+import com.inhatc.demp.domain.announcement.AnnouncementType;
+import com.inhatc.demp.domain.announcement.Company;
+import com.inhatc.demp.domain.announcement.JobPosition;
+import com.inhatc.demp.domain.announcement.Language;
 import java.time.LocalDateTime;
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -33,7 +33,7 @@ public class AnnouncementDetailResponse {
     private JobPosition position;
     private AnnouncementType announcementType;
 
-    public static AnnouncementDetailResponse getBuild(Announcement announcement) {
+    public static AnnouncementDetailResponse from(Announcement announcement) {
         return AnnouncementDetailResponse.builder()
                 .title(announcement.getTitle())
                 .company(announcement.getCompany())

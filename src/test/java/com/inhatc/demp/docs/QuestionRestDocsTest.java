@@ -121,11 +121,9 @@ class QuestionRestDocsTest {
         Member member = new Member("docs-member", "docs-password-hash", List.of("ROLE_USER"));
         Question question = new Question("docs-question", "docs-question-content", 7, 3, 1);
         ReflectionTestUtils.setField(question, "id", 51L);
-        question.settingMember(member);
+        question.assignMember(member);
         Hashtag hashtag = new Hashtag("spring");
-        QuestionHashtag relation = new QuestionHashtag();
-        hashtag.addQuestionHashtag(relation);
-        question.addQuestionHashtag(relation);
+        question.addHashtag(hashtag);
         QuestionDetail response = new QuestionDetail(question);
         when(questionService.findById(51L)).thenReturn(response);
 
@@ -151,7 +149,7 @@ class QuestionRestDocsTest {
 
     @Test
     @DisplayName("질문 해시태그 목록을 문서화한다")
-    void documentsQuestionHashtags() throws Exception {
+    void documentsquestionHashtags() throws Exception {
         List<String> response = List.of("spring", "jpa");
         when(questionService.findAllHashtags()).thenReturn(response);
 

@@ -171,11 +171,11 @@ class QuestionServiceTest {
     void saveAnswer() {
         Member member = memberRepository.save(new Member("question-service-member", "password", List.of("ROLE_USER")));
         Question question = new Question("질문", "내용", 0, 0, 0);
-        question.settingMember(member);
+        question.assignMember(member);
         questionRepository.save(question);
         Answer existingAnswer = new Answer("기존 댓글", 2, 1);
-        existingAnswer.settingMember(member);
-        existingAnswer.settingQuestion(question);
+        existingAnswer.assignMember(member);
+        existingAnswer.assignQuestion(question);
         answerRepository.save(existingAnswer);
 
         List<QuestionAnswer> result = answerService.save(member.getId(), new AnswerForm("question-service-member", question.getId(), "댓글 테스트"));

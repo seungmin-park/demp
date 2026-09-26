@@ -2,12 +2,13 @@ package com.inhatc.demp.domain;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.AccessLevel;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
-@Setter
+@Setter(AccessLevel.PACKAGE)
 public class QuestionHashtag {
 
     @Id

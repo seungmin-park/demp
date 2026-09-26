@@ -37,7 +37,7 @@ public class QuestionService {
         ArrayList<String> hashtags = questionForm.getHashtags();
 
         question.replaceHashtags(resolveHashtags(hashtags));
-        question.settingMember(author);
+        question.assignMember(author);
         questionRepository.save(question);
     }
 

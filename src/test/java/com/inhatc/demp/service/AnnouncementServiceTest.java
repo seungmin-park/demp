@@ -1,14 +1,14 @@
 package com.inhatc.demp.service;
 
-import com.inhatc.demp.domain.announcemnet.Announcement;
-import com.inhatc.demp.domain.announcemnet.Description;
-import com.inhatc.demp.domain.announcemnet.AnnouncementType;
-import com.inhatc.demp.domain.announcemnet.Career;
-import com.inhatc.demp.domain.announcemnet.JobPosition;
-import com.inhatc.demp.domain.announcemnet.Language;
-import com.inhatc.demp.domain.announcemnet.Company;
-import com.inhatc.demp.domain.announcemnet.RecruitPeriod;
-import com.inhatc.demp.domain.announcemnet.UploadFile;
+import com.inhatc.demp.domain.announcement.Announcement;
+import com.inhatc.demp.domain.announcement.Description;
+import com.inhatc.demp.domain.announcement.AnnouncementType;
+import com.inhatc.demp.domain.announcement.Career;
+import com.inhatc.demp.domain.announcement.JobPosition;
+import com.inhatc.demp.domain.announcement.Language;
+import com.inhatc.demp.domain.announcement.Company;
+import com.inhatc.demp.domain.announcement.RecruitPeriod;
+import com.inhatc.demp.domain.announcement.UploadFile;
 import com.inhatc.demp.dto.announcement.AnnouncementCreateRequest;
 import com.inhatc.demp.error.ApiException;
 import com.inhatc.demp.repository.announcement.AnnouncementRepository;

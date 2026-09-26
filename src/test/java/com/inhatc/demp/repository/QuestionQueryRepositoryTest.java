@@ -36,7 +36,7 @@ class QuestionQueryRepositoryTest {
     void includesQuestionWithoutHashtags() {
         Member member = members.save(new Member("query-member", "hash", List.of("ROLE_USER")));
         Question question = new Question("태그 없는 질문", "내용", 0, 0, 0);
-        question.settingMember(member);
+        question.assignMember(member);
         questions.save(question);
 
         QuestionQueryRepository repository = new QuestionQueryRepository(new JPAQueryFactory(entityManager));
@@ -84,10 +84,8 @@ class QuestionQueryRepositoryTest {
         for (int i = 0; i < 5; i++) {
             Question question = new Question("Java " + i, "guide", 0, 0, 0);
             ReflectionTestUtils.setField(question, "createdDate", sameDate);
-            question.settingMember(member);
-            QuestionHashtag relation = new QuestionHashtag();
-            (i % 2 == 0 ? javaTag : spring).addQuestionHashtag(relation);
-            question.addQuestionHashtag(relation);
+            question.assignMember(member);
+            question.addHashtag(i % 2 == 0 ? javaTag : spring);
             questions.save(question);
         }
         saveQuestion(member, "unmatched", "guide", javaTag);
@@ -120,11 +118,9 @@ class QuestionQueryRepositoryTest {
 
     private Question saveQuestion(Member member, String title, String content, Hashtag... tags) {
         Question question = new Question(title, content, 0, 0, 0);
-        question.settingMember(member);
+        question.assignMember(member);
         for (Hashtag tag : tags) {
-            QuestionHashtag relation = new QuestionHashtag();
-            tag.addQuestionHashtag(relation);
-            question.addQuestionHashtag(relation);
+            question.addHashtag(tag);
         }
         return questions.save(question);
     }

@@ -28,7 +28,7 @@ class AnswerServiceTest {
     void savesSanitizedAnswerWithAuthenticatedAuthor() {
         Member actor = members.save(new Member("answer-actor", "hash", List.of("ROLE_USER")));
         Question question = new Question("title", "body", 0, 0, 0);
-        question.settingMember(actor); questions.save(question);
+        question.assignMember(actor); questions.save(question);
 
         List<QuestionAnswer> response = service.save(actor.getId(), new AnswerForm("forged", question.getId(), "<b>safe</b><script>bad()</script>"));
 
@@ -40,9 +40,9 @@ class AnswerServiceTest {
     void commitsSanitizedUpdate() {
         Member actor = members.save(new Member("answer-actor", "hash", List.of("ROLE_USER")));
         Question question = new Question("title", "body", 0, 0, 0);
-        question.settingMember(actor); questions.save(question);
+        question.assignMember(actor); questions.save(question);
         Answer answer = new Answer("original", 0, 0);
-        answer.settingMember(actor); answer.settingQuestion(question); answers.save(answer);
+        answer.assignMember(actor); answer.assignQuestion(question); answers.save(answer);
 
         service.update(actor.getId(), new UpdateAnswerForm(answer.getId(), "<p onclick='bad()'>changed</p>"));
 
@@ -54,9 +54,9 @@ class AnswerServiceTest {
         Member owner = members.save(new Member("answer-owner", "hash", List.of("ROLE_USER")));
         Member other = members.save(new Member("answer-other", "hash", List.of("ROLE_USER")));
         Question question = new Question("title", "body", 0, 0, 0);
-        question.settingMember(owner); questions.save(question);
+        question.assignMember(owner); questions.save(question);
         Answer answer = new Answer("original", 0, 0);
-        answer.settingMember(owner); answer.settingQuestion(question); answers.save(answer);
+        answer.assignMember(owner); answer.assignQuestion(question); answers.save(answer);
 
         assertThatThrownBy(() -> service.update(other.getId(), new UpdateAnswerForm(answer.getId(), "changed")))
                 .isInstanceOf(AccessDeniedException.class);

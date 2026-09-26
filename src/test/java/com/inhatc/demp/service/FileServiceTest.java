@@ -8,7 +8,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.inhatc.demp.domain.announcemnet.UploadFile;
+import com.inhatc.demp.domain.announcement.UploadFile;
 import com.inhatc.demp.error.ApiException;
 import java.io.IOException;
 import java.util.stream.Stream;

@@ -23,12 +23,12 @@ public class Hashtag {
     @Column(nullable = false, unique = true)
     private String tagName;
 
-    public void addQuestionHashtag(QuestionHashtag questionHashtag) {
-        questionHashtags.add(questionHashtag);
-        questionHashtag.setHashtag(this);
+    void attachRelation(QuestionHashtag relation) {
+        questionHashtags.add(relation);
+        relation.setHashtag(this);
     }
 
-    public void removeQuestionHashtag(QuestionHashtag questionHashtag) {
+    void removeQuestionHashtag(QuestionHashtag questionHashtag) {
         questionHashtags.remove(questionHashtag);
         questionHashtag.setHashtag(null);
     }
