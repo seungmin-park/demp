@@ -419,6 +419,35 @@ npx playwright test
 
 - [ ] 변경된 API fixture와 spec.md를 대조하고 양쪽 동시 배포/rollback 순서를 README에 기록한다. GitHub push·배포는 이 문서 작성 요청의 실행 범위에 포함하지 않는다.
 
+## Phase 7 · 런타임·프레임워크 갱신과 TypeScript 도입 (T50 완료 후)
+
+실행 예정 브랜치: `refactor/runtime-framework-and-typescript-upgrade`. 백엔드·프런트엔드에 각각 같은 이름의 worktree를 만들고, T50의 통과 기준 커밋에서 시작한다. 아래 항목은 후속 작업 체크리스트이며 버전과 호환성은 시작 시 공식 지원표를 확인해 결정한다.
+
+### T60 · 기준선과 업그레이드 순서
+
+- [ ] 현재 Java/JDK, Gradle, Spring Boot 및 의존성, Node/npm, Vue/CLI, Jest, 브라우저 지원 범위와 배포 환경을 기록한다.
+- [ ] 공식 호환성·지원 종료 정보에 맞춰 목표 버전을 정하고, 중간 버전 경유가 필요한 변경 순서를 기록한다.
+- [ ] T50 전체 검증과 핵심 사용자 흐름을 기준선으로 재실행하고 결과를 남긴다.
+
+### T61 · Java·Spring 업그레이드
+
+- [ ] Java, Gradle, Spring Boot를 호환되는 순서로 올리고 빌드·테스트 실패를 각각 원인별로 해결한다.
+- [ ] Security/JPA/validation/REST Docs 설정과 인증, 트랜잭션, 페이지네이션, 파일 업로드 계약을 회귀 테스트로 검증한다.
+- [ ] `clean test asciidoctor bootJar`와 운영 프로필 시작·종료를 확인하고 배포 JDK 설정을 갱신한다.
+
+### T62 · Node·Vue 업그레이드
+
+- [ ] 지원되는 Node/npm 버전과 Vue 생태계(Vue, Router, Vuex 또는 대체 상태 관리, CLI 또는 빌드 도구, Jest 또는 대체 러너)의 목표 조합을 결정한다.
+- [ ] lockfile을 갱신하고 `npm ci`, 컴포넌트 테스트, lint, build, E2E를 순서대로 실행한다.
+- [ ] 인증 만료, 검색·페이지 응답 역전, 에디터·태그 입력, 공고 더보기의 실제 브라우저 흐름을 확인한다.
+
+### T63 · TypeScript 단계적 도입
+
+- [ ] `tsconfig`, 타입 검사 명령, Vue SFC 타입 지원, CI 필수 검사를 마련하고 작은 API 모듈 하나로 실패→통과를 확인한다.
+- [ ] API 요청/응답 DTO, 인증 상태, 라우트, 비동기 목록 상태를 경계부터 타입화한다. `any` 사용 이유와 남은 JS 범위를 기록한다.
+- [ ] Vue 컴포넌트를 기능 단위로 옮기며 props/emits와 nullable 응답을 검증한다. 각 단위마다 테스트·타입 검사·lint·build를 실행한다.
+- [ ] 양쪽 계약 fixture, 전체 E2E, 배포·롤백 절차와 README를 갱신하고 최종 전체 검증 결과를 기록한다.
+
 ## 추적표와 작업 종료 기록
 
 | 스펙 | 작업 | 리뷰 |
