@@ -308,16 +308,20 @@ assertThat(answerRepository.findById(answerId).orElseThrow().getContent())
 
 ## Phase 4 · 화면 상태와 실행 연결
 
+실행 브랜치: `refactor/async-state-and-client-integration`. 백엔드 worktree: `demp/.worktrees/async-state-and-client-integration/backend`; 프런트 worktree: `dempfrontend/.worktrees/async-state-and-client-integration/frontend`. Phase 3의 B `27f6a42`, F `2180693`에서 분기했다.
+
 ### T40 · 재시도·검색·페이지 상태 — R12 / S10
 
 수정 F: `src/components/question/QuestionWrite.vue`, `QuestionSearch.vue`, `QuestionList.vue`, `src/components/announcement/AnnouncementList.vue`. 생성 F 테스트: `tests/unit/QuestionWrite.spec.js`, `QuestionSearch.spec.js`, `AnnouncementList.spec.js`.
 
-- [ ] 최초 제출 실패→재제출의 두 요청이 동일 태그 배열을 가지는 테스트를 작성한다. 전역 temp를 제거하고 `tags.map(tag => tag.value)`로 매번 별도 payload를 만든다.
-- [ ] 제목 검색 후 내용 검색 시 title query가 비워지는 테스트를 작성하고 선택하지 않은 조건을 제거한다.
-- [ ] 첫 요청보다 두 번째 검색 응답이 먼저 도착하도록 Promise를 제어해 화면이 최신 검색에 머무는지 검사한다. 현재 오래된 응답 덮어쓰기를 확인한 뒤 요청 세대 ID를 적용한다.
-- [ ] 더보기 연속 클릭 중 요청 1개, 실패 시 error+재시도 버튼, 성공 빈 결과만 last 상태인 사례를 각각 Red→Green으로 진행한다.
-- [ ] emitter 핸들러를 named function으로 두고 unmounted에서 해제한다. 재마운트 후 이벤트가 한 번만 처리되는지 확인한다.
-- [ ] 전체 테스트/lint/build 후 상태와 렌더링 책임을 정리한다.
+- [x] 최초 제출 실패→재제출의 두 요청이 동일 태그 배열을 가지는 테스트를 작성한다. 전역 temp를 제거하고 `tags.map(tag => tag.value)`로 매번 별도 payload를 만든다.
+- [x] 제목 검색 후 내용 검색 시 title query가 비워지는 테스트를 작성하고 선택하지 않은 조건을 제거한다.
+- [x] 첫 요청보다 두 번째 검색 응답이 먼저 도착하도록 Promise를 제어해 화면이 최신 검색에 머무는지 검사한다. 실제 재현된 새 요청 누락과 기존 코드의 오래된 응답 반영 경로를 요청 세대 ID로 해결한다.
+- [x] 더보기 연속 클릭 중 요청 1개, 실패 시 error+재시도 버튼, 성공 빈 결과만 last 상태인 사례를 각각 Red→Green으로 진행한다.
+- [x] emitter 핸들러를 named function으로 두고 unmounted에서 해제한다. 재마운트 후 이벤트가 한 번만 처리되는지 확인한다.
+- [x] 전체 테스트/lint/build 후 상태와 렌더링 책임을 정리한다.
+
+2026-09-26: Red `npm test -- --runInBand QuestionWrite QuestionSearch`에서 재제출 태그 `['JAVA', undefined]`와 이전 제목 잔존을 확인했다. `QuestionList AnnouncementList` 대상 테스트에서는 검색 중 새 요청 누락(1회/기대 2회), 이벤트 구독 잔존(2개/기대 1개), 더보기 중복 요청(3회/기대 2회), 실패가 마지막 상태로 오인되는 결과를 확인했다. Green은 제출마다 새 payload·태그 배열 생성, 선택한 검색 조건만 route 전달, 요청 세대별 최신 응답 반영, 공고 loading/error/last 분리, named emitter handler 해제다. Refactor에서는 검색의 중복 상태 필드를 없애고 공고 조건을 복사해 요청 중 변경을 막았으며, 질문 편집기 입력을 선언된 폼 필드에 연결했다. 프런트 `npm test -- --runInBand --silent` 10 suite·34 test 통과, `npm run lint -- --no-fix` 통과, `npm run build` 성공(기존 번들 크기 권고 경고). 변경 Vue의 역할은 입력/표시와 요청 상태 조정이며 API 요청 형식은 기존 모듈에 유지했다. 호출부의 query·emitter·HTTP 경로 계약은 컴포넌트 테스트로 검증했다. 독립 TypeScript 객체는 현재 없다. 프런트 커밋 `20ffba5`.
 
 ### T41 · API client·인증 만료·운영 경로 — R14 / S11
 
