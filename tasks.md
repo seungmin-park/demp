@@ -329,12 +329,14 @@ assertThat(answerRepository.findById(answerId).orElseThrow().getContent())
 
 새 계약: `createApiClient({baseURL, getToken, onUnauthorized})` → Axios instance. X-AUTH-TOKEN을 요청 경계에서 추가하고 401이면 onUnauthorized를 호출한다. API endpoint 함수는 이 client만 사용한다.
 
-- [ ] 만료 토큰 요청의 401 뒤 store의 token/username이 모두 비워지고 login redirect가 원래 경로를 보존하는 테스트를 작성한다.
-- [ ] 중앙 client interceptor와 라우트 인증 meta/guard를 도입한다. 비어 있지 않은 토큰만으로 유효 인증을 확정하지 않는다.
-- [ ] vue.config.js를 하나의 export로 합치고 개발 API target을 환경 설정으로 분리한다.
-- [ ] 운영은 명시적 API baseURL 또는 앞단 /api reverse proxy 중 배포 방식에 맞는 설정을 문서화한다. Express 단독 /api GET은 HTML fallback이 아니라 JSON 404를 반환하도록 테스트 후 처리한다.
-- [ ] CORS 허용 origin/거절 origin preflight 테스트를 작성하고 환경별 허용목록을 적용한다.
-- [ ] 모듈별 Axios 중복을 제거하고 전체 검증한다.
+- [x] 만료 토큰 요청의 401 뒤 store의 token/username이 모두 비워지고 login redirect가 원래 경로를 보존하는 테스트를 작성한다.
+- [x] 중앙 client interceptor와 라우트 인증 meta/guard를 도입한다. 비어 있지 않은 토큰만으로 유효 인증을 확정하지 않는다.
+- [x] vue.config.js를 하나의 export로 합치고 개발 API target을 환경 설정으로 분리한다.
+- [x] 운영은 명시적 API baseURL 또는 앞단 /api reverse proxy 중 배포 방식에 맞는 설정을 문서화한다. Express 단독 /api GET은 HTML fallback이 아니라 JSON 404를 반환하도록 테스트 후 처리한다.
+- [x] CORS 허용 origin/거절 origin preflight 테스트를 작성하고 환경별 허용목록을 적용한다.
+- [x] 모듈별 Axios 중복을 제거하고 전체 검증한다.
+
+2026-09-26: Red `npm test -- --runInBand apiClient`에서 요청 토큰 헤더가 두 번 모두 `undefined`, `router` 대상에서는 보호 경로가 `true`, `server` 대상에서는 없는 `/api` GET이 200 HTML이었다. B `./gradlew test --tests 'com.inhatc.demp.config.CorsPolicyTest'`는 미허용 Origin 거절 assertion이 실패했다. Green은 Axios instance 요청/401 interceptor, Vuex logout과 원래 경로 redirect, route meta/guard, 환경변수 기반 개발 proxy·운영 API 경로, JSON 404, CORS 허용목록이다. Refactor에서 모든 컴포넌트의 직접 Axios 호출을 API 모듈로 옮기고 중복 토큰 인자를 없앴다. API 모듈은 경로·요청 변환, view는 입력·이동, client는 인증 헤더/실패 공통 처리만 맡는다. 공개 경로와 요청 payload는 기존 컴포넌트 테스트 및 실제 Axios adapter 테스트로 확인했다. B `clean test asciidoctor bootJar` 30 suite·189 test·실패 0, F 13 suite·38 test·실패 0, lint·build 성공(번들 크기 권고 경고). 프런트 커밋 `a3b4ff0`. 독립 TypeScript 객체는 아직 없다.
 
 ### T42 · 추천 표기와 미완성 반응 안내 — R13 / S12
 
