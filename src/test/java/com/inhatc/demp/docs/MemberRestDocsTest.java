@@ -1,7 +1,6 @@
 package com.inhatc.demp.docs;
 
 import com.inhatc.demp.config.SecurityConfiguration;
-import com.inhatc.demp.config.WebConfig;
 import com.inhatc.demp.config.jwt.JwtTokenProvider;
 import com.inhatc.demp.controller.ExController;
 import com.inhatc.demp.controller.MemberController;
@@ -44,7 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(MemberController.class)
-@ContextConfiguration(classes = {MemberController.class, ExController.class, SecurityConfiguration.class, WebConfig.class})
+@ContextConfiguration(classes = {MemberController.class, ExController.class, SecurityConfiguration.class})
 @WithMember
 @AutoConfigureRestDocs
 class MemberRestDocsTest {

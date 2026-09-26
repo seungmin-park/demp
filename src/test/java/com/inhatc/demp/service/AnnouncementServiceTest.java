@@ -10,6 +10,7 @@ import com.inhatc.demp.domain.announcement.Company;
 import com.inhatc.demp.domain.announcement.RecruitPeriod;
 import com.inhatc.demp.domain.announcement.UploadFile;
 import com.inhatc.demp.dto.announcement.AnnouncementCreateRequest;
+import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.inhatc.demp.error.ApiException;
 import com.inhatc.demp.repository.announcement.AnnouncementRepository;
 import java.io.IOException;
@@ -21,6 +22,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockMultipartFile;
 
@@ -30,6 +33,7 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
+@TestPropertySource(properties = "cloud.aws.s3.public-base-url=https://cdn.example/images")
 class AnnouncementServiceTest {
 
     @Autowired
@@ -42,6 +46,27 @@ class AnnouncementServiceTest {
     @AfterEach
     void cleanUp() {
         announcementRepository.deleteAll();
+    }
+
+    @Test
+    @DisplayName("공고의 상세·스크롤·검색 이미지 주소는 설정한 공개 주소를 사용한다")
+    void usesConfiguredImageUrlInResponses() {
+        Announcement announcement = Announcement.builder().title("이미지 공고")
+                .career(new Career(0, 1)).description(new Description("본문", "https://example.test/job", 0, Set.of()))
+                .company(new Company("DEMP")).image(new UploadFile("image.png", "saved.png"))
+                .recruitPeriod(new RecruitPeriod(LocalDateTime.of(2026, 9, 1, 0, 0),
+                        LocalDateTime.of(2026, 9, 30, 0, 0)))
+                .announcementType(AnnouncementType.EMP).jobPosition(JobPosition.BACKEND)
+                .build();
+        announcementService.saveAnnouncementEntity(announcement);
+
+        assertThat(announcementService.findDetailResponse(announcement.getId()).orElseThrow().getImage())
+                .isEqualTo("https://cdn.example/images/saved.png");
+        assertThat(announcementService.findScrollResponses()).extracting(response -> response.getImage())
+                .containsExactly("https://cdn.example/images/saved.png");
+        assertThat(announcementService.findAnnouncementSlice(new AnnouncementSearchCondition(), PageRequest.of(0, 8))
+                .getContent()).extracting(response -> response.getImage())
+                .containsExactly("https://cdn.example/images/saved.png");
     }
 
     @Test
@@ -118,7 +143,7 @@ class AnnouncementServiceTest {
         assertThat(saved.getDescription().getContent()).isEqualTo("<p><strong>채용</strong></p>");
         assertThat(saved.getDescription().getAccessUrl()).isEqualTo("https://example.com/jobs");
         assertThat(saved.getDescription().getPayment()).isEqualTo(3000);
-        assertThat(announcementService.findById(saved.getId()).orElseThrow().getDescription().getContent())
+        assertThat(announcementRepository.findById(saved.getId()).orElseThrow().getDescription().getContent())
                 .isEqualTo("<p><strong>채용</strong></p>");
     }
 }

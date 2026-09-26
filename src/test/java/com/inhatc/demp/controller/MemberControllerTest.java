@@ -1,7 +1,6 @@
 package com.inhatc.demp.controller;
 
 import com.inhatc.demp.config.SecurityConfiguration;
-import com.inhatc.demp.config.WebConfig;
 import com.inhatc.demp.config.jwt.JwtTokenProvider;
 import com.inhatc.demp.controller.ExController;
 import com.inhatc.demp.domain.Member;
@@ -25,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @MockBean(JwtTokenProvider.class)
 @WebMvcTest(MemberController.class)
-@ContextConfiguration(classes = {MemberController.class, ExController.class, SecurityConfiguration.class, WebConfig.class})
+@ContextConfiguration(classes = {MemberController.class, ExController.class, SecurityConfiguration.class})
 @WithMember
 class MemberControllerTest {
     @MockBean

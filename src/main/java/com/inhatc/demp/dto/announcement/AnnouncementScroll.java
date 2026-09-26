@@ -1,7 +1,5 @@
 package com.inhatc.demp.dto.announcement;
 
-import static com.inhatc.demp.config.aws.AwsS3Config.BUCKET_URL;
-
 import com.inhatc.demp.domain.announcement.Announcement;
 import com.inhatc.demp.domain.announcement.Company;
 import lombok.AllArgsConstructor;
@@ -19,10 +17,10 @@ public class AnnouncementScroll {
     private Company company;
     private String image;
 
-    public AnnouncementScroll(Announcement announcement) {
+    public AnnouncementScroll(Announcement announcement, String imageUrl) {
         this.id = announcement.getId();
         this.title = announcement.getTitle();
         this.company = announcement.getCompany();
-        this.image = BUCKET_URL + announcement.getImage().getSaveFileName();
+        this.image = imageUrl;
     }
 }

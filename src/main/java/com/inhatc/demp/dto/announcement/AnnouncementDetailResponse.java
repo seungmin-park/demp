@@ -1,7 +1,5 @@
 package com.inhatc.demp.dto.announcement;
 
-import static com.inhatc.demp.config.aws.AwsS3Config.BUCKET_URL;
-
 import com.inhatc.demp.domain.announcement.Announcement;
 import com.inhatc.demp.domain.announcement.AnnouncementType;
 import com.inhatc.demp.domain.announcement.Company;
@@ -33,12 +31,12 @@ public class AnnouncementDetailResponse {
     private JobPosition position;
     private AnnouncementType announcementType;
 
-    public static AnnouncementDetailResponse from(Announcement announcement) {
+    public static AnnouncementDetailResponse from(Announcement announcement, String imageUrl) {
         return AnnouncementDetailResponse.builder()
                 .title(announcement.getTitle())
                 .company(announcement.getCompany())
                 .announcementType(announcement.getAnnouncementType())
-                .image(BUCKET_URL + announcement.getImage().getSaveFileName())
+                .image(imageUrl)
                 .position(announcement.getJobPosition())
                 .minCareer(announcement.getCareer().getMinCareer())
                 .maxCareer(announcement.getCareer().getMaxCareer())

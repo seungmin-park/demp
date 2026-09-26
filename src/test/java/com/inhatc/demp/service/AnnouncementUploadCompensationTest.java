@@ -35,7 +35,8 @@ class AnnouncementUploadCompensationTest {
     private final FileStorage fileStorage = mock(FileStorage.class);
     private final PlatformTransactionManager transactionManager = mock(PlatformTransactionManager.class);
     private final AnnouncementService announcementService = new AnnouncementService(announcementRepository,
-            announcementQueryRepository, fileStorage, new ContentSanitizer(), transactionManager);
+            announcementQueryRepository, fileStorage, new ContentSanitizer(), transactionManager,
+            new AnnouncementImageUrl("https://example.test/images"));
 
     @BeforeEach
     void setUp() {

@@ -4,6 +4,10 @@
 
 `APP_CORS_ALLOWED_ORIGINS`에 브라우저가 직접 호출하는 프런트엔드 Origin을 쉼표로 구분해 지정한다. 기본값은 로컬 개발용 `http://localhost:5050`이다. 예: `APP_CORS_ALLOWED_ORIGINS=https://demp.example,https://admin.demp.example`. 요청 Origin은 목록과 정확히 일치해야 하며, 허용되지 않은 사전 요청은 403이다. 같은 출처의 `/api` reverse proxy를 사용하면 브라우저 CORS 설정이 필요하지 않다.
 
+## 공고 이미지 공개 주소 (Phase 5 T49)
+
+`S3_PUBLIC_BASE_URL`은 공고 상세·목록·스크롤 응답의 `image` URL 접두부다. 기본값은 기존 `https://inhatc-demp.s3.ap-northeast-2.amazonaws.com/`이며, CDN을 사용할 때 해당 공개 경로로 바꾼다. 저장 키는 그대로 유지되고 응답 조립에서만 공개 URL을 만든다.
+
 ## 실행·검증 기반 (2026-09-14)
 
 Java 11에서 `./gradlew test`를 실행한다. 테스트는 고유 메모리 H2와 테스트 전용 JWT/S3 설정을 사용하며 운영 환경변수를 요구하지 않는다. 전체 컨텍스트 테스트는 InitDb를 그대로 실행한다. 각 테스트 본문에서 추가 데이터를 만들고 자신이 만든 데이터만 정리한다. InitDb 삭제와 seed 관련 기대값 변경은 T10에서 함께 진행한다.

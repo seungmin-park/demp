@@ -1,7 +1,6 @@
 package com.inhatc.demp.docs;
 
 import com.inhatc.demp.config.SecurityConfiguration;
-import com.inhatc.demp.config.WebConfig;
 import com.inhatc.demp.config.jwt.JwtTokenProvider;
 import com.inhatc.demp.controller.AnnouncementController;
 import com.inhatc.demp.controller.ExController;
@@ -15,6 +14,8 @@ import com.inhatc.demp.domain.announcement.Language;
 import com.inhatc.demp.domain.announcement.RecruitPeriod;
 import com.inhatc.demp.domain.announcement.UploadFile;
 import com.inhatc.demp.dto.announcement.AnnouncementResponse;
+import com.inhatc.demp.dto.announcement.AnnouncementDetailResponse;
+import com.inhatc.demp.dto.announcement.AnnouncementScroll;
 import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.inhatc.demp.service.AnnouncementService;
 import java.time.LocalDateTime;
@@ -56,7 +57,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @MockBean(JwtTokenProvider.class)
 @WebMvcTest(AnnouncementController.class)
-@ContextConfiguration(classes = {AnnouncementController.class, ExController.class, SecurityConfiguration.class, WebConfig.class})
+@ContextConfiguration(classes = {AnnouncementController.class, ExController.class, SecurityConfiguration.class})
 @WithMember
 @AutoConfigureRestDocs
 class AnnouncementRestDocsTest {
@@ -127,12 +128,15 @@ class AnnouncementRestDocsTest {
                 .announcementType(AnnouncementType.EMP)
                 .jobPosition(JobPosition.BACKEND)
                 .build();
-        when(announcementService.findById(71L)).thenReturn(Optional.of(announcement));
+        when(announcementService.findDetailResponse(71L)).thenReturn(Optional.of(
+                AnnouncementDetailResponse.from(announcement,
+                        "https://inhatc-demp.s3.ap-northeast-2.amazonaws.com/docs-saved-image.png")));
 
         mockMvc.perform(get("/api/announce/detail/{AnnouncementId}", 71L)
                         .header("X-AUTH-TOKEN", DOCS_TOKEN))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.company.name").value("docs-company"))
+                .andExpect(jsonPath("$.image").value("https://inhatc-demp.s3.ap-northeast-2.amazonaws.com/docs-saved-image.png"))
                 .andExpect(jsonPath("$.minCareer").value(0))
                 .andExpect(jsonPath("$.maxCareer").value(3))
                 .andDo(document("announcement-detail",
@@ -178,7 +182,7 @@ class AnnouncementRestDocsTest {
                 .jobPosition(JobPosition.BACKEND)
                 .build();
         ReflectionTestUtils.setField(announcement, "id", 71L);
-        AnnouncementResponse responseItem = new AnnouncementResponse(announcement);
+        AnnouncementResponse responseItem = new AnnouncementResponse(announcement, "https://inhatc-demp.s3.ap-northeast-2.amazonaws.com/docs-saved-image.png");
         PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("title").ascending());
         Slice<AnnouncementResponse> response = new SliceImpl<>(List.of(responseItem), pageRequest, false);
         when(announcementService.findAnnouncementSlice(refEq(request), org.mockito.ArgumentMatchers.eq(pageRequest)))
@@ -198,6 +202,7 @@ class AnnouncementRestDocsTest {
                 .andExpect(jsonPath("$.content.length()").value(1))
                 .andExpect(jsonPath("$.content[0].id").value(71))
                 .andExpect(jsonPath("$.content[0].title").value("docs-backend-job"))
+                .andExpect(jsonPath("$.content[0].image").value("https://inhatc-demp.s3.ap-northeast-2.amazonaws.com/docs-saved-image.png"))
                 .andExpect(jsonPath("$.last").value(true))
                 .andDo(document("announcement-list",
                         requestParameters(
@@ -244,8 +249,9 @@ class AnnouncementRestDocsTest {
                 .image(new UploadFile("docs-image.png", "docs-saved-image.png"))
                 .build();
         ReflectionTestUtils.setField(announcement, "id", 71L);
-        List<Announcement> response = List.of(announcement);
-        when(announcementService.findAll()).thenReturn(response);
+        List<AnnouncementScroll> response = List.of(new AnnouncementScroll(announcement,
+                "https://inhatc-demp.s3.ap-northeast-2.amazonaws.com/docs-saved-image.png"));
+        when(announcementService.findScrollResponses()).thenReturn(response);
 
         mockMvc.perform(get("/api/announce/scroll")
                         .header("X-AUTH-TOKEN", DOCS_TOKEN))
@@ -253,6 +259,7 @@ class AnnouncementRestDocsTest {
                 .andExpect(jsonPath("$.length()").value(1))
                 .andExpect(jsonPath("$[0].id").value(71))
                 .andExpect(jsonPath("$[0].title").value("docs-backend-job"))
+                .andExpect(jsonPath("$[0].image").value("https://inhatc-demp.s3.ap-northeast-2.amazonaws.com/docs-saved-image.png"))
                 .andDo(document("announcement-scroll",
                         requestHeaders(headerWithName("X-AUTH-TOKEN").description("로그인 시 발급된 JWT")),
                         responseFields(
@@ -266,7 +273,7 @@ class AnnouncementRestDocsTest {
     @DisplayName("없는 공고의 404 응답을 문서화한다")
     void documentsMissingAnnouncementDetail() throws Exception {
         Long announcementId = 999L;
-        when(announcementService.findById(announcementId)).thenReturn(Optional.empty());
+        when(announcementService.findDetailResponse(announcementId)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/api/announce/detail/{AnnouncementId}", announcementId)
                         .header("X-AUTH-TOKEN", DOCS_TOKEN))

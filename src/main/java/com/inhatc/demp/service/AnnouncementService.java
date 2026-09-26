@@ -8,6 +8,8 @@ import com.inhatc.demp.domain.announcement.RecruitPeriod;
 import com.inhatc.demp.domain.announcement.UploadFile;
 import com.inhatc.demp.dto.announcement.AnnouncementCreateRequest;
 import com.inhatc.demp.dto.announcement.AnnouncementResponse;
+import com.inhatc.demp.dto.announcement.AnnouncementDetailResponse;
+import com.inhatc.demp.dto.announcement.AnnouncementScroll;
 import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.inhatc.demp.error.ApiException;
 import com.inhatc.demp.repository.announcement.AnnouncementQueryRepository;
@@ -26,6 +28,7 @@ import org.springframework.transaction.support.TransactionTemplate;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -38,6 +41,7 @@ public class AnnouncementService {
     private final FileStorage fileStorage;
     private final ContentSanitizer contentSanitizer;
     private final PlatformTransactionManager transactionManager;
+    private final AnnouncementImageUrl imageUrl;
 
     @Transactional
     public void saveAnnouncementEntity(Announcement announcement) {
@@ -95,14 +99,20 @@ public class AnnouncementService {
     }
 
     public Slice<AnnouncementResponse> findAnnouncementSlice(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
-        return announcementQueryRepository.findAnnouncementSlice(announcementSearchCondition, pageable);
+        return announcementQueryRepository.findAnnouncementSlice(announcementSearchCondition, pageable)
+                .map(announcement -> new AnnouncementResponse(announcement,
+                        imageUrl.forKey(announcement.getImage().getSaveFileName())));
     }
 
-    public Optional<Announcement> findById(Long id) {
-        return announcementRepository.findById(id);
+    public Optional<AnnouncementDetailResponse> findDetailResponse(Long id) {
+        return announcementRepository.findById(id).map(announcement -> AnnouncementDetailResponse.from(
+                announcement, imageUrl.forKey(announcement.getImage().getSaveFileName())));
     }
 
-    public List<Announcement> findAll() {
-        return announcementRepository.findAll();
+    public List<AnnouncementScroll> findScrollResponses() {
+        return announcementRepository.findAll().stream()
+                .map(announcement -> new AnnouncementScroll(announcement,
+                        imageUrl.forKey(announcement.getImage().getSaveFileName())))
+                .collect(Collectors.toList());
     }
 }

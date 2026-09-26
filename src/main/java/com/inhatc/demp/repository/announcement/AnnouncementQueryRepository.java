@@ -7,7 +7,6 @@ import com.inhatc.demp.domain.announcement.Announcement;
 import com.inhatc.demp.domain.announcement.AnnouncementType;
 import com.inhatc.demp.domain.announcement.JobPosition;
 import com.inhatc.demp.domain.announcement.Language;
-import com.inhatc.demp.dto.announcement.AnnouncementResponse;
 import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
@@ -42,7 +41,7 @@ public class AnnouncementQueryRepository {
                 .fetch();
     }
 
-    public Slice<AnnouncementResponse> findAnnouncementSlice(AnnouncementSearchCondition announcementSearchCondition,
+    public Slice<Announcement> findAnnouncementSlice(AnnouncementSearchCondition announcementSearchCondition,
                                                          Pageable pageable) {
         List<Long> ids = jpaQueryFactory.select(announcement.id).from(announcement)
                 .where(typeEq(announcementSearchCondition.getAnnouncementType()),
@@ -58,9 +57,7 @@ public class AnnouncementQueryRepository {
                 .fetch();
         boolean hasNext = ids.size() > pageable.getPageSize();
         List<Long> contentIds = ids.subList(0, Math.min(ids.size(), pageable.getPageSize()));
-        List<AnnouncementResponse> content = loadWithLanguages(contentIds).stream()
-                .map(AnnouncementResponse::new)
-                .collect(Collectors.toList());
+        List<Announcement> content = loadWithLanguages(contentIds);
         return new SliceImpl<>(content, pageable, hasNext);
     }
 

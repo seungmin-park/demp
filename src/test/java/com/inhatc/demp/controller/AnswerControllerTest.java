@@ -2,7 +2,6 @@ package com.inhatc.demp.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhatc.demp.config.SecurityConfiguration;
-import com.inhatc.demp.config.WebConfig;
 import com.inhatc.demp.config.jwt.JwtTokenProvider;
 import com.inhatc.demp.controller.ExController;
 import com.inhatc.demp.domain.Answer;
@@ -34,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @MockBean(JwtTokenProvider.class)
 @WebMvcTest(AnswerController.class)
-@ContextConfiguration(classes = {AnswerController.class, ExController.class, SecurityConfiguration.class, WebConfig.class})
+@ContextConfiguration(classes = {AnswerController.class, ExController.class, SecurityConfiguration.class})
 @WithMember
 class AnswerControllerTest {
     @MockBean

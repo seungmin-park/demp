@@ -1,7 +1,6 @@
 package com.inhatc.demp.controller;
 
 import com.inhatc.demp.config.SecurityConfiguration;
-import com.inhatc.demp.config.WebConfig;
 import com.inhatc.demp.config.jwt.JwtTokenProvider;
 import com.inhatc.demp.domain.announcement.Announcement;
 import com.inhatc.demp.domain.announcement.AnnouncementType;
@@ -13,6 +12,7 @@ import com.inhatc.demp.domain.announcement.Language;
 import com.inhatc.demp.domain.announcement.RecruitPeriod;
 import com.inhatc.demp.domain.announcement.UploadFile;
 import com.inhatc.demp.dto.announcement.AnnouncementCreateRequest;
+import com.inhatc.demp.dto.announcement.AnnouncementDetailResponse;
 import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.inhatc.demp.service.AnnouncementService;
 import java.time.LocalDateTime;
@@ -50,7 +50,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @MockBean(JwtTokenProvider.class)
 @WebMvcTest(AnnouncementController.class)
-@ContextConfiguration(classes = {AnnouncementController.class, ExController.class, SecurityConfiguration.class, WebConfig.class})
+@ContextConfiguration(classes = {AnnouncementController.class, ExController.class, SecurityConfiguration.class})
 @WithMember
 class AnnouncementControllerTest {
 
@@ -165,7 +165,8 @@ class AnnouncementControllerTest {
                         Set.of(Language.JAVA, Language.SPRING)))
                 .image(new UploadFile("company.png", "saved-company.png"))
                 .build();
-        when(announcementService.findById(71L)).thenReturn(Optional.of(announcement));
+        when(announcementService.findDetailResponse(71L)).thenReturn(Optional.of(
+                AnnouncementDetailResponse.from(announcement, "https://example.test/saved-company.png")));
 
         mockMvc.perform(get("/api/announce/detail/71"))
                 .andExpect(status().isOk())
@@ -189,7 +190,7 @@ class AnnouncementControllerTest {
     @Test
     @DisplayName("없는 공고를 상세 조회하면 404를 반환한다")
     void returnsNotFoundWhenAnnouncementDoesNotExist() throws Exception {
-        when(announcementService.findById(999L)).thenReturn(Optional.empty());
+        when(announcementService.findDetailResponse(999L)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/api/announce/detail/999"))
                 .andExpect(status().isNotFound());

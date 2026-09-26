@@ -50,5 +50,6 @@ cloud:
       static: ${S3_STATIC}
     s3:
       bucket: ${S3_BUCKET}
+      public-base-url: ${S3_PUBLIC_BASE_URL:https://inhatc-demp.s3.ap-northeast-2.amazonaws.com/}
     stack:
       auto: false

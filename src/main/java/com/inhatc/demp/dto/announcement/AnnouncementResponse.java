@@ -1,7 +1,5 @@
 package com.inhatc.demp.dto.announcement;
 
-import static com.inhatc.demp.config.aws.AwsS3Config.BUCKET_URL;
-
 import com.inhatc.demp.domain.announcement.Announcement;
 import com.inhatc.demp.domain.announcement.JobPosition;
 import com.inhatc.demp.domain.announcement.Language;
@@ -20,11 +18,11 @@ public class AnnouncementResponse {
     private JobPosition position;
     private String image;
 
-    public AnnouncementResponse(Announcement announcement) {
+    public AnnouncementResponse(Announcement announcement, String imageUrl) {
         this.id = announcement.getId();
         this.title = announcement.getTitle();
         this.language = new HashSet<>(announcement.getDescription().getLanguages());
         this.position = announcement.getJobPosition();
-        this.image = BUCKET_URL + announcement.getImage().getSaveFileName();
+        this.image = imageUrl;
     }
 }

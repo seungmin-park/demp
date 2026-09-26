@@ -402,9 +402,11 @@ assertThat(answerRepository.findById(answerId).orElseThrow().getContent())
 
 수정 B: `docs/verification/domain-language-and-responsibility/inventory.md`, `tasks.md`. 필요한 경우 B/F의 테스트·API 문서.
 
-- [ ] T45 파일 목록을 현재 양쪽 추적 대상 파일과 재대조하고 모든 판정·후속 조치·유지 이유를 닫는다. 새로 생긴 파일도 이름·효과·소속 책임을 검사한다.
-- [ ] REST Docs/JSON 키, DB 매핑, 라우트, 파일 저장 경로, 검색·페이지 결과를 변경 전 계약과 대조한다. 의도한 변경은 양쪽 테스트와 문서에 반영한다.
-- [ ] B `./gradlew test`와 `./gradlew asciidoctor`, F 전체 테스트/lint/build를 실행하고 실제 명령·결과를 기록한다. 정적 위험과 실행 재현 결과를 구분한다.
+- [x] T45 파일 목록을 현재 양쪽 추적 대상 파일과 재대조하고 모든 판정·후속 조치·유지 이유를 닫는다. 새로 생긴 파일도 이름·효과·소속 책임을 검사한다.
+- [x] REST Docs/JSON 키, DB 매핑, 라우트, 파일 저장 경로, 검색·페이지 결과를 변경 전 계약과 대조한다. 의도한 변경은 양쪽 테스트와 문서에 반영한다.
+- [x] B `./gradlew test`와 `./gradlew asciidoctor`, F 전체 테스트/lint/build를 실행하고 실제 명령·결과를 기록한다. 정적 위험과 실행 재현 결과를 구분한다.
+
+2026-09-26: [현재 파일별 161행과 N01~N15 종료 판정](docs/verification/domain-language-and-responsibility/inventory.md)을 T45 목록 및 양쪽 실제 파일에 재대조해 누락·초과 0개를 확인했다(B Java 102, F Vue/JS 53, 빌드·실행 6). Red `./gradlew test --tests 'com.inhatc.demp.service.AnnouncementImageUrlTest'`는 CDN 설정 주소가 빠진 URL assertion 실패였다. Green은 `AnnouncementImageUrl`이 설정 접두부와 저장 키를 연결하게 했다. Refactor에서 Repository는 공고 엔티티 Slice만 반환하고 Service가 상세·목록·스크롤 DTO의 `image`를 조립하게 했다. 중복된 허용 전체 `WebConfig`를 제거하고 미사용 DTO 두 개를 삭제했다. `CustomUserDetailService`의 Spring 고정 메서드명은 유지하고 매개변수를 회원 ID 문자열로 고쳤다. 작성 요청의 `username`은 기존 wire 계약 때문에 유지하며 인증 주체로 사용하지 않는다. 설정을 바꾼 서비스 테스트와 REST Docs 세 응답의 이미지 URL assertion, CORS 허용/거절, Repository 페이지 테스트가 통과했다. 상세 fixture 누락으로 난 NPE는 테스트 데이터 준비 오류로 바로잡았으며 기능 Red로 계산하지 않는다. B `clean test asciidoctor bootJar` 32 suite·194 test·실패 0, 생성 HTML에 세 공고 응답의 기존 URL 확인. F 17 suite·45 test, lint·build 성공(기존 번들 크기 권고 경고). `spec.md`에 초기 관찰과 현재 계약의 차이를 명시했다. 운영 DB 실물 스키마와 브라우저 E2E는 실행하지 않았고 T50에서 확인한다.
 
 ## Phase 6 · 통합 검증과 인수
 

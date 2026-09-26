@@ -231,3 +231,195 @@ Controller / Vue event ── 요청·이동 ──► Service / 화면 상태
 | `F/vue.config.js` | 검토 | N13 |
 | `F/babel.config.js` | 검토 | — |
 | `F/jest.config.js` | 검토 | — |
+
+## Phase 5 완료 재감사 — 2026-09-26
+
+초기 판정표는 당시 코드의 정적 근거로 보존한다. 현재 Phase 5 작업 트리에서 `rg --files` 대상과 다시 대조했다. B Java 102개(운영·테스트), F Vue/JS 53개(운영·테스트), 별도 빌드·실행 스크립트 6개를 아래 161행과 일치시켰다. 현재 `.ts/.tsx`는 0개다. QueryDSL 생성 파일, Gradle/npm 의존성, 이미지, `build`·`dist`는 작성 대상 코드가 아니므로 제외한다. `수정`은 T45 이후 변경, `추가·이름 변경`은 새 경로 또는 추가 파일, `유지`는 이름·효과·소속을 다시 보고 기존 역할이 맞다고 판단한 항목이다. 각 행의 역할은 현재 객체가 소유한 경계이며 Vue에는 SOLID 점수를 매기지 않았다.
+
+### N01~N15 후속 판정
+
+| 발견 | 처리 | 최종 판정과 근거 |
+| --- | --- | --- |
+| N01 | T31·T46·T47 | 태그 이름 재사용과 관계 교체를 검증하고 해석/도메인 연결을 분리 |
+| N02 | T31·T32·T47 | 무태그 조회와 DB 페이지 제한을 검증하고 Page/Slice 이름 정리 |
+| N03 | T40·T48 | 재시도 payload와 로딩·오류·마지막 상태 분리 |
+| N04 | T40·T48 | 검색 조건 초기화, 요청 세대, emitter 해제 및 효과에 맞는 이름 |
+| N05 | T46 | 패키지·관계·팩터리 이름 수정과 양방향 불변식 검증 |
+| N06 | T47 | 공고 생성/엔티티 저장 이름 구분, 이미지 검증 분리, 미사용 경로 제거; commit/보상은 서비스 유지 |
+| N07 | T49 | 공개 이미지 URL을 설정 주입 협력자로 옮기고 서비스에서 세 응답 조립 |
+| N08 | T47 | 회원 사용 가능 여부·생성·조회·페이지 메서드 이름 정리 |
+| N09 | T49 | 사용하지 않는 두 DTO 제거; 작성 username은 기존 HTTP 필드 호환용으로 유지하며 인증 주체 결정에는 사용하지 않음 |
+| N10 | T47·T49 | 답변 저장/목록 이름과 테스트 소속 수정; Spring 메서드명은 유지하고 매개변수를 회원 ID 문자열로 명명 |
+| N11 | T48 | 태그 포커스·공고 이동·화면 필드·라우트·파일 이름 정리 |
+| N12 | T42 | recommend 필드와 정렬값 통일, 저장 없는 반응 비활성화 |
+| N13 | T41·T49 | 환경별 API/CORS 설정과 JSON 404 검증, 중복 WebConfig 제거 |
+| N14 | T47 | Controller 테스트 이름·fixture 정리, 답변 사례를 AnswerServiceTest로 이동 |
+| N15 | T48 | 미사용 Vue 2 설정·예제 라우트/컴포넌트·footer 제거 |
+
+남겨 둔 작성 요청의 `username`은 JSON/폼 호환 필드다. Service는 JWT의 회원 ID로 작성자를 결정하며, 위조 이름을 보낸 테스트가 그 경계를 검증한다. 운영 DB의 실물 스키마 검증과 브라우저 E2E는 T50 인수 범위다. 정적 판정만으로 이 두 실행 결과를 주장하지 않는다.
+
+### 현재 파일별 판정
+
+| 파일 | 상태 | 소유 책임 | 관련 발견 |
+| --- | --- | --- | --- |
+| `B/src/main/java/com/inhatc/demp/DempApplication.java` | 검토 완료·유지 | 진입·공통 설정 | — |
+| `B/src/main/java/com/inhatc/demp/config/SecurityConfiguration.java` | 검토 완료·수정 | 보안·환경 설정 | N13 |
+| `B/src/main/java/com/inhatc/demp/config/SwaggerConfig.java` | 검토 완료·유지 | 보안·환경 설정 | — |
+| `B/src/main/java/com/inhatc/demp/config/aws/AwsS3Config.java` | 검토 완료·수정 | 보안·환경 설정 | N07 |
+| `B/src/main/java/com/inhatc/demp/config/jwt/JwtAuthenticationFilter.java` | 검토 완료·유지 | 보안·환경 설정 | — |
+| `B/src/main/java/com/inhatc/demp/config/jwt/JwtTokenProvider.java` | 검토 완료·유지 | 보안·환경 설정 | — |
+| `B/src/main/java/com/inhatc/demp/config/security/MemberPrincipal.java` | 검토 완료·유지 | 보안·환경 설정 | — |
+| `B/src/main/java/com/inhatc/demp/config/security/SecurityErrorWriter.java` | 검토 완료·유지 | 보안·환경 설정 | — |
+| `B/src/main/java/com/inhatc/demp/controller/AnnouncementController.java` | 검토 완료·수정 | HTTP 입출력 | — |
+| `B/src/main/java/com/inhatc/demp/controller/AnswerController.java` | 검토 완료·수정 | HTTP 입출력 | — |
+| `B/src/main/java/com/inhatc/demp/controller/ExController.java` | 검토 완료·유지 | HTTP 입출력 | — |
+| `B/src/main/java/com/inhatc/demp/controller/MemberController.java` | 검토 완료·수정 | HTTP 입출력 | N08 |
+| `B/src/main/java/com/inhatc/demp/controller/QuestionController.java` | 검토 완료·수정 | HTTP 입출력 | — |
+| `B/src/main/java/com/inhatc/demp/domain/Answer.java` | 검토 완료·수정 | 도메인 상태·관계 | N05 |
+| `B/src/main/java/com/inhatc/demp/domain/Hashtag.java` | 검토 완료·수정 | 도메인 상태·관계 | N01 |
+| `B/src/main/java/com/inhatc/demp/domain/Member.java` | 검토 완료·유지 | 도메인 상태·관계 | — |
+| `B/src/main/java/com/inhatc/demp/domain/Question.java` | 검토 완료·수정 | 도메인 상태·관계 | N01,N05 |
+| `B/src/main/java/com/inhatc/demp/domain/QuestionHashtag.java` | 검토 완료·수정 | 도메인 상태·관계 | N05 |
+| `B/src/main/java/com/inhatc/demp/domain/announcement/Announcement.java` | 검토 완료·추가·이름 변경 | 도메인 상태·관계 | N05 |
+| `B/src/main/java/com/inhatc/demp/domain/announcement/AnnouncementType.java` | 검토 완료·추가·이름 변경 | 도메인 상태·관계 | N05 |
+| `B/src/main/java/com/inhatc/demp/domain/announcement/Career.java` | 검토 완료·추가·이름 변경 | 도메인 상태·관계 | N05 |
+| `B/src/main/java/com/inhatc/demp/domain/announcement/Company.java` | 검토 완료·추가·이름 변경 | 도메인 상태·관계 | N05 |
+| `B/src/main/java/com/inhatc/demp/domain/announcement/Description.java` | 검토 완료·추가·이름 변경 | 도메인 상태·관계 | N05 |
+| `B/src/main/java/com/inhatc/demp/domain/announcement/JobPosition.java` | 검토 완료·추가·이름 변경 | 도메인 상태·관계 | N05 |
+| `B/src/main/java/com/inhatc/demp/domain/announcement/Language.java` | 검토 완료·추가·이름 변경 | 도메인 상태·관계 | N05 |
+| `B/src/main/java/com/inhatc/demp/domain/announcement/RecruitPeriod.java` | 검토 완료·추가·이름 변경 | 도메인 상태·관계 | N05 |
+| `B/src/main/java/com/inhatc/demp/domain/announcement/UploadFile.java` | 검토 완료·추가·이름 변경 | 도메인 상태·관계 | N05 |
+| `B/src/main/java/com/inhatc/demp/dto/announcement/AnnouncementCreateRequest.java` | 검토 완료·수정 | HTTP 데이터 계약 | — |
+| `B/src/main/java/com/inhatc/demp/dto/announcement/AnnouncementDetailResponse.java` | 검토 완료·수정 | HTTP 데이터 계약 | N05,N07 |
+| `B/src/main/java/com/inhatc/demp/dto/announcement/AnnouncementResponse.java` | 검토 완료·수정 | HTTP 데이터 계약 | N07 |
+| `B/src/main/java/com/inhatc/demp/dto/announcement/AnnouncementScroll.java` | 검토 완료·수정 | HTTP 데이터 계약 | N07 |
+| `B/src/main/java/com/inhatc/demp/dto/announcement/AnnouncementSearchCondition.java` | 검토 완료·수정 | HTTP 데이터 계약 | — |
+| `B/src/main/java/com/inhatc/demp/dto/answer/AnswerForm.java` | 검토 완료·유지 | HTTP 데이터 계약 | N09 |
+| `B/src/main/java/com/inhatc/demp/dto/answer/UpdateAnswerForm.java` | 검토 완료·유지 | HTTP 데이터 계약 | — |
+| `B/src/main/java/com/inhatc/demp/dto/member/MemberDto.java` | 검토 완료·유지 | HTTP 데이터 계약 | — |
+| `B/src/main/java/com/inhatc/demp/dto/member/MemberInfo.java` | 검토 완료·유지 | HTTP 데이터 계약 | — |
+| `B/src/main/java/com/inhatc/demp/dto/member/MemberLoginForm.java` | 검토 완료·유지 | HTTP 데이터 계약 | — |
+| `B/src/main/java/com/inhatc/demp/dto/member/MemberSaveForm.java` | 검토 완료·유지 | HTTP 데이터 계약 | — |
+| `B/src/main/java/com/inhatc/demp/dto/question/QuestionAnswer.java` | 검토 완료·유지 | HTTP 데이터 계약 | — |
+| `B/src/main/java/com/inhatc/demp/dto/question/QuestionDetail.java` | 검토 완료·유지 | HTTP 데이터 계약 | — |
+| `B/src/main/java/com/inhatc/demp/dto/question/QuestionForm.java` | 검토 완료·유지 | HTTP 데이터 계약 | N09 |
+| `B/src/main/java/com/inhatc/demp/dto/question/QuestionList.java` | 검토 완료·유지 | HTTP 데이터 계약 | — |
+| `B/src/main/java/com/inhatc/demp/dto/question/QuestionSearchCondition.java` | 검토 완료·유지 | HTTP 데이터 계약 | — |
+| `B/src/main/java/com/inhatc/demp/dto/question/QuestionSliceResponse.java` | 검토 완료·추가·이름 변경 | HTTP 데이터 계약 | N02 |
+| `B/src/main/java/com/inhatc/demp/dto/question/QuestionUpdateForm.java` | 검토 완료·유지 | HTTP 데이터 계약 | — |
+| `B/src/main/java/com/inhatc/demp/error/ApiErrors.java` | 검토 완료·유지 | 진입·공통 설정 | — |
+| `B/src/main/java/com/inhatc/demp/error/ApiException.java` | 검토 완료·유지 | 진입·공통 설정 | — |
+| `B/src/main/java/com/inhatc/demp/error/ErrorResult.java` | 검토 완료·유지 | 진입·공통 설정 | — |
+| `B/src/main/java/com/inhatc/demp/error/ResourceNotFoundException.java` | 검토 완료·유지 | 진입·공통 설정 | — |
+| `B/src/main/java/com/inhatc/demp/repository/AnswerRepository.java` | 검토 완료·유지 | 영속·조회 | — |
+| `B/src/main/java/com/inhatc/demp/repository/HashtagRepository.java` | 검토 완료·수정 | 영속·조회 | — |
+| `B/src/main/java/com/inhatc/demp/repository/MemberRepository.java` | 검토 완료·유지 | 영속·조회 | — |
+| `B/src/main/java/com/inhatc/demp/repository/announcement/AnnouncementQueryRepository.java` | 검토 완료·수정 | 영속·조회 | N02,N08 |
+| `B/src/main/java/com/inhatc/demp/repository/announcement/AnnouncementRepository.java` | 검토 완료·수정 | 영속·조회 | — |
+| `B/src/main/java/com/inhatc/demp/repository/question/QuestionQueryRepository.java` | 검토 완료·수정 | 영속·조회 | N02 |
+| `B/src/main/java/com/inhatc/demp/repository/question/QuestionRepository.java` | 검토 완료·유지 | 영속·조회 | — |
+| `B/src/main/java/com/inhatc/demp/service/AnnouncementImageUrl.java` | 검토 완료·추가·이름 변경 | 유스케이스·외부 경계 | N07 |
+| `B/src/main/java/com/inhatc/demp/service/AnnouncementService.java` | 검토 완료·수정 | 유스케이스·외부 경계 | N06,N08 |
+| `B/src/main/java/com/inhatc/demp/service/AnswerService.java` | 검토 완료·수정 | 유스케이스·외부 경계 | N10 |
+| `B/src/main/java/com/inhatc/demp/service/ContentSanitizer.java` | 검토 완료·유지 | 유스케이스·외부 경계 | — |
+| `B/src/main/java/com/inhatc/demp/service/CustomUserDetailService.java` | 검토 완료·수정 | 유스케이스·외부 경계 | N10 |
+| `B/src/main/java/com/inhatc/demp/service/FileService.java` | 검토 완료·수정 | 유스케이스·외부 경계 | N06 |
+| `B/src/main/java/com/inhatc/demp/service/FileStorage.java` | 검토 완료·수정 | 유스케이스·외부 경계 | — |
+| `B/src/main/java/com/inhatc/demp/service/HashtagResolver.java` | 검토 완료·추가·이름 변경 | 유스케이스·외부 경계 | N01 |
+| `B/src/main/java/com/inhatc/demp/service/ImageValidator.java` | 검토 완료·추가·이름 변경 | 유스케이스·외부 경계 | N06 |
+| `B/src/main/java/com/inhatc/demp/service/MemberService.java` | 검토 완료·수정 | 유스케이스·외부 경계 | N08 |
+| `B/src/main/java/com/inhatc/demp/service/QuestionService.java` | 검토 완료·수정 | 유스케이스·외부 경계 | N01,N08 |
+| `B/src/test/java/com/inhatc/demp/DempApplicationTests.java` | 검토 완료·유지 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/config/ApiSecurityTest.java` | 검토 완료·수정 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/config/CorsPolicyTest.java` | 검토 완료·추가·이름 변경 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/config/DatabaseLifecycleTest.java` | 검토 완료·유지 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/config/LocalDataInitializationTest.java` | 검토 완료·유지 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/config/security/MemberPrincipalTest.java` | 검토 완료·유지 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/controller/AnnouncementControllerTest.java` | 검토 완료·수정 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/controller/AnswerControllerTest.java` | 검토 완료·수정 | 검증·fixture | N14 |
+| `B/src/test/java/com/inhatc/demp/controller/ExControllerTest.java` | 검토 완료·수정 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/controller/MemberControllerTest.java` | 검토 완료·수정 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/controller/QuestionControllerTest.java` | 검토 완료·수정 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/docs/AnnouncementRestDocsTest.java` | 검토 완료·수정 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/docs/AnswerRestDocsTest.java` | 검토 완료·수정 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/docs/ApiErrorRestDocsTest.java` | 검토 완료·수정 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/docs/MemberRestDocsTest.java` | 검토 완료·수정 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/docs/QuestionRestDocsTest.java` | 검토 완료·수정 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/domain/AnswerTest.java` | 검토 완료·추가·이름 변경 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/domain/QuestionTest.java` | 검토 완료·추가·이름 변경 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/domain/announcement/AnnouncementValuesTest.java` | 검토 완료·추가·이름 변경 | 검증·fixture | N05 |
+| `B/src/test/java/com/inhatc/demp/repository/AnnouncementQueryRepositoryTest.java` | 검토 완료·수정 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/repository/AnswerRepositoryTest.java` | 검토 완료·수정 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/repository/QuestionQueryRepositoryTest.java` | 검토 완료·추가·이름 변경 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/repository/QuestionRepositoryTest.java` | 검토 완료·수정 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/service/AnnouncementImageUrlTest.java` | 검토 완료·추가·이름 변경 | 검증·fixture | N07 |
+| `B/src/test/java/com/inhatc/demp/service/AnnouncementServiceTest.java` | 검토 완료·수정 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/service/AnnouncementUploadCompensationTest.java` | 검토 완료·수정 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/service/AnswerServiceTest.java` | 검토 완료·수정 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/service/ContentSanitizerTest.java` | 검토 완료·유지 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/service/CustomUserDetailServiceTest.java` | 검토 완료·유지 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/service/FileServiceTest.java` | 검토 완료·수정 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/service/MemberServiceTest.java` | 검토 완료·수정 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/service/QuestionServiceTest.java` | 검토 완료·수정 | 검증·fixture | N10,N14 |
+| `B/src/test/java/com/inhatc/demp/support/MemberSecurityContextFactory.java` | 검토 완료·유지 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/support/SqlCaptureInspector.java` | 검토 완료·추가·이름 변경 | 검증·fixture | — |
+| `B/src/test/java/com/inhatc/demp/support/WithMember.java` | 검토 완료·유지 | 검증·fixture | — |
+| `F/src/App.vue` | 검토 완료·유지 | 진입·공통 설정 | — |
+| `F/src/api/announcements.js` | 검토 완료·수정 | HTTP client·endpoint | — |
+| `F/src/api/answers.js` | 검토 완료·추가·이름 변경 | HTTP client·endpoint | — |
+| `F/src/api/auth.js` | 검토 완료·추가·이름 변경 | HTTP client·endpoint | — |
+| `F/src/api/client.js` | 검토 완료·추가·이름 변경 | HTTP client·endpoint | N13 |
+| `F/src/api/members.js` | 검토 완료·추가·이름 변경 | HTTP client·endpoint | — |
+| `F/src/api/questions.js` | 검토 완료·추가·이름 변경 | HTTP client·endpoint | — |
+| `F/src/components/AccountForm.vue` | 검토 완료·수정 | 화면·지역 상태 | N11 |
+| `F/src/components/Hashtags.vue` | 검토 완료·수정 | 화면·지역 상태 | N11 |
+| `F/src/components/LoginForm.vue` | 검토 완료·수정 | 화면·지역 상태 | — |
+| `F/src/components/announcement/AnnouncementDetail.vue` | 검토 완료·수정 | 화면·지역 상태 | N11 |
+| `F/src/components/announcement/AnnouncementHeader.vue` | 검토 완료·수정 | 화면·지역 상태 | — |
+| `F/src/components/announcement/AnnouncementList.vue` | 검토 완료·수정 | 화면·지역 상태 | N03,N04,N11 |
+| `F/src/components/announcement/AnnouncementScroll.vue` | 검토 완료·수정 | 화면·지역 상태 | — |
+| `F/src/components/announcement/AnnouncementWrite.vue` | 검토 완료·수정 | 화면·지역 상태 | — |
+| `F/src/components/common/SafeHtml.vue` | 검토 완료·유지 | 화면·지역 상태 | — |
+| `F/src/components/layout/Header.vue` | 검토 완료·수정 | 화면·지역 상태 | — |
+| `F/src/components/question/QuestionAnswer.vue` | 검토 완료·수정 | 화면·지역 상태 | N12 |
+| `F/src/components/question/QuestionControl.vue` | 검토 완료·수정 | 화면·지역 상태 | — |
+| `F/src/components/question/QuestionDetail.vue` | 검토 완료·수정 | 화면·지역 상태 | N12 |
+| `F/src/components/question/QuestionList.vue` | 검토 완료·수정 | 화면·지역 상태 | N04,N12 |
+| `F/src/components/question/QuestionMenu.vue` | 검토 완료·수정 | 화면·지역 상태 | N12 |
+| `F/src/components/question/QuestionReturn.vue` | 검토 완료·유지 | 화면·지역 상태 | — |
+| `F/src/components/question/QuestionSearch.vue` | 검토 완료·수정 | 화면·지역 상태 | N04 |
+| `F/src/components/question/QuestionWrite.vue` | 검토 완료·수정 | 화면·지역 상태 | N03 |
+| `F/src/data/positions.js` | 검토 완료·추가·이름 변경 | 화면 선택값 | N11 |
+| `F/src/main.js` | 검토 완료·수정 | 진입·공통 설정 | — |
+| `F/src/router/index.js` | 검토 완료·수정 | 경로·인증 | N11 |
+| `F/src/store/index.js` | 검토 완료·유지 | 공유 인증 상태 | — |
+| `F/src/store/modules/Login.js` | 검토 완료·수정 | 공유 인증 상태 | — |
+| `F/src/views/announcement/AnnouncementDetail.vue` | 검토 완료·유지 | 화면·지역 상태 | — |
+| `F/src/views/announcement/AnnouncementList.vue` | 검토 완료·수정 | 화면·지역 상태 | — |
+| `F/src/views/announcement/AnnouncementWrite.vue` | 검토 완료·유지 | 화면·지역 상태 | — |
+| `F/src/views/question/QuestionDetail.vue` | 검토 완료·유지 | 화면·지역 상태 | — |
+| `F/src/views/question/QuestionList.vue` | 검토 완료·유지 | 화면·지역 상태 | — |
+| `F/src/views/question/QuestionWrite.vue` | 검토 완료·유지 | 화면·지역 상태 | — |
+| `F/tests/unit/AnnouncementDetail.spec.js` | 검토 완료·유지 | 검증·fixture | — |
+| `F/tests/unit/AnnouncementList.spec.js` | 검토 완료·추가·이름 변경 | 검증·fixture | — |
+| `F/tests/unit/AnnouncementWrite.spec.js` | 검토 완료·유지 | 검증·fixture | — |
+| `F/tests/unit/Hashtags.spec.js` | 검토 완료·추가·이름 변경 | 검증·fixture | — |
+| `F/tests/unit/HtmlRendering.spec.js` | 검토 완료·유지 | 검증·fixture | — |
+| `F/tests/unit/LoginForm.spec.js` | 검토 완료·유지 | 검증·fixture | — |
+| `F/tests/unit/QuestionAnswer.spec.js` | 검토 완료·추가·이름 변경 | 검증·fixture | — |
+| `F/tests/unit/QuestionDetail.spec.js` | 검토 완료·추가·이름 변경 | 검증·fixture | — |
+| `F/tests/unit/QuestionList.spec.js` | 검토 완료·추가·이름 변경 | 검증·fixture | — |
+| `F/tests/unit/QuestionMenu.spec.js` | 검토 완료·추가·이름 변경 | 검증·fixture | — |
+| `F/tests/unit/QuestionSearch.spec.js` | 검토 완료·추가·이름 변경 | 검증·fixture | — |
+| `F/tests/unit/QuestionWrite.spec.js` | 검토 완료·추가·이름 변경 | 검증·fixture | — |
+| `F/tests/unit/SafeHtml.spec.js` | 검토 완료·유지 | 검증·fixture | — |
+| `F/tests/unit/apiClient.spec.js` | 검토 완료·추가·이름 변경 | 검증·fixture | — |
+| `F/tests/unit/router.spec.js` | 검토 완료·추가·이름 변경 | 검증·fixture | — |
+| `F/tests/unit/server.spec.js` | 검토 완료·추가·이름 변경 | 검증·fixture | — |
+| `F/tests/unit/test-environment.spec.js` | 검토 완료·유지 | 검증·fixture | — |
+| `B/build.gradle` | 검토 완료·유지 | 빌드·실행 설정 | — |
+| `B/settings.gradle` | 검토 완료·유지 | 빌드·실행 설정 | — |
+| `F/server.js` | 검토 완료·수정 | 빌드·실행 설정 | N13 |
+| `F/vue.config.js` | 검토 완료·수정 | 빌드·실행 설정 | N13 |
+| `F/babel.config.js` | 검토 완료·유지 | 빌드·실행 설정 | — |
+| `F/jest.config.js` | 검토 완료·유지 | 빌드·실행 설정 | — |

@@ -132,3 +132,7 @@ Question은 제목·내용·작성자·생성시각·조회/추천/비추천 수
 - F `npm test`: exit 1. test 스크립트 없음.
 - F `npm run build`: exit 127. vue-cli-service 없음.
 - F `npm run lint -- --no-fix`: exit 127. vue-cli-service 없음. 소스 변경을 막기 위해 자동 수정 비활성화.
+
+## 2026-09-26 구현 후 공개 계약 갱신
+
+아래 구현 결과는 이 문서의 초기 위험 목록 중 이미 해결한 항목에 우선한다. `GET /api/announce`는 `Slice` JSON(`content`, `last`, `number`)을 반환하고, `GET /api/question`도 같은 페이지 형식이다. 공고 상세·목록·스크롤의 `image`는 저장 키에 `S3_PUBLIC_BASE_URL`(기본 기존 S3 주소)을 붙인 URL이다. 질문·답변의 추천 필드는 `recommend`, 질문 추천 정렬값도 `recommend`다. 프런트 반응 버튼은 저장 API가 없어 비활성화한다. 인증이 필요한 API의 401은 프런트 인증 상태를 비우고 원래 경로를 로그인 redirect에 보존한다. CORS는 백엔드 `APP_CORS_ALLOWED_ORIGINS` 목록으로 제한한다. 초기 표의 “타입 참조 깨짐”, “소유권 미검사”, `recomend` 불일치 등은 구현 전 관찰 기록이며 현재 결과를 뜻하지 않는다. 세부 검증과 미완료 통합 흐름은 `tasks.md` T20~T49와 T50을 따른다.

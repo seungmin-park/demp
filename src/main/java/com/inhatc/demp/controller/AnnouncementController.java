@@ -1,6 +1,5 @@
 package com.inhatc.demp.controller;
 
-import com.inhatc.demp.domain.announcement.Announcement;
 import com.inhatc.demp.dto.announcement.*;
 import com.inhatc.demp.service.AnnouncementService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -30,25 +28,16 @@ public class AnnouncementController {
 
     @GetMapping("/scroll")
     public List<AnnouncementScroll> scroll() {
-        List<Announcement> announcements = announcementService.findAll();
-        List<AnnouncementScroll> result = announcements.stream()
-                .map(AnnouncementScroll::new)
-                .collect(Collectors.toList());
-
-        return result;
+        return announcementService.findScrollResponses();
     }
 
     @GetMapping("/detail/{AnnouncementId}")
     public ResponseEntity<AnnouncementDetailResponse> getAnnouncementDetail(@PathVariable("AnnouncementId") Long announcementId) {
-        Optional<Announcement> optionalAnnouncement = announcementService.findById(announcementId);
-        if (optionalAnnouncement.isEmpty()) {
+        Optional<AnnouncementDetailResponse> response = announcementService.findDetailResponse(announcementId);
+        if (response.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-        Announcement announcement = optionalAnnouncement.get();
-        AnnouncementDetailResponse result = AnnouncementDetailResponse.from(announcement);
-
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(response.get(), HttpStatus.OK);
     }
 
     @PostMapping(value = "/add")
