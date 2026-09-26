@@ -255,13 +255,15 @@ Phase 1 최초 검증: 백엔드 141개·프런트 21개 테스트, 문서·jar�
 
 ## Phase 3 · 저장·관계·조회 정확성
 
+작업 브랜치: `refactor/answer-tag-and-pagination-accuracy`. Backend worktree: `/Users/seungmin/Desktop/repo/archive/demp/.worktrees/answer-tag-and-pagination-accuracy/backend`. Frontend 작업이 필요한 T32는 해당 저장소의 별도 worktree에서 수행한다.
+
 ### T30 · 답변 수정 실제 commit — R07 / S07
 
 Phase 1 선행 반영: AnswerService.update의 실제 트랜잭션, commit 뒤 재조회, 타인 403/없는 답변 404를 검증했다. 이 항목 실행 시 현재 통과 동작을 대조하고 남은 검증만 수행한다. 이미 있는 트랜잭션을 제거해 인위적인 Red를 만들지 않는다.
 
 수정 B: T12에서 만든 AnswerService. 테스트: `service/AnswerServiceTest.java`, `controller/AnswerControllerTest.java`.
 
-- [ ] 테스트 @Transactional 없이 답변을 만들고 서비스 update 호출 후 Repository에서 다시 조회한다.
+- [x] 테스트 @Transactional 없이 답변을 만들고 서비스 update 호출 후 Repository에서 다시 조회한다.
 
 ```java
 answerService.update(actorId, updateForm);
@@ -269,9 +271,11 @@ assertThat(answerRepository.findById(answerId).orElseThrow().getContent())
     .isEqualTo("수정된 답변");
 ```
 
-- [ ] 쓰기 트랜잭션이 없는 상태에서 내용 불일치로 실패함을 확인한 뒤 public update에 @Transactional을 적용한다.
-- [ ] 소유권 실패 시 내용이 바뀌지 않는지, 없는 ID는 404인지 함께 유지한다.
-- [ ] cleanup은 Answer→Question→Member 순서로 하고 전체 테스트를 재실행한다.
+- [x] T12에서 public update에 이미 적용한 @Transactional과 commit 후 재조회 테스트를 기준선으로 확인한다. 이번에는 구현을 제거해 인위적인 Red를 만들지 않는다. 당시 쓰기 트랜잭션 부재의 실패 로그는 없어 Red 증거로 주장하지 않는다.
+- [x] 소유권 실패 시 내용이 바뀌지 않는지, 없는 ID는 404인지 함께 유지한다.
+- [x] cleanup은 Answer→Question→Member 순서로 하고 전체 테스트를 재실행한다.
+
+2026-09-26: 기존 `AnswerService.update`의 쓰기 트랜잭션과 `AnswerServiceTest.commitsSanitizedUpdate`가 commit 후 별도 조회에서 통과하는 것을 먼저 확인했다. 타인 수정 시 원본 보존 테스트를 추가했으며 처음부터 통과했으므로 기존 동작 특성화다. 없는 답변은 기존 서비스 예외 테스트, 403과 원본 보존은 기존 `ApiSecurityTest`로 검증한다. 테스트 데이터 cleanup은 Answer→Question→Member 순서다. 이름·책임 검토 결과, `update`는 답변 소유권·정제·상태 변경이라는 하나의 유스케이스에 속하므로 서비스/도메인 경계를 유지했다. 컨트롤러는 HTTP 입력 전달을, 서비스는 권한과 트랜잭션을, Answer는 자신의 내용 변경을 맡는다. 대상 `./gradlew test --tests 'com.inhatc.demp.service.AnswerServiceTest' --tests 'com.inhatc.demp.controller.AnswerControllerTest'` 성공, 전체 `./gradlew test` 27 suite·169 test·실패/오류/건너뜀 0.
 
 ### T31 · 태그 교체와 질문 검색 — R09 / S08
 
@@ -441,7 +445,7 @@ npx playwright test
 
 각 작업 완료 시 이 파일의 해당 항목 아래에 실행 날짜, Red 명령/실패 assertion, Green 최소 변경, Refactor 변경 이유, 대상/전체 검증 결과를 추가한다. 커밋을 명시적으로 요청받아 생성한 경우에만 SHA를 적는다. 순수 이름·구조 정리는 기존 Green 계약을 먼저 기록한다. 동작 변경의 Red가 처음부터 통과하면 회귀 재현에 실패한 것이므로 사례를 다시 구성한다. T00의 합의된 컴파일 복원은 이 기능 Red 기록과 분리한다.
 
-현재 상태: Phase 0, Phase 1, Phase 2 구현·검증 완료. Phase 3~4와 Phase 5의 T46~T49, Phase 6은 미착수이며 T30의 트랜잭션·재조회 검증은 T12에서 선행 적용했다. 2026-09-26에 현재 `refactor/announcement-upload-contract` 브랜치의 원본 작업 디렉터리에서 Phase 5의 T45 정적 전수 검토를 선행했다. 구현/동작 수정은 하지 않았다.
+현재 상태: Phase 0, Phase 1, Phase 2와 T30 구현·검증 완료. Phase 3의 T31~T32, Phase 4, Phase 5의 T46~T49, Phase 6은 미착수다. T30의 트랜잭션·재조회 검증은 T12에서 선행 적용했고 2026-09-26에 원본 보존 검증을 보강했다. 같은 날 `refactor/announcement-upload-contract` 브랜치의 원본 작업 디렉터리에서 Phase 5의 T45 정적 전수 검토를 선행했다.
 
 ### 2026-09-21 Phase 1 리뷰 반영
 

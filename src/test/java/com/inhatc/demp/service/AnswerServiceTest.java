@@ -10,6 +10,7 @@ import java.util.List;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.access.AccessDeniedException;
 import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
@@ -46,6 +47,20 @@ class AnswerServiceTest {
         service.update(actor.getId(), new UpdateAnswerForm(answer.getId(), "<p onclick='bad()'>changed</p>"));
 
         assertThat(answers.findById(answer.getId()).orElseThrow().getContent()).isEqualTo("<p>changed</p>");
+    }
+    @Test
+    @DisplayName("다른 회원의 답변 수정은 거절되고 저장된 내용은 유지된다")
+    void rejectsOtherMembersUpdateWithoutChangingAnswer() {
+        Member owner = members.save(new Member("answer-owner", "hash", List.of("ROLE_USER")));
+        Member other = members.save(new Member("answer-other", "hash", List.of("ROLE_USER")));
+        Question question = new Question("title", "body", 0, 0, 0);
+        question.settingMember(owner); questions.save(question);
+        Answer answer = new Answer("original", 0, 0);
+        answer.settingMember(owner); answer.settingQuestion(question); answers.save(answer);
+
+        assertThatThrownBy(() -> service.update(other.getId(), new UpdateAnswerForm(answer.getId(), "changed")))
+                .isInstanceOf(AccessDeniedException.class);
+        assertThat(answers.findById(answer.getId()).orElseThrow().getContent()).isEqualTo("original");
     }
     @Test
     @DisplayName("없는 답변의 수정과 삭제는 자원 없음 예외를 반환한다")
