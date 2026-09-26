@@ -392,9 +392,11 @@ assertThat(answerRepository.findById(answerId).orElseThrow().getContent())
 
 수정 후보 F: `src/data/positon.js`, `src/router/index.js`, `src/components/announcement/AnnouncementList.vue`, `src/api/*`, `src/store/*`, `src/fontAwesomeIcon.js`, 미사용 예제 컴포넌트 및 관련 테스트. 실제 수정 목록은 T45 판정표로 확정한다.
 
-- [ ] 모든 Vue/JavaScript 파일에서 컴포넌트명·props·emits·상태 필드·함수명·라우트명을 화면 도메인과 실제 효과에 대조한다. `positon`, `Test*`, `loadDataFromServer` 후보의 외부 참조를 확인한다.
-- [ ] 비동기 요청·상태 전이·렌더링이 한 메서드에 섞인 경우 API 호출은 API 모듈, 공유 상태 전이는 store, 표현은 컴포넌트에 배치할지 결정한다. 단일 화면의 지역 상태만 필요한 경우 불필요한 store 추출을 하지 않는다.
-- [ ] 사용자에게 보이는 결과와 라우트/이벤트 계약을 컴포넌트 테스트로 고정한 뒤 이름·책임을 바꾼다. F 전체 `npm test -- --runInBand`, `npm run lint -- --no-fix`, `npm run build`를 실행한다.
+- [x] 모든 Vue/JavaScript 파일에서 컴포넌트명·props·emits·상태 필드·함수명·라우트명을 화면 도메인과 실제 효과에 대조한다. `positon`, `Test*`, `loadDataFromServer` 후보의 외부 참조를 확인한다.
+- [x] 비동기 요청·상태 전이·렌더링이 한 메서드에 섞인 경우 API 호출은 API 모듈, 공유 상태 전이는 store, 표현은 컴포넌트에 배치할지 결정한다. 단일 화면의 지역 상태만 필요한 경우 불필요한 store 추출을 하지 않는다.
+- [x] 사용자에게 보이는 결과와 라우트/이벤트 계약을 컴포넌트 테스트로 고정한 뒤 이름·책임을 바꾼다. F 전체 `npm test -- --runInBand`, `npm run lint -- --no-fix`, `npm run build`를 실행한다.
+
+2026-09-26: 기존 동작의 Green 기준으로 공고 항목 클릭 `/detail/71`, 태그 입력 `addHashtags`, `/login`·`/account` 공개 경로 테스트를 추가하고 대상 9개를 먼저 통과시켰다. 기능 동작을 바꾸지 않는 이름·소속 정리이므로 별도 Red를 주장하지 않는다. `positon`→`positions`, `Test*` 라우트 이름과 `loadDataFromServer`·`printCondition`·`AccountMethod`·`DetailAnnounce` 등 내부 이름을 효과에 맞게 바꿨다. `Hashtags`의 동기 입력 로직에서 불필요한 `async/await`를 제거했다. Vue 2 방식이며 import되지 않는 Font Awesome 설정, 예제 `/hello` 컴포넌트와 주석 처리된 공고 footer는 사용처 검사 후 제거했다. T40/T41에서 API 호출은 모듈에 모였고 목록 상태는 두 화면의 지역 상태라 store 추출을 하지 않았다. props/event 이름과 제품 URL은 유지했고, 라우트·event·화면 결과는 컴포넌트 테스트로 확인했다. 독립 TypeScript 객체는 현재 없다. F 17 suite·45 test, lint·build 성공(기존 번들 크기 권고 경고). 프런트 커밋 `fd26a50`.
 
 ### T49 · 감사 누락·공개 계약 재검증
 
