@@ -30,6 +30,7 @@ logging.level:
 
 file:
   dir: C:/repo/dempfrontend/src/assets/
+  max-size-bytes: 5242880
 
 cloud:
   aws:

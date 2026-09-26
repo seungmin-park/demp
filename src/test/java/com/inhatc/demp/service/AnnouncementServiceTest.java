@@ -2,10 +2,18 @@ package com.inhatc.demp.service;
 
 import com.inhatc.demp.domain.announcemnet.Announcement;
 import com.inhatc.demp.domain.announcemnet.Description;
+import com.inhatc.demp.domain.announcemnet.AnnouncementType;
 import com.inhatc.demp.domain.announcemnet.Career;
+import com.inhatc.demp.domain.announcemnet.JobPosition;
+import com.inhatc.demp.domain.announcemnet.Language;
+import com.inhatc.demp.domain.announcemnet.Company;
+import com.inhatc.demp.domain.announcemnet.RecruitPeriod;
+import com.inhatc.demp.domain.announcemnet.UploadFile;
 import com.inhatc.demp.dto.announcement.AnnouncementCreateRequest;
+import com.inhatc.demp.error.ApiException;
 import com.inhatc.demp.repository.announcement.AnnouncementRepository;
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -13,8 +21,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
+import org.springframework.mock.web.MockMultipartFile;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 @SpringBootTest
 class AnnouncementServiceTest {
@@ -35,15 +48,32 @@ class AnnouncementServiceTest {
     @DisplayName("공고 생성 요청의 본문은 정제해서 저장하고 입력 설명은 보존한다")
     void sanitizeCreateRequest() throws IOException {
         Description description = description();
-        AnnouncementCreateRequest request = new AnnouncementCreateRequest();
-        request.setTitle("본문 정제 공고");
-        request.setDescription(description);
-        request.setCareer(new Career(0, 1));
+        AnnouncementCreateRequest request = request("본문 정제 공고");
+        request.setContent(description.getContent());
+        request.setAccessUrl(description.getAccessUrl());
+        request.setPayment(description.getPayment());
+        when(fileService.save(request.getImage())).thenReturn(new UploadFile("image.png", "saved.png"));
 
         announcementService.save(request);
 
         assertSanitized("본문 정제 공고");
         assertThat(description.getContent()).contains("<script>", "onclick");
+    }
+
+    @Test
+    @DisplayName("중복 공고는 파일을 업로드하기 전에 409로 거절한다")
+    void rejectsDuplicateBeforeUpload() {
+        announcementService.join(Announcement.builder()
+                .title("중복 공고")
+                .career(new Career(0, 1))
+                .description(description())
+                .company(new Company("DEMP"))
+                .build());
+
+        assertThatThrownBy(() -> announcementService.save(request("중복 공고")))
+                .isInstanceOfSatisfying(ApiException.class,
+                        exception -> assertThat(exception.getStatus()).isEqualTo(HttpStatus.CONFLICT));
+        verifyNoInteractions(fileService);
     }
 
     @Test
@@ -62,6 +92,25 @@ class AnnouncementServiceTest {
     private Description description() {
         return new Description("<p onclick=\"alert(1)\"><strong>채용</strong></p><script>alert(1)</script>",
                 "https://example.com/jobs", 3000, Set.of());
+    }
+
+    private AnnouncementCreateRequest request(String title) {
+        AnnouncementCreateRequest request = new AnnouncementCreateRequest();
+        request.setTitle(title);
+        request.setCompany("DEMP");
+        request.setType(AnnouncementType.EMP);
+        request.setPosition(JobPosition.BACKEND);
+        request.setMinCareer(0);
+        request.setMaxCareer(1);
+        request.setStartedDate(LocalDateTime.of(2026, 9, 1, 0, 0));
+        request.setDeadLineDate(LocalDateTime.of(2026, 9, 30, 23, 59));
+        request.setContent(description().getContent());
+        request.setAccessUrl(description().getAccessUrl());
+        request.setPayment(description().getPayment());
+        request.setLanguage(Set.of(Language.JAVA));
+        request.setImage(new MockMultipartFile("image", "image.png", "image/png",
+                new byte[] {(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A}));
+        return request;
     }
 
     private void assertSanitized(String title) {

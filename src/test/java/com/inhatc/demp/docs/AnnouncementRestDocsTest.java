@@ -37,6 +37,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.refEq;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
@@ -45,8 +46,10 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -66,37 +69,89 @@ class AnnouncementRestDocsTest {
     private MockMvc mockMvc;
 
     @Test
-    @DisplayName("공고 multipart 등록의 현재 검증 실패 응답을 문서화한다")
-    void documentsCurrentMultipartValidationFailure() throws Exception {
+    @DisplayName("공고의 평면 multipart 등록 계약을 문서화한다")
+    void documentsAnnouncementCreate() throws Exception {
         org.springframework.mock.web.MockMultipartFile image = new org.springframework.mock.web.MockMultipartFile(
-                "image", "docs-image.png", "image/png", new byte[] {1, 2, 3});
+                "image", "docs-image.png", "image/png",
+                new byte[] {(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A});
 
-        // Characterize the current defect without bypassing the production validator.
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart("/api/announce/add")
                         .file(image)
                         .header("X-AUTH-TOKEN", DOCS_TOKEN)
                         .param("title", "docs-backend-job")
+                        .param("company", "docs-company")
                         .param("position", "BACKEND")
                         .param("type", "EMP")
-                        .param("company.name", "docs-company"))
-                .andExpect(status().isInternalServerError())
-                .andExpect(org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath("$.errorCode").value(500))
-                .andExpect(result -> org.assertj.core.api.Assertions.assertThat(result.getResolvedException())
-                        .isInstanceOf(javax.validation.UnexpectedTypeException.class))
-                .andDo(document("announcement-add-validation-failure",
+                        .param("minCareer", "0")
+                        .param("maxCareer", "3")
+                        .param("startedDate", "2026-09-01T00:00:00")
+                        .param("deadLineDate", "2026-09-30T23:59:00")
+                        .param("content", "docs-description")
+                        .param("accessUrl", "https://example.com/jobs/71")
+                        .param("payment", "3000")
+                        .param("language", "JAVA", "SPRING"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("ok"))
+                .andDo(document("announcement-add",
                         requestHeaders(headerWithName("X-AUTH-TOKEN").description("테스트용 인증 헤더")),
                         requestParameters(
                                 parameterWithName("title").description("공고 제목"),
-                                parameterWithName("position").description("직무 enum. 현재 문자열용 검증 제약 때문에 처리 실패"),
+                                parameterWithName("company").description("회사 또는 교육기관 이름"),
                                 parameterWithName("type").description("공고 유형: EMP 또는 EDU"),
-                                parameterWithName("company.name").description("회사 이름")),
-                        org.springframework.restdocs.request.RequestDocumentation.requestParts(
-                                org.springframework.restdocs.request.RequestDocumentation.partWithName("image").description("공고 이미지 파일")),
+                                parameterWithName("position").description("직무 enum"),
+                                parameterWithName("minCareer").description("최소 경력"),
+                                parameterWithName("maxCareer").description("최대 경력, 0은 상한 없음"),
+                                parameterWithName("startedDate").description("모집 시작 일시"),
+                                parameterWithName("deadLineDate").description("모집 마감 일시"),
+                                parameterWithName("content").description("공고 본문"),
+                                parameterWithName("accessUrl").description("지원 URL"),
+                                parameterWithName("payment").description("연봉 또는 교육비, 만원 단위"),
+                                parameterWithName("language").description("기술 언어 목록")),
+                        requestParts(partWithName("image").description("필수 JPEG 또는 PNG 이미지"))));
+        verify(announcementService).save(org.mockito.ArgumentMatchers.any());
+    }
+
+    @Test
+    @DisplayName("공고 상세의 평면 응답 계약을 문서화한다")
+    void documentsAnnouncementDetail() throws Exception {
+        Announcement announcement = Announcement.builder()
+                .title("docs-backend-job")
+                .career(new Career(0, 3))
+                .description(new Description("docs-description", "https://example.com/jobs/71", 3000,
+                        Set.of(Language.JAVA, Language.SPRING)))
+                .company(new Company("docs-company"))
+                .image(new UploadFile("docs-image.png", "docs-saved-image.png"))
+                .recruitPeriod(new RecruitPeriod(
+                        LocalDateTime.of(2026, 9, 1, 0, 0),
+                        LocalDateTime.of(2026, 9, 30, 23, 59)))
+                .announcementType(AnnouncementType.EMP)
+                .jobPosition(JobPosition.BACKEND)
+                .build();
+        when(announcementService.findById(71L)).thenReturn(Optional.of(announcement));
+
+        mockMvc.perform(get("/api/announce/detail/{AnnouncementId}", 71L)
+                        .header("X-AUTH-TOKEN", DOCS_TOKEN))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.company.name").value("docs-company"))
+                .andExpect(jsonPath("$.minCareer").value(0))
+                .andExpect(jsonPath("$.maxCareer").value(3))
+                .andDo(document("announcement-detail",
+                        requestHeaders(headerWithName("X-AUTH-TOKEN").description("로그인 시 발급된 JWT")),
+                        pathParameters(parameterWithName("AnnouncementId").description("조회할 공고 ID")),
                         responseFields(
-                                fieldWithPath("errorCode").description("내부 검증 설정 오류 코드 500"),
-                                fieldWithPath("errorMessage").description("내부 정보를 포함하지 않는 고정 오류 안내"),
-                                fieldWithPath("instance").description("요청 경로"))));
-        org.mockito.Mockito.verifyNoInteractions(announcementService);
+                                fieldWithPath("image").description("공고 이미지 URL"),
+                                fieldWithPath("company.name").description("회사 또는 교육기관 이름"),
+                                fieldWithPath("title").description("공고 제목"),
+                                fieldWithPath("minCareer").description("최소 경력"),
+                                fieldWithPath("maxCareer").description("최대 경력, 0은 상한 없음"),
+                                fieldWithPath("startedDate").description("모집 시작 일시"),
+                                fieldWithPath("deadLineDate").description("모집 마감 일시"),
+                                fieldWithPath("content").description("정제된 공고 본문"),
+                                fieldWithPath("accessUrl").description("지원 URL"),
+                                fieldWithPath("payment").description("연봉 또는 교육비, 만원 단위"),
+                                fieldWithPath("language").description("기술 언어 목록"),
+                                fieldWithPath("position").description("직무 enum"),
+                                fieldWithPath("announcementType").description("공고 유형: EMP 또는 EDU"))));
     }
 
     @Test
