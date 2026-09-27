@@ -10,7 +10,7 @@ Spec: tasks.md 조사 후속 목록과 사용자 외부 모아보기 결정. 기
 - DEMP 이름 유지. 사용자 제공 디자인·현재 Vue/TS, Java/Node 버전과 lockfile 유지.
 - H2/local FileStorage로 검증, MySQL additive 수동 SQL 제공. 기존 레코드 보존. 운영 DB/S3 사용 없음.
 - 각 동작은 실제 Red → 최소 Green → 책임 정리 → 전체 검증/커밋.
-- cmux workspace:2 terminal12/browser13, 크기 테스트 후 viewport reset. 다른 세션/사용자 입력 터미널 건드리지 않음.
+- cmux workspace:2. 기존 terminal12/browser13 종료를 확인하여 T96에서 terminal34/browser35 재생성, 크기 테스트 후 viewport reset. 다른 세션/사용자 입력 터미널 건드리지 않음.
 
 ## Tasks and shared contracts
 1. T92: SecurityConfiguration POST /api/announce/add ADMIN; legacy /addAnnounce redirect /admin/announcements/new. Controller/docs fixtures 권한 갱신. 일반회원403/관리자200/익명401 실제 필터 테스트가 Red이고 Green 후 전체 B/F 검증.

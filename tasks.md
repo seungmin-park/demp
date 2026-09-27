@@ -680,7 +680,7 @@ npx playwright test
 ### T96 · 최종 인수와 통합
 - [x] T91 QA를 현재 cmux에서 완료하고 독립 리뷰 중요 결함을 수정한다.
 - [x] 남은 체크리스트를 구현 완료/조건부 미도입/사용자 보류로 정확히 정리한다.
-- [ ] 최종 전체 검증 후 브랜치를 보존하고 기존 요청에 따라 main 병합·push한다.
+- [x] 최종 전체 검증 후 브랜치를 보존하고 기존 요청에 따라 main 병합·push한다. 2026-09-27 B merge `e255364`, F main `d26ab49`; 두 원격 main 및 `refactor/curated-publication-workflow` push 완료.
 
 ## 추적표와 작업 종료 기록
 

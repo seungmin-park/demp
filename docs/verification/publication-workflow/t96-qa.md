@@ -46,3 +46,10 @@ Red: `/tmp/demp-t96-review-red.log` 서비스4개 실패, `/tmp/demp-t96-audienc
 ## 다시 검증할 때
 workflow: firecrawl-qa / url: http://127.0.0.1:5050 / focus: forms, permissions, navigation, responsive.
 호스팅 Firecrawl는 로컬 주소에 접근할 수 없어 요청한 cmux에서 실제 조작과 증거 수집을 수행했다. 서버 실행 `/tmp/demp-t96-visible-flow.sh`, 실제 API `/tmp/demp-t96-http.py`(새 로컬 seed DB), 브라우저 자동 `npx playwright test --headed --workers=1`.
+
+## main 통합 결과
+- 백엔드 main merge e255364, 프런트 main merge 99fe419 + 환경 설정 d26ab49. 두 원격 main과 refactor/curated-publication-workflow push 완료. 기존 브랜치/worktree 보존.
+- main에서도 B271 `/tmp/demp-main-tests.log`, F151 `/tmp/demp-front-main-tests.log` 및 typecheck/lint/build 성공.
+- 프런트 main의 .worktrees 아래 과거 checkout을 ESLint가 검사해 1489 errors/24 warnings가 발생했다. 해당 파일들을 수정하지 않고 eslint global ignore 및 .gitignore에 .worktrees/를 추가했다. 원래 root에서 lint/build 재실행 성공, 격리 브랜치에서도 전체151/typecheck/lint/build 성공. 기존 worktree 디렉터리는 삭제하지 않았다.
+- 최종 실행 JAR 사본으로 서버를 재시작하고 실제 HTTP 전체 assertion을 다시 통과했다. cmux browser35는 /detail/5, native614×833이며 terminal34에 FINAL_HTTP_EXIT=0 및 E2E 로그가 남는다.
+- 생성자/builder 사용자 보류 이외의 현재 실행 대상 미완료 체크 없음. 기관 직접 제출은 별도 조건부 미도입으로 표기했다.
