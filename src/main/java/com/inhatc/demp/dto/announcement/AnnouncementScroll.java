@@ -2,6 +2,7 @@ package com.inhatc.demp.dto.announcement;
 
 import com.inhatc.demp.domain.announcement.Announcement;
 import com.inhatc.demp.domain.announcement.Company;
+import com.inhatc.demp.domain.announcement.AnnouncementType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
@@ -16,11 +17,17 @@ public class AnnouncementScroll {
     private String title;
     private Company company;
     private String image;
+    private AnnouncementType announcementType;
+    private Integer minCareer;
+    private Integer maxCareer;
 
     public AnnouncementScroll(Announcement announcement, String imageUrl) {
         this.id = announcement.getId();
         this.title = announcement.getTitle();
         this.company = announcement.getCompany();
         this.image = imageUrl;
+        this.announcementType = announcement.getAnnouncementType();
+        this.minCareer = announcement.getCareer() == null ? null : announcement.getCareer().getMinCareer();
+        this.maxCareer = announcement.getCareer() == null ? null : announcement.getCareer().getMaxCareer();
     }
 }

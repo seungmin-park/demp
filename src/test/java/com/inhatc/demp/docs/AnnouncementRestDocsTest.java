@@ -261,6 +261,7 @@ class AnnouncementRestDocsTest {
         Announcement announcement = Announcement.builder()
                 .title("docs-backend-job")
                 .company(new Company("docs-company"))
+                .career(new Career(0, 3)).announcementType(AnnouncementType.EMP)
                 .image(new UploadFile("docs-image.png", "docs-saved-image.png"))
                 .build();
         ReflectionTestUtils.setField(announcement, "id", 71L);
@@ -275,12 +276,18 @@ class AnnouncementRestDocsTest {
                 .andExpect(jsonPath("$[0].id").value(71))
                 .andExpect(jsonPath("$[0].title").value("docs-backend-job"))
                 .andExpect(jsonPath("$[0].image").value("https://inhatc-demp.s3.ap-northeast-2.amazonaws.com/docs-saved-image.png"))
+                .andExpect(jsonPath("$[0].announcementType").value("EMP"))
+                .andExpect(jsonPath("$[0].minCareer").value(0))
+                .andExpect(jsonPath("$[0].maxCareer").value(3))
                 .andDo(document("announcement-scroll",
                         requestHeaders(headerWithName("X-AUTH-TOKEN").description("로그인 시 발급된 JWT")),
                         responseFields(
                                 fieldWithPath("[].id").description("공고 ID"),
                                 fieldWithPath("[].title").description("공고 제목"),
                                 fieldWithPath("[].company.name").description("회사 또는 교육기관 이름"),
+                                fieldWithPath("[].announcementType").description("EMP 채용 / EDU 교육"),
+                                fieldWithPath("[].minCareer").description("최소 경력 연차"),
+                                fieldWithPath("[].maxCareer").description("최대 경력 연차, 0이면 상한 없음"),
                                 fieldWithPath("[].image").description("이미지 URL"))));
     }
 
