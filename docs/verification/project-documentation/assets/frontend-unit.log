@@ -1,0 +1,254 @@
+
+> dempfrontend@0.1.0 test
+> vitest run
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.2 [39m[90m/Users/seungmin/Desktop/repo/archive/demp/.worktrees/persistent-content-reactions/frontend[39m
+
+ [32m✓[39m tests/unit/router.spec.js [2m([22m[2m4 tests[22m[2m)[22m[33m 908[2mms[22m[39m
+   [33m[2m✓[22m[39m 401 처리 뒤 토큰과 사용자 이름이 모두 비워지고 원래 경로로 돌아올 수 있다[33m 890[2mms[22m[39m
+[90mstderr[2m | tests/unit/AnnouncementWrite.spec.js[2m > [22m[2m공고 본문 HTML을 전송하며 저장 중 중복 요청과 실패 시 입력 유실을 막는다
+[22m[39m[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <AnnouncementWrite ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ [32m✓[39m tests/unit/MarkdownEditor.spec.js [2m([22m[2m5 tests[22m[2m)[22m[33m 1279[2mms[22m[39m
+   [33m[2m✓[22m[39m 선택한 글을 굵게 바꾸고 선택과 커서 위치를 보존한다[33m 445[2mms[22m[39m
+   [33m[2m✓[22m[39m 목록·링크·코드 도구와 분할 보기를 키보드로 접근할 수 있다[33m 539[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementFilters.spec.js [2m([22m[2m6 tests[22m[2m)[22m[33m 1220[2mms[22m[39m
+   [33m[2m✓[22m[39m URL에서 교육·분야·기술·모집상태·비용·검색을 복원해 첫 서버 요청에 전달한다[33m 320[2mms[22m[39m
+   [33m[2m✓[22m[39m 필터 선택은 URL에 저장되고 개별 해제·뒤로 가기는 목록을 첫 페이지부터 복원한다[33m 314[2mms[22m[39m
+   [33m[2m✓[22m[39m 교육 상세 조건은 URL에서 복원되어 실제 검색 API에 전달되고 채용 전환 시 제거된다[33m 304[2mms[22m[39m
+[90mstderr[2m | tests/unit/AnnouncementWrite.spec.js[2m > [22m[2m공고 등록은 서버의 평면 multipart 필드로 요청한다
+[22m[39m[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <AnnouncementWrite ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ [32m✓[39m tests/unit/EducationFields.spec.js [2m([22m[2m4 tests[22m[2m)[22m[33m 2061[2mms[22m[39m
+   [33m[2m✓[22m[39m 관리자는 교육 조건을 선택해 저장하고 API 재조회 값으로 편집한다[33m 1344[2mms[22m[39m
+   [33m[2m✓[22m[39m 공고 종류를 바꾸면 연봉을 교육비로 재사용하지 않는다[33m 349[2mms[22m[39m
+[90mstderr[2m | tests/unit/AnnouncementWrite.spec.js[2m > [22m[2m대표 이미지 없이 공고를 작성할 수 있고 첨부 시 JPEG 또는 PNG로 제한한다
+[22m[39m[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <AnnouncementWrite ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ [32m✓[39m tests/unit/AnnouncementRichEditor.spec.js [2m([22m[2m4 tests[22m[2m)[22m[33m 2288[2mms[22m[39m
+   [33m[2m✓[22m[39m 새 공고는 서식 입력 화면과 채용·교육별 항목을 제공한다[33m 856[2mms[22m[39m
+   [33m[2m✓[22m[39m 붙여넣은 이미지 파일은 저장 전 본문 위치와 multipart 첨부로 연결하고 실패해도 보존한다[33m 882[2mms[22m[39m
+[90mstderr[2m | tests/unit/AnnouncementWrite.spec.js[2m > [22m[2m무료 교육 공고는 교육비 0원으로 입력 검증을 통과한다
+[22m[39m[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <AnnouncementWrite ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ [32m✓[39m tests/unit/AnnouncementWrite.spec.js [2m([22m[2m4 tests[22m[2m)[22m[33m 2741[2mms[22m[39m
+   [33m[2m✓[22m[39m 공고 본문 HTML을 전송하며 저장 중 중복 요청과 실패 시 입력 유실을 막는다[33m 1436[2mms[22m[39m
+   [33m[2m✓[22m[39m 공고 등록은 서버의 평면 multipart 필드로 요청한다[33m 511[2mms[22m[39m
+   [33m[2m✓[22m[39m 무료 교육 공고는 교육비 0원으로 입력 검증을 통과한다[33m 525[2mms[22m[39m
+ [32m✓[39m tests/unit/AdminOperations.spec.js [2m([22m[2m5 tests[22m[2m)[22m[33m 2631[2mms[22m[39m
+   [33m[2m✓[22m[39m 현황은 서버 집계를 표시하고 실패 뒤 재시도한다[33m 318[2mms[22m[39m
+   [33m[2m✓[22m[39m 기존 HTML 질문을 Markdown으로 불러와 안전한 HTML로 저장하며 중복 제출을 막는다[33m 652[2mms[22m[39m
+   [33m[2m✓[22m[39m 공고 수정은 기존 HTML과 필드를 복원하고 파일을 선택하지 않으면 image를 보내지 않는다[33m 1203[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementPresentation.spec.js [2m([22m[2m9 tests[22m[2m)[22m[33m 606[2mms[22m[39m
+ [32m✓[39m tests/unit/AccountForm.spec.js [2m([22m[2m3 tests[22m[2m)[22m[33m 555[2mms[22m[39m
+   [33m[2m✓[22m[39m 가입 비밀번호의 바이트 제한을 안내하고 초과 입력은 전송하지 않는다 (aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa)[33m 418[2mms[22m[39m
+ [32m✓[39m tests/unit/markdown.spec.js [2m([22m[2m3 tests[22m[2m)[22m[33m 370[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementAudience.spec.js [2m([22m[2m10 tests[22m[2m)[22m[33m 796[2mms[22m[39m
+ [32m✓[39m tests/unit/QuestionAnswer.spec.js [2m([22m[2m2 tests[22m[2m)[22m[33m 658[2mms[22m[39m
+   [33m[2m✓[22m[39m 답변 Markdown 저장 실패는 입력을 보존하고 재시도 성공 시 본문을 비운다[33m 519[2mms[22m[39m
+[90mstderr[2m | tests/unit/QuestionWrite.spec.js[2m > [22m[2m실패한 질문을 같은 태그로 재제출해도 요청마다 태그가 한 번만 들어간다
+[22m[39m[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <QuestionWrite ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+[90mstderr[2m | tests/unit/QuestionWrite.spec.js[2m > [22m[2m질문은 Markdown을 안전한 HTML로 저장하고 실패하면 입력을 보존하며 안내한다
+[22m[39m[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <QuestionWrite ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+[90mstderr[2m | tests/unit/QuestionWrite.spec.js[2m > [22m[2m질문 저장 중에는 중복 제출을 막는다
+[22m[39m[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <QuestionWrite ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ [32m✓[39m tests/unit/QuestionWrite.spec.js [2m([22m[2m3 tests[22m[2m)[22m[33m 982[2mms[22m[39m
+   [33m[2m✓[22m[39m 실패한 질문을 같은 태그로 재제출해도 요청마다 태그가 한 번만 들어간다[33m 660[2mms[22m[39m
+ [32m✓[39m tests/unit/DetailStates.spec.js [2m([22m[2m10 tests[22m[2m)[22m[33m 819[2mms[22m[39m
+ [32m✓[39m tests/unit/localImageProxy.spec.js [2m([22m[2m1 test[22m[2m)[22m[33m 696[2mms[22m[39m
+   [33m[2m✓[22m[39m 개발 서버는 로컬 업로드 이미지를 HTML로 바꾸지 않고 백엔드 바이트를 전달한다[33m 691[2mms[22m[39m
+[90mstderr[2m | tests/unit/HtmlRendering.spec.js[2m > [22m[2m질문의 기존 HTML에서 실행 가능한 요소와 속성을 제거하고 서식을 보존한다
+[22m[39m[Vue warn]: Invalid prop: type check failed for prop "username". Expected String with value "undefined", got Undefined  
+  at <MemberBadge username=undefined > 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "recommend". Expected Number with value NaN, got Undefined  
+  at <ContentReactionControl target="question" target-id=1 my-reaction=undefined  ... > 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "dislike". Expected Number with value NaN, got Undefined  
+  at <ContentReactionControl target="question" target-id=1 my-reaction=undefined  ... > 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "recommend". Expected Number with value NaN, got Undefined  
+  at <ContentReactions recommend=undefined dislike=undefined my-reaction="NONE"  ... > 
+  at <ContentReactionControl target="question" target-id=1 my-reaction=undefined  ... > 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "dislike". Expected Number with value NaN, got Undefined  
+  at <ContentReactions recommend=undefined dislike=undefined my-reaction="NONE"  ... > 
+  at <ContentReactionControl target="question" target-id=1 my-reaction=undefined  ... > 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ [32m✓[39m tests/unit/AnnouncementEmptyStates.spec.js [2m([22m[2m11 tests[22m[2m)[22m[33m 472[2mms[22m[39m
+ [32m✓[39m tests/unit/QuestionList.spec.js [2m([22m[2m5 tests[22m[2m)[22m[32m 296[2mms[22m[39m
+[90mstderr[2m | tests/unit/HtmlRendering.spec.js[2m > [22m[2m답변의 기존 HTML에서 실행 가능한 요소와 속성을 제거하고 서식을 보존한다
+[22m[39m[Vue warn]: Invalid prop: type check failed for prop "username". Expected String with value "undefined", got Undefined  
+  at <MemberBadge username=undefined > 
+  at <QuestionAnswer ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "recommend". Expected Number with value NaN, got Undefined  
+  at <ContentReactionControl target="answer" target-id=1 my-reaction=undefined  ... > 
+  at <QuestionAnswer ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "dislike". Expected Number with value NaN, got Undefined  
+  at <ContentReactionControl target="answer" target-id=1 my-reaction=undefined  ... > 
+  at <QuestionAnswer ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "recommend". Expected Number with value NaN, got Undefined  
+  at <ContentReactions recommend=undefined dislike=undefined my-reaction="NONE"  ... > 
+  at <ContentReactionControl target="answer" target-id=1 my-reaction=undefined  ... > 
+  at <QuestionAnswer ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "dislike". Expected Number with value NaN, got Undefined  
+  at <ContentReactions recommend=undefined dislike=undefined my-reaction="NONE"  ... > 
+  at <ContentReactionControl target="answer" target-id=1 my-reaction=undefined  ... > 
+  at <QuestionAnswer ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ [32m✓[39m tests/unit/HtmlRendering.spec.js [2m([22m[2m3 tests[22m[2m)[22m[33m 623[2mms[22m[39m
+   [33m[2m✓[22m[39m 질문의 기존 HTML에서 실행 가능한 요소와 속성을 제거하고 서식을 보존한다[33m 307[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementList.spec.js [2m([22m[2m8 tests[22m[2m)[22m[33m 430[2mms[22m[39m
+ [32m✓[39m tests/unit/SafeHtml.spec.js [2m([22m[2m16 tests[22m[2m)[22m[33m 543[2mms[22m[39m
+ [32m✓[39m tests/unit/LoginForm.spec.js [2m([22m[2m2 tests[22m[2m)[22m[33m 430[2mms[22m[39m
+   [33m[2m✓[22m[39m 로그인 성공 시 인증 상태와 이동 경로를 반영하고 자격 증명을 출력하지 않는다[33m 348[2mms[22m[39m
+ [32m✓[39m tests/unit/PageErrors.spec.js [2m([22m[2m5 tests[22m[2m)[22m[33m 773[2mms[22m[39m
+   [33m[2m✓[22m[39m 인증 폼은 서버 오류를 안내하고 입력을 보존한다[33m 344[2mms[22m[39m
+ [32m✓[39m tests/unit/QuestionStates.spec.js [2m([22m[2m3 tests[22m[2m)[22m[32m 52[2mms[22m[39m
+ [32m✓[39m tests/unit/CompensationFields.spec.js [2m([22m[2m2 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementDetail.spec.js [2m([22m[2m2 tests[22m[2m)[22m[32m 88[2mms[22m[39m
+[90mstderr[2m | tests/unit/QuestionDetail.spec.js[2m > [22m[2m질문 추천을 서버에 저장한 개수와 내 선택으로 표시하고 다시 누르면 취소한다
+[22m[39m[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+[90mstderr[2m | tests/unit/QuestionDetail.spec.js[2m > [22m[2m질문 추천을 서버에 저장한 개수와 내 선택으로 표시하고 다시 누르면 취소한다
+[22m[39m[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "username". Expected String with value "undefined", got Undefined  
+  at <MemberBadge username=undefined > 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+[90mstderr[2m | tests/unit/QuestionDetail.spec.js[2m > [22m[2m새로 조회한 내 선택을 표시하고 반대 반응으로 전환한다
+[22m[39m[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+[90mstderr[2m | tests/unit/QuestionDetail.spec.js[2m > [22m[2m새로 조회한 내 선택을 표시하고 반대 반응으로 전환한다
+[22m[39m[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "username". Expected String with value "undefined", got Undefined  
+  at <MemberBadge username=undefined > 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+[90mstderr[2m | tests/unit/QuestionDetail.spec.js[2m > [22m[2m저장 실패는 기존 개수와 선택을 보존하고 재시도할 수 있다
+[22m[39m[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+[90mstderr[2m | tests/unit/QuestionDetail.spec.js[2m > [22m[2m저장 실패는 기존 개수와 선택을 보존하고 재시도할 수 있다
+[22m[39m[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "username". Expected String with value "undefined", got Undefined  
+  at <MemberBadge username=undefined > 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+[90mstderr[2m | tests/unit/QuestionDetail.spec.js[2m > [22m[2m저장 중에는 연타를 막고 컴포넌트 종료 후 늦은 응답을 적용하지 않는다
+[22m[39m[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+[90mstderr[2m | tests/unit/QuestionDetail.spec.js[2m > [22m[2m저장 중에는 연타를 막고 컴포넌트 종료 후 늦은 응답을 적용하지 않는다
+[22m[39m[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "username". Expected String with value "undefined", got Undefined  
+  at <MemberBadge username=undefined > 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ [32m✓[39m tests/unit/QuestionDetail.spec.js [2m([22m[2m4 tests[22m[2m)[22m[32m 108[2mms[22m[39m
+ [32m✓[39m tests/unit/ContentPresentation.spec.js [2m([22m[2m1 test[22m[2m)[22m[32m 41[2mms[22m[39m
+ [32m✓[39m tests/unit/AdminAccess.spec.js [2m([22m[2m3 tests[22m[2m)[22m[32m 77[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementBodyEditor.spec.js [2m([22m[2m2 tests[22m[2m)[22m[32m 46[2mms[22m[39m
+ [32m✓[39m tests/unit/test-environment.spec.js [2m([22m[2m1 test[22m[2m)[22m[32m 43[2mms[22m[39m
+ [32m✓[39m tests/unit/Hashtags.spec.js [2m([22m[2m1 test[22m[2m)[22m[32m 35[2mms[22m[39m
+ [32m✓[39m tests/unit/ContentReactionControl.spec.js [2m([22m[2m2 tests[22m[2m)[22m[32m 65[2mms[22m[39m
+ [32m✓[39m tests/unit/server.spec.js [2m([22m[2m1 test[22m[2m)[22m[32m 15[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementReports.spec.js [2m([22m[2m1 test[22m[2m)[22m[32m 51[2mms[22m[39m
+[90mstderr[2m | tests/unit/QuestionMenu.spec.js[2m > [22m[2m추천 메뉴는 서버 정렬 계약인 recommend를 보낸다
+[22m[39m[Vue warn]: Extraneous non-props attributes (custom) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
+  at <RouterLink key="createdDate" custom="" to= {
+  path: [32m'/question'[39m,
+  query: { orderBy: [32m'createdDate'[39m, hashtags: [32m'JAVA'[39m }
+} > 
+  at <QuestionMenu ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Extraneous non-props attributes (custom) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
+  at <RouterLink key="hits" custom="" to= { path: [32m'/question'[39m, query: { orderBy: [32m'hits'[39m, hashtags: [32m'JAVA'[39m } } > 
+  at <QuestionMenu ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Extraneous non-props attributes (custom) were passed to component but could not be automatically inherited because component renders fragment or text or teleport root nodes. 
+  at <RouterLink key="recommend" custom="" to= {
+  path: [32m'/question'[39m,
+  query: { orderBy: [32m'recommend'[39m, hashtags: [32m'JAVA'[39m }
+} > 
+  at <QuestionMenu ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ [32m✓[39m tests/unit/QuestionMenu.spec.js [2m([22m[2m1 test[22m[2m)[22m[32m 16[2mms[22m[39m
+ [32m✓[39m tests/unit/QuestionSearch.spec.js [2m([22m[2m1 test[22m[2m)[22m[32m 26[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementScroll.spec.js [2m([22m[2m1 test[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m tests/unit/authPersistence.spec.js [2m([22m[2m5 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+ [32m✓[39m tests/unit/apiClient.spec.js [2m([22m[2m1 test[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/PublicationErrors.spec.js [2m([22m[2m1 test[22m[2m)[22m[32m 1[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m40 passed[39m[22m[90m (40)[39m
+[2m      Tests [22m [1m[32m156 passed[39m[22m[90m (156)[39m
+[2m   Start at [22m 03:27:54
+[2m   Duration [22m 21.06s[2m (environment 60%, tests 18%, transform 10%, import 6%, setup 5%, worker 1%)[22m
+
+[2mEnvironment [22m [33mjsdom was created 40 times[39m[2m · 77.26s total, 60% of tracked time[22m
+[2m            [22m [2mcreate it once per worker with [22m[33mpool: 'vmThreads'[39m[2m (keeps per-file isolation) or [22m[33misolate: false[39m[2m (shares it across files)[22m
+[2m            [22m [2mlearn more: https://vitest.dev/guide/improving-performance#test-environments[22m
+

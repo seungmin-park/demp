@@ -1,65 +1,190 @@
 # DEMP
 
-## CI 및 인수 절차
+**개발자 채용·교육 공고를 비교하고, 학습 질문과 답변을 나누는 커뮤니티.**
 
-CI는 Zulu Java 25와 Gradle wrapper, `gradle.lockfile`의 고정 의존성을 사용해 `./gradlew clean test` 후 `./gradlew asciidoctor`를 실행한다. 전체 테스트에 REST Docs 생성 테스트가 포함되며, 생성 HTML의 존재, unresolved snippet 표기, 테스트 전용 내부 키 노출을 검사한다. 테스트 설정은 고유 H2 메모리 DB와 테스트 전용 S3 설정을 사용하며 파일 저장은 테스트 대역으로 격리한다. 운영 DB와 S3에 접속하는 테스트 명령은 없다.
+운영자가 외부 공고의 핵심 조건과 출처를 확인해 게시합니다. 사용자는 채용·교육 필터로 탐색하고, **지원하기를 누르면 원본 또는 별도 지원 URL로 이동**합니다. 질문·답변에서는 Markdown 작성과 회원별 추천·비추천을 제공합니다.
 
-실제 Spring API 흐름은 별도 프로세스에서 임시 메모리 H2로 검증할 수 있다. 첫 터미널에서 다음 서버를 시작하고, 둘째 터미널에서 `python3 scripts/verify_local_flow.py`를 실행한 뒤 서버를 종료한다. 이 스크립트는 loopback 주소만 허용하며 공고 이미지를 업로드하지 않는다. 서버 종료 시 임시 DB fixture가 사라진다.
+[프런트엔드 저장소](https://github.com/seungmin-park/dempfrontend) · [작업 체크리스트](tasks.md) · [성능 측정 원본](docs/verification/measured-query-performance/README.md) · [운영·배포](docs/operations.md)
 
-```sh
-SPRING_PROFILES_ACTIVE=local SPRING_DATASOURCE_URL='jdbc:h2:mem:t50;MODE=MySQL;DB_CLOSE_DELAY=-1' PORT=18080 AWS_EC2_METADATA_DISABLED=true ./gradlew bootRun
-python3 scripts/verify_local_flow.py
+## 화면과 사용자 흐름
+
+![교육 과정 필터](docs/verification/education-discovery/assets/education-filters.png)
+
+![질문·답변 반응 저장](docs/verification/persistent-content-reactions/assets/saved-reactions.png)
+
+화면은 로컬 예제 데이터로 촬영했습니다.
+
+| 영역 | 구현한 흐름 |
+|---|---|
+| 채용 | 신입·경력·무관 구분, 기술·직무 등 조건 탐색, 원문·지원 링크, 선택 연봉 정보 |
+| 교육 | 교육 방식·지역·기간·비용·지원 대상 등 필터, 기수·지원금·마감 정보 |
+| 커뮤니티 | 질문·답변 작성·조회, 태그 검색·정렬, 추천·비추천·취소와 새로고침 후 복원 |
+| 관리자 | 초안→검토→공개→마감/비공개, 출처·확인일·변경 이력, 오류 제보 처리, 질문·답변 수정·삭제, 권한 검사 |
+| 공통 | 무한 스크롤, 로딩·빈 목록·검색 결과 없음·요청 실패 구분, 선택 이미지와 기본 이미지 |
+
+공고는 운영자 큐레이션 방식입니다. 기관 직접 입점·대량 자동 크롤링·원문 전체 자동 복제는 구현 범위에 포함하지 않습니다. 이미지 업로드는 선택이며 외부 URL의 이미지를 자동 수집하지 않습니다. [게시·이미지 정책](docs/plans/curated-publication-policy.md)
+
+## 리팩터링에서 해결한 문제
+
+### 1. 페이지 크기가 작아도 전체 공고를 읽던 조회
+
+과거의 컬렉션 fetch join에 offset/limit를 적용하면 Hibernate가 공고 전체를 메모리에서 잘라냈습니다. 현재는 **조건에 맞는 ID를 페이지 크기+1개만 읽고, 그 ID의 상세 데이터를 가져옵니다.** 추가 1개로 다음 페이지 여부를 판단하므로 전체 count 조회도 필요하지 않습니다.
+
+```mermaid
+flowchart LR
+  A[필터·페이지 요청] --> B[정렬한 ID 최대 21개 조회]
+  B --> C[해당 ID의 공고·기술 조회]
+  C --> D[ID 순서 복원]
+  D --> E[20개 + 다음 페이지 여부]
 ```
 
-양쪽 저장소의 같은 API 계약 커밋을 확인한 뒤 백엔드와 프런트 CI를 모두 통과시킨다. 운영 배포는 기존 클라이언트와 호환되는 백엔드를 먼저 배포하고 인증·공고·질문·답변 API를 확인한 뒤 프런트 산출물을 교체한다. 실패 시 프런트 산출물을 직전 버전으로 되돌리고, 이어 백엔드를 직전 호환 버전으로 되돌린다. 스키마 변경이 포함되면 배포 전 백업과 변경별 복구 절차를 준비한다. 이 문서는 배포 수행 기록이 아니다.
+질문 목록도 전체 배열에서 20개 Slice 응답으로 바꿨습니다. 이 변화는 API 응답 계약의 개선이므로, 같은 결과를 반환하는 쿼리의 속도 개선과 구분합니다.
 
-## CORS 설정 (Phase 4 T41)
+### 2. 회원별 반응 저장과 동시 수정
 
-`APP_CORS_ALLOWED_ORIGINS`에 브라우저가 직접 호출하는 프런트엔드 Origin을 쉼표로 구분해 지정한다. 기본값은 로컬 개발용 `http://localhost:5050`이다. 예: `APP_CORS_ALLOWED_ORIGINS=https://demp.example,https://admin.demp.example`. 요청 Origin은 목록과 정확히 일치해야 하며, 허용되지 않은 사전 요청은 403이다. 같은 출처의 `/api` reverse proxy를 사용하면 브라우저 CORS 설정이 필요하지 않다.
+```text
+인증한 회원 + 원하는 반응 상태
+  → 대상 질문/답변 행 잠금
+  → 이전 반응과 비교
+  → 회원별 반응 + 집계 증감 함께 commit
+  → 확정된 수치와 내 선택 응답
+```
 
-## 공고 이미지 공개 주소 (Phase 5 T49)
+- `PUT`에 원하는 상태를 보내므로 같은 요청을 재전송해도 두 번 증가하지 않습니다.
+- 대상 행 잠금과 회원·대상 유일 제약으로 중복 반응과 집계 경쟁을 막습니다.
+- 본문 수정이 오래된 추천 수를 덮어쓰는 문제를 재현하고 `@DynamicUpdate`로 변경한 필드만 저장하도록 수정했습니다.
+- 클라이언트는 저장 중 연타를 막고, 실패하면 기존 확정 값을 유지합니다. 다른 글로 이동한 뒤 도착한 응답도 폐기합니다.
+- 과거 집계는 보존하지만 당시 누가 투표했는지는 추정하지 않습니다. [Red→Green 및 실제 브라우저 검증](docs/verification/persistent-content-reactions/t99-t101.md)
 
-`S3_PUBLIC_BASE_URL`은 공고 상세·목록·스크롤 응답의 `image` URL 접두부다. 기본값은 기존 `https://inhatc-demp.s3.ap-northeast-2.amazonaws.com/`이며, CDN을 사용할 때 해당 공개 경로로 바꾼다. 저장 키는 그대로 유지되고 응답 조립에서만 공개 URL을 만든다.
+### 3. 필요한 연관 데이터를 조회 경계에서 함께 읽기
 
-## 실행·검증 (Phase 7)
+답변의 작성자, 질문 상세의 작성자·태그는 화면 응답을 만드는 데 필요합니다. 조회 전용 entity graph로 함께 가져오고, 수정·삭제에 사용하는 기본 조회는 확장하지 않습니다. SQL 개수 제한 테스트는 테스트 트랜잭션 없이 실제 서비스 호출을 검증합니다.
 
-프로젝트 루트에서 `asdf install`로 `.tool-versions`의 **Zulu Java 25 LTS**를 준비한다. Gradle wrapper 9.8.0을 사용하며 전역 Java 선택을 바꿀 필요가 없다. `JAVA_HOME`을 별도로 설정했다면 해당 Zulu 경로와 일치시킨다.
+### 4. 실행 기반·보안·프런트 현대화
+
+Java 11/Boot 2 기반의 빌드 오류부터 복원한 뒤 Java 25/Boot 4로 이전했습니다. 기존 ID 생성기·문자열 enum·JWT와 BCrypt 경계를 검증했고, Vue 제품 코드는 strict TypeScript로 전환했습니다. 서버는 본문을 정화하고 클라이언트도 출력 직전에 DOMPurify를 적용합니다. [업그레이드 호환성 기록](docs/verification/runtime-framework-and-typescript-upgrade/README.md)
+
+## 측정으로 확인한 변화
+
+| 측정 항목 | 최초 리팩터링 이전 | 현재 최종 | 해석 |
+|---|---:|---:|---|
+| 공고 첫20개 / 1만 건 p50 | 189.15ms | 3.81ms | 런타임·응답 필드도 다름 |
+| 같은 요청의 로딩 엔티티 | 10,001개 | 21개 | 전체 로딩 제거 |
+| 질문 목록 / 1만 건 응답 | 646,789바이트 | 1,338바이트 | 전체1만개 → 20개 Slice |
+| 답변50개 SQL | 52회 | 3회 | 반응 기능 추가 후53회에서 이번에3회로 개선 |
+| 답변50개 p50 / 1만 건 | 1.63ms | 3.67ms | 이 경로의 H2 지연은 증가 |
+
+![공고·답변 성능 비교](docs/verification/measured-query-performance/comparison.png)
+
+환경: Apple M2 / 16GiB, 각 테스트 JVM heap 2GiB·CPU 4개 설정, H2 메모리 DB. 공고·질문 각 1천·1만·10만 건을 생성했습니다. 완료된 조합은 독립 JVM 3개에서 각각 워밍업 5회와 표본 15회를 실행했습니다.
+
+측정 경계는 **MockMvc를 통한 Spring MVC·인증·JPA·JSON 처리**입니다. 네트워크·브라우저 렌더링·실제 MySQL 부하를 포함하지 않습니다. 과거 버전의 10만 건 반복은 heap 부족으로 실패했으므로 p95나 속도 배수를 제시하지 않습니다. 버전별 런타임·응답 필드·질문 페이지 계약의 차이와 순차 실행 순서의 한계도 [측정 보고서](docs/verification/measured-query-performance/README.md)에 기록했습니다.
+
+## 구조와 책임
+
+```mermaid
+flowchart TD
+  V[Vue 화면·표현 컴포넌트] --> S[Composable / Vuex 상태]
+  S --> API[Axios API 모듈]
+  API --> SEC[JWT 인증·권한]
+  SEC --> C[Controller: HTTP 입출력]
+  C --> APP[Service: 유스케이스·트랜잭션]
+  APP --> D[Domain: 상태·불변식]
+  APP --> R[Repository / Querydsl: 조회·저장]
+  R --> DB[(MySQL / 로컬 H2)]
+  APP --> FS[파일 저장 경계]
+  FS --> STORAGE[S3 / 로컬 파일]
+```
+
+Controller가 상태 규칙을 판단하지 않고, 서비스가 인증된 행위자·권한·트랜잭션을 조정합니다. 도메인은 생성·변경 경로를 제한하고 자신의 상태를 지킵니다. 파일 저장은 경계 뒤에 두어 테스트가 운영 S3에 접근하지 않게 합니다.
+
+### 주요 데이터 관계
+
+```mermaid
+erDiagram
+  MEMBER ||--o{ QUESTION : authors
+  MEMBER ||--o{ ANSWER : authors
+  QUESTION ||--o{ ANSWER : contains
+  QUESTION ||--o{ QUESTION_HASHTAG : tagged
+  HASHTAG ||--o{ QUESTION_HASHTAG : links
+  MEMBER ||--o{ CONTENT_REACTION : selects
+  QUESTION o|--o{ CONTENT_REACTION : target
+  ANSWER o|--o{ CONTENT_REACTION : target
+```
+
+반응은 질문 또는 답변 **정확히 하나**를 대상으로 합니다. 체크 제약·유일 제약과 대상 삭제 시 cascade를 사용합니다. 전체 DB DDL 대용이 아닌 주요 관계도이며, 실제 배포 스키마 변경은 [수동 SQL](src/main/resources/db/manual)을 확인합니다.
+
+## 기술 스택
+
+| 영역 | 저장소에 고정한 버전 |
+|---|---|
+| Java / Spring Boot | Azul Zulu 25 / 4.1.1 |
+| 빌드 | Gradle Wrapper 9.8.0·의존성 lockfile |
+| 데이터 | Spring Data JPA·Hibernate 7·OpenFeign Querydsl 7.7, MySQL / H2 2.5.252 |
+| 인증·문서 | Spring Security·JJWT 0.13, REST Docs·OpenAPI |
+| 프런트 | Node 24.21.0·Vue 3.5.43·TypeScript 6.0.3·Vite 8.3.1 |
+
+현재 재현 환경 기준이며 최신 버전 여부를 보장하는 표는 아닙니다. TypeScript는 lint 도구의 공통 지원 범위를 고려해 선택했습니다.
+
+## 로컬 실행
+
+필요 조건: Git, asdf와 Java/Node 플러그인. 백엔드와 프런트를 형제 디렉터리에 clone합니다.
 
 ```sh
+git clone https://github.com/seungmin-park/demp.git
+git clone https://github.com/seungmin-park/dempfrontend.git
+cd demp
+asdf install
 asdf exec java -version
-./gradlew clean test asciidoctor bootJar
+SPRING_PROFILES_ACTIVE=local PORT=18080 AWS_EC2_METADATA_DISABLED=true ./gradlew bootRun
 ```
 
-Spring Boot 4.1.1, Jakarta API, Spring Security 7, Hibernate 7/Jackson 3, OpenFeign Querydsl 7.7, AWS SDK 2를 사용한다. H2는 BOM의 체크 제약 캐시 오류 수정 버전인 2.5.252로 고정한다. 상세 변경·호환성·검증은 [Phase 7 기록](docs/verification/runtime-framework-and-typescript-upgrade/README.md)을 참조한다.
+다른 터미널에서:
 
-자동 테스트는 고유 메모리 H2와 테스트 전용 JWT/S3 설정을 사용한다. 운영 설정은 `ddl-auto=validate`, local만 SQL seed를 사용한다. REST Docs는 `build/docs/asciidoc/index.html`에 생성되며 IDE 미리보기는 `src/docs/asciidoc/index.adoc`을 연다. `clean` 후 미리보기 전에 `./gradlew test`로 snippet을 생성한다. OpenAPI JSON은 `/v3/api-docs`, UI는 `/swagger-ui.html`이다.
+```sh
+cd dempfrontend
+asdf install
+npm ci
+DEV_API_TARGET=http://127.0.0.1:18080 npm run dev
+```
 
-### JWT 키와 비밀번호 호환성
+- 화면: `http://localhost:5050`. 로컬 계정: **local-member / password**.
+- local 프로필은 `.local` 아래 H2와 로컬 파일 저장을 사용합니다. 서버를 껐다 켜도 데이터가 유지됩니다.
+- 일회성 검증은 `SPRING_DATASOURCE_URL='jdbc:h2:mem:demp-demo;MODE=MySQL;DB_CLOSE_DELAY=-1'`을 추가합니다. 이 경우 서버 종료 시 데이터가 사라집니다.
+- 로컬 seed 계정은 일반 회원입니다. 관리자 기능은 `ROLE_ADMIN`이 부여된 별도 계정이 필요하며 공개 회원가입으로 관리자 권한을 얻을 수 없습니다. [관리자 계정 준비](docs/verification/admin-console/account-setup.md)를 참고합니다.
+- 외부 MySQL·S3 없이 local 실행이 가능합니다. `JAVA_HOME`이 다른 JDK를 가리키면 asdf Java 경로와 일치시킵니다.
 
-배포 전에 `JWT_SECRET`이 **최소 32 UTF-8 바이트**인지 확인한다. JJWT 0.13은 이보다 짧은 HS256 키를 거절하며 앱은 값 자체를 출력하지 않고 설정 이름과 최소 길이만 안내한다. 임의의 짧은 문구를 반복하거나 공백으로 채우지 말고, 비밀 관리 시스템에서 충분한 난수로 만든 값을 사용한다. 설정값은 기존과 같이 raw UTF-8로 사용하며 자동 Base64 디코딩하지 않는다.
+## 검증
 
-**기존 토큰 보존은 길이 조건을 만족하는 동일한 키를 계속 사용할 때 적용된다.** 이전 키가 짧으면 배포 전에 새 키를 준비하고 백엔드 인스턴스가 함께 같은 키로 전환되도록 계획한다. 키를 바꾸면 기존 토큰은 401이 되어 사용자가 다시 로그인해야 한다. 새 키와 이전 키를 동시에 검증하는 기능은 제공하지 않는다. 키를 로그·명령 이력·저장소에 남기지 않는다. 롤백에도 사용할 키를 배포 산출물과 별도로 안전하게 관리하고, 이미 회전한 키를 되돌리면 새 키로 발급한 토큰도 무효화됨을 고려한다. 운영 키는 이번 작업에서 조회하거나 변경하지 않았다.
+```sh
+./gradlew clean test asciidoctor bootJar
+python3 scripts/verify_local_flow.py  # 별도로 실행 중인 임시 local 서버 필요
+```
 
-신규 가입 비밀번호는 BCrypt의 **최대 72 UTF-8 바이트**를 넘으면 안전한 400으로 거절하고 프런트에서도 안내한다. 영문·숫자는 최대 72자, 한글은 최대 24자이며 혼합 입력은 바이트 수로 계산한다. 입력을 잘라내어 저장하지 않는다. 기존 해시를 가진 긴 비밀번호는 로그인 시 길이를 제한하거나 바꾸지 않으며 기존 BCrypt 검증 경로를 유지한다.
+2026-09-28 최종 검증:
 
-### 저장 데이터와 롤백
+| 검증 | 결과 |
+|---|---|
+| 백엔드 | 316개, 실패·오류·스킵0 / REST Docs·bootJar 통과 |
+| 프런트 | 156개 / strict typecheck·lint·build 통과 |
+| headed Playwright | 20개 통과, 현재 cmux 보조 pane에서 실행 |
+| 실제 Spring/H2 | HTTP 흐름 종료0, 실제 브라우저 반응 저장·새로고침 확인 |
+| 성능 비교 | 완료 그룹56개·표본2,520개, 누락·라운드 검사 통과 |
 
-운영 DB를 연결하거나 수정하지 않았다. 자동화된 기본 프로필 시작·재시작 검증은 격리된 H2로 실행한다. Hibernate 5에서 사용한 공유 `hibernate_sequence`와 `member_sequence`/`que_sequence`, 문자열 enum 매핑을 유지하며 기존 스키마 fixture에 `validate`와 신규 저장을 검증한다. 실제 MySQL 스키마는 배포 전 복제본에 같은 검증을 실행해야 한다.
+[최종 인수 기록](docs/verification/project-documentation/t104-t105.md)
 
-기존 H2 1.4 로컬 파일을 H2 2.x로 바로 열지 않는다. 서버를 종료하고 `.local`을 백업한 뒤, 이전 H2 버전의 SCRIPT와 새 버전의 RUNSCRIPT로 별도 파일에 이관한다. 예제 데이터만 있다면 백업을 보관하고 새 worktree의 빈 `.local` DB로 시작할 수 있다. 이전 JAR/Java 11과 원본 DB 백업은 함께 보관하며 새 DB 파일을 이전 H2로 다시 열지 않는다. 운영은 배포 전 백업과 복제본 검증을 통과한 뒤 양쪽 호환 산출물을 순서대로 교체한다.
+테스트 계층은 Domain 순수 단위 / Repository JPA / Service 실제 commit / MVC·REST Docs WebMvcTest로 분리했습니다. 서비스 테스트에 테스트용 트랜잭션을 붙여 누락된 production 트랜잭션을 가리지 않습니다.
 
-개발자가 되고 싶은 취준생들에게 여러 정보를 주고받는 커뮤니티 사이트
+프런트 자동 E2E는 API fixture를 사용합니다. 실제 Spring/H2와 연결한 cmux 브라우저 검증과 범위가 다릅니다. 로컬 E2E 실행은 현재 cmux 보조 pane에서 러너 로그와 실제 브라우저 흐름을 확인했고, CI는 headless로 실행합니다. 과거 시점의 결과는 각 검증 문서에 날짜와 함께 보존합니다.
 
-취업공고 및 부트 캠프 등의 정보를 수집하고 꿀팁들을 공유하며 개발자가 되길 기원하며
+- REST Docs: `build/docs/asciidoc/index.html`
+- OpenAPI: 실행 서버의 `/v3/api-docs`, `/swagger-ui.html`
+- 테스트 보고서: `build/reports/tests/test/index.html`
+- [반응 기능 검증](docs/verification/persistent-content-reactions/t99-t101.md)
+- [게시 운영 흐름 검증](docs/verification/publication-workflow/t96-qa.md)
 
-### DB ERD
+## 배포 전 남은 검증과 한계
 
-![demp_db_erd](https://user-images.githubusercontent.com/78605779/169659654-2a48cf56-80cd-476b-bdff-2fc247234a4a.PNG)
+운영 배포는 수행하지 않았습니다. 실제 MySQL 복제본에서 수동 스키마 변경·기존 데이터·인덱스·동시 부하를 확인해야 합니다. 이번 성능 측정은 로컬 재현 실험이며 운영 처리량이나 SLA가 아닙니다. 운영 이미지의 이용 권한·출처는 등록 시 확인해야 합니다.
 
-### Api docs
-
-![demp_api_docs_announce](https://user-images.githubusercontent.com/78605779/169678360-fd8a9029-1e37-407b-91d0-8c1e54fd2d5e.png)
-![demp_api_docs_answer](https://user-images.githubusercontent.com/78605779/169678359-73a4029b-959e-4d12-83f3-66f9808d3b10.png)
-![demp_api_docs_member_question](https://user-images.githubusercontent.com/78605779/169678358-68c0421f-9889-42e1-a9a1-5b71db5939d0.png)
-
-초기 기준선 및 과거 단계별 검증 결과는 `docs/verification/`에 보관한다. 현재 작업 상태는 `tasks.md`를 참조한다.
+운영은 `ddl-auto=validate`이며 환경변수, CORS, JWT 키 전환, 파일 저장과 롤백 절차는 [운영 가이드](docs/operations.md)에 정리했습니다. 기능별 의도적 범위·실패 기록·작업별 커밋 근거는 [tasks.md](tasks.md)와 `docs/verification/`에 남겼습니다.
