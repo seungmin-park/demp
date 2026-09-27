@@ -738,8 +738,8 @@ T98 결과: 현재 cmux workspace:2의 기존 보조 pane에서 회원 가입→
 브랜치 `refactor/persistent-content-reactions`, worktree `.worktrees/persistent-content-reactions/{backend,frontend}`.
 
 - [x] T99: 회원별 추천·비추천·취소 저장, 재시도 멱등성, 동시성, 삭제 수명주기, 조회·REST Docs·수동 SQL 검증.
-- [ ] T100: 질문·답변의 내 반응 표시, 저장 중 연타 차단, 실패·재시도·라우트 변경 보호.
-- [ ] T101: 전체 검증·현재 cmux 실제 QA·fresh review·커밋·main 병합/push.
+- [x] T100: 질문·답변의 내 반응 표시, 저장 중 연타 차단, 실패·재시도·라우트 변경 보호.
+- [x] T101: 전체 검증·현재 cmux 실제 QA·fresh review·커밋·main 병합/push.
 
 ## Phase 14 — 최초 리팩터링 이전과 성능 비교
 
@@ -752,3 +752,5 @@ T98 결과: 현재 cmux workspace:2의 기존 보조 pane에서 회원 가입→
 - [ ] T105: 문서 링크/명령 검증, 최종 QA·리뷰·브랜치 보존·main 병합/push·전체 체크.
 
 T99: B314건·REST Docs·bootJar 통과. API 404 Red와 본문 수정 경쟁 조건 Red 재현 후 Green. [상세 기록](docs/verification/persistent-content-reactions/t99-t101.md).
+
+T100/T101: F156건·타입/lint/build, headed E2E20건 종료0. 실제 cmux 반응 저장·전환·취소·재조회 확인. B `9acbff1`→main `6d06d29`, F `079ed09`→main `21cb2a4`, 양쪽 push 완료. fresh review 지적 props 경쟁 조건을 Red→Green으로 수정. 브랜치/worktree 보존.
