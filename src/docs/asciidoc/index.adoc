@@ -15,3 +15,5 @@ include::Answer-API.adoc[]
 include::Announcement-API.adoc[]
 
 include::Errors-API.adoc[]
+
+include::Admin-API.adoc[]

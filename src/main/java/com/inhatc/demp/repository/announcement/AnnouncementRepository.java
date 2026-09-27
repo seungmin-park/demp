@@ -11,5 +11,7 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, Long
 
     List<Announcement> findByAnnouncementType(AnnouncementType annotatedArrayType);
 
+    long countByAnnouncementType(AnnouncementType type);
+
     Optional<Announcement> findByTitle(String title);
 }

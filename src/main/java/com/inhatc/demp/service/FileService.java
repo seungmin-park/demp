@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.util.UUID;
 
 @Service
+@org.springframework.context.annotation.Profile("!local")
 @RequiredArgsConstructor
 public class FileService implements FileStorage {
 

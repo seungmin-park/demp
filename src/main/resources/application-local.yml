@@ -25,3 +25,4 @@ cloud:
       static: ap-northeast-2
     s3:
       bucket: local-unused
+      public-base-url: /local-files/

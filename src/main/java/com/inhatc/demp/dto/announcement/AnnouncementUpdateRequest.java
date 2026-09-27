@@ -6,7 +6,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Setter
-public class AnnouncementCreateRequest extends AnnouncementFields {
-    @jakarta.validation.constraints.NotNull
+public class AnnouncementUpdateRequest extends AnnouncementFields {
     private MultipartFile image;
 }

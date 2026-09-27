@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@org.springframework.context.annotation.Profile("!local")
 public class AwsS3Config {
     @Bean
     public S3Client s3Client(@Value("${cloud.aws.credentials.access-key}") String accessKey,

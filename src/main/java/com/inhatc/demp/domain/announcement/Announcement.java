@@ -51,6 +51,13 @@ public class Announcement {
         this.description = description;
     }
 
+    public void revise(String title, Company company, Career career, RecruitPeriod period, Description description,
+                       AnnouncementType type, JobPosition position, UploadFile replacement) {
+        this.title = title; this.company = company; this.career = career; this.recruitPeriod = period;
+        this.description = description; this.announcementType = type; this.jobPosition = position;
+        if (replacement != null) this.image = replacement;
+    }
+
     @Builder
     private Announcement(String title, Career career, Description description, Company company, UploadFile image,
                         RecruitPeriod recruitPeriod, AnnouncementType announcementType, JobPosition jobPosition) {
