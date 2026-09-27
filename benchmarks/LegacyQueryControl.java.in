@@ -20,7 +20,8 @@ import static com.inhatc.demp.domain.QHashtag.hashtag;
 public class LegacyQueryControl {
     private final JPAQueryFactory query;
     public LegacyQueryControl(JPAQueryFactory query) { this.query=query; }
-    // Same current JVM/schema/response DTO; only historical fetch-join pagination strategy changes.
+    // Approximate control: historical fetch-join strategy on the current runtime/schema/DTO.
+    // Service path, ordering and image URL also differ; this is not a single-variable experiment.
     @GetMapping("/bench/legacy/announce")
     public Slice<AnnouncementResponse> announcements(@ModelAttribute AnnouncementSearchCondition filter, Pageable pageable) {
         var result=query.selectFrom(announcement).leftJoin(announcement.description.languages).fetchJoin()

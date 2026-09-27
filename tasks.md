@@ -744,7 +744,7 @@ T98 결과: 현재 cmux workspace:2의 기존 보조 pane에서 회원 가입→
 ## Phase 14 — 최초 리팩터링 이전과 성능 비교
 
 - [x] T102: 최초 리팩터링 직전 기준 커밋과 실행 가능한 최소 복원, 동일 가상 데이터/환경/시나리오 정의.
-- [ ] T103: 데이터 규모별 응답시간·처리량·SQL 수 반복 측정, 병목 개선과 재측정, 원시 결과·한계·재현 절차 기록. 개선/악화 모두 공개.
+- [x] T103: 데이터 규모별 응답시간·처리량·SQL 수 반복 측정, 병목 개선과 재측정, 원시 결과·한계·재현 절차 기록. 개선/악화 모두 공개.
 
 ## Phase 15 — 포트폴리오 문서 정리
 
@@ -756,3 +756,5 @@ T99: B314건·REST Docs·bootJar 통과. API 404 Red와 본문 수정 경쟁 조
 T100/T101: F156건·타입/lint/build, headed E2E20건 종료0. 실제 cmux 반응 저장·전환·취소·재조회 확인. B `9acbff1`→main `6d06d29`, F `079ed09`→main `21cb2a4`, 양쪽 push 완료. fresh review 지적 props 경쟁 조건을 Red→Green으로 수정. 브랜치/worktree 보존.
 
 T102: 기준선 a8b057b(제품 코드는 cb6e0b3과 동일), 현재 2f4d749, Java25 과거 조회 대조군 준비. 원본 컴파일 실패 재현 후 두 파일만 기계적 복원. 1천 건 파일럿에서 6개 실제 HTTP 경로/응답 건수 검증 통과. [측정 계약](benchmarks/README.md). Phase14 브랜치 `refactor/measured-query-performance`, worktree `.worktrees/measured-query-performance/{backend,baseline}`.
+
+T103: 최종 56개 그룹·2,520표본, 316개 백엔드 테스트·REST Docs·bootJar 통과. 답변 SQL53→3, 상세7→3. H2 지연 증가와 baseline10만 OOM도 공개. actual SQL budget Red2→Green, 독립 검토 반영. [보고서](docs/verification/measured-query-performance/README.md).

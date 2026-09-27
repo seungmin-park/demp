@@ -34,7 +34,7 @@ import static org.assertj.core.api.Assertions.assertThat;
     "logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener=OFF"
 })
 @ActiveProfiles("benchmark")
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc(print = @AUTO_CONFIGURE_PACKAGE@.MockMvcPrint.NONE)
 @CONTROL_IMPORT@
 class QueryBenchmarkTest {
     static final boolean LEGACY = @LEGACY@;
@@ -47,6 +47,7 @@ class QueryBenchmarkTest {
     @Test
     @DisplayName("동일 가상 데이터에서 실제 조회 HTTP 처리와 SQL 비용을 반복 측정한다")
     void benchmark() throws Exception {
+        if (Boolean.getBoolean("bench.contract")) { verifyQuerySemantics(); return; }
         String label = System.getProperty("bench.label");
         Path output = Path.of(System.getProperty("bench.output"));
         if (!Files.isDirectory(output.toAbsolutePath().getParent())) Files.createDirectories(output.toAbsolutePath().getParent());
@@ -94,6 +95,33 @@ class QueryBenchmarkTest {
                 System.out.println("BENCH " + label+" n="+size+" "+scenario.getKey()+" PASS");
             }
         }
+    }
+
+    private void verifyQuerySemantics() throws Exception {
+        seed(1000);
+        // Deliberately make the language condition selective, independently of EMP/EDU.
+        jdbc.update("UPDATE language SET languages='HTML' WHERE languages='JAVA' AND MOD(announcement_id,4)=0");
+        String token=tokens.createToken("1",List.of("ROLE_USER"));
+        String base=System.getProperty("bench.label").equals("current-control")?"/bench/legacy/announce":"/api/announce";
+        Set<Long> first=new HashSet<>();
+        for (var row:mapper.readTree(request(base+"?page=0&size=20",token)).get("content")) first.add(row.get("id").asLong());
+        assertThat(first).hasSize(20);
+        Set<Long> deep=new HashSet<>();
+        for (var row:mapper.readTree(request(base+"?page=10&size=20",token)).get("content")) deep.add(row.get("id").asLong());
+        assertThat(deep).hasSize(20).doesNotContainAnyElementsOf(first);
+        var filtered=mapper.readTree(request(base+"?page=0&size=20&announcementType=EMP&language=JAVA",token)).get("content");
+        assertThat(filtered.size()).isEqualTo(20);
+        Set<Long> filteredIds=new HashSet<>();
+        for (var row:filtered) {
+            filteredIds.add(row.get("id").asLong());
+            // The historical DTO did not expose announcementType; verify its source row too.
+            assertThat(jdbc.queryForObject("SELECT announcement_type FROM announcement WHERE id=?",String.class,row.get("id").asLong())).isEqualTo("EMP");
+            if (!LEGACY) assertThat(row.get("announcementType").asText()).isEqualTo("EMP");
+            assertThat(row.get("language").toString()).contains("\"JAVA\"");
+            assertThat(row.get("id").asLong()%4).isEqualTo(2);
+        }
+        assertThat(filteredIds).hasSize(20);
+        System.out.println("QUERY CONTRACT PASS: distinct pages and selective EMP/JAVA filter");
     }
 
     private byte[] request(String path,String token) throws Exception {

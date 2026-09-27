@@ -1,0 +1,1198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.inhatc.demp.service.CommunityQueryBudgetTest" tests="2" skipped="0" failures="2" errors="0" timestamp="2026-09-27T18:20:49.073Z" hostname="seungmin.local" time="3.554">
+  <properties/>
+  <testcase name="질문 상세의 작성자와 태그는 개수에 비례한 추가 조회 없이 가져온다" classname="com.inhatc.demp.service.CommunityQueryBudgetTest" time="0.419">
+    <failure message="java.lang.AssertionError: [상세·작성자·태그 일괄 조회와 내 반응 조회] &#10;Expecting actual:&#10;  8L&#10;to be less than or equal to:&#10;  3L " type="java.lang.AssertionError">java.lang.AssertionError: [상세·작성자·태그 일괄 조회와 내 반응 조회] 
+Expecting actual:
+  8L
+to be less than or equal to:
+  3L 
+	at com.inhatc.demp.service.CommunityQueryBudgetTest.loadsQuestionDetailWithinQueryBudget(CommunityQueryBudgetTest.java:64)
+</failure>
+  </testcase>
+  <testcase name="서로 다른 작성자의 답변을 조회해도 작성자 수만큼 SQL이 증가하지 않는다" classname="com.inhatc.demp.service.CommunityQueryBudgetTest" time="0.028">
+    <failure message="java.lang.AssertionError: [답변·작성자 일괄 조회와 내 반응 조회] &#10;Expecting actual:&#10;  6L&#10;to be less than or equal to:&#10;  3L " type="java.lang.AssertionError">java.lang.AssertionError: [답변·작성자 일괄 조회와 내 반응 조회] 
+Expecting actual:
+  6L
+to be less than or equal to:
+  3L 
+	at com.inhatc.demp.service.CommunityQueryBudgetTest.loadsAuthorsWithinQueryBudget(CommunityQueryBudgetTest.java:46)
+</failure>
+  </testcase>
+  <system-out><![CDATA[03:20:49.146 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.inhatc.demp.service.CommunityQueryBudgetTest]: CommunityQueryBudgetTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+03:20:49.234 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.inhatc.demp.DempApplication for test class com.inhatc.demp.service.CommunityQueryBudgetTest
+03:20:49.265 [Test worker] INFO org.springframework.test.context.support.AnnotationConfigContextLoaderUtils -- Could not detect default configuration classes for test class [com.inhatc.demp.service.CommunityQueryBudgetTest]: CommunityQueryBudgetTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+03:20:49.266 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper -- Found @SpringBootConfiguration com.inhatc.demp.DempApplication for test class com.inhatc.demp.service.CommunityQueryBudgetTest
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.1.1)
+
+2026-09-28T03:20:49.412+09:00  INFO 74950 --- [    Test worker] c.i.d.service.CommunityQueryBudgetTest   : Starting CommunityQueryBudgetTest using Java 25.0.4.1 with PID 74950 (started by seungmin in /Users/seungmin/Desktop/repo/archive/demp/.worktrees/measured-query-performance/backend)
+2026-09-28T03:20:49.412+09:00  INFO 74950 --- [    Test worker] c.i.d.service.CommunityQueryBudgetTest   : The following 1 profile is active: "test"
+2026-09-28T03:20:49.826+09:00  INFO 74950 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-09-28T03:20:49.904+09:00  INFO 74950 --- [    Test worker] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 74 ms. Found 7 JPA repository interfaces.
+2026-09-28T03:20:50.164+09:00  INFO 74950 --- [    Test worker] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-09-28T03:20:50.186+09:00  INFO 74950 --- [    Test worker] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.4.5.Final
+2026-09-28T03:20:50.363+09:00  INFO 74950 --- [    Test worker] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-09-28T03:20:50.376+09:00  INFO 74950 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-09-28T03:20:50.452+09:00  INFO 74950 --- [    Test worker] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection conn0: url=jdbc:h2:mem:58e7f4f7-5140-4ece-ba1d-3332183ed57c user=SA
+2026-09-28T03:20:50.453+09:00  INFO 74950 --- [    Test worker] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-09-28T03:20:50.478+09:00  INFO 74950 --- [    Test worker] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:h2:mem:58e7f4f7-5140-4ece-ba1d-3332183ed57c]
+	Database driver: H2 JDBC Driver
+	Database dialect: H2Dialect
+	Database version: 2.5.252
+	Default catalog/schema: 58E7F4F7-5140-4ECE-BA1D-3332183ED57C/PUBLIC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 100
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-28T03:20:50.977+09:00  INFO 74950 --- [    Test worker] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-28T03:20:50.987+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    drop table if exists announcement cascade 
+2026-09-28T03:20:50.988+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    drop table if exists announcement_body_image cascade 
+2026-09-28T03:20:50.988+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    drop table if exists announcement_revision cascade 
+2026-09-28T03:20:50.988+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    drop table if exists announcement_report cascade 
+2026-09-28T03:20:50.988+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    drop table if exists answer cascade 
+2026-09-28T03:20:50.988+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    drop table if exists content_reaction cascade 
+2026-09-28T03:20:50.989+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    drop table if exists hashtag cascade 
+2026-09-28T03:20:50.989+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    drop table if exists language cascade 
+2026-09-28T03:20:50.989+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    drop table if exists member cascade 
+2026-09-28T03:20:50.989+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    drop table if exists member_roles cascade 
+2026-09-28T03:20:50.989+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    drop table if exists question cascade 
+2026-09-28T03:20:50.989+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    drop table if exists question_hashtag cascade 
+2026-09-28T03:20:50.989+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    drop sequence if exists hibernate_sequence
+2026-09-28T03:20:50.990+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    drop sequence if exists member_sequence
+2026-09-28T03:20:50.990+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    drop sequence if exists que_sequence
+2026-09-28T03:20:50.991+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    create sequence hibernate_sequence start with 1 increment by 1
+2026-09-28T03:20:50.992+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    create sequence member_sequence start with 1 increment by 1
+2026-09-28T03:20:50.992+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    create sequence que_sequence start with 1 increment by 1
+2026-09-28T03:20:50.994+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    create table announcement (
+        duration_days integer,
+        learning_end_date date,
+        learning_start_date date,
+        max_career integer,
+        min_career integer,
+        payment integer,
+        recruitment_closed boolean default false not null,
+        salary_max integer,
+        stipend_amount integer,
+        dead_line_date timestamp(6),
+        id bigint not null,
+        source_verified_at timestamp(6),
+        started_date timestamp(6),
+        duplicate_key varchar(64),
+        application_url varchar(2048),
+        access_url varchar(255),
+        announcement_type varchar(255) check ((announcement_type in ('EMP','EDU'))),
+        cohort varchar(255),
+        commitment varchar(255) check ((commitment in ('FULL_TIME','PART_TIME','SELF_PACED'))),
+        delivery_mode varchar(255) check ((delivery_mode in ('ONLINE','OFFLINE','HYBRID'))),
+        funding_type varchar(255) check ((funding_type in ('CARD_REQUIRED','GOVERNMENT','SPONSORED','SELF_FUNDED'))),
+        job_position varchar(255) check ((job_position in ('BACKEND','FRONTEND','FULLSTACK','ANDROID','IOS','MACHINE_LEARNING','AI','DATA_ENGINEER','MOBILE_GAME','GAME_CLIENT','GAME_SERVER','SYSTEM_NETWORK','SYSTEM_SOFTWARE','DEVOPS','INTERNET_SECURITY','EMBEDDED_SOFTWARE','ROBOTIC_MIDDLEWARE','QA','IOT','APPLICATION_PROGRAM','BLOCK_CHAIN'))),
+        learning_level varchar(255) check ((learning_level in ('BEGINNER','BASIC_REQUIRED','ADVANCED','ALL_LEVELS'))),
+        name varchar(255),
+        publication_status varchar(255) default 'PUBLISHED' check ((publication_status in ('DRAFT','REVIEW','PUBLISHED','HIDDEN'))),
+        recruitment_audience varchar(255) check ((recruitment_audience in ('NEW','EXPERIENCED','ANY','MIXED'))),
+        region varchar(255) check ((region in ('SEOUL','BUSAN','DAEGU','INCHEON','GWANGJU','DAEJEON','ULSAN','SEJONG','GYEONGGI','GANGWON','CHUNGBUK','CHUNGNAM','JEONBUK','JEONNAM','GYEONGBUK','GYEONGNAM','JEJU','OVERSEAS'))),
+        salary_status varchar(255) check ((salary_status in ('UNDISCLOSED','NEGOTIABLE','DISCLOSED'))),
+        save_file_name varchar(255),
+        selection_process varchar(255) check ((selection_process in ('CODING','NO_CODING','NONE'))),
+        source_identifier varchar(255),
+        source_name varchar(255),
+        stipend_note varchar(255),
+        title varchar(255),
+        upload_file_name varchar(255),
+        content clob,
+        primary key (id),
+        constraint uk_announcement_source unique (duplicate_key)
+    )
+2026-09-28T03:20:50.999+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    create table announcement_body_image (
+        announcement_id bigint not null,
+        save_file_name varchar(255),
+        upload_file_name varchar(255)
+    )
+2026-09-28T03:20:51.000+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    create table announcement_revision (
+        revision_order integer not null check ((revision_order>=0)),
+        announcement_id bigint not null,
+        changed_at timestamp(6),
+        source_url varchar(2048),
+        actor varchar(255),
+        status varchar(255) check ((status in ('DRAFT','REVIEW','PUBLISHED','HIDDEN'))),
+        title varchar(255),
+        primary key (revision_order, announcement_id)
+    )
+2026-09-28T03:20:51.001+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    create table announcement_report (
+        announcement_id bigint not null,
+        created_at timestamp(6),
+        id bigint generated by default as identity,
+        resolved_at timestamp(6),
+        message varchar(1000) not null,
+        resolution varchar(1000),
+        reporter varchar(255),
+        resolved_by varchar(255),
+        primary key (id)
+    )
+2026-09-28T03:20:51.002+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    create table answer (
+        dislike integer not null,
+        recommend integer not null,
+        answer_id bigint not null,
+        member_id bigint,
+        question_id bigint,
+        content clob,
+        primary key (answer_id)
+    )
+2026-09-28T03:20:51.003+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    create table content_reaction (
+        answer_id bigint,
+        id bigint generated by default as identity,
+        member_id bigint not null,
+        question_id bigint,
+        reaction varchar(255) not null check ((reaction in ('NONE','RECOMMEND','DISLIKE'))),
+        primary key (id),
+        constraint uk_reaction_member_question unique (member_id, question_id),
+        constraint uk_reaction_member_answer unique (member_id, answer_id),
+        check ((question_id is not null and answer_id is null) or (question_id is null and answer_id is not null))
+    )
+2026-09-28T03:20:51.006+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    create table hashtag (
+        hashtag_id bigint not null,
+        tag_name varchar(255) not null unique,
+        primary key (hashtag_id)
+    )
+2026-09-28T03:20:51.008+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    create table language (
+        announcement_id bigint not null,
+        languages varchar(255) check ((languages in ('HTML','CSS','React','JAVA','JPA','SPRING'))),
+        unique (announcement_id, languages)
+    )
+2026-09-28T03:20:51.008+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    create table member (
+        member_id bigint not null,
+        password varchar(255),
+        username varchar(255) not null unique,
+        primary key (member_id)
+    )
+2026-09-28T03:20:51.009+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    create table member_roles (
+        member_member_id bigint not null,
+        roles varchar(255)
+    )
+2026-09-28T03:20:51.009+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    create table question (
+        dislike integer not null,
+        hits integer not null,
+        recommend integer not null,
+        created_date timestamp(6),
+        member_id bigint,
+        question_id bigint not null,
+        title varchar(255),
+        content clob,
+        primary key (question_id)
+    )
+2026-09-28T03:20:51.010+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    create table question_hashtag (
+        hashtag_id bigint,
+        id bigint not null,
+        question_id bigint,
+        primary key (id)
+    )
+2026-09-28T03:20:51.010+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    alter table if exists announcement_body_image 
+       add constraint FKaeeob1gtncx8bg1orx6htkm23 
+       foreign key (announcement_id) 
+       references announcement
+2026-09-28T03:20:51.012+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    alter table if exists announcement_revision 
+       add constraint FKa8dv822xwkg3p62in55nu9pt0 
+       foreign key (announcement_id) 
+       references announcement
+2026-09-28T03:20:51.013+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    alter table if exists announcement_report 
+       add constraint FK189d45bcy1warratcav74n9jv 
+       foreign key (announcement_id) 
+       references announcement 
+       on delete cascade
+2026-09-28T03:20:51.014+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    alter table if exists answer 
+       add constraint FKn2sp5pa6h0u2kixjl2r4vfluf 
+       foreign key (member_id) 
+       references member
+2026-09-28T03:20:51.014+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    alter table if exists answer 
+       add constraint FK8frr4bcabmmeyyu60qt7iiblo 
+       foreign key (question_id) 
+       references question
+2026-09-28T03:20:51.015+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    alter table if exists content_reaction 
+       add constraint FKsahr2v25kenidfumdbjv7mbmo 
+       foreign key (answer_id) 
+       references answer 
+       on delete cascade
+2026-09-28T03:20:51.016+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    alter table if exists content_reaction 
+       add constraint FK23swpn7fsjvq86gnn8r3091n3 
+       foreign key (member_id) 
+       references member
+2026-09-28T03:20:51.016+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    alter table if exists content_reaction 
+       add constraint FKidwsff07bypnb33uyxiax42g 
+       foreign key (question_id) 
+       references question 
+       on delete cascade
+2026-09-28T03:20:51.017+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    alter table if exists language 
+       add constraint FKfpdennkb2vg01brfwjb4y3hr2 
+       foreign key (announcement_id) 
+       references announcement
+2026-09-28T03:20:51.018+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    alter table if exists member_roles 
+       add constraint FKruptm2dtwl95mfks4bnhv828k 
+       foreign key (member_member_id) 
+       references member
+2026-09-28T03:20:51.019+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    alter table if exists question 
+       add constraint FK1nuuke7olg7b9fkyp2ba9d5bx 
+       foreign key (member_id) 
+       references member
+2026-09-28T03:20:51.019+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    alter table if exists question_hashtag 
+       add constraint FK6135l6ow6hu1x05rtp570ahc2 
+       foreign key (hashtag_id) 
+       references hashtag
+2026-09-28T03:20:51.020+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    alter table if exists question_hashtag 
+       add constraint FK576ws2184ijwga7w2oyodi0rv 
+       foreign key (question_id) 
+       references question
+2026-09-28T03:20:51.021+09:00  INFO 74950 --- [    Test worker] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-09-28T03:20:51.057+09:00  INFO 74950 --- [    Test worker] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-09-28T03:20:51.836+09:00  WARN 74950 --- [    Test worker] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2026-09-28T03:20:51.869+09:00  INFO 74950 --- [    Test worker] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailService
+2026-09-28T03:20:52.172+09:00  INFO 74950 --- [    Test worker] c.i.d.service.CommunityQueryBudgetTest   : Started CommunityQueryBudgetTest in 2.877 seconds (process running for 3.448)
+2026-09-28T03:20:52.173+09:00  WARN 74950 --- [    Test worker] o.s.core.events.SpringDocAppInitializer  : SpringDoc /v3/api-docs endpoint is enabled by default. To disable it in production, set the property 'springdoc.api-docs.enabled=false'
+2026-09-28T03:20:52.173+09:00  WARN 74950 --- [    Test worker] o.s.core.events.SpringDocAppInitializer  : SpringDoc /swagger-ui.html endpoint is enabled by default. To disable it in production, set the property 'springdoc.swagger-ui.enabled=false'
+2026-09-28T03:20:52.435+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        next value 
+    for
+        member_sequence
+2026-09-28T03:20:52.468+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Member
+        */insert 
+    into
+        member (password, username, member_id) 
+    values
+        (?, ?, ?)
+2026-09-28T03:20:52.472+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Member.roles
+        */insert 
+    into
+        member_roles (member_member_id, roles) 
+    values
+        (?, ?)
+2026-09-28T03:20:52.479+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        next value 
+    for
+        hibernate_sequence
+2026-09-28T03:20:52.480+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Hashtag
+        */insert 
+    into
+        hashtag (tag_name, hashtag_id) 
+    values
+        (?, ?)
+2026-09-28T03:20:52.481+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        next value 
+    for
+        hibernate_sequence
+2026-09-28T03:20:52.481+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Hashtag
+        */insert 
+    into
+        hashtag (tag_name, hashtag_id) 
+    values
+        (?, ?)
+2026-09-28T03:20:52.482+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        next value 
+    for
+        hibernate_sequence
+2026-09-28T03:20:52.483+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Hashtag
+        */insert 
+    into
+        hashtag (tag_name, hashtag_id) 
+    values
+        (?, ?)
+2026-09-28T03:20:52.484+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        next value 
+    for
+        hibernate_sequence
+2026-09-28T03:20:52.484+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Hashtag
+        */insert 
+    into
+        hashtag (tag_name, hashtag_id) 
+    values
+        (?, ?)
+2026-09-28T03:20:52.485+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        next value 
+    for
+        que_sequence
+2026-09-28T03:20:52.486+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        next value 
+    for
+        hibernate_sequence
+2026-09-28T03:20:52.486+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        next value 
+    for
+        hibernate_sequence
+2026-09-28T03:20:52.486+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        next value 
+    for
+        hibernate_sequence
+2026-09-28T03:20:52.487+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        next value 
+    for
+        hibernate_sequence
+2026-09-28T03:20:52.487+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Question
+        */insert 
+    into
+        question (content, created_date, dislike, hits, member_id, recommend, title, question_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-28T03:20:52.488+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.QuestionHashtag
+        */insert 
+    into
+        question_hashtag (hashtag_id, question_id, id) 
+    values
+        (?, ?, ?)
+2026-09-28T03:20:52.489+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.QuestionHashtag
+        */insert 
+    into
+        question_hashtag (hashtag_id, question_id, id) 
+    values
+        (?, ?, ?)
+2026-09-28T03:20:52.489+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.QuestionHashtag
+        */insert 
+    into
+        question_hashtag (hashtag_id, question_id, id) 
+    values
+        (?, ?, ?)
+2026-09-28T03:20:52.489+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.QuestionHashtag
+        */insert 
+    into
+        question_hashtag (hashtag_id, question_id, id) 
+    values
+        (?, ?, ?)
+2026-09-28T03:20:52.498+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        q1_0.question_id,
+        q1_0.content,
+        q1_0.created_date,
+        q1_0.dislike,
+        q1_0.hits,
+        q1_0.member_id,
+        q1_0.recommend,
+        q1_0.title 
+    from
+        question q1_0 
+    where
+        q1_0.question_id=?
+2026-09-28T03:20:52.508+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        m1_0.member_id,
+        m1_0.password,
+        m1_0.username,
+        r1_0.member_member_id,
+        r1_0.roles 
+    from
+        member m1_0 
+    left join
+        member_roles r1_0 
+            on m1_0.member_id=r1_0.member_member_id 
+    where
+        m1_0.member_id=?
+2026-09-28T03:20:52.510+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        qh1_0.question_id,
+        qh1_0.id,
+        qh1_0.hashtag_id 
+    from
+        question_hashtag qh1_0 
+    where
+        qh1_0.question_id=?
+2026-09-28T03:20:52.511+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        h1_0.hashtag_id,
+        h1_0.tag_name 
+    from
+        hashtag h1_0 
+    where
+        h1_0.hashtag_id=?
+2026-09-28T03:20:52.512+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        h1_0.hashtag_id,
+        h1_0.tag_name 
+    from
+        hashtag h1_0 
+    where
+        h1_0.hashtag_id=?
+2026-09-28T03:20:52.512+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        h1_0.hashtag_id,
+        h1_0.tag_name 
+    from
+        hashtag h1_0 
+    where
+        h1_0.hashtag_id=?
+2026-09-28T03:20:52.512+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        h1_0.hashtag_id,
+        h1_0.tag_name 
+    from
+        hashtag h1_0 
+    where
+        h1_0.hashtag_id=?
+2026-09-28T03:20:52.541+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* SELECT
+        c 
+    FROM
+        ContentReaction c 
+    WHERE
+        c.member.id = :memberId 
+        AND c.question.id = :questionId */ select
+            cr1_0.id,
+            cr1_0.answer_id,
+            cr1_0.member_id,
+            cr1_0.question_id,
+            cr1_0.reaction 
+        from
+            content_reaction cr1_0 
+        where
+            cr1_0.member_id=? 
+            and cr1_0.question_id=?
+2026-09-28T03:20:52.575+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* delete 
+    from
+        Answer x */ delete 
+    from
+        answer a1_0
+2026-09-28T03:20:52.580+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        q1_0.question_id,
+        q1_0.content,
+        q1_0.created_date,
+        q1_0.dislike,
+        q1_0.hits,
+        q1_0.member_id,
+        q1_0.recommend,
+        q1_0.title 
+    from
+        question q1_0
+2026-09-28T03:20:52.582+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        a1_0.question_id,
+        a1_0.answer_id,
+        a1_0.content,
+        a1_0.dislike,
+        a1_0.member_id,
+        a1_0.recommend 
+    from
+        answer a1_0 
+    where
+        a1_0.question_id=?
+2026-09-28T03:20:52.583+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        qh1_0.question_id,
+        qh1_0.id,
+        qh1_0.hashtag_id 
+    from
+        question_hashtag qh1_0 
+    where
+        qh1_0.question_id=?
+2026-09-28T03:20:52.585+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* delete 
+    for
+        com.inhatc.demp.domain.QuestionHashtag */delete 
+    from
+        question_hashtag 
+    where
+        id=?
+2026-09-28T03:20:52.586+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* delete 
+    for
+        com.inhatc.demp.domain.QuestionHashtag */delete 
+    from
+        question_hashtag 
+    where
+        id=?
+2026-09-28T03:20:52.586+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* delete 
+    for
+        com.inhatc.demp.domain.QuestionHashtag */delete 
+    from
+        question_hashtag 
+    where
+        id=?
+2026-09-28T03:20:52.586+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* delete 
+    for
+        com.inhatc.demp.domain.QuestionHashtag */delete 
+    from
+        question_hashtag 
+    where
+        id=?
+2026-09-28T03:20:52.586+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* delete 
+    for
+        com.inhatc.demp.domain.Question */delete 
+    from
+        question 
+    where
+        question_id=?
+2026-09-28T03:20:52.588+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        h1_0.hashtag_id,
+        h1_0.tag_name 
+    from
+        hashtag h1_0
+2026-09-28T03:20:52.588+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        qh1_0.hashtag_id,
+        qh1_0.id,
+        qh1_0.question_id 
+    from
+        question_hashtag qh1_0 
+    where
+        qh1_0.hashtag_id=?
+2026-09-28T03:20:52.589+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        qh1_0.hashtag_id,
+        qh1_0.id,
+        qh1_0.question_id 
+    from
+        question_hashtag qh1_0 
+    where
+        qh1_0.hashtag_id=?
+2026-09-28T03:20:52.589+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        qh1_0.hashtag_id,
+        qh1_0.id,
+        qh1_0.question_id 
+    from
+        question_hashtag qh1_0 
+    where
+        qh1_0.hashtag_id=?
+2026-09-28T03:20:52.589+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        qh1_0.hashtag_id,
+        qh1_0.id,
+        qh1_0.question_id 
+    from
+        question_hashtag qh1_0 
+    where
+        qh1_0.hashtag_id=?
+2026-09-28T03:20:52.589+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* delete 
+    for
+        com.inhatc.demp.domain.Hashtag */delete 
+    from
+        hashtag 
+    where
+        hashtag_id=?
+2026-09-28T03:20:52.590+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* delete 
+    for
+        com.inhatc.demp.domain.Hashtag */delete 
+    from
+        hashtag 
+    where
+        hashtag_id=?
+2026-09-28T03:20:52.590+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* delete 
+    for
+        com.inhatc.demp.domain.Hashtag */delete 
+    from
+        hashtag 
+    where
+        hashtag_id=?
+2026-09-28T03:20:52.590+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* delete 
+    for
+        com.inhatc.demp.domain.Hashtag */delete 
+    from
+        hashtag 
+    where
+        hashtag_id=?
+2026-09-28T03:20:52.591+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        m1_0.member_id,
+        m1_0.password,
+        m1_0.username 
+    from
+        member m1_0
+2026-09-28T03:20:52.592+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        r1_0.member_member_id,
+        r1_0.roles 
+    from
+        member_roles r1_0 
+    where
+        r1_0.member_member_id=?
+2026-09-28T03:20:52.592+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* one-shot delete 
+    for
+        com.inhatc.demp.domain.Member.roles */delete 
+    from
+        member_roles 
+    where
+        member_member_id=?
+2026-09-28T03:20:52.593+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* delete 
+    for
+        com.inhatc.demp.domain.Member */delete 
+    from
+        member 
+    where
+        member_id=?
+2026-09-28T03:20:52.600+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        next value 
+    for
+        member_sequence
+2026-09-28T03:20:52.601+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Member
+        */insert 
+    into
+        member (password, username, member_id) 
+    values
+        (?, ?, ?)
+2026-09-28T03:20:52.601+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Member.roles
+        */insert 
+    into
+        member_roles (member_member_id, roles) 
+    values
+        (?, ?)
+2026-09-28T03:20:52.602+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        next value 
+    for
+        que_sequence
+2026-09-28T03:20:52.603+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Question
+        */insert 
+    into
+        question (content, created_date, dislike, hits, member_id, recommend, title, question_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-28T03:20:52.603+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        next value 
+    for
+        member_sequence
+2026-09-28T03:20:52.604+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Member
+        */insert 
+    into
+        member (password, username, member_id) 
+    values
+        (?, ?, ?)
+2026-09-28T03:20:52.604+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Member.roles
+        */insert 
+    into
+        member_roles (member_member_id, roles) 
+    values
+        (?, ?)
+2026-09-28T03:20:52.604+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        next value 
+    for
+        hibernate_sequence
+2026-09-28T03:20:52.605+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Answer
+        */insert 
+    into
+        answer (content, dislike, member_id, question_id, recommend, answer_id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-09-28T03:20:52.605+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        next value 
+    for
+        member_sequence
+2026-09-28T03:20:52.606+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Member
+        */insert 
+    into
+        member (password, username, member_id) 
+    values
+        (?, ?, ?)
+2026-09-28T03:20:52.606+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Member.roles
+        */insert 
+    into
+        member_roles (member_member_id, roles) 
+    values
+        (?, ?)
+2026-09-28T03:20:52.606+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        next value 
+    for
+        hibernate_sequence
+2026-09-28T03:20:52.607+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Answer
+        */insert 
+    into
+        answer (content, dislike, member_id, question_id, recommend, answer_id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-09-28T03:20:52.607+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        next value 
+    for
+        member_sequence
+2026-09-28T03:20:52.608+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Member
+        */insert 
+    into
+        member (password, username, member_id) 
+    values
+        (?, ?, ?)
+2026-09-28T03:20:52.608+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Member.roles
+        */insert 
+    into
+        member_roles (member_member_id, roles) 
+    values
+        (?, ?)
+2026-09-28T03:20:52.608+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        next value 
+    for
+        hibernate_sequence
+2026-09-28T03:20:52.608+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Answer
+        */insert 
+    into
+        answer (content, dislike, member_id, question_id, recommend, answer_id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-09-28T03:20:52.609+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        next value 
+    for
+        member_sequence
+2026-09-28T03:20:52.609+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Member
+        */insert 
+    into
+        member (password, username, member_id) 
+    values
+        (?, ?, ?)
+2026-09-28T03:20:52.609+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Member.roles
+        */insert 
+    into
+        member_roles (member_member_id, roles) 
+    values
+        (?, ?)
+2026-09-28T03:20:52.610+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        next value 
+    for
+        hibernate_sequence
+2026-09-28T03:20:52.610+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* insert 
+    for
+        com.inhatc.demp.domain.Answer
+        */insert 
+    into
+        answer (content, dislike, member_id, question_id, recommend, answer_id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-09-28T03:20:52.613+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* SELECT
+        c 
+    FROM
+        ContentReaction c 
+    LEFT JOIN
+        c.answer a 
+    LEFT JOIN
+        a.question q 
+    WHERE
+        c.member.id = :memberId 
+        AND q.id = :questionId */ select
+            cr1_0.id,
+            cr1_0.answer_id,
+            cr1_0.member_id,
+            cr1_0.question_id,
+            cr1_0.reaction 
+        from
+            content_reaction cr1_0 
+        left join
+            answer a1_0 
+                on a1_0.answer_id=cr1_0.answer_id 
+        left join
+            question q1_0 
+                on q1_0.question_id=a1_0.question_id 
+        where
+            cr1_0.member_id=? 
+            and q1_0.question_id=?
+2026-09-28T03:20:52.614+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* SELECT
+        a 
+    FROM
+        Answer a 
+    WHERE
+        a.question.id = :questionId */ select
+            a1_0.answer_id,
+            a1_0.content,
+            a1_0.dislike,
+            a1_0.member_id,
+            a1_0.question_id,
+            a1_0.recommend 
+        from
+            answer a1_0 
+        where
+            a1_0.question_id=?
+2026-09-28T03:20:52.615+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        m1_0.member_id,
+        m1_0.password,
+        m1_0.username,
+        r1_0.member_member_id,
+        r1_0.roles 
+    from
+        member m1_0 
+    left join
+        member_roles r1_0 
+            on m1_0.member_id=r1_0.member_member_id 
+    where
+        m1_0.member_id=?
+2026-09-28T03:20:52.616+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        m1_0.member_id,
+        m1_0.password,
+        m1_0.username,
+        r1_0.member_member_id,
+        r1_0.roles 
+    from
+        member m1_0 
+    left join
+        member_roles r1_0 
+            on m1_0.member_id=r1_0.member_member_id 
+    where
+        m1_0.member_id=?
+2026-09-28T03:20:52.616+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        m1_0.member_id,
+        m1_0.password,
+        m1_0.username,
+        r1_0.member_member_id,
+        r1_0.roles 
+    from
+        member m1_0 
+    left join
+        member_roles r1_0 
+            on m1_0.member_id=r1_0.member_member_id 
+    where
+        m1_0.member_id=?
+2026-09-28T03:20:52.617+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        m1_0.member_id,
+        m1_0.password,
+        m1_0.username,
+        r1_0.member_member_id,
+        r1_0.roles 
+    from
+        member m1_0 
+    left join
+        member_roles r1_0 
+            on m1_0.member_id=r1_0.member_member_id 
+    where
+        m1_0.member_id=?
+2026-09-28T03:20:52.618+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* delete 
+    from
+        Answer x */ delete 
+    from
+        answer a1_0
+2026-09-28T03:20:52.619+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        q1_0.question_id,
+        q1_0.content,
+        q1_0.created_date,
+        q1_0.dislike,
+        q1_0.hits,
+        q1_0.member_id,
+        q1_0.recommend,
+        q1_0.title 
+    from
+        question q1_0
+2026-09-28T03:20:52.620+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        a1_0.question_id,
+        a1_0.answer_id,
+        a1_0.content,
+        a1_0.dislike,
+        a1_0.member_id,
+        a1_0.recommend 
+    from
+        answer a1_0 
+    where
+        a1_0.question_id=?
+2026-09-28T03:20:52.620+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        qh1_0.question_id,
+        qh1_0.id,
+        qh1_0.hashtag_id 
+    from
+        question_hashtag qh1_0 
+    where
+        qh1_0.question_id=?
+2026-09-28T03:20:52.621+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* delete 
+    for
+        com.inhatc.demp.domain.Question */delete 
+    from
+        question 
+    where
+        question_id=?
+2026-09-28T03:20:52.621+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        h1_0.hashtag_id,
+        h1_0.tag_name 
+    from
+        hashtag h1_0
+2026-09-28T03:20:52.622+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* <criteria> */ select
+        m1_0.member_id,
+        m1_0.password,
+        m1_0.username 
+    from
+        member m1_0
+2026-09-28T03:20:52.622+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        r1_0.member_member_id,
+        r1_0.roles 
+    from
+        member_roles r1_0 
+    where
+        r1_0.member_member_id=?
+2026-09-28T03:20:52.623+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        r1_0.member_member_id,
+        r1_0.roles 
+    from
+        member_roles r1_0 
+    where
+        r1_0.member_member_id=?
+2026-09-28T03:20:52.623+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        r1_0.member_member_id,
+        r1_0.roles 
+    from
+        member_roles r1_0 
+    where
+        r1_0.member_member_id=?
+2026-09-28T03:20:52.623+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        r1_0.member_member_id,
+        r1_0.roles 
+    from
+        member_roles r1_0 
+    where
+        r1_0.member_member_id=?
+2026-09-28T03:20:52.623+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    select
+        r1_0.member_member_id,
+        r1_0.roles 
+    from
+        member_roles r1_0 
+    where
+        r1_0.member_member_id=?
+2026-09-28T03:20:52.624+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* one-shot delete 
+    for
+        com.inhatc.demp.domain.Member.roles */delete 
+    from
+        member_roles 
+    where
+        member_member_id=?
+2026-09-28T03:20:52.624+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* one-shot delete 
+    for
+        com.inhatc.demp.domain.Member.roles */delete 
+    from
+        member_roles 
+    where
+        member_member_id=?
+2026-09-28T03:20:52.624+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* one-shot delete 
+    for
+        com.inhatc.demp.domain.Member.roles */delete 
+    from
+        member_roles 
+    where
+        member_member_id=?
+2026-09-28T03:20:52.625+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* one-shot delete 
+    for
+        com.inhatc.demp.domain.Member.roles */delete 
+    from
+        member_roles 
+    where
+        member_member_id=?
+2026-09-28T03:20:52.625+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* one-shot delete 
+    for
+        com.inhatc.demp.domain.Member.roles */delete 
+    from
+        member_roles 
+    where
+        member_member_id=?
+2026-09-28T03:20:52.625+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* delete 
+    for
+        com.inhatc.demp.domain.Member */delete 
+    from
+        member 
+    where
+        member_id=?
+2026-09-28T03:20:52.625+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* delete 
+    for
+        com.inhatc.demp.domain.Member */delete 
+    from
+        member 
+    where
+        member_id=?
+2026-09-28T03:20:52.625+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* delete 
+    for
+        com.inhatc.demp.domain.Member */delete 
+    from
+        member 
+    where
+        member_id=?
+2026-09-28T03:20:52.626+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* delete 
+    for
+        com.inhatc.demp.domain.Member */delete 
+    from
+        member 
+    where
+        member_id=?
+2026-09-28T03:20:52.626+09:00 DEBUG 74950 --- [    Test worker] org.hibernate.SQL                        : 
+    /* delete 
+    for
+        com.inhatc.demp.domain.Member */delete 
+    from
+        member 
+    where
+        member_id=?
+]]></system-out>
+  <system-err><![CDATA[Mockito is currently self-attaching to enable the inline-mock-maker. This will no longer work in future releases of the JDK. Please add Mockito as an agent to your build as described in Mockito's documentation: https://javadoc.io/doc/org.mockito/mockito-core/latest/org.mockito/org/mockito/Mockito.html#0.3
+WARNING: A Java agent has been loaded dynamically (/Users/seungmin/.gradle/caches/modules-2/files-2.1/net.bytebuddy/byte-buddy-agent/1.18.11/82212e5b3633e7a65fca8bec525762cfb6c9bae4/byte-buddy-agent-1.18.11.jar)
+WARNING: If a serviceability tool is in use, please run with -XX:+EnableDynamicAgentLoading to hide this warning
+WARNING: If a serviceability tool is not in use, please run with -Djdk.instrument.traceUsage for more information
+WARNING: Dynamic loading of agents will be disallowed by default in a future release
+]]></system-err>
+</testsuite>

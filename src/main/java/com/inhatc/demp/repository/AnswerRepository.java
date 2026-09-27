@@ -11,6 +11,7 @@ import java.util.List;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
+    @EntityGraph(attributePaths = "member")
     List<Answer> findByQuestion_Id(Long questionId);
     @EntityGraph(attributePaths = {"member", "question"})
     @Query("select q from Answer q where lower(q.question.title) like lower(concat('%', :term, '%')) escape '!' or lower(q.member.username) like lower(concat('%', :term, '%')) escape '!'")

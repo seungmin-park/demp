@@ -8,6 +8,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
+    @EntityGraph(attributePaths = {"member", "questionHashtags.hashtag"})
+    @Query("select q from Question q where q.id = :id")
+    java.util.Optional<Question> findDetailById(Long id);
+
     @EntityGraph(attributePaths = "member")
     @Query("select q from Question q where lower(q.title) like lower(concat('%', :term, '%')) escape '!' or lower(q.member.username) like lower(concat('%', :term, '%')) escape '!'")
     Page<Question> searchForAdmin(String term, Pageable pageable);

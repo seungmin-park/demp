@@ -13,9 +13,10 @@ allprojects {
             testClassesDirs = sourceSets.benchmark.output.classesDirs
             classpath = sourceSets.benchmark.runtimeClasspath
             useJUnitPlatform()
-            minHeapSize = '1024m'; maxHeapSize = '1024m'
-            jvmArgs '-XX:ActiveProcessorCount=4'
+            minHeapSize = p.findProperty('benchHeap') ?: '2048m'; maxHeapSize = minHeapSize
+            jvmArgs '-XX:ActiveProcessorCount=4', '-XX:+ExitOnOutOfMemoryError'
             systemProperty 'bench.label', p.findProperty('benchLabel') ?: 'current'
+            systemProperty 'bench.contract', p.findProperty('benchContract') ?: 'false'
             systemProperty 'bench.sizes', p.findProperty('benchSizes') ?: '1000,10000,100000'
             systemProperty 'bench.round', p.findProperty('benchRound') ?: '1'
             systemProperty 'bench.samples', p.findProperty('benchSamples') ?: '15'
