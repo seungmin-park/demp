@@ -11,3 +11,10 @@ CREATE TABLE announcement_revision (
     PRIMARY KEY (announcement_id, revision_order),
     FOREIGN KEY (announcement_id) REFERENCES announcement(id)
 );
+-- NULL identity keeps legacy duplicates intact. The application checks legacy rows on registration.
+ALTER TABLE announcement ADD COLUMN recruitment_audience VARCHAR(255) NULL;
+ALTER TABLE announcement ADD COLUMN cohort VARCHAR(255) NULL;
+ALTER TABLE announcement ADD COLUMN stipend_amount INTEGER NULL;
+ALTER TABLE announcement ADD COLUMN stipend_note VARCHAR(255) NULL;
+ALTER TABLE announcement ADD COLUMN duplicate_key VARCHAR(64) NULL;
+ALTER TABLE announcement ADD CONSTRAINT uk_announcement_source UNIQUE (duplicate_key);

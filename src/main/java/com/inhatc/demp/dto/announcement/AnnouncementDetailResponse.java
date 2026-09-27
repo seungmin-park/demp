@@ -17,6 +17,10 @@ import lombok.Getter;
 @AllArgsConstructor
 public class AnnouncementDetailResponse {
 
+    private com.inhatc.demp.domain.announcement.RecruitmentAudience recruitmentAudience;
+    private String cohort;
+    private Integer stipendAmount;
+    private String stipendNote;
     private String sourceName;
     private String sourceIdentifier;
     private String applicationUrl;
@@ -41,6 +45,8 @@ public class AnnouncementDetailResponse {
 
     public static AnnouncementDetailResponse from(Announcement announcement, String imageUrl) {
         return AnnouncementDetailResponse.builder()
+                .recruitmentAudience(announcement.getRecruitmentAudience()).cohort(announcement.getCohort())
+                .stipendAmount(announcement.getStipendAmount()).stipendNote(announcement.getStipendNote())
                 .publicationStatus(announcement.getPublicationStatus())
                 .sourceName(announcement.getSourceName()).sourceIdentifier(announcement.getSourceIdentifier())
                 .applicationUrl(announcement.getApplicationUrl()).sourceVerifiedAt(announcement.getSourceVerifiedAt())

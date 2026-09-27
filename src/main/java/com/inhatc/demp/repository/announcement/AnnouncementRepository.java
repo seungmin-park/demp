@@ -15,6 +15,15 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, Long
 
     List<Announcement> findByAnnouncementType(AnnouncementType annotatedArrayType);
 
+    Optional<Announcement> findByDuplicateKey(String key);
+    List<Announcement> findByDuplicateKeyIsNull();
+    default boolean sourceExists(String key, long exceptId) {
+        if (findByDuplicateKey(key).filter(item -> item.getId() != exceptId).isPresent()) return true;
+        return findByDuplicateKeyIsNull().stream().filter(item -> item.getId() != exceptId)
+                .anyMatch(item -> item.getDescription() != null && item.getCompany() != null && java.util.Objects.equals(key,
+                        com.inhatc.demp.domain.announcement.AnnouncementSourceKey.of(item.getDescription().getAccessUrl(), item.getCompany().getName(), item.getCohort())));
+    }
+
     long countByAnnouncementType(AnnouncementType type);
 
     Optional<Announcement> findByTitle(String title);

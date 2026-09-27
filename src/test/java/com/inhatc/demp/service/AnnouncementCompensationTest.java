@@ -48,7 +48,7 @@ class AnnouncementCompensationTest {
     private void fill(AnnouncementFields request, AnnouncementType type) {
         request.setPublicationStatus(PublicationStatus.PUBLISHED); request.setTitle(type.name()); request.setCompany("DEMP"); request.setType(type);
         request.setPosition(JobPosition.BACKEND); request.setLanguage(Set.of(Language.JAVA));
-        request.setContent("확인한 공고"); request.setAccessUrl("https://example.com/job");
+        request.setContent("확인한 공고"); request.setAccessUrl("https://example.com/job/" + type.name());
         request.setStartedDate(LocalDateTime.of(2026,9,1,0,0)); request.setDeadLineDate(LocalDateTime.of(2026,10,1,0,0));
     }
 }

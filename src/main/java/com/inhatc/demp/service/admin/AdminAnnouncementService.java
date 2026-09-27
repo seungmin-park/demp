@@ -36,9 +36,8 @@ public class AdminAnnouncementService {
 
     public AdminMutationResult update(long id, AnnouncementUpdateRequest request, String actor) throws IOException {
         if (!repository.existsById(id)) throw new ApiException(HttpStatus.NOT_FOUND);
-        repository.findByTitle(request.getTitle()).filter(item -> item.getId() != id)
-                .ifPresent(item -> { throw new ApiException(HttpStatus.CONFLICT); });
-        Career career = new Career(request.getMinCareer(), request.getMaxCareer());
+        if (repository.sourceExists(request.sourceKey(), id)) throw new ApiException(HttpStatus.CONFLICT);
+        Career career = request.toCareer();
         RecruitPeriod period = new RecruitPeriod(request.getStartedDate(), request.getDeadLineDate());
         UploadFile replacement = request.getImage() == null || request.getImage().isEmpty() ? null : files.save(request.getImage());
         List<UploadFile> uploaded = List.of();
@@ -57,6 +56,7 @@ public class AdminAnnouncementService {
                 item.replaceBodyImages(body.images());
                 item.revise(request.getTitle(), new Company(request.getCompany()), career, period, description,
                         request.getType(), request.getPosition(), replacement);
+                item.changeRecruitment(request.getRecruitmentAudience(), request.getCohort(), request.getStipendAmount(), request.getStipendNote());
                 item.changeEducation(request.toEducationDetails());
                 item.changePublication(request.getPublicationStatus());
                 item.recordPublication(request.getSourceName(), request.getSourceIdentifier(), request.getApplicationUrl(),
@@ -70,6 +70,7 @@ public class AdminAnnouncementService {
                 try { files.delete(replacement.getSaveFileName()); }
                 catch (RuntimeException cleanup) { failure.addSuppressed(cleanup); log.error("관리자 수정 보상 실패 key={}", replacement.getSaveFileName(), cleanup); }
             }
+            if (failure instanceof org.springframework.dao.DataIntegrityViolationException && repository.sourceExists(request.sourceKey(), id)) throw new ApiException(HttpStatus.CONFLICT);
             throw failure;
         }
         return cleanup(oldKeys);

@@ -58,10 +58,10 @@ public class AnnouncementService {
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void createAnnouncement(AnnouncementCreateRequest announcementCreateRequest, String actor) throws IOException {
-        Career career = new Career(announcementCreateRequest.getMinCareer(), announcementCreateRequest.getMaxCareer());
+        Career career = announcementCreateRequest.toCareer();
         RecruitPeriod recruitPeriod = new RecruitPeriod(announcementCreateRequest.getStartedDate(),
                 announcementCreateRequest.getDeadLineDate());
-        if (announcementRepository.findByTitle(announcementCreateRequest.getTitle()).isPresent()) {
+        if (announcementRepository.sourceExists(announcementCreateRequest.sourceKey(), -1)) {
             throw new ApiException(HttpStatus.CONFLICT);
         }
         UploadFile image = announcementCreateRequest.getImage() == null || announcementCreateRequest.getImage().isEmpty()
@@ -83,6 +83,7 @@ public class AnnouncementService {
                 .jobPosition(announcementCreateRequest.getPosition())
                 .build();
         announcement.replaceBodyImages(body.images());
+        announcement.changeRecruitment(announcementCreateRequest.getRecruitmentAudience(), announcementCreateRequest.getCohort(), announcementCreateRequest.getStipendAmount(), announcementCreateRequest.getStipendNote());
         announcement.changeEducation(announcementCreateRequest.toEducationDetails());
         announcement.changePublication(announcementCreateRequest.getPublicationStatus());
         announcement.recordPublication(announcementCreateRequest.getSourceName(), announcementCreateRequest.getSourceIdentifier(),
@@ -92,6 +93,7 @@ public class AnnouncementService {
         } catch (IOException | RuntimeException originalFailure) {
             bodyImages.compensate(uploaded, originalFailure);
             compensate(image, originalFailure);
+            if (originalFailure instanceof org.springframework.dao.DataIntegrityViolationException && announcementRepository.sourceExists(announcementCreateRequest.sourceKey(), -1)) throw new ApiException(HttpStatus.CONFLICT);
             throw originalFailure;
         }
     }

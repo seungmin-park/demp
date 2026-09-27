@@ -13,6 +13,7 @@ import lombok.ToString;
 @ToString
 @AllArgsConstructor
 public class AnnouncementScroll {
+    private com.inhatc.demp.domain.announcement.RecruitmentAudience recruitmentAudience;
     private Long id;
     private String title;
     private Company company;
@@ -22,6 +23,7 @@ public class AnnouncementScroll {
     private Integer maxCareer;
 
     public AnnouncementScroll(Announcement announcement, String imageUrl) {
+        this.recruitmentAudience = announcement.getRecruitmentAudience();
         this.id = announcement.getId();
         this.title = announcement.getTitle();
         this.company = announcement.getCompany();

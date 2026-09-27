@@ -23,6 +23,7 @@ import lombok.ToString;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@jakarta.persistence.Table(uniqueConstraints = @jakarta.persistence.UniqueConstraint(name = "uk_announcement_source", columnNames = "duplicate_key"))
 @Getter
 @ToString
 @EntityListeners(AuditingEntityListener.class)
@@ -41,6 +42,21 @@ public class Announcement {
 
     public boolean isPublished() { return publicationStatus == PublicationStatus.PUBLISHED; }
     public void changePublication(PublicationStatus status) { if (status != null) publicationStatus = status; }
+    @Enumerated(EnumType.STRING) @JdbcTypeCode(SqlTypes.VARCHAR)
+    private RecruitmentAudience recruitmentAudience;
+    private String cohort;
+    private Integer stipendAmount;
+    private String stipendNote;
+    @jakarta.persistence.Column(length = 64)
+    private String duplicateKey;
+    public void changeRecruitment(RecruitmentAudience audience, String cohort, Integer stipendAmount, String stipendNote) {
+        if (stipendAmount != null && stipendAmount < 0) throw new IllegalArgumentException("지원금은 0 이상이어야 합니다.");
+        this.recruitmentAudience = announcementType == AnnouncementType.EMP ? audience : null;
+        this.cohort = announcementType == AnnouncementType.EDU ? cohort : null;
+        this.stipendAmount = announcementType == AnnouncementType.EDU ? stipendAmount : null;
+        this.stipendNote = announcementType == AnnouncementType.EDU ? stipendNote : null;
+        this.duplicateKey = AnnouncementSourceKey.of(description.getAccessUrl(), company.getName(), this.cohort);
+    }
     private String sourceName;
     private String sourceIdentifier;
     @jakarta.persistence.Column(length = 2048)

@@ -43,12 +43,23 @@ public class AnnouncementFields {
                 || learningStartDate != null && !learningEndDate.isBefore(learningStartDate);
     }
 
+    public Career toCareer() {
+        return type == AnnouncementType.EDU || recruitmentAudience == RecruitmentAudience.NEW || recruitmentAudience == RecruitmentAudience.ANY
+                ? new Career(0, 0) : new Career(minCareer, maxCareer);
+    }
+    public String sourceKey() { return AnnouncementSourceKey.of(accessUrl, company, type == AnnouncementType.EDU ? cohort : null); }
+
     public EducationDetails toEducationDetails() {
         return type == AnnouncementType.EDU ? new EducationDetails(deliveryMode, region, commitment,
                 fundingType, selectionProcess, learningLevel, learningStartDate, learningEndDate) : null;
     }
 
     private PublicationStatus publicationStatus;
+    private com.inhatc.demp.domain.announcement.RecruitmentAudience recruitmentAudience;
+    private String cohort;
+    @Min(0)
+    private Integer stipendAmount;
+    private String stipendNote;
     private String sourceName;
     private String sourceIdentifier;
     @URL
