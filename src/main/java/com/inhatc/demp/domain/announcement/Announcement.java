@@ -57,6 +57,9 @@ public class Announcement {
         this.stipendNote = announcementType == AnnouncementType.EDU ? stipendNote : null;
         this.duplicateKey = AnnouncementSourceKey.of(description.getAccessUrl(), company.getName(), this.cohort);
     }
+    @org.hibernate.annotations.ColumnDefault("false")
+    private boolean recruitmentClosed;
+    public void changeRecruitmentClosed(Boolean closed) { if (closed != null) recruitmentClosed = closed; }
     private String sourceName;
     private String sourceIdentifier;
     @jakarta.persistence.Column(length = 2048)

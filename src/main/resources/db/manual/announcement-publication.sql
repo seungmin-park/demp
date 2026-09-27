@@ -18,3 +18,10 @@ ALTER TABLE announcement ADD COLUMN stipend_amount INTEGER NULL;
 ALTER TABLE announcement ADD COLUMN stipend_note VARCHAR(255) NULL;
 ALTER TABLE announcement ADD COLUMN duplicate_key VARCHAR(64) NULL;
 ALTER TABLE announcement ADD CONSTRAINT uk_announcement_source UNIQUE (duplicate_key);
+ALTER TABLE announcement ADD COLUMN recruitment_closed BOOLEAN NOT NULL DEFAULT FALSE;
+CREATE TABLE announcement_report (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY, announcement_id BIGINT NOT NULL,
+    message VARCHAR(1000) NOT NULL, reporter VARCHAR(255), created_at TIMESTAMP,
+    resolution VARCHAR(1000), resolved_by VARCHAR(255), resolved_at TIMESTAMP,
+    FOREIGN KEY (announcement_id) REFERENCES announcement(id) ON DELETE CASCADE
+);

@@ -60,6 +60,7 @@ public class AnnouncementFields {
     @Min(0)
     private Integer stipendAmount;
     private String stipendNote;
+    private Boolean recruitmentClosed;
     private String sourceName;
     private String sourceIdentifier;
     @URL

@@ -19,6 +19,7 @@ public class AnnouncementResponse {
     private String title;
     private Set<Language> language = new HashSet<>();
     private JobPosition position;
+    private boolean recruitmentClosed;
     private String image;
     private com.inhatc.demp.domain.announcement.PublicationStatus publicationStatus;
     private com.inhatc.demp.domain.announcement.EducationDetails education;
@@ -34,6 +35,7 @@ public class AnnouncementResponse {
         this.education = announcement.getEducation();
         this.publicationStatus = announcement.getPublicationStatus();
         this.recruitmentAudience = announcement.getRecruitmentAudience();
+        this.recruitmentClosed = announcement.isRecruitmentClosed();
         this.id = announcement.getId();
         this.title = announcement.getTitle();
         this.language = new HashSet<>(announcement.getDescription().getLanguages());

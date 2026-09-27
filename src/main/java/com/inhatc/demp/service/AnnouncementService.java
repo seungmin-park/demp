@@ -86,6 +86,7 @@ public class AnnouncementService {
         announcement.changeRecruitment(announcementCreateRequest.getRecruitmentAudience(), announcementCreateRequest.getCohort(), announcementCreateRequest.getStipendAmount(), announcementCreateRequest.getStipendNote());
         announcement.changeEducation(announcementCreateRequest.toEducationDetails());
         announcement.changePublication(announcementCreateRequest.getPublicationStatus());
+        announcement.changeRecruitmentClosed(announcementCreateRequest.getRecruitmentClosed());
         announcement.recordPublication(announcementCreateRequest.getSourceName(), announcementCreateRequest.getSourceIdentifier(),
                 announcementCreateRequest.getApplicationUrl(), announcementCreateRequest.isSourceVerified(), actor, java.time.LocalDateTime.now(clock));
             new TransactionTemplate(transactionManager).executeWithoutResult(

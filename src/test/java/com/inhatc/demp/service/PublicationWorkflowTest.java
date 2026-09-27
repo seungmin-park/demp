@@ -89,6 +89,20 @@ class PublicationWorkflowTest {
         assertThat(service.findAdminDetailResponse(id).orElseThrow().getStipendAmount()).isNull();
     }
 
+    @Test
+    @DisplayName("운영자 수동 마감은 공개 상태를 유지하면서 모집 중 검색에서 제외한다")
+    void manualCloseIsSeparateFromPublication() throws Exception {
+        var request = new AnnouncementCreateRequest(); fill(request); request.setPublicationStatus(PublicationStatus.PUBLISHED);
+        request.setStartedDate(LocalDateTime.now().minusDays(1)); request.setDeadLineDate(LocalDateTime.now().plusDays(10));
+        request.setRecruitmentClosed(true); service.createAnnouncement(request);
+        long id = repository.findByTitle(request.getTitle()).orElseThrow().getId();
+        var search = new AnnouncementSearchCondition(); search.setRecruitmentStatus(RecruitmentStatus.OPEN);
+        assertThat(service.findAnnouncementSlice(search, PageRequest.of(0,8)).getContent()).isEmpty();
+        search.setRecruitmentStatus(RecruitmentStatus.CLOSED);
+        assertThat(service.findAnnouncementSlice(search, PageRequest.of(0,8)).getContent()).hasSize(1);
+        assertThat(service.findDetailResponse(id)).isPresent();
+    }
+
     private void fill(AnnouncementFields request) {
         request.setTitle("게시 상태 검증"); request.setCompany("DEMP"); request.setType(AnnouncementType.EMP);
         request.setPosition(JobPosition.BACKEND); request.setLanguage(Set.of(Language.JAVA));

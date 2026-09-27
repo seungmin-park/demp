@@ -150,10 +150,10 @@ public class AnnouncementQueryRepository {
         if (status == null) return null;
         LocalDateTime now = LocalDateTime.now(recruitmentClock);
         return switch (status) {
-            case OPEN -> announcement.recruitPeriod.startedDate.loe(now)
+            case OPEN -> announcement.recruitmentClosed.isFalse().and(announcement.recruitPeriod.startedDate.loe(now))
                     .and(announcement.recruitPeriod.deadLineDate.goe(now));
-            case UPCOMING -> announcement.recruitPeriod.startedDate.gt(now);
-            case CLOSED -> announcement.recruitPeriod.deadLineDate.lt(now);
+            case UPCOMING -> announcement.recruitmentClosed.isFalse().and(announcement.recruitPeriod.startedDate.gt(now));
+            case CLOSED -> announcement.recruitmentClosed.isTrue().or(announcement.recruitPeriod.deadLineDate.lt(now));
         };
     }
 

@@ -17,6 +17,7 @@ public class AnnouncementScroll {
     private Long id;
     private String title;
     private Company company;
+    private boolean recruitmentClosed;
     private String image;
     private AnnouncementType announcementType;
     private Integer minCareer;
@@ -24,6 +25,7 @@ public class AnnouncementScroll {
 
     public AnnouncementScroll(Announcement announcement, String imageUrl) {
         this.recruitmentAudience = announcement.getRecruitmentAudience();
+        this.recruitmentClosed = announcement.isRecruitmentClosed();
         this.id = announcement.getId();
         this.title = announcement.getTitle();
         this.company = announcement.getCompany();

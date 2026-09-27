@@ -151,6 +151,7 @@ class AnnouncementRestDocsTest {
                                 fieldWithPath("company.name").description("회사 또는 교육기관 이름"),
                                 fieldWithPath("title").description("공고 제목"),
                                 fieldWithPath("recruitmentAudience").optional().description("명시적 모집 대상"),
+                        fieldWithPath("recruitmentClosed").description("운영자 수동 마감"),
                         fieldWithPath("minCareer").description("최소 경력"),
                                 fieldWithPath("maxCareer").description("최대 경력, 0은 상한 없음"),
                                 fieldWithPath("startedDate").description("모집 시작 일시"),
@@ -247,6 +248,7 @@ class AnnouncementRestDocsTest {
                                 fieldWithPath("content[].company").description("회사 또는 교육기관").optional(),
                                 fieldWithPath("content[].announcementType").description("EMP 또는 EDU").optional(),
                                 fieldWithPath("content[].recruitmentAudience").optional().description("명시적 모집 대상"),
+                        fieldWithPath("content[].recruitmentClosed").description("운영자 수동 마감"),
                         fieldWithPath("content[].minCareer").description("최소 경력").optional(),
                                 fieldWithPath("content[].maxCareer").description("최대 경력, 0이면 상한 없음").optional(),
                                 org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath("content[].education").description("교육 정보, 채용은 null").optional(),
@@ -305,6 +307,7 @@ class AnnouncementRestDocsTest {
                                 fieldWithPath("[].company.name").description("회사 또는 교육기관 이름"),
                                 fieldWithPath("[].announcementType").description("EMP 채용 / EDU 교육"),
                                 fieldWithPath("[].recruitmentAudience").optional().description("명시적 모집 대상"),
+                        fieldWithPath("[].recruitmentClosed").description("운영자 수동 마감"),
                         fieldWithPath("[].minCareer").description("최소 경력 연차"),
                                 fieldWithPath("[].maxCareer").description("최대 경력 연차, 0이면 상한 없음"),
                                 fieldWithPath("[].image").description("이미지 URL"))));

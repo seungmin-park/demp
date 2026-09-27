@@ -25,6 +25,7 @@ public class AnnouncementDetailResponse {
     private String sourceIdentifier;
     private String applicationUrl;
     private LocalDateTime sourceVerifiedAt;
+    private boolean recruitmentClosed;
     private String image;
     private com.inhatc.demp.domain.announcement.PublicationStatus publicationStatus;
     private com.inhatc.demp.domain.announcement.EducationDetails education;
@@ -47,6 +48,7 @@ public class AnnouncementDetailResponse {
         return AnnouncementDetailResponse.builder()
                 .recruitmentAudience(announcement.getRecruitmentAudience()).cohort(announcement.getCohort())
                 .stipendAmount(announcement.getStipendAmount()).stipendNote(announcement.getStipendNote())
+                .recruitmentClosed(announcement.isRecruitmentClosed())
                 .publicationStatus(announcement.getPublicationStatus())
                 .sourceName(announcement.getSourceName()).sourceIdentifier(announcement.getSourceIdentifier())
                 .applicationUrl(announcement.getApplicationUrl()).sourceVerifiedAt(announcement.getSourceVerifiedAt())

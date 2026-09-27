@@ -59,6 +59,7 @@ public class AdminAnnouncementService {
                 item.changeRecruitment(request.getRecruitmentAudience(), request.getCohort(), request.getStipendAmount(), request.getStipendNote());
                 item.changeEducation(request.toEducationDetails());
                 item.changePublication(request.getPublicationStatus());
+        item.changeRecruitmentClosed(request.getRecruitmentClosed());
                 item.recordPublication(request.getSourceName(), request.getSourceIdentifier(), request.getApplicationUrl(),
                         request.isSourceVerified(), actor, java.time.LocalDateTime.now(clock));
                 repository.saveAndFlush(item);
