@@ -634,6 +634,14 @@ npx playwright test
 
 검증 기록: [T90](docs/verification/education-discovery/t90.md).
 
+### T91 · QA 스킬 기반 실제 사용자 흐름 점검
+
+- [ ] 현재 cmux에서 연봉/교육 등록·수정, 필터·URL 복원, 빈 결과, 오류 안내, 반응형 화면을 탐색 검증한다.
+- [ ] 로그인·권한·무한 스크롤 등 기존 자동 E2E를 headed로 실행하고 실제 서버 검증과 구분한다.
+- [ ] 발견 결함은 재현·Red→Green으로 수정하고 QA 보고서·완료 체크·커밋을 남긴다.
+
+작업 위치는 Phase 10 후속의 기존 `refactor/compensation-and-education-filters` worktree다. QA 스킬의 원격 Firecrawl 수집은 로컬 주소에 직접 접근할 수 없어 사용자 지정 cmux 브라우저로 대체한다.
+
 ## 추적표와 작업 종료 기록
 
 | 스펙 | 작업 | 리뷰 |
