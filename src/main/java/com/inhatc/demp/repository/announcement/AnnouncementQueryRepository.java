@@ -13,6 +13,12 @@ import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import com.inhatc.demp.config.TimeConfiguration;
+import com.inhatc.demp.dto.announcement.RecruitmentStatus;
+import com.inhatc.demp.dto.announcement.Tuition;
+import org.springframework.context.annotation.Import;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -25,10 +31,12 @@ import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 @Repository
+@Import(TimeConfiguration.class)
 @RequiredArgsConstructor
 public class AnnouncementQueryRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
+    private final Clock recruitmentClock;
 
     public List<Announcement> findAllByAnnouncementCondition(AnnouncementSearchCondition announcementSearchCondition) {
         return jpaQueryFactory
@@ -36,6 +44,9 @@ public class AnnouncementQueryRepository {
                 .where(typeEq(announcementSearchCondition.getAnnouncementType()),
                         positionIn(announcementSearchCondition.getPositions()),
                         languageIn(announcementSearchCondition.getLanguage()),
+                        languagesIn(announcementSearchCondition.getLanguages()),
+                        recruitmentMatches(announcementSearchCondition.getRecruitmentStatus()),
+                        tuitionMatches(announcementSearchCondition.getTuition()),
                         paymentGoe(announcementSearchCondition.getPayment()),
                         titleContain(announcementSearchCondition.getTitle()))
                 .fetch();
@@ -47,6 +58,9 @@ public class AnnouncementQueryRepository {
                 .where(typeEq(announcementSearchCondition.getAnnouncementType()),
                         positionIn(announcementSearchCondition.getPositions()),
                         languageIn(announcementSearchCondition.getLanguage()),
+                        languagesIn(announcementSearchCondition.getLanguages()),
+                        recruitmentMatches(announcementSearchCondition.getRecruitmentStatus()),
+                        tuitionMatches(announcementSearchCondition.getTuition()),
                         paymentGoe(announcementSearchCondition.getPayment()),
                         minCareerLoe(announcementSearchCondition.getCareer()),
                         maxCareerGoe(announcementSearchCondition.getCareer()),
@@ -78,6 +92,9 @@ public class AnnouncementQueryRepository {
                 .where(typeEq(announcementSearchCondition.getAnnouncementType()),
                         positionIn(announcementSearchCondition.getPositions()),
                         languageIn(announcementSearchCondition.getLanguage()),
+                        languagesIn(announcementSearchCondition.getLanguages()),
+                        recruitmentMatches(announcementSearchCondition.getRecruitmentStatus()),
+                        tuitionMatches(announcementSearchCondition.getTuition()),
                         paymentGoe(announcementSearchCondition.getPayment()),
                         titleContain(announcementSearchCondition.getTitle()))
                 .orderBy(announcement.id.desc())
@@ -88,6 +105,9 @@ public class AnnouncementQueryRepository {
                 .where(typeEq(announcementSearchCondition.getAnnouncementType()),
                         positionIn(announcementSearchCondition.getPositions()),
                         languageIn(announcementSearchCondition.getLanguage()),
+                        languagesIn(announcementSearchCondition.getLanguages()),
+                        recruitmentMatches(announcementSearchCondition.getRecruitmentStatus()),
+                        tuitionMatches(announcementSearchCondition.getTuition()),
                         paymentGoe(announcementSearchCondition.getPayment()),
                         titleContain(announcementSearchCondition.getTitle()))
                 .fetchOne();
@@ -104,6 +124,29 @@ public class AnnouncementQueryRepository {
 
     private BooleanExpression languageIn(Language language) {
         return language == null ? null : announcement.description.languages.contains(language);
+    }
+
+    private BooleanExpression languagesIn(List<Language> languages) {
+        return languages.stream().map(language -> announcement.description.languages.contains(language))
+                .reduce(BooleanExpression::or).orElse(null);
+    }
+
+    private BooleanExpression recruitmentMatches(RecruitmentStatus status) {
+        if (status == null) return null;
+        LocalDateTime now = LocalDateTime.now(recruitmentClock);
+        return switch (status) {
+            case OPEN -> announcement.recruitPeriod.startedDate.loe(now)
+                    .and(announcement.recruitPeriod.deadLineDate.goe(now));
+            case UPCOMING -> announcement.recruitPeriod.startedDate.gt(now);
+            case CLOSED -> announcement.recruitPeriod.deadLineDate.lt(now);
+        };
+    }
+
+    private BooleanExpression tuitionMatches(Tuition tuition) {
+        if (tuition == null) return null;
+        BooleanExpression amount = tuition == Tuition.FREE
+                ? announcement.description.payment.eq(0) : announcement.description.payment.gt(0);
+        return announcement.announcementType.eq(AnnouncementType.EDU).and(amount);
     }
 
     private BooleanExpression paymentGoe(int payment) {
@@ -125,6 +168,6 @@ public class AnnouncementQueryRepository {
     }
 
     private Predicate titleContain(String title) {
-        return hasText(title) ? announcement.title.contains(title) : null;
+        return hasText(title) ? announcement.title.containsIgnoreCase(title).or(announcement.company.name.containsIgnoreCase(title)) : null;
     }
 }

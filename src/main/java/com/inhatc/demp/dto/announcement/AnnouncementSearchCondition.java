@@ -15,6 +15,9 @@ public class AnnouncementSearchCondition {
     private AnnouncementType announcementType;
     private List<JobPosition> positions = new ArrayList<>();
     private Language language;
+    private List<Language> languages = new ArrayList<>();
+    private RecruitmentStatus recruitmentStatus;
+    private Tuition tuition;
     private int career;
     private int payment;
     private String title;

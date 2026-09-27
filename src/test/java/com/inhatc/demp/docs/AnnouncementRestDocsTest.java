@@ -203,25 +203,39 @@ class AnnouncementRestDocsTest {
                 .andExpect(jsonPath("$.content.length()").value(1))
                 .andExpect(jsonPath("$.content[0].id").value(71))
                 .andExpect(jsonPath("$.content[0].title").value("docs-backend-job"))
+                .andExpect(jsonPath("$.content[0].company").value("docs-company"))
+                .andExpect(jsonPath("$.content[0].announcementType").value("EMP"))
+                .andExpect(jsonPath("$.content[0].payment").value(5000))
+                .andExpect(jsonPath("$.content[0].deadLineDate").value("2026-09-30T23:59:00"))
                 .andExpect(jsonPath("$.content[0].image").value("https://inhatc-demp.s3.ap-northeast-2.amazonaws.com/docs-saved-image.png"))
                 .andExpect(jsonPath("$.last").value(true))
                 .andDo(document("announcement-list",
                         queryParameters(
                                 parameterWithName("announcementType").description("공고 유형: EMP 또는 EDU"),
                                 parameterWithName("positions").description("직무 목록"),
-                                parameterWithName("language").description("기술 언어"),
-                                parameterWithName("career").description("최소 경력 조건, 0이면 미적용"),
-                                parameterWithName("payment").description("최소 금액 조건"),
-                                parameterWithName("title").description("제목 검색어"),
+                                parameterWithName("language").description("단일 기술 언어, 기존 호환"),
+                                parameterWithName("languages").description("기술 다중 선택, 쉼표 구분, 그룹 내 OR").optional(),
+                                parameterWithName("recruitmentStatus").description("OPEN 모집 중(시작/마감 포함), UPCOMING 모집 예정, CLOSED 마감. 한국 시각 기준").optional(),
+                                parameterWithName("tuition").description("교육비 FREE 무료 또는 PAID 유료, 교육 공고만 조회").optional(),
+                                parameterWithName("career").description("지원자 경력이 공고의 경력 범위에 포함, 0이면 미적용"),
+                                parameterWithName("payment").description("최소 연봉 조건(만원)"),
+                                parameterWithName("title").description("제목·회사명 검색어, 대소문자 무시"),
                                 parameterWithName("page").description("0부터 시작하는 페이지 번호"),
                                 parameterWithName("size").description("페이지 크기"),
-                                parameterWithName("sort").description("수신하는 정렬 필드와 방향. 현재 조회 쿼리에 적용되지 않음(T32 예정)")),
+                                parameterWithName("sort").description("호환용 수신값. 실제 조회는 ID 내림차순 고정")),
                         responseFields(
                                 fieldWithPath("content[].id").description("공고 ID"),
                                 fieldWithPath("content[].title").description("공고 제목"),
                                 fieldWithPath("content[].language").description("기술 언어 목록"),
                                 fieldWithPath("content[].position").description("직무"),
                                 fieldWithPath("content[].image").description("이미지 URL"),
+                                fieldWithPath("content[].company").description("회사 또는 교육기관").optional(),
+                                fieldWithPath("content[].announcementType").description("EMP 또는 EDU").optional(),
+                                fieldWithPath("content[].minCareer").description("최소 경력").optional(),
+                                fieldWithPath("content[].maxCareer").description("최대 경력, 0이면 상한 없음").optional(),
+                                fieldWithPath("content[].payment").description("채용 연봉 또는 교육비, 만원").optional(),
+                                fieldWithPath("content[].startedDate").description("모집 시작 시각").optional(),
+                                fieldWithPath("content[].deadLineDate").description("모집 마감 시각").optional(),
                                 fieldWithPath("pageable.sort.empty").description("페이지 정렬 조건 없음 여부"),
                                 fieldWithPath("pageable.sort.sorted").description("Pageable 정렬 메타데이터 존재 여부. 실제 조회 순서를 보장하지 않음"),
                                 fieldWithPath("pageable.sort.unsorted").description("Pageable 정렬 메타데이터 없음 여부"),
