@@ -479,15 +479,20 @@ npx playwright test
 
 사용자 제공 `/Users/seungmin/Downloads/dempfrontend-redesigned.zip`을 디자인 기준으로 삼는다. **앱 이름은 DEMP로 유지**한다(화면·로고·문서 제목·메타데이터 포함). Phase 7의 완료 지점에서 양쪽 저장소의 `refactor/redesigned-discovery-and-bootcamp-filters` 브랜치와 별도 worktree로 시작한다. ZIP의 구형 인증·API·상태 코드는 가져오지 않고 Phase 7 코드에 디자인을 이식한다. 참고 사이트는 [원티드](https://www.wanted.co.kr/wdlist/518), [점핏](https://jumpit.saramin.co.kr/positions), [부트텐트](https://boottent.com/camps)이며 콘텐츠나 상표를 복제하지 않는다.
 
+2026-09-27 시작: 양쪽 브랜치 `refactor/redesigned-discovery-and-bootcamp-filters`, worktree `.worktrees/redesigned-discovery-and-bootcamp-filters/{backend,frontend}`. 기준 B3da14a5/F ac5b7fd. [실행 계획](docs/verification/redesigned-discovery/plan.md).
+
 ### T70 · 디자인 기준·공통 화면·Markdown 작성기
 
-- [ ] 추천·비추천·조회수·회원 이모지를 통일된 SVG 아이콘·아바타로 교체하고 숫자 배치, 접근 가능한 이름, 선택/비활성/포커스 상태 검증.
+- [x] 공고 목록·상세의 기술 배열을 `Java, Spring`처럼 쉼표로 구분해 표시하고 따옴표·괄호를 제거한다. ISO 날짜의 T/초를 숨기고 날짜·시간과 빈값을 공통 표시 함수로 정리해 검증한다.
+- [x] 추천·비추천·조회수·회원 이모지를 통일된 SVG 아이콘·아바타로 교체하고 숫자 배치, 접근 가능한 이름, 선택/비활성/포커스 상태 검증.
 
-- [ ] ZIP과 현재 라우트 전수 대조, 부족한 페이지·상태 목록과 디자인 계획을 기록한다.
-- [ ] ZIP의 색상·타이포·여백·카드·헤더를 공통 토큰으로 정리하고 DEMP 이름을 보존한다.
-- [ ] 로그인·가입·공고·질문/답변·작성 화면에 동일한 디자인을 적용한다. 기존 공개 계약과 보안 동작을 검증한다.
-- [ ] 사용자 추가 요청: 글쓰기 화면과 낡은 에디터를 교체한다. 공통 Markdown 작성기(제목/굵게/목록/링크/코드 도구, 작성·미리보기, 데스크톱 분할 보기, 모바일 입력/저장)를 질문·답변·공고에 적용한다. 기존 HTML 콘텐츠의 표시·편집·저장과 XSS 방어를 검증한다.
-- [ ] 모바일·키보드 포커스·명도 대비·reduced-motion을 확인하고 전체 unit/typecheck/lint/build 후 체크·커밋한다.
+- [x] ZIP과 현재 라우트 전수 대조, 부족한 페이지·상태 목록과 디자인 계획을 기록한다.
+- [x] ZIP의 색상·타이포·여백·카드·헤더를 공통 토큰으로 정리하고 DEMP 이름을 보존한다.
+- [x] 로그인·가입·공고·질문/답변·작성 화면에 동일한 디자인을 적용한다. 기존 공개 계약과 보안 동작을 검증한다.
+- [x] 사용자 추가 요청: 글쓰기 화면과 낡은 에디터를 교체한다. 공통 Markdown 작성기(제목/굵게/목록/링크/코드 도구, 작성·미리보기, 데스크톱 분할 보기, 모바일 입력/저장)를 질문·답변·공고에 적용한다. 기존 HTML 콘텐츠의 표시·편집·저장과 XSS 방어를 검증한다.
+- [x] 모바일·키보드 포커스·명도 대비·reduced-motion을 확인하고 전체 unit/typecheck/lint/build 후 체크·커밋한다.
+
+2026-09-27: [T70 실행·검증 기록](docs/verification/redesigned-discovery/t70.md). B205/F75, 타입·lint·build, 자동 E2E7 및 현재 cmux 실제 작성/저장/재조회 통과.
 
 ### T71 · 공고·부트캠프 필터
 
@@ -558,7 +563,7 @@ npx playwright test
 
 각 작업 완료 시 이 파일의 해당 항목 아래에 실행 날짜, Red 명령/실패 assertion, Green 최소 변경, Refactor 변경 이유, 대상/전체 검증 결과를 추가한다. 커밋을 명시적으로 요청받아 생성한 경우에만 SHA를 적는다. 순수 이름·구조 정리는 기존 Green 계약을 먼저 기록한다. 동작 변경의 Red가 처음부터 통과하면 회귀 재현에 실패한 것이므로 사례를 다시 구성한다. T00의 합의된 컴파일 복원은 이 기능 Red 기록과 분리한다.
 
-현재 상태(2026-09-27): Phase 0~6 구현·검증·main 병합·push 완료. Phase 7 T60 완료, T61 진행 중. Phase 8은 사용자 제공 디자인 및 DEMP 이름 유지 요청을 반영한 후속 작업이다.
+현재 상태(2026-09-27): Phase 0~6 구현·검증·main 병합·push 완료. Phase 7 완료. Phase 8 T70 완료, T71 필터와 T72 상태·최종 인수 진행 예정. Phase 9 관리자 기능은 미완료.
 
 ### 2026-09-21 Phase 1 리뷰 반영
 
