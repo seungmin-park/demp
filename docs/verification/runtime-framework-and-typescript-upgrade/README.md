@@ -18,7 +18,7 @@
 | Node | 18.18.2 | 24.21.0 LTS | [26은 아직 Current, 24는 LTS](https://nodejs.org/en/about/previous-releases) |
 | Vue | 3.2.36 | 3.5.43 stable | [고정 LTS 주기 없음](https://vuejs.org/about/releases), npm latest 실조회 |
 | 빌드·단위 테스트 | Vue CLI 5 / Jest 27 | Vite 8.3.1 / Vitest 5.0.2 | npm engines/peers 확인: Node24·Vite8 공통 지원 |
-| TypeScript | 없음 | 호환되는 최신 stable + vue-tsc | 설치 시 peer 범위와 실제 typecheck로 확인 |
+| TypeScript | 없음 | 6.0.3 / vue-tsc 3.3.11 | typescript-eslint 8.70.1 peer <6.1.0; strict typecheck 통과 |
 
 Spring의 마지막 minor 장기 지원은 유료 Enterprise 지원이다. Boot 3.5는 OSS 지원 종료가 공지됐으므로 최신 OSS 안정 4.1.1을 사용한다. 이를 LTS라고 부르지 않는다. [Spring 지원 정책](https://spring.io/support-policy), [3.5 최종 OSS 공지](https://spring.io/blog/2026/06/25/spring-boot-3-5-16-available-now/).
 
@@ -52,7 +52,7 @@ T60 기존 계약·실행 기준선
 
 ## 실행 원장
 
-T60 기준선 완료. 문서·환경 설정 변경이며 기능 Red/Green으로 주장하지 않는다. T61~T63은 미완료다.
+T60 기준선은 문서·환경 설정 변경이며 기능 Red/Green으로 주장하지 않는다. 이후 작업 결과는 아래 T61~T63 기록을 따른다.
 
 - 실제 cmux 가입 POST에서 초기 403: Origin `127.0.0.1:5050`과 기본 CORS `localhost:5050` 불일치. 실행 환경 `APP_CORS_ALLOWED_ORIGINS=http://127.0.0.1:5050` 설정 후 가입→로그인 화면 확인.
 - asdf Java 구형 plugin의 Zulu 압축 구조 대응: 설치 루트에서 `Contents/Home`의 각 자식으로 symlink를 연결하고 `asdf reshim java zulu-25.36.205`; `asdf exec java -version`에서 25.0.4.1 LTS 확인. 전역 선택 버전 불변.
@@ -101,3 +101,17 @@ T62 실제 cmux 검증(새 surface:13): 로컬 예제 계정 로그인 후 목�
 설치 재현: `npm ci` 333 packages, 최종 unit17 suite/48 test 통과, lint/build exit0. 남은 `vuex-persistedstate` deprecated 경고와 그 하위 `shvl` 경고는 T63의 직접 타입 있는 인증 저장으로 제거한다.
 
 실제 교육 필터는 기존28개를 초기화한 뒤 교육8→10개만 표시하고 마지막에서 멈췄다. cmux 실제 에디터 입력→질문 저장→상세 별도 조회로 본문 보존, Enter 태그 입력과 Vue 태그 보존을 확인했다. 이름·책임 검토: IntersectionObserver는 화면 가시성만 감지, API 모듈은 기존 검색 params와 8개 페이지 계약 유지, 목록 컴포넌트는 페이지/요청 세대/재시도 상태만 조정한다. 서버 전체 검색 계약을 유지하고 중복 ID만 제거한다. Form을 ValidationForm으로 명확히 구분하고 template을 표준 tbody/slot 문법으로 정리했다.
+
+## T63 TypeScript와 인증 저장 경계
+
+- TypeScript6.0.3/vue-tsc3.3.11/typescript-eslint8.70.1을 고정하고 strict `vue-tsc --noEmit`을 CI 필수 단계로 추가했다. 최신 TS7은 현재 lint parser 지원 범위 밖이므로 사용하지 않았다. Vuex4 package exports의 타입 경로 누락은 패키지의 공식 선언 파일에 paths를 연결했다.
+- 모든 제품 JS와 Vue script를 TS로 옮겼다. API DTO → store/root state → router/URL → typed mitt 이벤트 → Vue 상태·props/emits·템플릿을 검사한다. 제품 `any`, ts-ignore/nocheck 없음. 기존 tests/config/server.cjs는 JS 유지. 외부 선언 충돌만 skipLibCheck하며 제품 strict는 켜져 있다. Summernote CDN에는 사용하는 code/options 오버로드만 임시 선언했다.
+- **런타임 Red 2개**: 기존 저장소가 username:number/token:object를 그대로 인증 상태로 복원했다. 저장 quota 예외는 commit 호출까지 전파됐다(`/tmp/demp-t63-persistence-red.log`). 저장 JSON을 unknown으로 읽어 문자열을 확인하고, 읽기/쓰기 거부 시 메모리 상태를 유지하도록 최소 plugin으로 바꿨다. 기존 vuex 키/모양은 동일. 기존 형식 복원·잘못된 타입·깨진 JSON·로그아웃 저장·저장 거부 5개 Green. deprecated vuex-persistedstate 및 shvl 제거.
+- **런타임 Red 1개**: company:null 공고의 관련 목록 렌더링이 TypeError로 중단돼 제목 assertion 실패(`/tmp/demp-t63-null-company-red.log`). nullable 회사 이름을 빈 문자열로 표시해 전체 카드가 유지된다.
+- **타입 검사 실패 증거**: API login 반환 JWT에 number를 넣었을 때 TS2322 발생(`/tmp/demp-t63-contract-red.log`). 최종 type contract는 ts-expect-error로 해당 잘못된 값이 계속 거절되는지 검사한다. 이는 런타임 기능 Red와 구분한다. 초기 SFC 미선언 상태/라우트 배열/잘못된 key 등의 컴파일 오류도 타입 이관 오류로 기록한다.
+- Refactor/책임: persistAuthentication은 저장 경계만, Login 모듈은 인증 상태만, Axios는 HTTP/401 처리만 담당한다. API 이름은 기존 공개 유스케이스를 보존했다. routeId/queryText는 Router5의 단일·배열 값을 경계에서 정리한다. JSX가 아닌 Vue template에서 this를 제거하고 직무·태그 문자열과 서버 answerId를 key로 사용했다. props/event와 렌더링·상태·API 경계를 기준으로 검토했고 Vue 컴포넌트 자체를 SOLID 점수화하지 않았다. TS 모듈은 서로 좁은 DTO·이벤트 계약만 공유하며 단순 위임 클래스를 추가하지 않았다.
+- fixture 대조: MemberDto(id/username), QuestionAnswer(answerId), AnnouncementDetailResponse(payment/nullable fields), Slice(number/last)를 서버 DTO와 대조해 자동 E2E 대역도 보완했다. 실제 서버 API 14개 assertion은 cmux 보조 pane에서 별도로 통과했다.
+- 실제 cmux 내장 브라우저: 로그아웃→local-member 로그인→새로고침에도 로그인 유지, 스크롤8→16개(중복 없음), 교육 전환 시 기존 채용 제거 후 교육8개. 토큰 값은 로그에 출력하지 않았다. 러너의 네트워크 mock/503/지연은 내장 브라우저에서 지원하지 않아 Playwright 회귀 결과와 구분한다.
+- 문서: 프런트 README에 설치·타입 도구 peer 선택·남은 JS/any·인증 저장 형식·롤백을 기록했다. API/DB 변경 없음. 원격 CI/운영 배포는 실행하지 않았다.
+
+T63 최종 게이트: `npm ci`354개 → unit19 suites/54 tests → typecheck/lint/build exit0. 마지막 Playwright는 **7 passed (4.6s)**, 러너 pipeline exit0 후 서버 유지. 직전 재설치 직후 실행은 5개 navigation/module-load timeout, 2개 pass로 실패했다. 같은 코드·assertion·30초 제한을 유지한 재시작에서 전체 통과했다. CLI 조회까지 약46초 걸렸던 시점과 겹치나 지연의 근본 원인은 확정하지 않는다. 실패 trace는 `/tmp/demp-t63-cold-start-failure/test-results/`, 원본 로그는 같은 디렉터리 e2e.log에 보존했다. 시간 제한 증가·assertion 완화 없음. 최종 로그 `/tmp/demp-t63-final-{unit,typecheck,lint,build}.log`, `/tmp/demp-t63-{ci,e2e,spring,vue}.log`.

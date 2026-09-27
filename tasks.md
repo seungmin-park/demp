@@ -470,16 +470,18 @@ npx playwright test
 
 ### T63 · TypeScript 단계적 도입
 
-- [ ] `tsconfig`, 타입 검사 명령, Vue SFC 타입 지원, CI 필수 검사를 마련하고 작은 API 모듈 하나로 실패→통과를 확인한다.
-- [ ] API 요청/응답 DTO, 인증 상태, 라우트, 비동기 목록 상태를 경계부터 타입화한다. `any` 사용 이유와 남은 JS 범위를 기록한다.
-- [ ] Vue 컴포넌트를 기능 단위로 옮기며 props/emits와 nullable 응답을 검증한다. 각 단위마다 테스트·타입 검사·lint·build를 실행한다.
-- [ ] 양쪽 계약 fixture, 전체 E2E, 배포·롤백 절차와 README를 갱신하고 최종 전체 검증 결과를 기록한다.
+- [x] `tsconfig`, 타입 검사 명령, Vue SFC 타입 지원, CI 필수 검사를 마련하고 작은 API 모듈 하나로 실패→통과를 확인한다.
+- [x] API 요청/응답 DTO, 인증 상태, 라우트, 비동기 목록 상태를 경계부터 타입화한다. `any` 사용 이유와 남은 JS 범위를 기록한다.
+- [x] Vue 컴포넌트를 기능 단위로 옮기며 props/emits와 nullable 응답을 검증한다. 각 단위마다 테스트·타입 검사·lint·build를 실행한다.
+- [x] 양쪽 계약 fixture, 전체 E2E, 배포·롤백 절차와 README를 갱신하고 최종 전체 검증 결과를 기록한다.
 
 ## Phase 8 · 제공 디자인 적용과 채용·부트캠프 탐색 개선
 
 사용자 제공 `/Users/seungmin/Downloads/dempfrontend-redesigned.zip`을 디자인 기준으로 삼는다. **앱 이름은 DEMP로 유지**한다(화면·로고·문서 제목·메타데이터 포함). Phase 7의 완료 지점에서 양쪽 저장소의 `refactor/redesigned-discovery-and-bootcamp-filters` 브랜치와 별도 worktree로 시작한다. ZIP의 구형 인증·API·상태 코드는 가져오지 않고 Phase 7 코드에 디자인을 이식한다. 참고 사이트는 [원티드](https://www.wanted.co.kr/wdlist/518), [점핏](https://jumpit.saramin.co.kr/positions), [부트텐트](https://boottent.com/camps)이며 콘텐츠나 상표를 복제하지 않는다.
 
 ### T70 · 디자인 기준·공통 화면·Markdown 작성기
+
+- [ ] 추천·비추천·조회수·회원 이모지를 통일된 SVG 아이콘·아바타로 교체하고 숫자 배치, 접근 가능한 이름, 선택/비활성/포커스 상태 검증.
 
 - [ ] ZIP과 현재 라우트 전수 대조, 부족한 페이지·상태 목록과 디자인 계획을 기록한다.
 - [ ] ZIP의 색상·타이포·여백·카드·헤더를 공통 토큰으로 정리하고 DEMP 이름을 보존한다.
