@@ -18,8 +18,8 @@ Expected: clean test asciidoctor bootJar 종료0, production 설정 임시 DB st
 Consumes: T60 런타임. Produces: 보존된 API 계약과 JDK25 산출물.
 
 ## Task 62: Node/Vue 도구
-Node24/Vue stable, Vite/Vitest, 불필요한 legacy 의존성 정리, lock/CI 갱신. 기존 테스트를 동등한 assertion으로 이식.
-Expected: npm ci, 전체 unit, lint, build, headed Playwright 및 cmux 실제 사용자 흐름 통과. 기록·체크·커밋.
+Node24/Vue stable, Vite/Vitest, 불필요한 legacy 의존성 정리, lock/CI 갱신. 기존 테스트를 동등한 assertion으로 이식. 사용자 추가 요구에 따라 실제 인피니티 스크롤을 Red→Green으로 추가하고 중복/경합/재시도/마지막 페이지를 검증.
+Expected: npm ci, 전체 unit, lint, build, Playwright 자동 assertion 로그 및 cmux 내장 브라우저 실제 사용자 흐름 통과. 기록·체크·커밋.
 Consumes: T60 런타임 및 T61 API. Produces: TypeScript 지원 가능한 도구.
 
 ## Task 63: TypeScript

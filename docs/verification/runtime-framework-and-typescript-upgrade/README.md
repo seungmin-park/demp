@@ -84,3 +84,20 @@ T60 기준선 완료. 문서·환경 설정 변경이며 기능 Red/Green으로 
 - 최종 로그 `/tmp/demp-t61-final.log`, 경계 검증 `/tmp/demp-t61-boundaries.log`, 서버 `/tmp/demp-t61-spring.log`, 브라우저 앱 서버 `/tmp/demp-t61-vue.log`.
 - Gradle 10 예정 deprecation 및 JVM native access/Mockito attach 경고는 현재 실행 실패가 아니다. Windows wrapper는 생성 파일을 갱신했지만 Windows 실행은 검증하지 않았다.
 - 배포/rollback 및 H2 1.4 파일 이관 주의는 루트 README에 기록했다. Java 25 CI 설정은 갱신했으며 원격 Actions 실행은 아직 수행하지 않았다.
+
+
+## T62 Node/Vue 및 인피니티 스크롤
+
+- Node24.21.0/Vue3.5.43, Router5.3.1, Vite8.3.1/Vitest5.0.2, jsdom30.1.1, ESLint10.11 조합. registry engines/peers 대조 후 설치했다. 최신 TypeScript7은 현재 typescript-eslint peer 범위(<6.1) 밖이므로 T63에서 호환되는 안정 6.0.3을 우선 사용한다.
+- 기존 unit45 assertion 보존. Vitest cleanup이 드러낸 불완전 emitter mock(off 없음), 새 Test Utils setData의 File 병합, Vite 동적 import를 기다리는 라우터 테스트 차이를 수정했다. 파일 선택은 실제 input change 이벤트로 보강했다. 기능 Red로 주장하지 않는다.
+- **스크롤 Red**: 신규 3개 테스트에서 끝 감지 후 API 호출이 1회에 머물러 expected2 실패, 필터 변경 expected3/actual2, 실패 안내 미표시. IntersectionObserver 연결·중복 ID 제거·요청 세대 유지·observer 해제로 전체 48개 Green.
+- headed Playwright7개를 cmux terminal surface:7에서 실행해 통과(exit0). 기존4개와 실제 스크롤3개(18개 카드/페이지0→1→2, 실패페이지1 재시도, 필터 변경 중 늦은 페이지 폐기).
+- 최초 E2E fixture `**/api/**`는 Vite `/src/api/auth.js`도 가로챘다. 정확한 origin `/api/**`로 제한해 해결했다. 앱 소스 404로 빈 화면이 된 테스트 인프라 문제이며 기능 Red가 아니다.
+- 사용자가 외부 Chromium 창 대신 cmux pane을 요청했다. 이후 실제 UI 조작은 내장 브라우저로 진행하며 러너 자동 assertion 로그와 실제 Spring 연결 검증을 구분한다. 기존 보조 pane이 닫혀 새 terminal surface:12/pane:9 및 browser surface:13/pane:10을 workspace:2에 만들었다. 두 pane을 동시에 표시하고 호출 surface:3 포커스를 유지한다.
+- 국내 서비스·기업 채용 페이지 조사: [디자인 판단 기록](../../design/redesigned-discovery.md). 잡코리아 본문은 Firecrawl proxy 오류로 2회 실패하여 구체적 UI를 확인했다고 기록하지 않는다.
+
+T62 실제 cmux 검증(새 surface:13): 로컬 예제 계정 로그인 후 목록 끝 이동으로 **8→16→24→28개**, 각 단계 중복 제목/ID fixture 없음, 마지막 안내 true. API는 fixture route가 아니라 Java25/Spring4 임시 H2에서 반환했다. `scroll --dy`는 이 WKWebView에서 window.scrollY를 바꾸지 않아 공식 `scroll-into-view` 명령으로 목록 끝을 이동했으며 해당 교차 이벤트가 다음 요청을 발생시켰다. 이전 임시 서버의 만료 세션은 로그인으로 이동하고 clear 처리됐다. 내장 브라우저는 네트워크 mock을 지원하지 않으므로 503/응답 지연 자동 assertion은 Playwright 7개 통과 결과로 따로 기록한다.
+
+설치 재현: `npm ci` 333 packages, 최종 unit17 suite/48 test 통과, lint/build exit0. 남은 `vuex-persistedstate` deprecated 경고와 그 하위 `shvl` 경고는 T63의 직접 타입 있는 인증 저장으로 제거한다.
+
+실제 교육 필터는 기존28개를 초기화한 뒤 교육8→10개만 표시하고 마지막에서 멈췄다. cmux 실제 에디터 입력→질문 저장→상세 별도 조회로 본문 보존, Enter 태그 입력과 Vue 태그 보존을 확인했다. 이름·책임 검토: IntersectionObserver는 화면 가시성만 감지, API 모듈은 기존 검색 params와 8개 페이지 계약 유지, 목록 컴포넌트는 페이지/요청 세대/재시도 상태만 조정한다. 서버 전체 검색 계약을 유지하고 중복 ID만 제거한다. Form을 ValidationForm으로 명확히 구분하고 template을 표준 tbody/slot 문법으로 정리했다.

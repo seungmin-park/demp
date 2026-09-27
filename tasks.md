@@ -457,13 +457,16 @@ npx playwright test
 - [x] Security/JPA/validation/REST Docs 설정과 인증, 트랜잭션, 페이지네이션, 파일 업로드 계약을 회귀 테스트로 검증한다.
 - [x] `clean test asciidoctor bootJar`와 운영 프로필 시작·종료를 확인하고 배포 JDK 설정을 갱신한다.
 
-2026-09-27: [T61 기록](docs/verification/runtime-framework-and-typescript-upgrade/README.md#t61-java·spring-전환-검증). Zulu25/Gradle9.8/Boot4.1.1 전환, 기존 sequence/enum 보존 Red→Green, H2 upstream CHECK 오류 수정. 전체 34 suite·197 test, REST Docs·bootJar 성공. 현재 cmux에서 실제 API14·브라우저 가입/로그인 확인. 운영 설정 재시작은 격리 H2로 검증했으며 운영 MySQL은 미접속.
+2026-09-27: [T61 기록](docs/verification/runtime-framework-and-typescript-upgrade/README.md). Zulu25/Gradle9.8/Boot4.1.1 전환, 기존 sequence/enum 보존 Red→Green, H2 upstream CHECK 오류 수정. 전체 34 suite·197 test, REST Docs·bootJar 성공. 현재 cmux에서 실제 API14·브라우저 가입/로그인 확인. 운영 설정 재시작은 격리 H2로 검증했으며 운영 MySQL은 미접속.
 
 ### T62 · Node·Vue 업그레이드
 
-- [ ] 지원되는 Node/npm 버전과 Vue 생태계(Vue, Router, Vuex 또는 대체 상태 관리, CLI 또는 빌드 도구, Jest 또는 대체 러너)의 목표 조합을 결정한다.
-- [ ] lockfile을 갱신하고 `npm ci`, 컴포넌트 테스트, lint, build, E2E를 순서대로 실행한다.
-- [ ] 인증 만료, 검색·페이지 응답 역전, 에디터·태그 입력, 공고 더보기의 실제 브라우저 흐름을 확인한다.
+- [x] 지원되는 Node/npm 버전과 Vue 생태계(Vue, Router, Vuex 또는 대체 상태 관리, CLI 또는 빌드 도구, Jest 또는 대체 러너)의 목표 조합을 결정한다.
+- [x] lockfile을 갱신하고 `npm ci`, 컴포넌트 테스트, lint, build, E2E를 순서대로 실행한다.
+- [x] 인증 만료, 검색·페이지 응답 역전, 에디터·태그 입력, 공고 더보기의 실제 브라우저 흐름을 확인한다.
+- [x] 사용자 추가 요청: 여러 페이지 분량의 격리 데이터로 인피니티 스크롤을 실제 cmux에서 확인한다. 다음 페이지 1회 요청·중복 방지·필터 변경 시 초기화·응답 역전·마지막 페이지·오류 재시도를 자동 E2E에도 고정한다.
+
+2026-09-27: Node24.21/Vue3.5.43/Router5.3.1/Vite8.3.1/Vitest5.0.2, npm ci333개. 기존45개와 스크롤 Red→Green3개로 unit48개, lint/build 통과. 자동 E2E7개 exit0. 현재 cmux 내장 브라우저와 실제 Spring/H2에서 8→16→24→28개, 교육 필터8→10개 확인. 실제 에디터·태그 입력/저장/재조회 및 인증 만료 이동 확인. [자세한 기록](docs/verification/runtime-framework-and-typescript-upgrade/README.md).
 
 ### T63 · TypeScript 단계적 도입
 
@@ -476,16 +479,17 @@ npx playwright test
 
 사용자 제공 `/Users/seungmin/Downloads/dempfrontend-redesigned.zip`을 디자인 기준으로 삼는다. **앱 이름은 DEMP로 유지**한다(화면·로고·문서 제목·메타데이터 포함). Phase 7의 완료 지점에서 양쪽 저장소의 `refactor/redesigned-discovery-and-bootcamp-filters` 브랜치와 별도 worktree로 시작한다. ZIP의 구형 인증·API·상태 코드는 가져오지 않고 Phase 7 코드에 디자인을 이식한다. 참고 사이트는 [원티드](https://www.wanted.co.kr/wdlist/518), [점핏](https://jumpit.saramin.co.kr/positions), [부트텐트](https://boottent.com/camps)이며 콘텐츠나 상표를 복제하지 않는다.
 
-### T70 · 디자인 기준과 공통 화면
+### T70 · 디자인 기준·공통 화면·Markdown 작성기
 
 - [ ] ZIP과 현재 라우트 전수 대조, 부족한 페이지·상태 목록과 디자인 계획을 기록한다.
 - [ ] ZIP의 색상·타이포·여백·카드·헤더를 공통 토큰으로 정리하고 DEMP 이름을 보존한다.
 - [ ] 로그인·가입·공고·질문/답변·작성 화면에 동일한 디자인을 적용한다. 기존 공개 계약과 보안 동작을 검증한다.
+- [ ] 사용자 추가 요청: 글쓰기 화면과 낡은 에디터를 교체한다. 공통 Markdown 작성기(제목/굵게/목록/링크/코드 도구, 작성·미리보기, 데스크톱 분할 보기, 모바일 입력/저장)를 질문·답변·공고에 적용한다. 기존 HTML 콘텐츠의 표시·편집·저장과 XSS 방어를 검증한다.
 - [ ] 모바일·키보드 포커스·명도 대비·reduced-motion을 확인하고 전체 unit/typecheck/lint/build 후 체크·커밋한다.
 
 ### T71 · 공고·부트캠프 필터
 
-- [ ] 세 참고 사이트의 실제 필터를 관찰하고 DEMP가 저장하는 필드와 대조해 조건별 지원 범위를 확정한다.
+- [ ] 원티드·점핏·사람인·잡코리아와 네이버·카카오·토스·당근의 자체 채용 페이지 등 다수 사례를 조사한다. 필터·공고 카드·상세 구조·지원 동선·모바일·모집 상태별 장점과 DEMP 반영/제외 이유를 비교표에 남긴다. 부트캠프는 부트텐트를 별도 참고한다. DEMP가 저장하는 필드와 대조해 조건별 지원 범위를 확정한다.
 - [ ] 채용과 교육의 필터를 각각 설계한다. 선택 조건 칩·개별 해제·전체 초기화·결과 안내·모바일 필터를 구현한다.
 - [ ] URL에 필터를 저장해 새로고침·뒤로 가기·링크 공유 때 동일한 결과가 나오게 한다.
 - [ ] API에서 지원하지 않는 필터가 필요하면 저장·작성·조회 계약을 먼저 추가한다. 일부 로드된 카드만 거르거나 없는 정보를 추측하지 않는다.
