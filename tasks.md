@@ -712,7 +712,7 @@ npx playwright test
 
 각 작업 완료 시 이 파일의 해당 항목 아래에 실행 날짜, Red 명령/실패 assertion, Green 최소 변경, Refactor 변경 이유, 대상/전체 검증 결과를 추가한다. 커밋을 명시적으로 요청받아 생성한 경우에만 SHA를 적는다. 순수 이름·구조 정리는 기존 Green 계약을 먼저 기록한다. 동작 변경의 Red가 처음부터 통과하면 회귀 재현에 실패한 것이므로 사례를 다시 구성한다. T00의 합의된 컴파일 복원은 이 기능 Red 기록과 분리한다.
 
-현재 상태(2026-09-27): Phase 0~6 구현·검증·main 병합·push 완료. Phase 7 완료. Phase 8 T70~T72 완료. Phase 9 T80~T84 구현·검증 완료. T85·T85A 조사·점검 완료, 후속 운영 모델 설계/구현은 별도 미완료 항목으로 기록. Phase 7~9 작업 브랜치 유지.
+현재 상태(2026-09-28): Phase 0~12 및 마지막 보류 항목 T97 생성자 제한·builder 통일 완료. QA·전체 검증·main 병합·push 완료. 남은 미체크 항목 없음. 작업 브랜치/worktree 유지. 상세 검증과 기능별 의도적 범위는 각 Phase 기록 참조.
 
 ### 2026-09-21 Phase 1 리뷰 반영
 
@@ -727,6 +727,8 @@ npx playwright test
 계획: [controlled-domain-construction](docs/plans/controlled-domain-construction.md)
 브랜치: `refactor/controlled-domain-construction`, worktree: `.worktrees/controlled-domain-construction/backend`.
 
-- [ ] T98: 전체 테스트·빌드·현재 cmux의 생성 흐름 QA·최종 리뷰 후 main 병합·push. 브랜치와 worktree 보존.
+- [x] T98: 전체 테스트·빌드·현재 cmux의 생성 흐름 QA·최종 리뷰 후 main 병합·push. 브랜치와 worktree 보존.
 
 T97 결과: 공개 생성자/JPA 접근 계약 Red 28건 중 17건 assertion 실패 → private 생성자 builder와 protected JPA 기본 생성자로 Green. 전체 299건(기존 271+계약 28) 실패·스킵 0, REST Docs·bootJar 통과. 모든 호출부를 builder로 이전했고 DTO 바인딩 생성자와 Question.addHashtag의 양방향 관계 조립은 유지했다. 별도 리뷰 중요 결함 없음, 제안된 테스트 줄바꿈 개선 반영 후 299건 재통과. [상세 검증](docs/verification/controlled-domain-construction/t97-t98.md).
+
+T98 결과: 현재 cmux workspace:2의 기존 보조 pane에서 회원 가입→로그인→질문→답변→새로고침 검증 완료. 실제 HTTP 공고·교육·제보·게시 이력·중복/권한/빈 검색 assertion 종료 0. T97 `f545e10`, main 병합 `31a0ebf` 및 원격 push 완료. 병합된 main 전체 299건 실패·스킵 0 재확인. 프런트 변경 없음(직전 QA 기록 유지). 브랜치/worktree와 QA pane 보존.

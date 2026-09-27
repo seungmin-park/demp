@@ -1,0 +1,81 @@
+> Task :compileJava
+> Task :processResources UP-TO-DATE
+> Task :classes
+
+> Task :compileTestJava
+Note: Some input files use or override a deprecated API.
+Note: Recompile with -Xlint:deprecation for details.
+
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2026-09-28T02:20:34.441+09:00  INFO 48304 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-28T02:20:34.441+09:00  INFO 48304 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-09-28T02:20:34.442+09:00  INFO 48304 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2026-09-28T02:20:34.443+09:00  INFO 48304 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-28T02:20:34.443+09:00  INFO 48304 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown initiated...
+2026-09-28T02:20:34.443+09:00  INFO 48304 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Shutdown completed.
+2026-09-28T02:20:34.444+09:00  INFO 48304 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-28T02:20:34.444+09:00  INFO 48304 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown initiated...
+2026-09-28T02:20:34.445+09:00  INFO 48304 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-3 - Shutdown completed.
+2026-09-28T02:20:34.446+09:00  INFO 48304 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-28T02:20:34.449+09:00 DEBUG 48304 --- [ionShutdownHook] org.hibernate.SQL                        : 
+    drop table if exists announcement cascade 
+2026-09-28T02:20:34.449+09:00 DEBUG 48304 --- [ionShutdownHook] org.hibernate.SQL                        : 
+    drop table if exists announcement_body_image cascade 
+2026-09-28T02:20:34.449+09:00 DEBUG 48304 --- [ionShutdownHook] org.hibernate.SQL                        : 
+    drop table if exists announcement_revision cascade 
+2026-09-28T02:20:34.449+09:00 DEBUG 48304 --- [ionShutdownHook] org.hibernate.SQL                        : 
+    drop table if exists announcement_report cascade 
+2026-09-28T02:20:34.450+09:00 DEBUG 48304 --- [ionShutdownHook] org.hibernate.SQL                        : 
+    drop table if exists answer cascade 
+2026-09-28T02:20:34.450+09:00 DEBUG 48304 --- [ionShutdownHook] org.hibernate.SQL                        : 
+    drop table if exists hashtag cascade 
+2026-09-28T02:20:34.450+09:00 DEBUG 48304 --- [ionShutdownHook] org.hibernate.SQL                        : 
+    drop table if exists language cascade 
+2026-09-28T02:20:34.450+09:00 DEBUG 48304 --- [ionShutdownHook] org.hibernate.SQL                        : 
+    drop table if exists member cascade 
+2026-09-28T02:20:34.450+09:00 DEBUG 48304 --- [ionShutdownHook] org.hibernate.SQL                        : 
+    drop table if exists member_roles cascade 
+2026-09-28T02:20:34.450+09:00 DEBUG 48304 --- [ionShutdownHook] org.hibernate.SQL                        : 
+    drop table if exists question cascade 
+2026-09-28T02:20:34.450+09:00 DEBUG 48304 --- [ionShutdownHook] org.hibernate.SQL                        : 
+    drop table if exists question_hashtag cascade 
+2026-09-28T02:20:34.450+09:00 DEBUG 48304 --- [ionShutdownHook] org.hibernate.SQL                        : 
+    drop sequence if exists hibernate_sequence
+2026-09-28T02:20:34.450+09:00 DEBUG 48304 --- [ionShutdownHook] org.hibernate.SQL                        : 
+    drop sequence if exists member_sequence
+2026-09-28T02:20:34.450+09:00 DEBUG 48304 --- [ionShutdownHook] org.hibernate.SQL                        : 
+    drop sequence if exists que_sequence
+2026-09-28T02:20:34.450+09:00  INFO 48304 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-13 - Shutdown initiated...
+2026-09-28T02:20:34.450+09:00  INFO 48304 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-13 - Shutdown completed.
+2026-09-28T02:20:34.454+09:00  INFO 48304 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-28T02:20:34.454+09:00  INFO 48304 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-28T02:20:34.455+09:00  INFO 48304 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-28T02:20:34.455+09:00  INFO 48304 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-14 - Shutdown initiated...
+2026-09-28T02:20:34.455+09:00  INFO 48304 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-14 - Shutdown completed.
+2026-09-28T02:20:34.456+09:00  INFO 48304 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-28T02:20:34.456+09:00  INFO 48304 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-15 - Shutdown initiated...
+2026-09-28T02:20:34.457+09:00  INFO 48304 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-15 - Shutdown completed.
+2026-09-28T02:20:34.457+09:00  INFO 48304 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-28T02:20:34.458+09:00  INFO 48304 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-16 - Shutdown initiated...
+2026-09-28T02:20:34.458+09:00  INFO 48304 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-16 - Shutdown completed.
+2026-09-28T02:20:34.459+09:00  INFO 48304 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-28T02:20:34.459+09:00  INFO 48304 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-17 - Shutdown initiated...
+2026-09-28T02:20:34.460+09:00  INFO 48304 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-17 - Shutdown completed.
+2026-09-28T02:20:34.461+09:00  INFO 48304 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-28T02:20:34.461+09:00  INFO 48304 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-18 - Shutdown initiated...
+2026-09-28T02:20:34.478+09:00  INFO 48304 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-18 - Shutdown completed.
+> Task :test
+
+[Incubating] Problems report is available at: file:///Users/seungmin/Desktop/repo/archive/demp/build/reports/problems/problems-report.html
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.8.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD SUCCESSFUL in 20s
+5 actionable tasks: 3 executed, 2 up-to-date
+Consider enabling configuration cache to speed up this build: https://docs.gradle.org/9.8.0/userguide/configuration_cache_enabling.html
