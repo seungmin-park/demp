@@ -15,4 +15,7 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
     @EntityGraph(attributePaths = {"member", "question"})
     @Query("select q from Answer q where lower(q.question.title) like lower(concat('%', :term, '%')) escape '!' or lower(q.member.username) like lower(concat('%', :term, '%')) escape '!'")
     Page<Answer> searchForAdmin(String term, Pageable pageable);
+    @org.springframework.data.jpa.repository.Lock(jakarta.persistence.LockModeType.PESSIMISTIC_WRITE)
+    @Query("select item from Answer item where item.id = :id")
+    java.util.Optional<Answer> findByIdForReaction(Long id);
 }

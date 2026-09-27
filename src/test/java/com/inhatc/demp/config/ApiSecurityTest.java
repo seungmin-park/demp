@@ -260,6 +260,46 @@ class ApiSecurityTest {
         } finally { members.findByUsername("admin-injection").ifPresent(m -> memberIds.add(m.getId())); }
     }
 
+    @ParameterizedTest
+    @DisplayName("회원 반응은 저장되고 중복 요청·전환·취소 후 조회에도 반영된다")
+    @ValueSource(strings = {"question", "answer"})
+    void persistsReactions(String kind) throws Exception {
+        Member voter = member("reaction-voter", List.of("ROLE_USER"));
+        Member other = member("reaction-other", List.of("ROLE_USER"));
+        Question question = question(voter);
+        Answer answer = Answer.builder().content("답변").recommend(2).dislike(1).build();
+        answer.assignMember(voter); answer.assignQuestion(question); answers.save(answer);
+        long id = kind.equals("question") ? question.getId() : answer.getId();
+        int baseUp = kind.equals("question") ? 0 : 2;
+        int baseDown = kind.equals("question") ? 0 : 1;
+        String path = "/api/" + kind + "/" + id + "/reaction";
+        mvc.perform(put(path).contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(java.util.Map.of("reaction", "RECOMMEND"))))
+                .andExpect(status().isUnauthorized());
+        for (int repeat = 0; repeat < 2; repeat++) {
+            mvc.perform(put(path).header("X-AUTH-TOKEN", token(voter)).contentType(MediaType.APPLICATION_JSON)
+                    .content(mapper.writeValueAsString(java.util.Map.of("reaction", "RECOMMEND", "memberId", other.getId()))))
+                    .andExpect(status().isOk()).andExpect(jsonPath("$.recommend").value(baseUp + 1))
+                    .andExpect(jsonPath("$.myReaction").value("RECOMMEND"));
+        }
+        String readPath = kind.equals("question") ? "/api/question/detail/" + id : "/api/answer/" + question.getId();
+        String prefix = kind.equals("question") ? "$" : "$[0]";
+        mvc.perform(get(readPath).header("X-AUTH-TOKEN", token(voter)))
+                .andExpect(status().isOk()).andExpect(jsonPath(prefix + ".myReaction").value("RECOMMEND"));
+        mvc.perform(get(readPath).header("X-AUTH-TOKEN", token(other)))
+                .andExpect(status().isOk()).andExpect(jsonPath(prefix + ".myReaction").value("NONE"));
+        mvc.perform(put(path).header("X-AUTH-TOKEN", token(voter)).contentType(MediaType.APPLICATION_JSON)
+                .content(mapper.writeValueAsString(java.util.Map.of("reaction", "DISLIKE"))))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.recommend").value(baseUp))
+                .andExpect(jsonPath("$.dislike").value(baseDown + 1));
+        for (int repeat = 0; repeat < 2; repeat++) {
+            mvc.perform(put(path).header("X-AUTH-TOKEN", token(voter)).contentType(MediaType.APPLICATION_JSON)
+                    .content(mapper.writeValueAsString(java.util.Map.of("reaction", "NONE"))))
+                    .andExpect(status().isOk()).andExpect(jsonPath("$.recommend").value(baseUp))
+                    .andExpect(jsonPath("$.dislike").value(baseDown)).andExpect(jsonPath("$.myReaction").value("NONE"));
+        }
+    }
+
     private Member member(String username, List<String> roles) {
         Member member = members.save(Member.builder()
                 .username(username)

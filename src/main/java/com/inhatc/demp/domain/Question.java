@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@org.hibernate.annotations.DynamicUpdate
 @Getter
 @SequenceGenerator(name = "que_id_generator",
         sequenceName = "que_sequence",allocationSize = 1)
@@ -82,5 +83,9 @@ public class Question {
     public void updateQuestion(String title, String content) {
         this.title = title;
         this.content = content;
+    }
+    public void changeReaction(ReactionType previous, ReactionType next) {
+        recommend += next.recommendValue() - previous.recommendValue();
+        dislike += next.dislikeValue() - previous.dislikeValue();
     }
 }

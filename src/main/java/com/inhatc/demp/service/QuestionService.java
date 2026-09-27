@@ -21,6 +21,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class QuestionService {
 
+    private final com.inhatc.demp.repository.ContentReactionRepository reactions;
     private final QuestionRepository questionRepository;
     private final QuestionQueryRepository questionQueryRepository;
     private final MemberRepository memberRepository;
@@ -61,6 +62,12 @@ public class QuestionService {
         return questionRepository.findById(id)
                 .map(QuestionDetail::new)
                 .orElseThrow(ResourceNotFoundException::new);
+    }
+
+    public QuestionDetail findById(Long id, Long actorId) {
+        QuestionDetail detail = findById(id);
+        reactions.findByMember_IdAndQuestion_Id(actorId, id).ifPresent(vote -> detail.setMyReaction(vote.getReaction()));
+        return detail;
     }
 
     @Transactional

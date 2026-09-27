@@ -17,3 +17,19 @@ include::Announcement-API.adoc[]
 include::Errors-API.adoc[]
 
 include::Admin-API.adoc[]
+
+== 질문·답변 반응
+
+로그인 회원당 대상 하나에 선택 하나를 저장합니다. 같은 버튼을 다시 누를 때 클라이언트는 NONE을 보냅니다.
+PUT 재전송은 중복 집계하지 않습니다. 기존 집계는 보존하고 신규 회원별 선택부터 기록합니다.
+
+=== 질문
+include::{snippets}/question-reaction/http-request.adoc[]
+include::{snippets}/question-reaction/path-parameters.adoc[]
+include::{snippets}/question-reaction/request-fields.adoc[]
+include::{snippets}/question-reaction/http-response.adoc[]
+include::{snippets}/question-reaction/response-fields.adoc[]
+
+=== 답변
+include::{snippets}/answer-reaction/http-request.adoc[]
+include::{snippets}/answer-reaction/http-response.adoc[]

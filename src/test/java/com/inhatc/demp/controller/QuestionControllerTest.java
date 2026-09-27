@@ -98,7 +98,7 @@ class QuestionControllerTest {
     @Test
     @DisplayName("없는 질문의 상세 조회는 공통 오류 본문과 404를 반환한다")
     void missingQuestionDetail() throws Exception {
-        when(questionService.findById(999L)).thenThrow(new com.inhatc.demp.error.ResourceNotFoundException());
+        when(questionService.findById(999L, 41L)).thenThrow(new com.inhatc.demp.error.ResourceNotFoundException());
 
         mockMvc.perform(get("/api/question/detail/999"))
                 .andExpect(status().isNotFound())

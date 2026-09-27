@@ -20,6 +20,7 @@ public class QuestionDetail {
     private int hits;
     private int recommend;
     private int dislike;
+    private com.inhatc.demp.domain.ReactionType myReaction = com.inhatc.demp.domain.ReactionType.NONE;
     private String username;
 
     private List<String> hashtags = new ArrayList<>();
