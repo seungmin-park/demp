@@ -39,3 +39,5 @@ out/
 
 # Local-only persistent H2 database
 .local/
+
+.firecrawl/
