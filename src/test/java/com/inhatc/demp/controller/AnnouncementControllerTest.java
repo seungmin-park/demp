@@ -51,7 +51,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @MockitoBean(types = JwtTokenProvider.class)
 @WebMvcTest(AnnouncementController.class)
 @ContextConfiguration(classes = {AnnouncementController.class, ExController.class, SecurityConfiguration.class})
-@WithMember
+@org.springframework.security.test.context.support.WithMockUser(roles = {"ADMIN", "USER"})
 class AnnouncementControllerTest {
 
     @MockitoBean
