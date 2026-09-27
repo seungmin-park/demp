@@ -26,7 +26,9 @@ public class AnnouncementDetailResponse {
     private LocalDateTime deadLineDate;
     private String content;
     private String accessUrl;
-    private int payment;
+    private Integer payment;
+    private com.inhatc.demp.domain.announcement.SalaryStatus salaryStatus;
+    private Integer salaryMax;
     private Set<Language> language;
     private JobPosition position;
     private AnnouncementType announcementType;
@@ -45,6 +47,8 @@ public class AnnouncementDetailResponse {
                 .content(announcement.getDescription().getContent())
                 .accessUrl(announcement.getDescription().getAccessUrl())
                 .payment(announcement.getDescription().getPayment())
+                .salaryStatus(announcement.getDescription().getSalaryStatus())
+                .salaryMax(announcement.getDescription().getSalaryMax())
                 .language(new LinkedHashSet<>(announcement.getDescription().getLanguages()))
                 .build();
     }

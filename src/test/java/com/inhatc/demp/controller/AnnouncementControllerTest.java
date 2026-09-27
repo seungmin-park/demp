@@ -103,6 +103,31 @@ class AnnouncementControllerTest {
     }
 
     @Test
+    @DisplayName("금액을 생략하면 무료나 0원으로 변환하지 않는다")
+    void omittedPaymentRemainsUnknown() throws Exception {
+        mockMvc.perform(validOptionalPaymentRequest()).andExpect(status().isOk());
+        var captured = ArgumentCaptor.forClass(AnnouncementCreateRequest.class);
+        verify(announcementService).createAnnouncement(captured.capture());
+        assertThat((Object) captured.getValue().getPayment()).isNull();
+    }
+
+    @ParameterizedTest
+    @DisplayName("공개 연봉의 누락 금액과 역전 범위를 거절한다")
+    @CsvSource({"'',5000", "6000,5000"})
+    void rejectsInvalidSalary(String amount, String maximum) throws Exception {
+        mockMvc.perform(validOptionalPaymentRequest().param("salaryStatus", "DISCLOSED")
+                .param("payment", amount).param("salaryMax", maximum)).andExpect(status().isBadRequest());
+        verifyNoInteractions(announcementService);
+    }
+
+    private org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder validOptionalPaymentRequest() {
+        return multipart("/api/announce/add").param("title", "선택 연봉")
+                .param("company", "DEMP").param("type", "EMP").param("position", "BACKEND")
+                .param("startedDate", "2026-09-01T00:00:00").param("deadLineDate", "2026-09-30T23:59:00")
+                .param("content", "설명").param("accessUrl", "https://example.com/jobs/1").param("language", "JAVA");
+    }
+
+    @Test
     @DisplayName("잘못된 공고 enum은 서비스 호출 없이 400으로 거절한다")
     void rejectsUnknownEnum() throws Exception {
         MockMultipartFile image = new MockMultipartFile(

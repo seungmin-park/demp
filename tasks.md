@@ -612,6 +612,26 @@ npx playwright test
 
 작업 위치: Phase 9 후속, `refactor/admin-console-and-authorization`, `.worktrees/admin-console-and-authorization/{backend,frontend}`. 사용자 승인: 텍스트 기본 본문+선택 이미지+원문 링크, 지원하기는 원문으로 이동. 기존 `accessUrl`을 원문 URL로 사용해 저장 계약을 유지한다. 자동 수집·기업 제출/검수 시스템은 별도 후속 항목이다.
 
+## Phase 10 · 선택 연봉과 교육과정 탐색
+
+작업 위치: `refactor/compensation-and-education-filters`, `.worktrees/compensation-and-education-filters/{backend,frontend}`. 기준 B `db4ecfc`, F `352ae74`. 사용자는 연봉 필터 숨김/상세 표시를 선택했고 부트텐트 참고 상세 교육 필터 구현을 요청했다.
+
+### T89 · 연봉 선택 정보와 금액 미확인 구분
+
+- [x] 연봉 필터·칩·URL/API 조건 제거, 상세에서 미공개/협의/공개 연봉 범위 표시.
+- [x] 양쪽 등록 폼에 선택 연봉과 교육비 미확인/무료/유료 구분, null 금액 보존.
+- [x] 기존 양수 금액 호환, 잘못된 범위 거절, DB·REST Docs·전체 테스트 후 커밋.
+
+검증 기록: [T89](docs/verification/education-discovery/t89.md).
+
+### T90 · 교육 조건 저장과 상세 검색
+
+- [ ] 부트텐트 상세 필터 조사 근거와 DEMP 적용 기준 기록.
+- [ ] 수업 방식·지역·참여 시간·지원 유형·선발 방식·학습 수준·교육 일정 등록/재조회.
+- [ ] 해당 조건과 시작일·기간 검색을 DB 쿼리/페이지/카운트에 일관되게 적용, 미확인 항목은 필터에 임의 포함하지 않음.
+- [ ] 반응형 필터·URL 복원·개별 해제·초기화·구체적인 빈 결과·상세/카드 표시.
+- [ ] 현재 cmux에서 실제 등록→검색→수정 흐름, headed E2E·전체 검증·리뷰 후 커밋.
+
 ## 추적표와 작업 종료 기록
 
 | 스펙 | 작업 | 리뷰 |

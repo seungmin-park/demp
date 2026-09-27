@@ -65,8 +65,7 @@ public class AnnouncementService {
         try {
             uploaded = bodyImages.upload(announcementCreateRequest.getBodyImages());
             var body = bodyImages.prepare(announcementCreateRequest.getContent(), "", List.of(), uploaded);
-            Description description = new Description(body.html(), announcementCreateRequest.getAccessUrl(),
-                    announcementCreateRequest.getPayment(), announcementCreateRequest.getLanguage());
+            Description description = announcementCreateRequest.toDescription(body.html());
         Announcement announcement = Announcement.builder()
                 .title(announcementCreateRequest.getTitle())
                 .announcementType(announcementCreateRequest.getType())
@@ -101,8 +100,7 @@ public class AnnouncementService {
         if (description == null) {
             return null;
         }
-        return new Description(contentSanitizer.sanitize(description.getContent()), description.getAccessUrl(),
-                description.getPayment(), description.getLanguages());
+        return description.withContent(contentSanitizer.sanitize(description.getContent()));
     }
 
     public Slice<AnnouncementResponse> findAnnouncementSlice(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {

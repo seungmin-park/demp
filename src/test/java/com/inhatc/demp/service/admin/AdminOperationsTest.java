@@ -43,7 +43,7 @@ class AdminOperationsTest {
         assertThat(saved.getImage().getSaveFileName()).isEqualTo("old.png");
         assertThat(saved.getAnnouncementType()).isEqualTo(AnnouncementType.EDU);
         assertThat(saved.getDescription().getContent()).contains("<h2>수정</h2>").doesNotContain("script", "onclick");
-        assertThat(saved.getDescription().getPayment()).isZero();
+        assertThat(saved.getDescription().getPayment()).isNull();
         verifyNoInteractions(files);
     }
 

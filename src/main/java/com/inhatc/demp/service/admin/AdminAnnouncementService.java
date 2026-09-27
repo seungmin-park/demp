@@ -48,7 +48,7 @@ public class AdminAnnouncementService {
                 var body = bodyImages.prepare(request.getContent(), item.getDescription().getContent(), item.getBodyImages(), staged);
                 item.getBodyImages().stream().filter(file -> !body.images().contains(file))
                         .forEach(file -> keys.add(file.getSaveFileName()));
-                Description description = new Description(body.html(), request.getAccessUrl(), request.getPayment(), request.getLanguage());
+                Description description = request.toDescription(body.html());
                 item.replaceBodyImages(body.images());
                 item.revise(request.getTitle(), new Company(request.getCompany()), career, period, description,
                         request.getType(), request.getPosition(), replacement);

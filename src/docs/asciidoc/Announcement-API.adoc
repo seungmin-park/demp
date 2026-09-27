@@ -93,3 +93,11 @@ include::{snippets}/announcement-detail-not-found/http-response.adoc[]
 본문 파일은 `announcement_body_image` 컬렉션 테이블에 소속을 보관한다. 운영 반영 전에 테이블 생성이 필요하며 기존 공고에는 첨부 행이 없다.
 
 운영 DDL: `src/main/resources/db/manual/announcement-body-images.sql`. 자동 실행되지 않는다. 기존 스키마에 이 SQL을 적용한 뒤 `ddl-auto=validate`로 기동·기존 데이터 보존을 검증한다.
+
+=== 선택 금액과 연봉 공개 상태
+
+`payment`는 선택 정보이며 단위는 만원이다. 생략/null은 미확인, 교육의 명시적인 0만 무료다.
+채용의 `salaryStatus`는 UNDISCLOSED(미공개), NEGOTIABLE(협의), DISCLOSED(공개)다.
+공개 시 payment는 양수이며 선택 `salaryMax`는 최소 금액 이상이다. 미공개/협의는 금액을 제거한다.
+기존 양수 연봉은 상태가 없어도 공개 금액으로 해석한다. 연봉 필터는 프런트에서 제거했으며 과거 URL의 payment도 전송하지 않는다.
+배포 전 MySQL에 `db/manual/announcement-compensation.sql`을 적용한다. 기존 0원을 미확인으로 일괄 변경하지 않는다.

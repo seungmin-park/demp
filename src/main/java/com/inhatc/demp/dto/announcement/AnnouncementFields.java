@@ -50,7 +50,24 @@ public class AnnouncementFields {
     @jakarta.validation.constraints.Pattern(regexp = "(?i)^https?://.*", message = "원문은 http 또는 https 주소여야 합니다.")
     private String accessUrl;
     @Min(0)
-    private int payment;
+    private Integer payment;
+    private com.inhatc.demp.domain.announcement.SalaryStatus salaryStatus;
+    @Min(0)
+    private Integer salaryMax;
+
+    @AssertTrue(message = "공개 연봉과 상한 금액을 확인해 주세요.")
+    public boolean isSalaryValid() {
+        if (type != AnnouncementType.EMP) return true;
+        if (salaryStatus == com.inhatc.demp.domain.announcement.SalaryStatus.UNDISCLOSED
+                || salaryStatus == com.inhatc.demp.domain.announcement.SalaryStatus.NEGOTIABLE) return true;
+        return (salaryStatus != com.inhatc.demp.domain.announcement.SalaryStatus.DISCLOSED || payment != null && payment > 0)
+                && (salaryMax == null || payment != null && salaryMax >= payment);
+    }
+
+    public com.inhatc.demp.domain.announcement.Description toDescription(String safeHtml) {
+        return new com.inhatc.demp.domain.announcement.Description(safeHtml, accessUrl, payment, language,
+                type == AnnouncementType.EMP ? salaryStatus : null, type == AnnouncementType.EMP ? salaryMax : null);
+    }
     @NotEmpty
     private Set<Language> language = new LinkedHashSet<>();
     @NotNull
