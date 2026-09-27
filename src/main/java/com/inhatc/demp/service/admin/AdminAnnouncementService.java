@@ -39,7 +39,7 @@ public class AdminAnnouncementService {
         String oldKey;
         try {
             oldKey = new TransactionTemplate(transactions).execute(status -> {
-                Announcement item = repository.findById(id).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND));
+                Announcement item = repository.findByIdForMutation(id).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND));
                 String key = imageKey(item);
                 item.revise(request.getTitle(), new Company(request.getCompany()), career, period, description,
                         request.getType(), request.getPosition(), replacement);
@@ -58,7 +58,7 @@ public class AdminAnnouncementService {
 
     public AdminMutationResult delete(long id) {
         String key = new TransactionTemplate(transactions).execute(status -> {
-            Announcement item = repository.findById(id).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND));
+            Announcement item = repository.findByIdForMutation(id).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND));
             String oldKey = imageKey(item);
             repository.delete(item);
             return oldKey;
