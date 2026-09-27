@@ -603,10 +603,12 @@ npx playwright test
 
 ### T88 · 서식 편집과 원문 이동 인수
 
-- [ ] 채용/교육 섹션, 텍스트 붙여넣기 정돈, 이미지 파일·붙여넣기·드래그, 모바일 미리보기를 제공한다.
-- [ ] 실패 시 입력/첨부 보존, 중복 제출 방지, 수정 재조회 보존을 검증한다.
-- [ ] 현재 cmux terminal12/browser13에서 등록→수정→상세→지원하기 원문 이동을 확인한다.
-- [ ] 전체 unit/typecheck/lint/build/REST Docs/headed E2E와 리뷰 후 체크·커밋.
+- [x] 채용/교육 섹션, 텍스트 붙여넣기 정돈, 이미지 파일·붙여넣기·드래그, 모바일 미리보기를 제공한다.
+- [x] 실패 시 입력/첨부 보존, 중복 제출 방지, 수정 재조회 보존을 검증한다.
+- [x] 현재 cmux terminal12/browser13에서 등록→수정→상세→지원하기 원문 이동을 확인한다.
+- [x] 전체 unit/typecheck/lint/build/REST Docs/headed E2E와 리뷰 후 체크·커밋.
+
+검증 기록: [T88](docs/verification/admin-console/t88.md).
 
 작업 위치: Phase 9 후속, `refactor/admin-console-and-authorization`, `.worktrees/admin-console-and-authorization/{backend,frontend}`. 사용자 승인: 텍스트 기본 본문+선택 이미지+원문 링크, 지원하기는 원문으로 이동. 기존 `accessUrl`을 원문 URL로 사용해 저장 계약을 유지한다. 자동 수집·기업 제출/검수 시스템은 별도 후속 항목이다.
 
