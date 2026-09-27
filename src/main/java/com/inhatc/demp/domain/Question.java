@@ -30,12 +30,14 @@ public class Question {
     private List<Answer> answers = new ArrayList<>();
 
     @OneToMany(mappedBy = "question", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<QuestionHashtag> QuestionHashtags = new ArrayList<>();
+    private List<QuestionHashtag> questionHashtags = new ArrayList<>();
 
     //연관 관계 편의 메소드
-    public void settingMember(Member member) {
+    public void assignMember(Member member) {
+        if (this.member == member) return;
+        if (this.member != null) this.member.getQuestions().remove(this);
         this.member = member;
-        member.getQuestions().add(this);
+        if (member != null) member.getQuestions().add(this);
     }
 
     private String title;
@@ -49,9 +51,22 @@ public class Question {
     @Timestamp
     private LocalDateTime createdDate = LocalDateTime.now();
 
-    public void addQuestionHashtag(QuestionHashtag questionHashtag) {
-        this.QuestionHashtags.add(questionHashtag);
-        questionHashtag.setQuestion(this);
+    public void addHashtag(Hashtag hashtag) {
+        QuestionHashtag relation = new QuestionHashtag();
+        relation.setQuestion(this);
+        questionHashtags.add(relation);
+        hashtag.attachRelation(relation);
+    }
+
+    public void replaceHashtags(List<Hashtag> hashtags) {
+        for (QuestionHashtag relation : new ArrayList<>(questionHashtags)) {
+            relation.getHashtag().removeQuestionHashtag(relation);
+            questionHashtags.remove(relation);
+            relation.setQuestion(null);
+        }
+        for (Hashtag hashtag : hashtags) {
+            addHashtag(hashtag);
+        }
     }
 
     public Question(String title, String content, int hits, int recommend, int dislike) {

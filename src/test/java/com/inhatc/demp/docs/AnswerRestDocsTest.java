@@ -2,7 +2,6 @@ package com.inhatc.demp.docs;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.inhatc.demp.config.SecurityConfiguration;
-import com.inhatc.demp.config.WebConfig;
 import com.inhatc.demp.config.jwt.JwtTokenProvider;
 import com.inhatc.demp.controller.AnswerController;
 import com.inhatc.demp.controller.ExController;
@@ -50,7 +49,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @MockBean(JwtTokenProvider.class)
 @WebMvcTest(AnswerController.class)
-@ContextConfiguration(classes = {AnswerController.class, ExController.class, SecurityConfiguration.class, WebConfig.class})
+@ContextConfiguration(classes = {AnswerController.class, ExController.class, SecurityConfiguration.class})
 @WithMember
 @AutoConfigureRestDocs
 class AnswerRestDocsTest {
@@ -70,7 +69,7 @@ class AnswerRestDocsTest {
         Member member = new Member("docs-member", "docs-password-hash", List.of("ROLE_USER"));
         Answer answer = new Answer("docs-answer", 2, 1);
         ReflectionTestUtils.setField(answer, "id", 61L);
-        answer.settingMember(member);
+        answer.assignMember(member);
         List<Answer> response = List.of(answer);
         when(answerService.findByQuestion(51L)).thenReturn(List.of(new QuestionAnswer(answer)));
 
@@ -99,9 +98,9 @@ class AnswerRestDocsTest {
         Member member = new Member("docs-member", "docs-password-hash", List.of("ROLE_USER"));
         Answer savedAnswer = new Answer("docs-answer", 0, 0);
         ReflectionTestUtils.setField(savedAnswer, "id", 61L);
-        savedAnswer.settingMember(member);
+        savedAnswer.assignMember(member);
         QuestionAnswer response = new QuestionAnswer(savedAnswer);
-        when(answerService.save(eq(41L), refEq(request))).thenReturn(List.of(response));
+        when(answerService.createAnswerAndList(eq(41L), refEq(request))).thenReturn(List.of(response));
 
         mockMvc.perform(post("/api/answer/save")
                         .header("X-AUTH-TOKEN", DOCS_TOKEN)

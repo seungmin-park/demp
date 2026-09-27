@@ -1,8 +1,8 @@
 package com.inhatc.demp.dto.announcement;
 
-import com.inhatc.demp.domain.announcemnet.AnnouncementType;
-import com.inhatc.demp.domain.announcemnet.JobPosition;
-import com.inhatc.demp.domain.announcemnet.Language;
+import com.inhatc.demp.domain.announcement.AnnouncementType;
+import com.inhatc.demp.domain.announcement.JobPosition;
+import com.inhatc.demp.domain.announcement.Language;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;

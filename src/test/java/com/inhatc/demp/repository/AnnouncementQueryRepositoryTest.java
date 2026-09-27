@@ -1,18 +1,18 @@
 package com.inhatc.demp.repository;
 
-import com.inhatc.demp.domain.announcemnet.Announcement;
-import com.inhatc.demp.domain.announcemnet.AnnouncementType;
-import com.inhatc.demp.domain.announcemnet.Career;
-import com.inhatc.demp.domain.announcemnet.Company;
-import com.inhatc.demp.domain.announcemnet.Description;
-import com.inhatc.demp.domain.announcemnet.JobPosition;
-import com.inhatc.demp.domain.announcemnet.Language;
-import com.inhatc.demp.domain.announcemnet.RecruitPeriod;
-import com.inhatc.demp.domain.announcemnet.UploadFile;
-import com.inhatc.demp.dto.announcement.AnnouncementResponse;
+import com.inhatc.demp.domain.announcement.Announcement;
+import com.inhatc.demp.domain.announcement.AnnouncementType;
+import com.inhatc.demp.domain.announcement.Career;
+import com.inhatc.demp.domain.announcement.Company;
+import com.inhatc.demp.domain.announcement.Description;
+import com.inhatc.demp.domain.announcement.JobPosition;
+import com.inhatc.demp.domain.announcement.Language;
+import com.inhatc.demp.domain.announcement.RecruitPeriod;
+import com.inhatc.demp.domain.announcement.UploadFile;
 import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
 import com.inhatc.demp.repository.announcement.AnnouncementQueryRepository;
 import com.inhatc.demp.repository.announcement.AnnouncementRepository;
+import com.inhatc.demp.support.SqlCaptureInspector;
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.List;
@@ -30,11 +30,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 
-import static com.inhatc.demp.domain.announcemnet.Language.React;
-import static com.inhatc.demp.domain.announcemnet.Language.SPRING;
+import static com.inhatc.demp.domain.announcement.Language.React;
+import static com.inhatc.demp.domain.announcement.Language.SPRING;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@DataJpaTest
+@DataJpaTest(properties = {
+        "spring.jpa.properties.hibernate.query.fail_on_pagination_over_collection_fetch=true",
+        "spring.jpa.properties.hibernate.session_factory.statement_inspector=com.inhatc.demp.support.SqlCaptureInspector"
+})
 @Import(AnnouncementQueryRepository.class)
 class AnnouncementQueryRepositoryTest {
 
@@ -194,7 +197,7 @@ class AnnouncementQueryRepositoryTest {
                     Set.of(Language.JAVA, SPRING), 0);
         }
 
-        Page<Announcement> result = announcementQueryRepository.pagingTest(
+        Page<Announcement> result = announcementQueryRepository.findAnnouncementPage(
                 new AnnouncementSearchCondition(), PageRequest.of(pageNumber, 3));
 
         assertThat(result.getContent()).hasSize(expectedCount);
@@ -213,13 +216,13 @@ class AnnouncementQueryRepositoryTest {
                     Set.of(Language.JAVA, SPRING), 0);
         }
 
-        Slice<AnnouncementResponse> result = announcementQueryRepository.getAnnounceScroll(
+        Slice<Announcement> result = announcementQueryRepository.findAnnouncementSlice(
                 new AnnouncementSearchCondition(), PageRequest.of(pageNumber, 3));
 
         assertThat(result.getContent()).hasSize(expectedCount);
         assertThat(result.hasNext()).isEqualTo(hasNext);
         assertThat(result.getNumber()).isEqualTo(pageNumber);
-        assertThat(result.getContent()).extracting(AnnouncementResponse::getId).doesNotHaveDuplicates();
+        assertThat(result.getContent()).extracting(Announcement::getId).doesNotHaveDuplicates();
     }
 
     static Stream<Arguments> paginationTestCases() {
@@ -242,7 +245,7 @@ class AnnouncementQueryRepositoryTest {
         AnnouncementSearchCondition condition = new AnnouncementSearchCondition();
         condition.setTitle("matching");
 
-        Page<Announcement> result = announcementQueryRepository.pagingTest(condition, PageRequest.of(0, 3));
+        Page<Announcement> result = announcementQueryRepository.findAnnouncementPage(condition, PageRequest.of(0, 3));
 
         assertThat(result.getContent()).extracting(Announcement::getId).containsExactly(matching.getId());
         assertThat(result.getTotalElements()).isEqualTo(1);
@@ -257,10 +260,65 @@ class AnnouncementQueryRepositoryTest {
         AnnouncementSearchCondition condition = new AnnouncementSearchCondition();
         condition.setTitle("matching");
 
-        Slice<AnnouncementResponse> result = announcementQueryRepository.getAnnounceScroll(condition, PageRequest.of(0, 3));
+        Slice<Announcement> result = announcementQueryRepository.findAnnouncementSlice(condition, PageRequest.of(0, 3));
 
-        assertThat(result.getContent()).extracting(AnnouncementResponse::getId).containsExactly(matching.getId());
+        assertThat(result.getContent()).extracting(Announcement::getId).containsExactly(matching.getId());
         assertThat(result.hasNext()).isFalse();
+    }
+
+    @Test
+    @DisplayName("복수 언어 공고의 슬라이스는 ID 내림차순으로 겹치지 않고 다음 페이지를 찾는다")
+    void slicesMultipleLanguagesWithoutOverlappingPages() {
+        for (int i = 0; i < 5; i++) {
+            saveAnnouncement("ordered-" + i, AnnouncementType.EMP, JobPosition.BACKEND,
+                    Set.of(Language.JAVA, SPRING), 0);
+        }
+        AnnouncementSearchCondition condition = new AnnouncementSearchCondition();
+
+        SqlCaptureInspector.clear();
+        Slice<Announcement> first = announcementQueryRepository.findAnnouncementSlice(condition, PageRequest.of(0, 2));
+        Slice<Announcement> second = announcementQueryRepository.findAnnouncementSlice(condition, PageRequest.of(1, 2));
+        List<String> paginationSql = SqlCaptureInspector.statements();
+        List<Long> ids = announcementRepository.findAll().stream().map(Announcement::getId)
+                .sorted(java.util.Comparator.reverseOrder()).collect(java.util.stream.Collectors.toList());
+
+        assertThat(first.getContent()).extracting(Announcement::getId)
+                .containsExactly(ids.get(0), ids.get(1));
+        assertThat(second.getContent()).extracting(Announcement::getId)
+                .containsExactly(ids.get(2), ids.get(3));
+        assertThat(first.hasNext()).isTrue();
+        assertThat(second.hasNext()).isTrue();
+        assertThat(paginationSql).anySatisfy(sql -> assertThat(sql.toLowerCase()).contains("limit"));
+        assertThat(paginationSql).noneMatch(sql -> sql.toLowerCase().contains("count("));
+    }
+
+    @Test
+    @DisplayName("공고 슬라이스의 다음 페이지도 제목·직군·언어 조건을 유지한다")
+    void keepsFiltersAcrossAnnouncementPages() {
+        Announcement first = saveAnnouncement("Java backend one", AnnouncementType.EMP, JobPosition.BACKEND,
+                Set.of(Language.JAVA, SPRING), 0);
+        Announcement second = saveAnnouncement("Java backend two", AnnouncementType.EMP, JobPosition.BACKEND,
+                Set.of(Language.JAVA, SPRING), 0);
+        Announcement third = saveAnnouncement("Java backend three", AnnouncementType.EMP, JobPosition.BACKEND,
+                Set.of(Language.JAVA, SPRING), 0);
+        saveAnnouncement("Java frontend", AnnouncementType.EMP, JobPosition.FRONTEND,
+                Set.of(Language.JAVA, SPRING), 0);
+        saveAnnouncement("Kotlin backend", AnnouncementType.EMP, JobPosition.BACKEND,
+                Set.of(Language.JAVA, SPRING), 0);
+        AnnouncementSearchCondition condition = new AnnouncementSearchCondition();
+        condition.setTitle("Java");
+        condition.getPositions().add(JobPosition.BACKEND);
+        condition.setLanguage(SPRING);
+
+        Slice<Announcement> page0 = announcementQueryRepository.findAnnouncementSlice(condition, PageRequest.of(0, 2));
+        Slice<Announcement> page1 = announcementQueryRepository.findAnnouncementSlice(condition, PageRequest.of(1, 2));
+
+        assertThat(page0.getContent()).extracting(Announcement::getId)
+                .containsExactly(third.getId(), second.getId());
+        assertThat(page1.getContent()).extracting(Announcement::getId)
+                .containsExactly(first.getId());
+        assertThat(page0.hasNext()).isTrue();
+        assertThat(page1.isLast()).isTrue();
     }
 
     private Announcement saveAnnouncement(String title, AnnouncementType type, JobPosition position,

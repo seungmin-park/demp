@@ -3,12 +3,16 @@ package com.inhatc.demp.repository.question;
 import com.inhatc.demp.domain.Question;
 import com.inhatc.demp.dto.question.QuestionList;
 import com.inhatc.demp.dto.question.QuestionSearchCondition;
-import com.querydsl.core.types.Order;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 
 import java.util.List;
 
@@ -28,23 +32,33 @@ public class QuestionQueryRepository {
                 .select(Projections.fields(QuestionList.class
                 ,question.id,question.title,question.hits,question.recommend))
                 .from(question)
-                .join(question.QuestionHashtags, questionHashtag)
-                .join(questionHashtag.hashtag, hashtag)
                 .where(titleContains(questionSearchCondition.getTitle()),
                         contentContains(questionSearchCondition.getContent()),
                         hashtagIn(questionSearchCondition.getHashtags()))
-                .orderBy(QuestionSort(questionSearchCondition.getOrderBy()))
-                .distinct()
+                .orderBy(primaryOrder(questionSearchCondition.getOrderBy()), question.id.desc())
                 .fetch();
+    }
+
+    public Slice<QuestionList> findSliceBySearchCondition(QuestionSearchCondition condition, Pageable pageable) {
+        List<QuestionList> rows = jpaQueryFactory
+                .select(Projections.fields(QuestionList.class,
+                        question.id, question.title, question.hits, question.recommend))
+                .from(question)
+                .where(titleContains(condition.getTitle()),
+                        contentContains(condition.getContent()), hashtagIn(condition.getHashtags()))
+                .orderBy(primaryOrder(condition.getOrderBy()), question.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize() + 1)
+                .fetch();
+        boolean hasNext = rows.size() > pageable.getPageSize();
+        List<QuestionList> content = hasNext ? rows.subList(0, pageable.getPageSize()) : rows;
+        return new SliceImpl<>(content, pageable, hasNext);
     }
 
     public List<Question> findAllByHashtags(List<String> hashtags) {
         return jpaQueryFactory
                 .selectFrom(question)
-                .join(question.QuestionHashtags, questionHashtag)
-                .join(questionHashtag.hashtag, hashtag)
                 .where(hashtagIn(hashtags))
-                .distinct()
                 .fetch();
     }
 
@@ -65,21 +79,25 @@ public class QuestionQueryRepository {
     }
 
     private BooleanExpression hashtagIn(List<String> hashtags) {
-        return hashtags.isEmpty() ? null : hashtag.tagName.in(hashtags);
+        return hashtags == null || hashtags.isEmpty() ? null : JPAExpressions.selectOne()
+                .from(questionHashtag)
+                .join(questionHashtag.hashtag, hashtag)
+                .where(questionHashtag.question.eq(question), hashtag.tagName.in(hashtags))
+                .exists();
     }
 
-    private OrderByNull QuestionSort(String orderBy) {
+    private OrderSpecifier<?> primaryOrder(String orderBy) {
         if (hasText(orderBy)) {
             if (orderBy.equals("createdDate")) {
-                return new OrderByNull(Order.DESC, question.createdDate);
+                return question.createdDate.desc();
             }
             if (orderBy.equals("hits")) {
-                return new OrderByNull(Order.DESC, question.hits);
+                return question.hits.desc();
             }
             if (orderBy.equals("recommend")) {
-                return new OrderByNull(Order.DESC, question.recommend);
+                return question.recommend.desc();
             }
         }
-        return OrderByNull.DEFAULT;
+        return question.createdDate.desc();
     }
 }

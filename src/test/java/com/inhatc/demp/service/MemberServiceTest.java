@@ -38,7 +38,7 @@ class MemberServiceTest {
     @Test
     @DisplayName("로그인은 인증한 회원의 이름과 유효한 회원 ID 토큰을 반환한다")
     void returnsAuthenticatedLoginResult() {
-        MemberDto saved = memberService.join(new MemberSaveForm("login-member", "password"));
+        MemberDto saved = memberService.registerMember(new MemberSaveForm("login-member", "password"));
         MemberLoginForm form = new MemberLoginForm();
         form.setUsername("login-member");
         form.setPassword("password");
@@ -53,7 +53,7 @@ class MemberServiceTest {
     @Test
     @DisplayName("가입한 회원이 조회된다")
     void memberSave() {
-        MemberDto member = memberService.join(new MemberSaveForm("member-a", "password"));
+        MemberDto member = memberService.registerMember(new MemberSaveForm("member-a", "password"));
 
         Member saved = memberRepository.findById(member.getId()).orElseThrow();
         assertThat(saved.getUsername()).isEqualTo("member-a");
@@ -65,21 +65,21 @@ class MemberServiceTest {
     @Test
     @DisplayName("사용하지 않는 회원 이름은 가입할 수 있다")
     void validDuplicateUsernameTrue() {
-        assertThat(memberService.validationDuplicateUsername("new-member")).isTrue();
+        assertThat(memberService.isUsernameAvailable("new-member")).isTrue();
     }
 
     @Test
     @DisplayName("이미 사용 중인 회원 이름은 가입할 수 없다")
     void validDuplicateUsernameFalse() {
-        memberService.join(new MemberSaveForm("member-a", "password"));
-        assertThat(memberService.validationDuplicateUsername("member-a")).isFalse();
+        memberService.registerMember(new MemberSaveForm("member-a", "password"));
+        assertThat(memberService.isUsernameAvailable("member-a")).isFalse();
     }
     @ParameterizedTest
     @DisplayName("비어 있거나 공백인 회원 이름은 가입할 수 없다")
     @NullAndEmptySource
     @ValueSource(strings = {" ", "   "})
     void rejectsBlankUsername(String username) {
-        assertThat(memberService.validationDuplicateUsername(username)).isFalse();
+        assertThat(memberService.isUsernameAvailable(username)).isFalse();
     }
 
 }

@@ -27,18 +27,18 @@ class AnswerRepositoryTest {
         //given
         Member member = memberRepository.save(new Member("member-a", "password", List.of("ROLE_USER")));
         Question question = new Question("질문", "내용", 0, 0, 0);
-        question.settingMember(member);
+        question.assignMember(member);
         questionRepository.save(question);
         Answer answer = new Answer("질문\\n 답변\\n 테스트", 22, 11);
-        answer.settingMember(member);
-        answer.settingQuestion(question);
+        answer.assignMember(member);
+        answer.assignQuestion(question);
         answerRepository.save(answer);
         Question otherQuestion = new Question("다른 질문", "다른 내용", 0, 0, 0);
-        otherQuestion.settingMember(member);
+        otherQuestion.assignMember(member);
         questionRepository.save(otherQuestion);
         Answer otherAnswer = new Answer("다른 댓글", 0, 0);
-        otherAnswer.settingMember(member);
-        otherAnswer.settingQuestion(otherQuestion);
+        otherAnswer.assignMember(member);
+        otherAnswer.assignQuestion(otherQuestion);
         answerRepository.save(otherAnswer);
         //when
         List<Answer> answers = answerRepository.findByQuestion_Id(question.getId());
@@ -60,7 +60,7 @@ class AnswerRepositoryTest {
     void deletesOnlySelectedAnswer() {
         Member member = memberRepository.save(new Member("answer-member", "password", List.of("ROLE_USER")));
         Question question = new Question("질문", "내용", 0, 0, 0);
-        question.settingMember(member);
+        question.assignMember(member);
         questionRepository.save(question);
         Answer removed = saveAnswer(member, question, "삭제할 댓글");
         Answer retained = saveAnswer(member, question, "남길 댓글");
@@ -73,8 +73,8 @@ class AnswerRepositoryTest {
 
     private Answer saveAnswer(Member member, Question question, String content) {
         Answer answer = new Answer(content, 0, 0);
-        answer.settingMember(member);
-        answer.settingQuestion(question);
+        answer.assignMember(member);
+        answer.assignQuestion(question);
         return answerRepository.save(answer);
     }
 

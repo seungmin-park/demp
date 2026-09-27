@@ -17,7 +17,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest(MemberController.class)
-@ContextConfiguration(classes = {MemberController.class, ExController.class, SecurityConfiguration.class, WebConfig.class})
+@ContextConfiguration(classes = {MemberController.class, ExController.class, SecurityConfiguration.class})
 @MockBean(JwtTokenProvider.class)
 class ExControllerTest {
     @Autowired MockMvc mvc;

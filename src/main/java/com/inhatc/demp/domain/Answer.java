@@ -29,14 +29,18 @@ public class Answer {
     private int dislike;
 
     //연관 관계 편의 메소드
-    public void settingMember(Member member) {
+    public void assignMember(Member member) {
+        if (this.member == member) return;
+        if (this.member != null) this.member.getAnswers().remove(this);
         this.member = member;
-        member.getAnswers().add(this);
+        if (member != null) member.getAnswers().add(this);
     }
 
-    public void settingQuestion(Question question) {
+    public void assignQuestion(Question question) {
+        if (this.question == question) return;
+        if (this.question != null) this.question.getAnswers().remove(this);
         this.question = question;
-        question.getAnswers().add(this);
+        if (question != null) question.getAnswers().add(this);
     }
 
     public void updateAnswer(String content) {

@@ -1,4 +1,4 @@
-package com.inhatc.demp.domain.announcemnet;
+package com.inhatc.demp.domain.announcement;
 
 import javax.persistence.Embedded;
 import javax.persistence.Entity;

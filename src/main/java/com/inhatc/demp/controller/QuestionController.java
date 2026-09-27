@@ -1,12 +1,14 @@
 package com.inhatc.demp.controller;
 
 import com.inhatc.demp.dto.question.*;
+import com.inhatc.demp.error.ApiException;
 import com.inhatc.demp.service.QuestionService;
 import lombok.RequiredArgsConstructor;
 import com.inhatc.demp.config.security.MemberPrincipal;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -20,9 +22,15 @@ public class QuestionController {
     private final QuestionService questionService;
 
     @GetMapping
-    public ResponseEntity<List<QuestionList>> getAllQuestions(@ModelAttribute QuestionSearchCondition searchCondition) {
-        List<QuestionList> result = questionService.findAllBySearchCondition(searchCondition);
-        return new ResponseEntity(result, HttpStatus.OK);
+    public ResponseEntity<QuestionSliceResponse> getQuestionSlice(
+            @ModelAttribute QuestionSearchCondition searchCondition,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size) {
+        if (page < 0 || size < 1 || size > 100) {
+            throw new ApiException(HttpStatus.BAD_REQUEST);
+        }
+        return ResponseEntity.ok(new QuestionSliceResponse(
+                questionService.findSliceBySearchCondition(searchCondition, PageRequest.of(page, size))));
     }
 
     @GetMapping("/detail/{questionId}")
@@ -37,7 +45,7 @@ public class QuestionController {
 
     @PostMapping("/add")
     public String saveQuestion(@AuthenticationPrincipal MemberPrincipal principal, @Valid @RequestBody QuestionForm questionForm) {
-        questionService.join(principal.getMemberId(), questionForm);
+        questionService.createQuestion(principal.getMemberId(), questionForm);
         return "ok";
     }
 

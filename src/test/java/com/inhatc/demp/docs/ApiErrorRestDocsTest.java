@@ -25,7 +25,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @WebMvcTest({MemberController.class, QuestionController.class})
-@ContextConfiguration(classes = {MemberController.class, QuestionController.class, ExController.class, SecurityConfiguration.class, WebConfig.class})
+@ContextConfiguration(classes = {MemberController.class, QuestionController.class, ExController.class, SecurityConfiguration.class})
 @AutoConfigureRestDocs
 @WithMember
 @MockBean(JwtTokenProvider.class)
@@ -50,7 +50,7 @@ class ApiErrorRestDocsTest {
     @Test
     @DisplayName("중복 가입의 409 응답을 문서화한다")
     void documentsConflict() throws Exception {
-        doThrow(new ApiException(HttpStatus.CONFLICT)).when(members).join(any());
+        doThrow(new ApiException(HttpStatus.CONFLICT)).when(members).registerMember(any());
         mvc.perform(post("/api/member/save").param("username", "docs-member").param("password", "secret"))
                 .andExpect(status().isConflict()).andDo(document("error-409", fields()));
     }

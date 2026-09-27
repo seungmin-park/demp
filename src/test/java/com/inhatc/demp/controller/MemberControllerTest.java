@@ -1,7 +1,6 @@
 package com.inhatc.demp.controller;
 
 import com.inhatc.demp.config.SecurityConfiguration;
-import com.inhatc.demp.config.WebConfig;
 import com.inhatc.demp.config.jwt.JwtTokenProvider;
 import com.inhatc.demp.controller.ExController;
 import com.inhatc.demp.domain.Member;
@@ -25,7 +24,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @MockBean(JwtTokenProvider.class)
 @WebMvcTest(MemberController.class)
-@ContextConfiguration(classes = {MemberController.class, ExController.class, SecurityConfiguration.class, WebConfig.class})
+@ContextConfiguration(classes = {MemberController.class, ExController.class, SecurityConfiguration.class})
 @WithMember
 class MemberControllerTest {
     @MockBean
@@ -50,12 +49,12 @@ class MemberControllerTest {
     @DisplayName("회원 이름 중복 확인 결과를 응답 본문으로 반환한다")
     @ValueSource(booleans = {true, false})
     void returnsUsernameAvailability(boolean available) throws Exception {
-        when(memberService.validationDuplicateUsername("member-a")).thenReturn(available);
+        when(memberService.isUsernameAvailable("member-a")).thenReturn(available);
 
         mockMvc.perform(get("/api/member/validUsername").param("username", "member-a"))
                 .andExpect(status().isOk())
                 .andExpect(content().string(Boolean.toString(available)));
-        verify(memberService).validationDuplicateUsername("member-a");
+        verify(memberService).isUsernameAvailable("member-a");
     }
 
     @Test

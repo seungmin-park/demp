@@ -1,6 +1,5 @@
 package com.inhatc.demp.controller;
 
-import com.inhatc.demp.domain.announcemnet.Announcement;
 import com.inhatc.demp.dto.announcement.*;
 import com.inhatc.demp.service.AnnouncementService;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,6 @@ import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,36 +22,27 @@ public class AnnouncementController {
     private final AnnouncementService announcementService;
 
     @GetMapping("")
-    public Slice<AnnouncementResponse> getAllAnnounces(@ModelAttribute AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
-        return announcementService.getAnnounceScroll(announcementSearchCondition, pageable);
+    public Slice<AnnouncementResponse> listAnnouncements(@ModelAttribute AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
+        return announcementService.findAnnouncementSlice(announcementSearchCondition, pageable);
     }
 
     @GetMapping("/scroll")
     public List<AnnouncementScroll> scroll() {
-        List<Announcement> announcements = announcementService.findAll();
-        List<AnnouncementScroll> result = announcements.stream()
-                .map(AnnouncementScroll::new)
-                .collect(Collectors.toList());
-
-        return result;
+        return announcementService.findScrollResponses();
     }
 
     @GetMapping("/detail/{AnnouncementId}")
-    public ResponseEntity<AnnouncementDetailResponse> getDetailAnnounce(@PathVariable Long AnnouncementId) {
-        Optional<Announcement> optionalAnnouncement = announcementService.findById(AnnouncementId);
-        if (optionalAnnouncement.isEmpty()) {
+    public ResponseEntity<AnnouncementDetailResponse> getAnnouncementDetail(@PathVariable("AnnouncementId") Long announcementId) {
+        Optional<AnnouncementDetailResponse> response = announcementService.findDetailResponse(announcementId);
+        if (response.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-
-        Announcement announcement = optionalAnnouncement.get();
-        AnnouncementDetailResponse result = AnnouncementDetailResponse.getBuild(announcement);
-
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(response.get(), HttpStatus.OK);
     }
 
     @PostMapping(value = "/add")
-    public String saveAnnounce(@Valid @ModelAttribute AnnouncementCreateRequest param) throws IOException {
-        announcementService.save(param);
+    public String createAnnouncement(@Valid @ModelAttribute AnnouncementCreateRequest param) throws IOException {
+        announcementService.createAnnouncement(param);
         return "ok";
     }
 }

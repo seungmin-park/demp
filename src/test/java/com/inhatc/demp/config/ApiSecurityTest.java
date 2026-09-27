@@ -119,7 +119,7 @@ class ApiSecurityTest {
         Member owner = member("security-answer-owner", List.of("ROLE_USER"));
         Member attacker = member("security-answer-attacker", List.of("ROLE_USER"));
         Answer answer = new Answer("original", 0, 0);
-        answer.settingMember(owner); answer.settingQuestion(question(owner)); answers.save(answer);
+        answer.assignMember(owner); answer.assignQuestion(question(owner)); answers.save(answer);
         mvc.perform(patch("/api/answer/update").header("X-AUTH-TOKEN", token(attacker)).contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(new UpdateAnswerForm(answer.getId(), "changed"))))
                 .andExpect(status().isForbidden());
@@ -211,7 +211,7 @@ class ApiSecurityTest {
     }
     private Question question(Member owner) {
         Question question = new Question("original", "body", 0, 0, 0);
-        question.settingMember(owner); return questions.save(question);
+        question.assignMember(owner); return questions.save(question);
     }
     private String token(Member member) { return tokens.createToken(member.getId().toString(), member.getRoles()); }
 }

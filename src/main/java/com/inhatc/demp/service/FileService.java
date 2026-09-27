@@ -5,7 +5,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.inhatc.demp.domain.announcemnet.UploadFile;
+import com.inhatc.demp.domain.announcement.UploadFile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
@@ -19,27 +19,19 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class FileService {
-
-    @Value("${file.dir}")
-    private String fileDir;
+public class FileService implements FileStorage {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
     private final AmazonS3 amazonS3;
+    private final ImageValidator imageValidator;
 
-    public String getFullPath(String fileName){
-        return fileDir + fileName;
-    }
-
-    public UploadFile saveFile(MultipartFile multipartFile) throws IOException {
-        if (multipartFile.isEmpty()) {
-            return null;
-        }
+    @Override
+    public UploadFile save(MultipartFile multipartFile) throws IOException {
+        String extension = imageValidator.validatedExtension(multipartFile);
 
         String originalFilename = multipartFile.getOriginalFilename();
-        String saveFileName = getSaveFileName(multipartFile);
-//        multipartFile.transferTo(new File(getFullPath(saveFileName)));
+        String saveFileName = UUID.randomUUID() + "." + extension;
 
         ObjectMetadata objectMetadata = new ObjectMetadata();
         objectMetadata.setContentLength(multipartFile.getSize());
@@ -55,18 +47,9 @@ public class FileService {
         return new UploadFile(originalFilename, saveFileName);
     }
 
-    public void deleteFile(String saveFileName) {
+    @Override
+    public void delete(String saveFileName) {
         amazonS3.deleteObject(new DeleteObjectRequest(bucket, saveFileName));
     }
 
-    private String getSaveFileName(MultipartFile multipartFile) {
-        String uuid = UUID.randomUUID().toString();
-        String ext = getExt(multipartFile);
-        return uuid + "." + ext.toLowerCase();
-    }
-
-    private String getExt(MultipartFile multipartFile) {
-        int pos = multipartFile.getOriginalFilename().lastIndexOf(".");
-        return  multipartFile.getOriginalFilename().substring(pos + 1);
-    }
 }
