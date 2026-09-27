@@ -52,6 +52,7 @@ public class AdminAnnouncementService {
                 item.replaceBodyImages(body.images());
                 item.revise(request.getTitle(), new Company(request.getCompany()), career, period, description,
                         request.getType(), request.getPosition(), replacement);
+                item.changeEducation(request.toEducationDetails());
                 repository.saveAndFlush(item);
                 return keys;
             });

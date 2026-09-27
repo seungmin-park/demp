@@ -19,6 +19,7 @@ public class AnnouncementResponse {
     private Set<Language> language = new HashSet<>();
     private JobPosition position;
     private String image;
+    private com.inhatc.demp.domain.announcement.EducationDetails education;
     private String company;
     private AnnouncementType announcementType;
     private Integer minCareer;
@@ -28,6 +29,7 @@ public class AnnouncementResponse {
     private LocalDateTime deadLineDate;
 
     public AnnouncementResponse(Announcement announcement, String imageUrl) {
+        this.education = announcement.getEducation();
         this.id = announcement.getId();
         this.title = announcement.getTitle();
         this.language = new HashSet<>(announcement.getDescription().getLanguages());

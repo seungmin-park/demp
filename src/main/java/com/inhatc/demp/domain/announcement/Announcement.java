@@ -35,6 +35,12 @@ public class Announcement {
     private Long id;
     private String title;
     @Embedded
+    private EducationDetails education;
+
+    public void changeEducation(EducationDetails education) {
+        this.education = announcementType == AnnouncementType.EDU ? education : null;
+    }
+    @Embedded
     private Career career;
     @Embedded
     private Description description;

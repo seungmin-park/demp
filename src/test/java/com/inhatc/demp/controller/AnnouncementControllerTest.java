@@ -120,9 +120,39 @@ class AnnouncementControllerTest {
         verifyNoInteractions(announcementService);
     }
 
+    @Test
+    @DisplayName("교육 정보는 평면 multipart에서 바인딩되어 서비스로 전달된다")
+    void bindsEducationDetails() throws Exception {
+        mockMvc.perform(validOptionalPaymentRequest("EDU").param("deliveryMode", "ONLINE")
+                .param("commitment", "PART_TIME").param("fundingType", "CARD_REQUIRED")
+                .param("learningStartDate", "2026-10-01").param("learningEndDate", "2026-12-31"))
+                .andExpect(status().isOk());
+        var captured = ArgumentCaptor.forClass(AnnouncementCreateRequest.class);
+        verify(announcementService).createAnnouncement(captured.capture());
+        var fields = new BeanWrapperImpl(captured.getValue());
+        assertThat(fields.isReadableProperty("deliveryMode")).isTrue();
+        assertThat(fields.getPropertyValue("deliveryMode").toString()).isEqualTo("ONLINE");
+        assertThat(fields.getPropertyValue("learningStartDate").toString()).isEqualTo("2026-10-01");
+    }
+
+    @Test
+    @DisplayName("교육 종료가 시작보다 이르거나 존재하지 않는 수업 방식은 거절한다")
+    void rejectsInvalidEducation() throws Exception {
+        mockMvc.perform(validOptionalPaymentRequest("EDU")
+                .param("learningStartDate", "2026-12-01").param("learningEndDate", "2026-10-01"))
+                .andExpect(status().isBadRequest());
+        mockMvc.perform(validOptionalPaymentRequest("EDU").param("deliveryMode", "INVALID"))
+                .andExpect(status().isBadRequest());
+        verifyNoInteractions(announcementService);
+    }
+
     private org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder validOptionalPaymentRequest() {
+        return validOptionalPaymentRequest("EMP");
+    }
+
+    private org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder validOptionalPaymentRequest(String type) {
         return multipart("/api/announce/add").param("title", "선택 연봉")
-                .param("company", "DEMP").param("type", "EMP").param("position", "BACKEND")
+                .param("company", "DEMP").param("type", type).param("position", "BACKEND")
                 .param("startedDate", "2026-09-01T00:00:00").param("deadLineDate", "2026-09-30T23:59:00")
                 .param("content", "설명").param("accessUrl", "https://example.com/jobs/1").param("language", "JAVA");
     }

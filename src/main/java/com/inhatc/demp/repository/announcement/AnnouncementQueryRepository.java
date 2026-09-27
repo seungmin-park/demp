@@ -47,6 +47,7 @@ public class AnnouncementQueryRepository {
                         languagesIn(announcementSearchCondition.getLanguages()),
                         recruitmentMatches(announcementSearchCondition.getRecruitmentStatus()),
                         tuitionMatches(announcementSearchCondition.getTuition()),
+                        educationMatches(announcementSearchCondition),
                         paymentGoe(announcementSearchCondition.getPayment()),
                         titleContain(announcementSearchCondition.getTitle()))
                 .fetch();
@@ -61,6 +62,7 @@ public class AnnouncementQueryRepository {
                         languagesIn(announcementSearchCondition.getLanguages()),
                         recruitmentMatches(announcementSearchCondition.getRecruitmentStatus()),
                         tuitionMatches(announcementSearchCondition.getTuition()),
+                        educationMatches(announcementSearchCondition),
                         paymentGoe(announcementSearchCondition.getPayment()),
                         minCareerLoe(announcementSearchCondition.getCareer()),
                         maxCareerGoe(announcementSearchCondition.getCareer()),
@@ -95,6 +97,7 @@ public class AnnouncementQueryRepository {
                         languagesIn(announcementSearchCondition.getLanguages()),
                         recruitmentMatches(announcementSearchCondition.getRecruitmentStatus()),
                         tuitionMatches(announcementSearchCondition.getTuition()),
+                        educationMatches(announcementSearchCondition),
                         paymentGoe(announcementSearchCondition.getPayment()),
                         titleContain(announcementSearchCondition.getTitle()))
                 .orderBy(announcement.id.desc())
@@ -108,6 +111,7 @@ public class AnnouncementQueryRepository {
                         languagesIn(announcementSearchCondition.getLanguages()),
                         recruitmentMatches(announcementSearchCondition.getRecruitmentStatus()),
                         tuitionMatches(announcementSearchCondition.getTuition()),
+                        educationMatches(announcementSearchCondition),
                         paymentGoe(announcementSearchCondition.getPayment()),
                         titleContain(announcementSearchCondition.getTitle()))
                 .fetchOne();
@@ -140,6 +144,26 @@ public class AnnouncementQueryRepository {
             case UPCOMING -> announcement.recruitPeriod.startedDate.gt(now);
             case CLOSED -> announcement.recruitPeriod.deadLineDate.lt(now);
         };
+    }
+
+    private BooleanBuilder educationMatches(AnnouncementSearchCondition filter) {
+        BooleanBuilder conditions = new BooleanBuilder();
+        if (filter.getDeliveryMode() != null) conditions.and(announcement.education.deliveryMode.eq(filter.getDeliveryMode()));
+        if (filter.getRegion() != null) conditions.and(announcement.education.region.eq(filter.getRegion()));
+        if (filter.getCommitment() != null) conditions.and(announcement.education.commitment.eq(filter.getCommitment()));
+        if (filter.getFundingType() != null) conditions.and(announcement.education.fundingType.eq(filter.getFundingType()));
+        if (filter.getSelectionProcess() != null) conditions.and(announcement.education.selectionProcess.eq(filter.getSelectionProcess()));
+        if (filter.getLearningLevel() != null) conditions.and(announcement.education.learningLevel.eq(filter.getLearningLevel()));
+        if (filter.getStartAfter() != null) conditions.and(announcement.education.learningStartDate.goe(filter.getStartAfter()));
+        if (filter.getStartBefore() != null) conditions.and(announcement.education.learningStartDate.loe(filter.getStartBefore()));
+        if (filter.getDuration() != null) conditions.and(switch (filter.getDuration()) {
+            case SHORT -> announcement.education.durationDays.between(1, 30);
+            case MEDIUM -> announcement.education.durationDays.between(31, 90);
+            case LONG -> announcement.education.durationDays.between(91, 180);
+            case EXTENDED -> announcement.education.durationDays.goe(181);
+        });
+        if (conditions.hasValue()) conditions.and(announcement.announcementType.eq(AnnouncementType.EDU));
+        return conditions;
     }
 
     private BooleanExpression tuitionMatches(Tuition tuition) {

@@ -77,6 +77,7 @@ public class AnnouncementService {
                 .jobPosition(announcementCreateRequest.getPosition())
                 .build();
         announcement.replaceBodyImages(body.images());
+        announcement.changeEducation(announcementCreateRequest.toEducationDetails());
             new TransactionTemplate(transactionManager).executeWithoutResult(
                     status -> announcementRepository.saveAndFlush(announcement));
         } catch (IOException | RuntimeException originalFailure) {

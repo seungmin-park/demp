@@ -1,6 +1,7 @@
 package com.inhatc.demp.dto.announcement;
 
-import com.inhatc.demp.domain.announcement.AnnouncementType;
+import com.inhatc.demp.domain.announcement.*;
+import java.time.LocalDate;
 import com.inhatc.demp.domain.announcement.JobPosition;
 import com.inhatc.demp.domain.announcement.Language;
 import java.time.LocalDateTime;
@@ -24,6 +25,28 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Setter
 @NoArgsConstructor
 public class AnnouncementFields {
+
+    private DeliveryMode deliveryMode;
+    private EducationRegion region;
+    private Commitment commitment;
+    private FundingType fundingType;
+    private SelectionProcess selectionProcess;
+    private LearningLevel learningLevel;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate learningStartDate;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+    private LocalDate learningEndDate;
+
+    @AssertTrue(message = "교육 종료일은 시작일 이후여야 합니다.")
+    public boolean isLearningPeriodValid() {
+        return type != AnnouncementType.EDU || learningEndDate == null
+                || learningStartDate != null && !learningEndDate.isBefore(learningStartDate);
+    }
+
+    public EducationDetails toEducationDetails() {
+        return type == AnnouncementType.EDU ? new EducationDetails(deliveryMode, region, commitment,
+                fundingType, selectionProcess, learningLevel, learningStartDate, learningEndDate) : null;
+    }
 
     private List<MultipartFile> bodyImages = new ArrayList<>();
 

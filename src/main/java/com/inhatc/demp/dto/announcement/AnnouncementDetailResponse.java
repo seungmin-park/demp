@@ -18,6 +18,7 @@ import lombok.Getter;
 public class AnnouncementDetailResponse {
 
     private String image;
+    private com.inhatc.demp.domain.announcement.EducationDetails education;
     private Company company;
     private String title;
     private int minCareer;
@@ -35,6 +36,7 @@ public class AnnouncementDetailResponse {
 
     public static AnnouncementDetailResponse from(Announcement announcement, String imageUrl) {
         return AnnouncementDetailResponse.builder()
+                .education(announcement.getEducation())
                 .title(announcement.getTitle())
                 .company(announcement.getCompany())
                 .announcementType(announcement.getAnnouncementType())
