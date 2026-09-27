@@ -45,7 +45,7 @@ public class AnnouncementFields {
 
     public Career toCareer() {
         return type == AnnouncementType.EDU || recruitmentAudience == RecruitmentAudience.NEW || recruitmentAudience == RecruitmentAudience.ANY
-                ? new Career(0, 0) : new Career(minCareer, maxCareer);
+                ? Career.builder().minCareer(0).maxCareer(0).build() : Career.builder().minCareer(minCareer).maxCareer(maxCareer).build();
     }
     public String sourceKey() {
         String key = AnnouncementSourceKey.of(accessUrl, company, type == AnnouncementType.EDU ? cohort : null);
@@ -54,8 +54,16 @@ public class AnnouncementFields {
     }
 
     public EducationDetails toEducationDetails() {
-        return type == AnnouncementType.EDU ? new EducationDetails(deliveryMode, region, commitment,
-                fundingType, selectionProcess, learningLevel, learningStartDate, learningEndDate) : null;
+        return type == AnnouncementType.EDU ? EducationDetails.builder()
+                .deliveryMode(deliveryMode)
+                .region(region)
+                .commitment(commitment)
+                .fundingType(fundingType)
+                .selectionProcess(selectionProcess)
+                .learningLevel(learningLevel)
+                .learningStartDate(learningStartDate)
+                .learningEndDate(learningEndDate)
+                .build() : null;
     }
 
     private PublicationStatus publicationStatus;
@@ -112,8 +120,14 @@ public class AnnouncementFields {
     }
 
     public com.inhatc.demp.domain.announcement.Description toDescription(String safeHtml) {
-        return new com.inhatc.demp.domain.announcement.Description(safeHtml, accessUrl, payment, language,
-                type == AnnouncementType.EMP ? salaryStatus : null, type == AnnouncementType.EMP ? salaryMax : null);
+        return com.inhatc.demp.domain.announcement.Description.builder()
+                .content(safeHtml)
+                .accessUrl(accessUrl)
+                .payment(payment)
+                .languages(language)
+                .salaryStatus(type == AnnouncementType.EMP ? salaryStatus : null)
+                .salaryMax(type == AnnouncementType.EMP ? salaryMax : null)
+                .build();
     }
     @NotEmpty
     private Set<Language> language = new LinkedHashSet<>();

@@ -127,8 +127,16 @@ class PublicationWorkflowTest {
     @Test
     @DisplayName("잘못된 기존 원문 URL 한 행이 무관한 신규 등록을 막지 않는다")
     void malformedLegacyUrlDoesNotBlockWrites() throws Exception {
-        repository.save(Announcement.builder().title("기존 레코드").company(new Company("DEMP")).career(new Career(0,0))
-            .description(new Description("예전 본문", "old invalid url", null, Set.of(Language.JAVA))).build());
+        repository.save(Announcement.builder()
+                .title("기존 레코드")
+                .company(Company.builder().name("DEMP").build())
+                .career(Career.builder().minCareer(0).maxCareer(0).build())
+            .description(Description.builder()
+                    .content("예전 본문")
+                    .accessUrl("old invalid url")
+                    .payment(null)
+                    .languages(Set.of(Language.JAVA))
+                    .build()).build());
         var request = new AnnouncementCreateRequest(); fill(request); service.createAnnouncement(request);
         assertThat(repository.count()).isEqualTo(2);
     }

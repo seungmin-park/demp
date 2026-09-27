@@ -1,5 +1,6 @@
 package com.inhatc.demp.domain.announcement;
 
+import lombok.Builder;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import java.util.HashSet;
@@ -37,11 +38,8 @@ public class Description {
     @CollectionTable(joinColumns = @JoinColumn(name = "announcement_id"), name = "language")
     private Set<Language> languages = new HashSet<>();
 
-    public Description(String content, String accessUrl, Integer payment, Set<Language> languages) {
-        this(content, accessUrl, payment, languages, null, null);
-    }
-
-    public Description(String content, String accessUrl, Integer payment, Set<Language> languages,
+    @Builder
+    private Description(String content, String accessUrl, Integer payment, Set<Language> languages,
                        SalaryStatus salaryStatus, Integer salaryMax) {
         boolean hidden = salaryStatus == SalaryStatus.UNDISCLOSED || salaryStatus == SalaryStatus.NEGOTIABLE;
         if (hidden) { payment = null; salaryMax = null; }
@@ -61,6 +59,13 @@ public class Description {
     }
 
     public Description withContent(String sanitized) {
-        return new Description(sanitized, accessUrl, payment, languages, salaryStatus, salaryMax);
+        return Description.builder()
+                .content(sanitized)
+                .accessUrl(accessUrl)
+                .payment(payment)
+                .languages(languages)
+                .salaryStatus(salaryStatus)
+                .salaryMax(salaryMax)
+                .build();
     }
 }

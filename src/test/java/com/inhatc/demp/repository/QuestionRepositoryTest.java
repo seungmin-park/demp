@@ -24,11 +24,19 @@ class QuestionRepositoryTest {
     @DisplayName("저장한 질문 목록을 조회한다")
     void findsSavedQuestions() {
         //given
-        Member memberA = memberRepository.save(new Member("testMemberA", "password", List.of("ROLE_USER")));
-        Member memberB = memberRepository.save(new Member("testMemberB", "password", List.of("ROLE_USER")));
-        Question questionA = new Question("접근 제어자가 헷갈려요", "CS 내용", 11, 23, 1);
+        Member memberA = memberRepository.save(Member.builder()
+                .username("testMemberA")
+                .password("password")
+                .roles(List.of("ROLE_USER"))
+                .build());
+        Member memberB = memberRepository.save(Member.builder()
+                .username("testMemberB")
+                .password("password")
+                .roles(List.of("ROLE_USER"))
+                .build());
+        Question questionA = Question.builder().title("접근 제어자가 헷갈려요").content("CS 내용").hits(11).recommend(23).dislike(1).build();
         questionA.assignMember(memberA);
-        Question questionB = new Question("Java8에서 뭐가 달라진건가요?", "Java 내용", 110, 20, 10);
+        Question questionB = Question.builder().title("Java8에서 뭐가 달라진건가요?").content("Java 내용").hits(110).recommend(20).dislike(10).build();
         questionB.assignMember(memberB);
         questionRepository.saveAll(List.of(questionA, questionB));
         //when

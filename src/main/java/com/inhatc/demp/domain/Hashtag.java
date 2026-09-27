@@ -1,5 +1,7 @@
 package com.inhatc.demp.domain;
 
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Hashtag {
 
     @Id
@@ -34,7 +36,8 @@ public class Hashtag {
         questionHashtag.setHashtag(null);
     }
 
-    public Hashtag(String tagName) {
+    @Builder
+    private Hashtag(String tagName) {
         this.tagName = tagName;
     }
 }

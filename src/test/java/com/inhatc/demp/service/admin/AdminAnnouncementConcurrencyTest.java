@@ -32,10 +32,18 @@ class AdminAnnouncementConcurrencyTest {
     @ValueSource(booleans = {false, true})
     void concurrentMutationsPreserveCommittedImage(boolean delete) throws Exception {
         Announcement original = repository.save(Announcement.builder().title("동시 수정 원본")
-                .company(new Company("DEMP")).career(new Career(0, 0))
-                .description(new Description("본문", "https://example.test", 0, Set.of(Language.JAVA)))
-                .image(new UploadFile("old.png", "old.png"))
-                .recruitPeriod(new RecruitPeriod(LocalDateTime.of(2026,1,1,0,0), LocalDateTime.of(2026,12,31,0,0)))
+                .company(Company.builder().name("DEMP").build()).career(Career.builder().minCareer(0).maxCareer(0).build())
+                .description(Description.builder()
+                        .content("본문")
+                        .accessUrl("https://example.test")
+                        .payment(0)
+                        .languages(Set.of(Language.JAVA))
+                        .build())
+                .image(UploadFile.builder().uploadFileName("old.png").saveFileName("old.png").build())
+                .recruitPeriod(RecruitPeriod.builder()
+                        .startedDate(LocalDateTime.of(2026,1,1,0,0))
+                        .deadLineDate(LocalDateTime.of(2026,12,31,0,0))
+                        .build())
                 .announcementType(AnnouncementType.EMP).jobPosition(JobPosition.BACKEND).build());
         CountDownLatch firstRead = new CountDownLatch(1), releaseFirst = new CountDownLatch(1), secondStarted = new CountDownLatch(1);
         var repositoryDelegate = mockingDetails(repository).getMockCreationSettings().getDefaultAnswer();
@@ -46,7 +54,10 @@ class AdminAnnouncementConcurrencyTest {
             }
             return repositoryDelegate.answer(invocation);
         }).when(repository).saveAndFlush(org.mockito.ArgumentMatchers.any(Announcement.class));
-        when(files.save(org.mockito.ArgumentMatchers.any())).thenReturn(new UploadFile("new.png", "new.png"));
+        when(files.save(org.mockito.ArgumentMatchers.any())).thenReturn(UploadFile.builder()
+                .uploadFileName("new.png")
+                .saveFileName("new.png")
+                .build());
         ExecutorService executor = Executors.newFixedThreadPool(2);
         try {
             Future<?> first = executor.submit(() -> {

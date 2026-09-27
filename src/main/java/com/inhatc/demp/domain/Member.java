@@ -33,11 +33,11 @@ public class Member {
     @ElementCollection(fetch = FetchType.EAGER)
     private List<String> roles = new ArrayList<>();
 
-    public Member() {
+    protected Member() {
     }
 
     @Builder
-    public Member(String username, String password, List<String> roles) {
+    private Member(String username, String password, List<String> roles) {
         this.username = username;
         this.password = password;
         this.roles = roles;

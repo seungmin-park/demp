@@ -1,12 +1,14 @@
 package com.inhatc.demp.domain;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.AccessLevel;
 
 import jakarta.persistence.*;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter(AccessLevel.PACKAGE)
 public class QuestionHashtag {

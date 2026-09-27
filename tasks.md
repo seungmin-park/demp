@@ -718,6 +718,15 @@ npx playwright test
 
 작업 위치는 사용자 리뷰를 위해 전환한 원본 `/Users/seungmin/Desktop/repo/archive/demp`, 브랜치는 `refactor/data-preservation-and-security`다. 이전 worktree는 보관본이며 현재 리뷰 수정의 기준은 원본이다. README 변경을 원복하고 Flyway/migration을 제거했다. 회원 가입·로그인 응답 조립은 서비스로 이동하고, 질문 상세의 도달 불가능한 null 분기와 완료된 임시 회원 TODO를 제거했다. 답변 배열 응답의 wrapper 변경은 기존 계획에 없으며 현재 계약을 유지한다. 상세 검증은 [리뷰 수정 기록](docs/verification/data-preservation-and-security/review-2026-09-21.md)을 참조한다.
 
-- [ ] 사용자 결정으로 생성자 제한·builder 통일은 후속 리팩터링에 보류한다. 기존 동작 테스트가 통과하는 상태에서 적용 범위를 합의하고 별도로 수행한다. JPA 기본 생성자 및 Spring/Jackson 바인딩 요구를 보존한다. 기존 private Announcement 생성자는 유지한다.
+- [x] T97: 생성자 제한·builder 통일. 2026-09-28 사용자 재개 지시로 Phase 12에서 수행한다. 기준선 271개 통과 후 도메인 생성 경로를 통일했다. JPA 기본 생성자 및 Spring/Jackson 바인딩 요구를 보존한다. 기존 private Announcement 생성자는 유지한다.
 
 리뷰 수정 최종 검증: H2 백엔드 144개 테스트와 clean test asciidoctor bootJar 통과. REST Docs 91개 참조 누락 없음. 프런트는 이번 리뷰에서 변경하지 않았다.
+
+## Phase 12 — 도메인 생성 경로 통일 (2026-09-28)
+
+계획: [controlled-domain-construction](docs/plans/controlled-domain-construction.md)
+브랜치: `refactor/controlled-domain-construction`, worktree: `.worktrees/controlled-domain-construction/backend`.
+
+- [ ] T98: 전체 테스트·빌드·현재 cmux의 생성 흐름 QA·최종 리뷰 후 main 병합·push. 브랜치와 worktree 보존.
+
+T97 결과: 공개 생성자/JPA 접근 계약 Red 28건 중 17건 assertion 실패 → private 생성자 builder와 protected JPA 기본 생성자로 Green. 전체 299건(기존 271+계약 28) 실패·스킵 0, REST Docs·bootJar 통과. 모든 호출부를 builder로 이전했고 DTO 바인딩 생성자와 Question.addHashtag의 양방향 관계 조립은 유지했다. 별도 리뷰 중요 결함 없음, 제안된 테스트 줄바꿈 개선 반영 후 299건 재통과. [상세 검증](docs/verification/controlled-domain-construction/t97-t98.md).

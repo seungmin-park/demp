@@ -18,7 +18,12 @@ public class AnnouncementReportService {
     public void submit(long id, String message, String actor) {
         requireText(message);
         var announcement = announcements.findByIdForMutation(id).filter(item -> item.isPublished()).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND));
-        reports.save(new AnnouncementReport(announcement, message.trim(), actor, LocalDateTime.now(clock)));
+        reports.save(AnnouncementReport.builder()
+                .announcement(announcement)
+                .message(message.trim())
+                .reporter(actor)
+                .createdAt(LocalDateTime.now(clock))
+                .build());
     }
     public Page<Report> list(boolean all, int page) {
         if (page < 0) throw new ApiException(HttpStatus.BAD_REQUEST);

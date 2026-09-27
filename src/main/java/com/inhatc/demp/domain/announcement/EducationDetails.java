@@ -33,7 +33,8 @@ public class EducationDetails {
     private LocalDate learningEndDate;
     private Integer durationDays;
 
-    public EducationDetails(DeliveryMode deliveryMode, EducationRegion region, Commitment commitment,
+    @Builder
+    private EducationDetails(DeliveryMode deliveryMode, EducationRegion region, Commitment commitment,
                             FundingType fundingType, SelectionProcess selectionProcess, LearningLevel learningLevel,
                             LocalDate learningStartDate, LocalDate learningEndDate) {
         if (learningEndDate != null && (learningStartDate == null || learningEndDate.isBefore(learningStartDate)))

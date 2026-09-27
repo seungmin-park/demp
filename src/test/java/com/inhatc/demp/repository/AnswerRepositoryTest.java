@@ -25,18 +25,22 @@ class AnswerRepositoryTest {
     @DisplayName("질문에 연결된 답변을 조회한다")
     void findsOnlyAnswersForRequestedQuestion() {
         //given
-        Member member = memberRepository.save(new Member("member-a", "password", List.of("ROLE_USER")));
-        Question question = new Question("질문", "내용", 0, 0, 0);
+        Member member = memberRepository.save(Member.builder()
+                .username("member-a")
+                .password("password")
+                .roles(List.of("ROLE_USER"))
+                .build());
+        Question question = Question.builder().title("질문").content("내용").hits(0).recommend(0).dislike(0).build();
         question.assignMember(member);
         questionRepository.save(question);
-        Answer answer = new Answer("질문\\n 답변\\n 테스트", 22, 11);
+        Answer answer = Answer.builder().content("질문\\n 답변\\n 테스트").recommend(22).dislike(11).build();
         answer.assignMember(member);
         answer.assignQuestion(question);
         answerRepository.save(answer);
-        Question otherQuestion = new Question("다른 질문", "다른 내용", 0, 0, 0);
+        Question otherQuestion = Question.builder().title("다른 질문").content("다른 내용").hits(0).recommend(0).dislike(0).build();
         otherQuestion.assignMember(member);
         questionRepository.save(otherQuestion);
-        Answer otherAnswer = new Answer("다른 댓글", 0, 0);
+        Answer otherAnswer = Answer.builder().content("다른 댓글").recommend(0).dislike(0).build();
         otherAnswer.assignMember(member);
         otherAnswer.assignQuestion(otherQuestion);
         answerRepository.save(otherAnswer);
@@ -58,8 +62,12 @@ class AnswerRepositoryTest {
     @Test
     @DisplayName("선택한 답변만 삭제하고 같은 질문의 다른 답변은 유지한다")
     void deletesOnlySelectedAnswer() {
-        Member member = memberRepository.save(new Member("answer-member", "password", List.of("ROLE_USER")));
-        Question question = new Question("질문", "내용", 0, 0, 0);
+        Member member = memberRepository.save(Member.builder()
+                .username("answer-member")
+                .password("password")
+                .roles(List.of("ROLE_USER"))
+                .build());
+        Question question = Question.builder().title("질문").content("내용").hits(0).recommend(0).dislike(0).build();
         question.assignMember(member);
         questionRepository.save(question);
         Answer removed = saveAnswer(member, question, "삭제할 댓글");
@@ -72,7 +80,7 @@ class AnswerRepositoryTest {
     }
 
     private Answer saveAnswer(Member member, Question question, String content) {
-        Answer answer = new Answer(content, 0, 0);
+        Answer answer = Answer.builder().content(content).recommend(0).dislike(0).build();
         answer.assignMember(member);
         answer.assignQuestion(question);
         return answerRepository.save(answer);

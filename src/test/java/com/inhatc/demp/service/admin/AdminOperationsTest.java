@@ -53,7 +53,7 @@ class AdminOperationsTest {
         Announcement original = announcement();
         AnnouncementUpdateRequest request = request();
         request.setImage(new MockMultipartFile("image", "new.png", "image/png", new byte[]{1}));
-        when(files.save(request.getImage())).thenReturn(new UploadFile("new.png", "new-key.png"));
+        when(files.save(request.getImage())).thenReturn(UploadFile.builder().uploadFileName("new.png").saveFileName("new-key.png").build());
         doAnswer(invocation -> {
             assertThat(announcementRepository.findById(original.getId()).orElseThrow().getImage().getSaveFileName()).isEqualTo("new-key.png");
             return null;
@@ -112,7 +112,15 @@ class AdminOperationsTest {
     @DisplayName("운영 현황은 DB 건수와 일치하고 제목 검색은 일치하는 질문과 답변만 반환한다")
     void countsAndSearchUseDatabase() {
         announcement(); Question first = question("Spring 질문"); answer(first);
-        Question second = new Question("Vue 질문", "body", 0, 0, 0); second.assignMember(first.getMember()); questionRepository.save(second);
+        Question second = Question.builder()
+                .title("Vue 질문")
+                .content("body")
+                .hits(0)
+                .recommend(0)
+                .dislike(0)
+                .build();
+        second.assignMember(first.getMember());
+        questionRepository.save(second);
         var counts = overview.overview();
         assertThat(counts.announcements()).isEqualTo(1);
         assertThat(counts.bootcamps()).isZero();
@@ -127,10 +135,19 @@ class AdminOperationsTest {
     }
 
     private Announcement announcement() {
-        return announcementRepository.save(Announcement.builder().title("원본 공고").company(new Company("DEMP"))
-                .career(new Career(0, 1)).description(new Description("<p>원본</p>", "https://example.test", 3000, Set.of(Language.JAVA)))
-                .image(new UploadFile("old.png", "old.png")).announcementType(AnnouncementType.EMP).jobPosition(JobPosition.BACKEND)
-                .recruitPeriod(new RecruitPeriod(LocalDateTime.of(2026,1,1,0,0), LocalDateTime.of(2026,12,31,0,0))).build());
+        return announcementRepository.save(Announcement.builder().title("원본 공고").company(Company.builder().name("DEMP").build())
+                .career(Career.builder()
+                        .minCareer(0)
+                        .maxCareer(1)
+                        .build()).description(Description.builder().content("<p>원본</p>").accessUrl("https://example.test").payment(3000).languages(Set.of(Language.JAVA)).build())
+                .image(UploadFile.builder()
+                        .uploadFileName("old.png")
+                        .saveFileName("old.png")
+                        .build()).announcementType(AnnouncementType.EMP).jobPosition(JobPosition.BACKEND)
+                .recruitPeriod(RecruitPeriod.builder()
+                        .startedDate(LocalDateTime.of(2026,1,1,0,0))
+                        .deadLineDate(LocalDateTime.of(2026,12,31,0,0))
+                        .build()).build());
     }
     private AnnouncementUpdateRequest request() {
         AnnouncementUpdateRequest request = new AnnouncementUpdateRequest();
@@ -141,10 +158,29 @@ class AdminOperationsTest {
         return request;
     }
     private Question question(String title) {
-        Member member = memberRepository.save(new Member("admin-test-author", "hashed", List.of("ROLE_USER")));
-        Question question = new Question(title,"원본",0,0,0); question.assignMember(member); return questionRepository.save(question);
+        Member member = memberRepository.save(Member.builder()
+                .username("admin-test-author")
+                .password("hashed")
+                .roles(List.of("ROLE_USER"))
+                .build());
+        Question question = Question.builder()
+                .title(title)
+                .content("원본")
+                .hits(0)
+                .recommend(0)
+                .dislike(0)
+                .build();
+        question.assignMember(member);
+        return questionRepository.save(question);
     }
     private Answer answer(Question question) {
-        Answer answer = new Answer("답변",0,0); answer.assignQuestion(question); answer.assignMember(question.getMember()); return answerRepository.save(answer);
+        Answer answer = Answer.builder()
+                .content("답변")
+                .recommend(0)
+                .dislike(0)
+                .build();
+        answer.assignQuestion(question);
+        answer.assignMember(question.getMember());
+        return answerRepository.save(answer);
     }
 }

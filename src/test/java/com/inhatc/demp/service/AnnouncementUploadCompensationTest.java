@@ -50,7 +50,10 @@ class AnnouncementUploadCompensationTest {
     void deletesUploadedFileWhenDatabaseSaveFails() throws IOException {
         AnnouncementCreateRequest request = request("DB 실패 공고");
         DataIntegrityViolationException failure = new DataIntegrityViolationException("db failed");
-        when(fileStorage.save(request.getImage())).thenReturn(new UploadFile("image.png", "saved.png"));
+        when(fileStorage.save(request.getImage())).thenReturn(UploadFile.builder()
+                .uploadFileName("image.png")
+                .saveFileName("saved.png")
+                .build());
         doThrow(failure).when(announcementRepository).saveAndFlush(any(Announcement.class));
 
         assertThatThrownBy(() -> announcementService.createAnnouncement(request)).isSameAs(failure);
@@ -63,7 +66,10 @@ class AnnouncementUploadCompensationTest {
     void deletesUploadedFileWhenTransactionCommitFails() throws IOException {
         AnnouncementCreateRequest request = request("commit 실패 공고");
         DataIntegrityViolationException failure = new DataIntegrityViolationException("commit failed");
-        when(fileStorage.save(request.getImage())).thenReturn(new UploadFile("image.png", "saved.png"));
+        when(fileStorage.save(request.getImage())).thenReturn(UploadFile.builder()
+                .uploadFileName("image.png")
+                .saveFileName("saved.png")
+                .build());
         doThrow(failure).when(transactionManager).commit(any());
 
         assertThatThrownBy(() -> announcementService.createAnnouncement(request)).isSameAs(failure);
@@ -77,7 +83,10 @@ class AnnouncementUploadCompensationTest {
         AnnouncementCreateRequest request = request("보상 실패 공고");
         DataIntegrityViolationException failure = new DataIntegrityViolationException("db failed");
         IllegalStateException compensationFailure = new IllegalStateException("delete failed");
-        when(fileStorage.save(request.getImage())).thenReturn(new UploadFile("image.png", "traceable-key.png"));
+        when(fileStorage.save(request.getImage())).thenReturn(UploadFile.builder()
+                .uploadFileName("image.png")
+                .saveFileName("traceable-key.png")
+                .build());
         doThrow(failure).when(announcementRepository).saveAndFlush(any(Announcement.class));
         doThrow(compensationFailure).when(fileStorage).delete("traceable-key.png");
 

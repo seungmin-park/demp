@@ -23,7 +23,11 @@ class CustomUserDetailServiceTest {
     @Test
     @DisplayName("인증 정보는 회원 엔티티가 아닌 독립 객체이며 이름과 권한을 유지한다")
     void returnsIndependentAuthenticationDetails() {
-        Member member = members.save(new Member("principal-test", "password-hash", List.of("ROLE_USER")));
+        Member member = members.save(Member.builder()
+                .username("principal-test")
+                .password("password-hash")
+                .roles(List.of("ROLE_USER"))
+                .build());
         memberId = member.getId();
 
         UserDetails details = service.loadUserByUsername(memberId.toString());

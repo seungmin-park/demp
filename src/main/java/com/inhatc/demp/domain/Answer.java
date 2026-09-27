@@ -1,5 +1,6 @@
 package com.inhatc.demp.domain;
 
+import lombok.Builder;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,7 +49,8 @@ public class Answer {
         this.content = content;
     }
 
-    public Answer(String content, int recommend, int dislike) {
+    @Builder
+    private Answer(String content, int recommend, int dislike) {
         this.content = content;
         this.recommend = recommend;
         this.dislike = dislike;

@@ -59,8 +59,10 @@ public class AnnouncementService {
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void createAnnouncement(AnnouncementCreateRequest announcementCreateRequest, String actor) throws IOException {
         Career career = announcementCreateRequest.toCareer();
-        RecruitPeriod recruitPeriod = new RecruitPeriod(announcementCreateRequest.getStartedDate(),
-                announcementCreateRequest.getDeadLineDate());
+        RecruitPeriod recruitPeriod = RecruitPeriod.builder()
+                .startedDate(announcementCreateRequest.getStartedDate())
+                .deadLineDate(announcementCreateRequest.getDeadLineDate())
+                .build();
         if (announcementRepository.sourceExists(announcementCreateRequest.sourceKey(), -1)) {
             throw new ApiException(HttpStatus.CONFLICT);
         }
@@ -78,7 +80,7 @@ public class AnnouncementService {
                 .career(career)
                 .recruitPeriod(recruitPeriod)
                 .description(description)
-                .company(new Company(announcementCreateRequest.getCompany()))
+                .company(Company.builder().name(announcementCreateRequest.getCompany()).build())
                 .image(image)
                 .jobPosition(announcementCreateRequest.getPosition())
                 .build();

@@ -211,16 +211,21 @@ class AnnouncementControllerTest {
     void returnsFlatDetailResponse() throws Exception {
         Announcement announcement = Announcement.builder()
                 .title("백엔드 채용")
-                .company(new Company("DEMP"))
+                .company(Company.builder().name("DEMP").build())
                 .announcementType(AnnouncementType.EMP)
                 .jobPosition(JobPosition.BACKEND)
-                .career(new Career(0, 3))
-                .recruitPeriod(new RecruitPeriod(
-                        LocalDateTime.of(2026, 9, 1, 0, 0),
-                        LocalDateTime.of(2026, 9, 30, 23, 59)))
-                .description(new Description("설명", "https://example.com/jobs/1", 3000,
-                        Set.of(Language.JAVA, Language.SPRING)))
-                .image(new UploadFile("company.png", "saved-company.png"))
+                .career(Career.builder().minCareer(0).maxCareer(3).build())
+                .recruitPeriod(RecruitPeriod.builder()
+                        .startedDate(LocalDateTime.of(2026, 9, 1, 0, 0))
+                        .deadLineDate(LocalDateTime.of(2026, 9, 30, 23, 59))
+                        .build())
+                .description(Description.builder()
+                        .content("설명")
+                        .accessUrl("https://example.com/jobs/1")
+                        .payment(3000)
+                        .languages(Set.of(Language.JAVA, Language.SPRING))
+                        .build())
+                .image(UploadFile.builder().uploadFileName("company.png").saveFileName("saved-company.png").build())
                 .build();
         when(announcementService.findDetailResponse(71L)).thenReturn(Optional.of(
                 AnnouncementDetailResponse.from(announcement, "https://example.test/saved-company.png")));

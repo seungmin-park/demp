@@ -117,11 +117,17 @@ class QuestionRestDocsTest {
     @Test
     @DisplayName("질문 상세 조회 응답을 문서화한다")
     void documentsQuestionDetail() throws Exception {
-        Member member = new Member("docs-member", "docs-password-hash", List.of("ROLE_USER"));
-        Question question = new Question("docs-question", "docs-question-content", 7, 3, 1);
+        Member member = Member.builder().username("docs-member").password("docs-password-hash").roles(List.of("ROLE_USER")).build();
+        Question question = Question.builder()
+                .title("docs-question")
+                .content("docs-question-content")
+                .hits(7)
+                .recommend(3)
+                .dislike(1)
+                .build();
         ReflectionTestUtils.setField(question, "id", 51L);
         question.assignMember(member);
-        Hashtag hashtag = new Hashtag("spring");
+        Hashtag hashtag = Hashtag.builder().tagName("spring").build();
         question.addHashtag(hashtag);
         QuestionDetail response = new QuestionDetail(question);
         when(questionService.findById(51L)).thenReturn(response);

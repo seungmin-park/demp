@@ -121,14 +121,19 @@ class AnnouncementRestDocsTest {
     void documentsAnnouncementDetail() throws Exception {
         Announcement announcement = Announcement.builder()
                 .title("docs-backend-job")
-                .career(new Career(0, 3))
-                .description(new Description("docs-description", "https://example.com/jobs/71", 3000,
-                        Set.of(Language.JAVA, Language.SPRING)))
-                .company(new Company("docs-company"))
-                .image(new UploadFile("docs-image.png", "docs-saved-image.png"))
-                .recruitPeriod(new RecruitPeriod(
-                        LocalDateTime.of(2026, 9, 1, 0, 0),
-                        LocalDateTime.of(2026, 9, 30, 23, 59)))
+                .career(Career.builder().minCareer(0).maxCareer(3).build())
+                .description(Description.builder()
+                        .content("docs-description")
+                        .accessUrl("https://example.com/jobs/71")
+                        .payment(3000)
+                        .languages(Set.of(Language.JAVA, Language.SPRING))
+                        .build())
+                .company(Company.builder().name("docs-company").build())
+                .image(UploadFile.builder().uploadFileName("docs-image.png").saveFileName("docs-saved-image.png").build())
+                .recruitPeriod(RecruitPeriod.builder()
+                        .startedDate(LocalDateTime.of(2026, 9, 1, 0, 0))
+                        .deadLineDate(LocalDateTime.of(2026, 9, 30, 23, 59))
+                        .build())
                 .announcementType(AnnouncementType.EMP)
                 .jobPosition(JobPosition.BACKEND)
                 .build();
@@ -187,14 +192,19 @@ class AnnouncementRestDocsTest {
         request.setTitle("docs");
         Announcement announcement = Announcement.builder()
                 .title("docs-backend-job")
-                .career(new Career(1, 3))
-                .description(new Description("docs-description", "https://docs.invalid/jobs/71", 5000,
-                        Set.of(Language.JAVA)))
-                .company(new Company("docs-company"))
-                .image(new UploadFile("docs-image.png", "docs-saved-image.png"))
-                .recruitPeriod(new RecruitPeriod(
-                        LocalDateTime.of(2026, 9, 1, 0, 0),
-                        LocalDateTime.of(2026, 9, 30, 23, 59)))
+                .career(Career.builder().minCareer(1).maxCareer(3).build())
+                .description(Description.builder()
+                        .content("docs-description")
+                        .accessUrl("https://docs.invalid/jobs/71")
+                        .payment(5000)
+                        .languages(Set.of(Language.JAVA))
+                        .build())
+                .company(Company.builder().name("docs-company").build())
+                .image(UploadFile.builder().uploadFileName("docs-image.png").saveFileName("docs-saved-image.png").build())
+                .recruitPeriod(RecruitPeriod.builder()
+                        .startedDate(LocalDateTime.of(2026, 9, 1, 0, 0))
+                        .deadLineDate(LocalDateTime.of(2026, 9, 30, 23, 59))
+                        .build())
                 .announcementType(AnnouncementType.EMP)
                 .jobPosition(JobPosition.BACKEND)
                 .build();
@@ -280,9 +290,9 @@ class AnnouncementRestDocsTest {
     void documentsAnnouncementScroll() throws Exception {
         Announcement announcement = Announcement.builder()
                 .title("docs-backend-job")
-                .company(new Company("docs-company"))
-                .career(new Career(0, 3)).announcementType(AnnouncementType.EMP)
-                .image(new UploadFile("docs-image.png", "docs-saved-image.png"))
+                .company(Company.builder().name("docs-company").build())
+                .career(Career.builder().minCareer(0).maxCareer(3).build()).announcementType(AnnouncementType.EMP)
+                .image(UploadFile.builder().uploadFileName("docs-image.png").saveFileName("docs-saved-image.png").build())
                 .build();
         ReflectionTestUtils.setField(announcement, "id", 71L);
         List<AnnouncementScroll> response = List.of(new AnnouncementScroll(announcement,

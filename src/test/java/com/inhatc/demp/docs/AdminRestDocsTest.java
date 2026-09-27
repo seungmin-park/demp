@@ -85,7 +85,10 @@ class AdminRestDocsTest {
         var filter = org.mockito.ArgumentCaptor.forClass(AnnouncementSearchCondition.class);
         verify(announcements).findAdminAnnouncementSlice(filter.capture(), any());
         assertThat(filter.getValue().getTitle()).isEqualTo("Spring");
-        when(announcements.findAdminDetailResponse(8L)).thenReturn(Optional.of(AnnouncementDetailResponse.builder().title("상세").language(Set.of()).build()));
+        when(announcements.findAdminDetailResponse(8L)).thenReturn(Optional.of(AnnouncementDetailResponse.builder()
+                .title("상세")
+                .language(Set.of())
+                .build()));
         mvc.perform(get("/api/admin/announcements/{id}",8L)).andExpect(status().isOk()).andExpect(jsonPath("$.title").value("상세"))
                 .andDo(document("admin-announcement-detail"));
         when(management.delete(8L)).thenReturn(new AdminMutationResult(true));

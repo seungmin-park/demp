@@ -23,7 +23,7 @@ public class LocalFileStorage implements FileStorage {
         Files.createDirectories(directory);
         String key = UUID.randomUUID() + "." + extension;
         try (var input = file.getInputStream()) { Files.copy(input, directory.resolve(key)); }
-        return new UploadFile(file.getOriginalFilename(),key);
+        return UploadFile.builder().uploadFileName(file.getOriginalFilename()).saveFileName(key).build();
     }
     public void delete(String key) {
         Path target = directory.resolve(key).normalize();

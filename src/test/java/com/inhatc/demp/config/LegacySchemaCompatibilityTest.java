@@ -25,7 +25,7 @@ class LegacySchemaCompatibilityTest {
                     assertThat(context).hasNotFailed();
                     HashtagRepository tags = context.getBean(HashtagRepository.class);
                     assertThat(tags.findById(1000L).orElseThrow().getTagName()).isEqualTo("legacy-preserved");
-                    Hashtag saved = tags.save(new Hashtag("new-after-upgrade"));
+                    Hashtag saved = tags.save(Hashtag.builder().tagName("new-after-upgrade").build());
                     assertThat(saved.getId()).isEqualTo(1001L);
                     assertThat(tags.findById(saved.getId()).orElseThrow().getTagName()).isEqualTo("new-after-upgrade");
                 });

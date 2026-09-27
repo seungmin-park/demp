@@ -11,7 +11,14 @@ class OptionalSalaryTest {
     @DisplayName("미공개와 협의는 남아 있는 상한 금액을 무시하고 제거한다")
     @EnumSource(value = SalaryStatus.class, names = {"UNDISCLOSED", "NEGOTIABLE"})
     void ignoresStaleHiddenRange(SalaryStatus status) {
-        Description result = new Description("본문", "https://example.com", null, Set.of(Language.JAVA), status, 6000);
+        Description result = Description.builder()
+                .content("본문")
+                .accessUrl("https://example.com")
+                .payment(null)
+                .languages(Set.of(Language.JAVA))
+                .salaryStatus(status)
+                .salaryMax(6000)
+                .build();
         assertThat(result.getPayment()).isNull(); assertThat(result.getSalaryMax()).isNull();
     }
 }

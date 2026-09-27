@@ -104,7 +104,7 @@ class AnnouncementBodyImagesTest {
         var image = new MockMultipartFile("bodyImages", "body.png", "image/png", new byte[]{1});
         request.setBodyImages(List.of(image));
         request.setContent("<p>업무</p><img src='attachment:0' alt='사진'>");
-        when(files.save(image)).thenReturn(new UploadFile("body.png", "body.png"));
+        when(files.save(image)).thenReturn(UploadFile.builder().uploadFileName("body.png").saveFileName("body.png").build());
         return request;
     }
     private AnnouncementUpdateRequest update() { var request = new AnnouncementUpdateRequest(); fill(request); return request; }
