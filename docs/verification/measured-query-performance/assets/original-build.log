@@ -1,0 +1,63 @@
+Starting a Gradle Daemon (subsequent builds will be faster)
+> Task :initQuerydslSourcesDir
+
+> Task :compileQuerydsl FAILED
+Note: Running JPAAnnotationProcessor
+Note: Serializing Entity types
+Note: Generating com.inhatc.demp.domain.QQuestionHashtag for [com.inhatc.demp.domain.QuestionHashtag]
+Note: Generating com.inhatc.demp.domain.QMember for [com.inhatc.demp.domain.Member]
+Note: Generating com.inhatc.demp.domain.QQuestion for [com.inhatc.demp.domain.Question]
+Note: Generating com.inhatc.demp.domain.QAnswer for [com.inhatc.demp.domain.Answer]
+Note: Generating com.inhatc.demp.domain.announcemnet.QAnnouncement for [com.inhatc.demp.domain.announcemnet.Announcement]
+Note: Generating com.inhatc.demp.domain.QHashtag for [com.inhatc.demp.domain.Hashtag]
+Note: Serializing Embeddable types
+Note: Generating com.inhatc.demp.domain.announcemnet.QCareer for [com.inhatc.demp.domain.announcemnet.Career]
+Note: Generating com.inhatc.demp.domain.announcemnet.QCompany for [com.inhatc.demp.domain.announcemnet.Company]
+Note: Generating com.inhatc.demp.domain.announcemnet.QDescription for [com.inhatc.demp.domain.announcemnet.Description]
+Note: Generating com.inhatc.demp.domain.announcemnet.QUploadFile for [com.inhatc.demp.domain.announcemnet.UploadFile]
+Note: Generating com.inhatc.demp.domain.announcemnet.QRecruitPeriod for [com.inhatc.demp.domain.announcemnet.RecruitPeriod]
+Note: Running JPAAnnotationProcessor
+/Users/seungmin/Desktop/repo/archive/demp/.worktrees/measured-query-performance/baseline/src/main/java/com/inhatc/demp/InitDb.java:20: error: cannot find symbol
+import static com.inhatc.demp.domain.Language.*;
+                                    ^
+  symbol:   class Language
+  location: package com.inhatc.demp.domain
+/Users/seungmin/Desktop/repo/archive/demp/.worktrees/measured-query-performance/baseline/src/main/java/com/inhatc/demp/controller/AnnouncementController.java:3: error: cannot find symbol
+import com.inhatc.demp.domain.Announcement;
+                             ^
+  symbol:   class Announcement
+  location: package com.inhatc.demp.domain
+/Users/seungmin/Desktop/repo/archive/demp/.worktrees/measured-query-performance/baseline/src/main/java/com/inhatc/demp/controller/AnnouncementController.java:46: error: cannot find symbol
+    public ResponseEntity<AnnouncementDetail> getDetailAnnounce(@PathVariable Long AnnouncementId) {
+                          ^
+  symbol:   class AnnouncementDetail
+  location: class AnnouncementController
+/Users/seungmin/Desktop/repo/archive/demp/.worktrees/measured-query-performance/baseline/src/main/java/com/inhatc/demp/controller/AnnouncementController.java:61: error: cannot find symbol
+    public String saveAnnounce(@Valid @ModelAttribute AnnouncementForm param) throws IOException {
+                                                      ^
+  symbol:   class AnnouncementForm
+  location: class AnnouncementController
+Note: Running JPAAnnotationProcessor
+4 errors
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':compileQuerydsl'.
+> Compilation failed; see the compiler error output for details.
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights.
+
+* Get more help at https://help.gradle.org
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 8.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+See https://docs.gradle.org/7.4/userguide/command_line_interface.html#sec:command_line_warnings
+
+BUILD FAILED in 4s
+2 actionable tasks: 2 executed
