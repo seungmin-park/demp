@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class LegacySchemaCompatibilityTest {
     @Test
-    @DisplayName("기존 Hibernate5 스키마를 변경하지 않고 검증하며 기존 데이터와 ID 연속성을 보존한다")
+    @DisplayName("본문 첨부 테이블만 추가한 기존 Hibernate5 스키마에서 데이터와 ID 연속성을 보존한다")
     void readsAndWritesLegacySchema() {
         new WebApplicationContextRunner()
                 .withInitializer(new ConfigDataApplicationContextInitializer())
@@ -20,7 +20,7 @@ class LegacySchemaCompatibilityTest {
                         "spring.datasource.url=jdbc:h2:mem:legacy-schema;DB_CLOSE_DELAY=0",
                         "spring.jpa.hibernate.ddl-auto=validate",
                         "spring.sql.init.mode=always",
-                        "spring.sql.init.schema-locations=classpath:legacy/hibernate5-schema.sql")
+                        "spring.sql.init.schema-locations=classpath:legacy/hibernate5-schema.sql,classpath:db/manual/announcement-body-images.sql")
                 .run(context -> {
                     assertThat(context).hasNotFailed();
                     HashtagRepository tags = context.getBean(HashtagRepository.class);

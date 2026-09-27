@@ -16,6 +16,13 @@ public class ContentSanitizer {
             .addProtocols("a", "href", "http", "https", "mailto")
             .preserveRelativeLinks(true);
 
+    public String sanitizeAnnouncement(String html) {
+        Safelist images = new Safelist(ALLOWED_CONTENT).addTags("img")
+                .addAttributes("img", "src", "alt").addProtocols("img", "src", "http", "https");
+        return Jsoup.clean(html, "https://content.invalid/", images,
+                new Document.OutputSettings().prettyPrint(false));
+    }
+
     public String sanitize(String html) {
         if (html == null) {
             return "";

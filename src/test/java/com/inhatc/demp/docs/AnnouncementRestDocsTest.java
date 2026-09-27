@@ -109,7 +109,8 @@ class AnnouncementRestDocsTest {
                                 partWithName("accessUrl").description("지원하기 버튼으로 이동할 원문 공고 URL"),
                                 partWithName("payment").description("연봉 또는 교육비, 만원 단위"),
                                 partWithName("language").description("기술 언어 목록"),
-                                partWithName("image").description("선택 JPEG 또는 PNG 대표 이미지").optional())));
+                                partWithName("image").description("선택 JPEG 또는 PNG 대표 이미지").optional(),
+                                partWithName("bodyImages").description("선택 본문 이미지 목록, content의 attachment:0부터 순서대로 대응").optional())));
         verify(announcementService).createAnnouncement(org.mockito.ArgumentMatchers.any());
     }
 

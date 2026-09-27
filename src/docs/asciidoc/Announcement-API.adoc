@@ -81,3 +81,15 @@ include::{snippets}/announcement-detail-not-found/path-parameters.adoc[]
 
 .HTTP 응답
 include::{snippets}/announcement-detail-not-found/http-response.adoc[]
+
+=== 원문과 본문 이미지
+
+`accessUrl`은 지원하기 버튼에서 새 탭으로 열 원문 공고 URL이다.
+대표 이미지 `image`는 선택 항목이며 생략하면 기본 회사 아이콘을 표시한다.
+본문은 서식 HTML이고 신규 첨부는 multipart `bodyImages`를 반복해서 전달한다(최대 10개, 각 JPEG/PNG 5MB 이내, 전체 요청 10MB 이내).
+본문 `<img src="attachment:0" alt="설명">`의 번호는 이번 요청의 첨부 순서다.
+수정에서 기존 본문 이미지 URL을 유지하면 파일도 유지하고, 본문에서 제거하면 커밋 후 정리한다.
+외부 페이지의 이미지 URL은 자동으로 가져오지 않는다. 업로드 파일을 참조하지 않는 요청은 400으로 거절한다.
+본문 파일은 `announcement_body_image` 컬렉션 테이블에 소속을 보관한다. 운영 반영 전에 테이블 생성이 필요하며 기존 공고에는 첨부 행이 없다.
+
+운영 DDL: `src/main/resources/db/manual/announcement-body-images.sql`. 자동 실행되지 않는다. 기존 스키마에 이 SQL을 적용한 뒤 `ddl-auto=validate`로 기동·기존 데이터 보존을 검증한다.

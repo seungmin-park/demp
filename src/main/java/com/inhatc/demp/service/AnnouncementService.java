@@ -42,6 +42,7 @@ public class AnnouncementService {
     private final ContentSanitizer contentSanitizer;
     private final PlatformTransactionManager transactionManager;
     private final AnnouncementImageUrl imageUrl;
+    private final AnnouncementBodyImages bodyImages;
 
     @Transactional
     public void saveAnnouncementEntity(Announcement announcement) {
@@ -54,15 +55,18 @@ public class AnnouncementService {
         Career career = new Career(announcementCreateRequest.getMinCareer(), announcementCreateRequest.getMaxCareer());
         RecruitPeriod recruitPeriod = new RecruitPeriod(announcementCreateRequest.getStartedDate(),
                 announcementCreateRequest.getDeadLineDate());
-        Description description = sanitizeDescription(new Description(announcementCreateRequest.getContent(),
-                announcementCreateRequest.getAccessUrl(), announcementCreateRequest.getPayment(),
-                announcementCreateRequest.getLanguage()));
         if (announcementRepository.findByTitle(announcementCreateRequest.getTitle()).isPresent()) {
             throw new ApiException(HttpStatus.CONFLICT);
         }
         UploadFile image = announcementCreateRequest.getImage() == null || announcementCreateRequest.getImage().isEmpty()
                 ? null : fileStorage.save(announcementCreateRequest.getImage());
 
+        List<UploadFile> uploaded = List.of();
+        try {
+            uploaded = bodyImages.upload(announcementCreateRequest.getBodyImages());
+            var body = bodyImages.prepare(announcementCreateRequest.getContent(), "", List.of(), uploaded);
+            Description description = new Description(body.html(), announcementCreateRequest.getAccessUrl(),
+                    announcementCreateRequest.getPayment(), announcementCreateRequest.getLanguage());
         Announcement announcement = Announcement.builder()
                 .title(announcementCreateRequest.getTitle())
                 .announcementType(announcementCreateRequest.getType())
@@ -73,16 +77,17 @@ public class AnnouncementService {
                 .image(image)
                 .jobPosition(announcementCreateRequest.getPosition())
                 .build();
-        try {
+        announcement.replaceBodyImages(body.images());
             new TransactionTemplate(transactionManager).executeWithoutResult(
                     status -> announcementRepository.saveAndFlush(announcement));
-        } catch (RuntimeException originalFailure) {
+        } catch (IOException | RuntimeException originalFailure) {
+            bodyImages.compensate(uploaded, originalFailure);
             compensate(image, originalFailure);
             throw originalFailure;
         }
     }
 
-    private void compensate(UploadFile image, RuntimeException originalFailure) {
+    private void compensate(UploadFile image, Exception originalFailure) {
         if (image == null) return;
         try {
             fileStorage.delete(image.getSaveFileName());

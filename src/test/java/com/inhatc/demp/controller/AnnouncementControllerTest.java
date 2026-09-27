@@ -68,6 +68,7 @@ class AnnouncementControllerTest {
 
         mockMvc.perform(multipart("/api/announce/add")
                         .file(image)
+                        .file(new MockMultipartFile("bodyImages", "body.png", "image/png", new byte[]{1}))
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .param("title", "백엔드 채용")
                         .param("company", "DEMP")
@@ -85,6 +86,7 @@ class AnnouncementControllerTest {
 
         ArgumentCaptor<AnnouncementCreateRequest> request = ArgumentCaptor.forClass(AnnouncementCreateRequest.class);
         verify(announcementService).createAnnouncement(request.capture());
+        assertThat(request.getValue().getBodyImages()).extracting(file -> file.getOriginalFilename()).containsExactly("body.png");
         BeanWrapper fields = new BeanWrapperImpl(request.getValue());
         assertThat(fields.getPropertyValue("title")).isEqualTo("백엔드 채용");
         assertThat(fields.getPropertyValue("company")).isEqualTo("DEMP");
@@ -199,6 +201,18 @@ class AnnouncementControllerTest {
         ArgumentCaptor<AnnouncementCreateRequest> request = ArgumentCaptor.forClass(AnnouncementCreateRequest.class);
         verify(announcementService).createAnnouncement(request.capture());
         assertThat(request.getValue().getImage()).isNull();
+    }
+
+    @ParameterizedTest
+    @DisplayName("공고 본문이 비어 있거나 원문 주소가 웹 주소가 아니면 거절한다")
+    @CsvSource({"<p></p>, https://example.com/job", "<p>업무</p>, ftp://example.com/job"})
+    void rejectsEmptyBodyOrNonWebSource(String content, String source) throws Exception {
+        mockMvc.perform(multipart("/api/announce/add")
+                .param("title", "텍스트 공고").param("company", "DEMP").param("type", "EMP").param("position", "BACKEND")
+                .param("startedDate", "2026-09-01T00:00:00").param("deadLineDate", "2026-09-30T00:00:00")
+                .param("content", content).param("accessUrl", source).param("language", "JAVA"))
+                .andExpect(status().isBadRequest());
+        verifyNoInteractions(announcementService);
     }
 
     @Test

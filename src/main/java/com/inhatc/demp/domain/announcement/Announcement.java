@@ -3,6 +3,11 @@ package com.inhatc.demp.domain.announcement;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 import jakarta.persistence.Embedded;
+import jakarta.persistence.ElementCollection;
+import jakarta.persistence.CollectionTable;
+import jakarta.persistence.JoinColumn;
+import java.util.List;
+import java.util.ArrayList;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.EnumType;
@@ -37,6 +42,9 @@ public class Announcement {
     private Company company;
     @Embedded
     private UploadFile image;
+    @ElementCollection
+    @CollectionTable(name = "announcement_body_image", joinColumns = @JoinColumn(name = "announcement_id"))
+    private List<UploadFile> bodyImages = new ArrayList<>();
     @Embedded
     private RecruitPeriod recruitPeriod;
     @Enumerated(EnumType.STRING)
@@ -46,6 +54,11 @@ public class Announcement {
     @JdbcTypeCode(SqlTypes.VARCHAR)
     private JobPosition jobPosition;
 
+
+    public void replaceBodyImages(List<UploadFile> images) {
+        this.bodyImages.clear();
+        this.bodyImages.addAll(images);
+    }
 
     public void changeDescription(Description description) {
         this.description = description;
