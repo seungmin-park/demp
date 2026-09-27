@@ -119,6 +119,7 @@ class AnnouncementServiceTest {
     void createsWithoutCoverImage() throws IOException {
         AnnouncementCreateRequest request = request("텍스트 원문 공고");
         request.setImage(null);
+        request.setPublicationStatus(com.inhatc.demp.domain.announcement.PublicationStatus.PUBLISHED);
         announcementService.createAnnouncement(request);
         Announcement saved = announcementRepository.findByTitle("텍스트 원문 공고").orElseThrow();
         var detail = announcementService.findDetailResponse(saved.getId()).orElseThrow();

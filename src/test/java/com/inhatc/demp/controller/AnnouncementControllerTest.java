@@ -85,7 +85,7 @@ class AnnouncementControllerTest {
                 .andExpect(status().isOk());
 
         ArgumentCaptor<AnnouncementCreateRequest> request = ArgumentCaptor.forClass(AnnouncementCreateRequest.class);
-        verify(announcementService).createAnnouncement(request.capture());
+        verify(announcementService).createAnnouncement(request.capture(), org.mockito.ArgumentMatchers.eq("user"));
         assertThat(request.getValue().getBodyImages()).extracting(file -> file.getOriginalFilename()).containsExactly("body.png");
         BeanWrapper fields = new BeanWrapperImpl(request.getValue());
         assertThat(fields.getPropertyValue("title")).isEqualTo("백엔드 채용");
@@ -107,7 +107,7 @@ class AnnouncementControllerTest {
     void omittedPaymentRemainsUnknown() throws Exception {
         mockMvc.perform(validOptionalPaymentRequest()).andExpect(status().isOk());
         var captured = ArgumentCaptor.forClass(AnnouncementCreateRequest.class);
-        verify(announcementService).createAnnouncement(captured.capture());
+        verify(announcementService).createAnnouncement(captured.capture(), org.mockito.ArgumentMatchers.eq("user"));
         assertThat((Object) captured.getValue().getPayment()).isNull();
     }
 
@@ -128,7 +128,7 @@ class AnnouncementControllerTest {
                 .param("learningStartDate", "2026-10-01").param("learningEndDate", "2026-12-31"))
                 .andExpect(status().isOk());
         var captured = ArgumentCaptor.forClass(AnnouncementCreateRequest.class);
-        verify(announcementService).createAnnouncement(captured.capture());
+        verify(announcementService).createAnnouncement(captured.capture(), org.mockito.ArgumentMatchers.eq("user"));
         var fields = new BeanWrapperImpl(captured.getValue());
         assertThat(fields.isReadableProperty("deliveryMode")).isTrue();
         assertThat(fields.getPropertyValue("deliveryMode").toString()).isEqualTo("ONLINE");
@@ -254,7 +254,7 @@ class AnnouncementControllerTest {
                 .param("content", "<p>업무 요약</p>").param("accessUrl", "https://example.com/jobs/1")
                 .param("language", "JAVA")).andExpect(status().isOk());
         ArgumentCaptor<AnnouncementCreateRequest> request = ArgumentCaptor.forClass(AnnouncementCreateRequest.class);
-        verify(announcementService).createAnnouncement(request.capture());
+        verify(announcementService).createAnnouncement(request.capture(), org.mockito.ArgumentMatchers.eq("user"));
         assertThat(request.getValue().getImage()).isNull();
     }
 

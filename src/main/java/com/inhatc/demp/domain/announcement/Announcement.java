@@ -34,6 +34,32 @@ public class Announcement {
     @SequenceGenerator(name = "announcement_legacy_id", sequenceName = "hibernate_sequence", allocationSize = 1)
     private Long id;
     private String title;
+    @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
+    @org.hibernate.annotations.ColumnDefault("'PUBLISHED'")
+    private PublicationStatus publicationStatus = PublicationStatus.PUBLISHED;
+
+    public boolean isPublished() { return publicationStatus == PublicationStatus.PUBLISHED; }
+    public void changePublication(PublicationStatus status) { if (status != null) publicationStatus = status; }
+    private String sourceName;
+    private String sourceIdentifier;
+    @jakarta.persistence.Column(length = 2048)
+    private String applicationUrl;
+    private java.time.LocalDateTime sourceVerifiedAt;
+    @ElementCollection
+    @CollectionTable(name = "announcement_revision", joinColumns = @JoinColumn(name = "announcement_id"))
+    @jakarta.persistence.OrderColumn(name = "revision_order")
+    private List<PublicationRevision> publicationHistory = new ArrayList<>();
+
+    public void recordPublication(String sourceName, String sourceIdentifier, String applicationUrl,
+                                  boolean verified, String actor, java.time.LocalDateTime now) {
+        this.sourceName = sourceName;
+        this.sourceIdentifier = sourceIdentifier;
+        this.applicationUrl = applicationUrl == null || applicationUrl.isBlank() ? null : applicationUrl;
+        this.sourceVerifiedAt = verified ? now : null;
+        publicationHistory.add(new PublicationRevision(actor, now, publicationStatus, title, description.getAccessUrl()));
+    }
+
     @Embedded
     private EducationDetails education;
 

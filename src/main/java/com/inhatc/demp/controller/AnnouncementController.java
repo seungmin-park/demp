@@ -41,8 +41,8 @@ public class AnnouncementController {
     }
 
     @PostMapping(value = "/add")
-    public String createAnnouncement(@Valid @ModelAttribute AnnouncementCreateRequest param) throws IOException {
-        announcementService.createAnnouncement(param);
+    public String createAnnouncement(@Valid @ModelAttribute AnnouncementCreateRequest param, java.security.Principal principal) throws IOException {
+        announcementService.createAnnouncement(param, principal.getName());
         return "ok";
     }
 }

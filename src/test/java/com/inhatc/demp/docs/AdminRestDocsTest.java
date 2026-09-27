@@ -63,15 +63,15 @@ class AdminRestDocsTest {
         fields(create);
         mvc.perform(create).andExpect(status().isCreated()).andDo(document("admin-announcement-create"));
         var capture = org.mockito.ArgumentCaptor.forClass(AnnouncementCreateRequest.class);
-        verify(announcements).createAnnouncement(capture.capture());
+        verify(announcements).createAnnouncement(capture.capture(), org.mockito.ArgumentMatchers.anyString());
         assertThat(capture.getValue().getTitle()).isEqualTo("관리 공고");
-        when(management.update(eq(8L), any())).thenReturn(new AdminMutationResult(false));
+        when(management.update(eq(8L), any(), anyString())).thenReturn(new AdminMutationResult(false));
         var update = multipart("/api/admin/announcements/{id}",8L);
         fields(update);
         mvc.perform(update.with(request -> { request.setMethod("PATCH"); return request; })).andExpect(status().isOk()).andExpect(jsonPath("$.cleanupPending").value(false))
                 .andDo(document("admin-announcement-update"));
         var changed = org.mockito.ArgumentCaptor.forClass(AnnouncementUpdateRequest.class);
-        verify(management).update(eq(8L),changed.capture());
+        verify(management).update(eq(8L),changed.capture(), eq("user"));
         assertThat(changed.getValue().getImage()).isNull();
         assertThat(changed.getValue().getLanguage()).containsExactly(com.inhatc.demp.domain.announcement.Language.JAVA);
     }
@@ -79,13 +79,13 @@ class AdminRestDocsTest {
     @Test
     @DisplayName("관리자 공고 조회와 삭제 결과를 문서화한다")
     void announcementReadsAndDelete() throws Exception {
-        when(announcements.findAnnouncementSlice(any(), any())).thenReturn(new SliceImpl<>(List.of(),PageRequest.of(0,20),false));
+        when(announcements.findAdminAnnouncementSlice(any(), any())).thenReturn(new SliceImpl<>(List.of(),PageRequest.of(0,20),false));
         mvc.perform(get("/api/admin/announcements").param("title","Spring").param("announcementType","EDU"))
                 .andExpect(status().isOk()).andExpect(jsonPath("$.content").isEmpty()).andDo(document("admin-announcements"));
         var filter = org.mockito.ArgumentCaptor.forClass(AnnouncementSearchCondition.class);
-        verify(announcements).findAnnouncementSlice(filter.capture(), any());
+        verify(announcements).findAdminAnnouncementSlice(filter.capture(), any());
         assertThat(filter.getValue().getTitle()).isEqualTo("Spring");
-        when(announcements.findDetailResponse(8L)).thenReturn(Optional.of(AnnouncementDetailResponse.builder().title("상세").language(Set.of()).build()));
+        when(announcements.findAdminDetailResponse(8L)).thenReturn(Optional.of(AnnouncementDetailResponse.builder().title("상세").language(Set.of()).build()));
         mvc.perform(get("/api/admin/announcements/{id}",8L)).andExpect(status().isOk()).andExpect(jsonPath("$.title").value("상세"))
                 .andDo(document("admin-announcement-detail"));
         when(management.delete(8L)).thenReturn(new AdminMutationResult(true));

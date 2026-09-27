@@ -100,7 +100,7 @@ class EducationDiscoveryTest {
     }
     private AnnouncementCreateRequest request(String title) { var request = new AnnouncementCreateRequest(); fill(request,title); return request; }
     private void fill(AnnouncementFields request, String title) {
-        request.setTitle(title); request.setCompany("DEMP 교육"); request.setType(AnnouncementType.EDU);
+        request.setPublicationStatus(PublicationStatus.PUBLISHED); request.setTitle(title); request.setCompany("DEMP 교육"); request.setType(AnnouncementType.EDU);
         request.setPosition(JobPosition.BACKEND); request.setLanguage(Set.of(Language.JAVA)); request.setContent("교육 소개");
         request.setAccessUrl("https://example.com/camp"); request.setStartedDate(LocalDateTime.of(2026,9,1,0,0));
         request.setDeadLineDate(LocalDateTime.of(2026,9,30,18,0));

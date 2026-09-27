@@ -41,7 +41,8 @@ public class AnnouncementQueryRepository {
     public List<Announcement> findAllByAnnouncementCondition(AnnouncementSearchCondition announcementSearchCondition) {
         return jpaQueryFactory
                 .selectFrom(announcement)
-                .where(typeEq(announcementSearchCondition.getAnnouncementType()),
+                .where(announcement.publicationStatus.eq(com.inhatc.demp.domain.announcement.PublicationStatus.PUBLISHED),
+                        typeEq(announcementSearchCondition.getAnnouncementType()),
                         positionIn(announcementSearchCondition.getPositions()),
                         languageIn(announcementSearchCondition.getLanguage()),
                         languagesIn(announcementSearchCondition.getLanguages()),
@@ -53,10 +54,18 @@ public class AnnouncementQueryRepository {
                 .fetch();
     }
 
-    public Slice<Announcement> findAnnouncementSlice(AnnouncementSearchCondition announcementSearchCondition,
-                                                         Pageable pageable) {
+    public Slice<Announcement> findAnnouncementSlice(AnnouncementSearchCondition condition, Pageable pageable) {
+        return findSlice(condition, pageable, true);
+    }
+
+    public Slice<Announcement> findAdminAnnouncementSlice(AnnouncementSearchCondition condition, Pageable pageable) {
+        return findSlice(condition, pageable, false);
+    }
+
+    private Slice<Announcement> findSlice(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable, boolean publicOnly) {
         List<Long> ids = jpaQueryFactory.select(announcement.id).from(announcement)
-                .where(typeEq(announcementSearchCondition.getAnnouncementType()),
+                .where(publicOnly ? announcement.publicationStatus.eq(com.inhatc.demp.domain.announcement.PublicationStatus.PUBLISHED) : null,
+                        typeEq(announcementSearchCondition.getAnnouncementType()),
                         positionIn(announcementSearchCondition.getPositions()),
                         languageIn(announcementSearchCondition.getLanguage()),
                         languagesIn(announcementSearchCondition.getLanguages()),
@@ -91,7 +100,8 @@ public class AnnouncementQueryRepository {
 
     public Page<Announcement> findAnnouncementPage(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
         List<Long> ids = jpaQueryFactory.select(announcement.id).from(announcement)
-                .where(typeEq(announcementSearchCondition.getAnnouncementType()),
+                .where(announcement.publicationStatus.eq(com.inhatc.demp.domain.announcement.PublicationStatus.PUBLISHED),
+                        typeEq(announcementSearchCondition.getAnnouncementType()),
                         positionIn(announcementSearchCondition.getPositions()),
                         languageIn(announcementSearchCondition.getLanguage()),
                         languagesIn(announcementSearchCondition.getLanguages()),
@@ -105,7 +115,8 @@ public class AnnouncementQueryRepository {
                 .limit(pageable.getPageSize())
                 .fetch();
         Long total = jpaQueryFactory.select(announcement.count()).from(announcement)
-                .where(typeEq(announcementSearchCondition.getAnnouncementType()),
+                .where(announcement.publicationStatus.eq(com.inhatc.demp.domain.announcement.PublicationStatus.PUBLISHED),
+                        typeEq(announcementSearchCondition.getAnnouncementType()),
                         positionIn(announcementSearchCondition.getPositions()),
                         languageIn(announcementSearchCondition.getLanguage()),
                         languagesIn(announcementSearchCondition.getLanguages()),

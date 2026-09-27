@@ -113,7 +113,7 @@ class AnnouncementRestDocsTest {
                                 partWithName("language").description("기술 언어 목록"),
                                 partWithName("image").description("선택 JPEG 또는 PNG 대표 이미지").optional(),
                                 partWithName("bodyImages").description("선택 본문 이미지 목록, content의 attachment:0부터 순서대로 대응").optional())));
-        verify(announcementService).createAnnouncement(org.mockito.ArgumentMatchers.any());
+        verify(announcementService).createAnnouncement(org.mockito.ArgumentMatchers.any(), org.mockito.ArgumentMatchers.eq("user"));
     }
 
     @Test
@@ -157,6 +157,11 @@ class AnnouncementRestDocsTest {
                                 fieldWithPath("content").description("정제된 공고 본문"),
                                 fieldWithPath("accessUrl").description("지원하기 버튼으로 이동할 원문 공고 URL"),
                                 org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath("education").description("교육 정보, 미확인 항목은 null").optional(),
+                                fieldWithPath("sourceName").optional().description("출처명"),
+                        fieldWithPath("sourceIdentifier").optional().description("출처 식별자"),
+                        fieldWithPath("applicationUrl").optional().description("별도 지원 주소"),
+                        fieldWithPath("sourceVerifiedAt").optional().description("원문 확인 시각"),
+                        fieldWithPath("publicationStatus").description("게시 상태"),
                                 fieldWithPath("payment").description("연봉 또는 교육비, 만원 단위. null은 미확인").optional(),
                                 fieldWithPath("salaryStatus").description("UNDISCLOSED / NEGOTIABLE / DISCLOSED"),
                                 fieldWithPath("salaryMax").description("연봉 상한, 생략 시 단일 금액").optional(),
@@ -240,6 +245,7 @@ class AnnouncementRestDocsTest {
                                 fieldWithPath("content[].minCareer").description("최소 경력").optional(),
                                 fieldWithPath("content[].maxCareer").description("최대 경력, 0이면 상한 없음").optional(),
                                 org.springframework.restdocs.payload.PayloadDocumentation.subsectionWithPath("content[].education").description("교육 정보, 채용은 null").optional(),
+                                fieldWithPath("content[].publicationStatus").description("게시 상태"),
                                 fieldWithPath("content[].payment").description("채용 연봉 또는 교육비, 만원").optional(),
                                 fieldWithPath("content[].startedDate").description("모집 시작 시각").optional(),
                                 fieldWithPath("content[].deadLineDate").description("모집 마감 시각").optional(),

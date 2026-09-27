@@ -43,6 +43,7 @@ public class AnnouncementService {
     private final PlatformTransactionManager transactionManager;
     private final AnnouncementImageUrl imageUrl;
     private final AnnouncementBodyImages bodyImages;
+    private final java.time.Clock clock;
 
     @Transactional
     public void saveAnnouncementEntity(Announcement announcement) {
@@ -51,7 +52,12 @@ public class AnnouncementService {
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
-    public void createAnnouncement(AnnouncementCreateRequest announcementCreateRequest) throws IOException {
+    public void createAnnouncement(AnnouncementCreateRequest request) throws IOException {
+        createAnnouncement(request, "system");
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public void createAnnouncement(AnnouncementCreateRequest announcementCreateRequest, String actor) throws IOException {
         Career career = new Career(announcementCreateRequest.getMinCareer(), announcementCreateRequest.getMaxCareer());
         RecruitPeriod recruitPeriod = new RecruitPeriod(announcementCreateRequest.getStartedDate(),
                 announcementCreateRequest.getDeadLineDate());
@@ -78,6 +84,9 @@ public class AnnouncementService {
                 .build();
         announcement.replaceBodyImages(body.images());
         announcement.changeEducation(announcementCreateRequest.toEducationDetails());
+        announcement.changePublication(announcementCreateRequest.getPublicationStatus());
+        announcement.recordPublication(announcementCreateRequest.getSourceName(), announcementCreateRequest.getSourceIdentifier(),
+                announcementCreateRequest.getApplicationUrl(), announcementCreateRequest.isSourceVerified(), actor, java.time.LocalDateTime.now(clock));
             new TransactionTemplate(transactionManager).executeWithoutResult(
                     status -> announcementRepository.saveAndFlush(announcement));
         } catch (IOException | RuntimeException originalFailure) {
@@ -85,6 +94,10 @@ public class AnnouncementService {
             compensate(image, originalFailure);
             throw originalFailure;
         }
+    }
+
+    public List<com.inhatc.demp.domain.announcement.PublicationRevision> findPublicationHistory(long id) {
+        return List.copyOf(announcementRepository.findById(id).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND)).getPublicationHistory());
     }
 
     private void compensate(UploadFile image, Exception originalFailure) {
@@ -111,12 +124,21 @@ public class AnnouncementService {
     }
 
     public Optional<AnnouncementDetailResponse> findDetailResponse(Long id) {
-        return announcementRepository.findById(id).map(announcement -> AnnouncementDetailResponse.from(
+        return announcementRepository.findById(id).filter(Announcement::isPublished).map(announcement -> AnnouncementDetailResponse.from(
                 announcement, imageUrl.forImage(announcement.getImage())));
     }
 
+    public Optional<AnnouncementDetailResponse> findAdminDetailResponse(Long id) {
+        return announcementRepository.findById(id).map(item -> AnnouncementDetailResponse.from(item, imageUrl.forImage(item.getImage())));
+    }
+
+    public Slice<AnnouncementResponse> findAdminAnnouncementSlice(AnnouncementSearchCondition condition, Pageable pageable) {
+        return announcementQueryRepository.findAdminAnnouncementSlice(condition, pageable)
+                .map(item -> new AnnouncementResponse(item, imageUrl.forImage(item.getImage())));
+    }
+
     public List<AnnouncementScroll> findScrollResponses() {
-        return announcementRepository.findAll().stream()
+        return announcementRepository.findAll().stream().filter(Announcement::isPublished)
                 .map(announcement -> new AnnouncementScroll(announcement,
                         imageUrl.forImage(announcement.getImage())))
                 .collect(Collectors.toList());

@@ -37,7 +37,7 @@ class AnnouncementUploadCompensationTest {
     private final AnnouncementService announcementService = new AnnouncementService(announcementRepository,
             announcementQueryRepository, fileStorage, new ContentSanitizer(), transactionManager,
             new AnnouncementImageUrl("https://example.test/images"),
-            new AnnouncementBodyImages(fileStorage, new AnnouncementImageUrl("https://example.test/images"), new ContentSanitizer()));
+            new AnnouncementBodyImages(fileStorage, new AnnouncementImageUrl("https://example.test/images"), new ContentSanitizer()), java.time.Clock.systemUTC());
 
     @BeforeEach
     void setUp() {

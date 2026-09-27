@@ -26,10 +26,15 @@ import org.springframework.transaction.support.TransactionTemplate;
 public class AdminAnnouncementService {
     private final AnnouncementRepository repository;
     private final AnnouncementBodyImages bodyImages;
+    private final java.time.Clock clock;
     private final FileStorage files;
     private final PlatformTransactionManager transactions;
 
     public AdminMutationResult update(long id, AnnouncementUpdateRequest request) throws IOException {
+        return update(id, request, "system");
+    }
+
+    public AdminMutationResult update(long id, AnnouncementUpdateRequest request, String actor) throws IOException {
         if (!repository.existsById(id)) throw new ApiException(HttpStatus.NOT_FOUND);
         repository.findByTitle(request.getTitle()).filter(item -> item.getId() != id)
                 .ifPresent(item -> { throw new ApiException(HttpStatus.CONFLICT); });
@@ -53,6 +58,9 @@ public class AdminAnnouncementService {
                 item.revise(request.getTitle(), new Company(request.getCompany()), career, period, description,
                         request.getType(), request.getPosition(), replacement);
                 item.changeEducation(request.toEducationDetails());
+                item.changePublication(request.getPublicationStatus());
+                item.recordPublication(request.getSourceName(), request.getSourceIdentifier(), request.getApplicationUrl(),
+                        request.isSourceVerified(), actor, java.time.LocalDateTime.now(clock));
                 repository.saveAndFlush(item);
                 return keys;
             });

@@ -109,7 +109,7 @@ class AnnouncementBodyImagesTest {
     }
     private AnnouncementUpdateRequest update() { var request = new AnnouncementUpdateRequest(); fill(request); return request; }
     private void fill(AnnouncementFields request) {
-        request.setTitle("본문 이미지 공고"); request.setCompany("DEMP"); request.setType(AnnouncementType.EMP);
+        request.setPublicationStatus(PublicationStatus.PUBLISHED); request.setTitle("본문 이미지 공고"); request.setCompany("DEMP"); request.setType(AnnouncementType.EMP);
         request.setPosition(JobPosition.BACKEND); request.setLanguage(Set.of(Language.JAVA));
         request.setAccessUrl("https://employer.test/careers/1");
         request.setStartedDate(LocalDateTime.of(2026,9,1,0,0)); request.setDeadLineDate(LocalDateTime.of(2026,12,31,0,0));

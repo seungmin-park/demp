@@ -48,6 +48,14 @@ public class AnnouncementFields {
                 fundingType, selectionProcess, learningLevel, learningStartDate, learningEndDate) : null;
     }
 
+    private PublicationStatus publicationStatus;
+    private String sourceName;
+    private String sourceIdentifier;
+    @URL
+    @jakarta.validation.constraints.Pattern(regexp = "(?i)^(https?://.*)?$")
+    private String applicationUrl;
+    private boolean sourceVerified;
+
     private List<MultipartFile> bodyImages = new ArrayList<>();
 
     @NotBlank

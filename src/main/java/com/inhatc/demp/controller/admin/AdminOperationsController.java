@@ -29,20 +29,24 @@ public class AdminOperationsController {
     public Slice<AnnouncementResponse> announcements(@ModelAttribute AnnouncementSearchCondition condition,
                                                      @RequestParam(defaultValue = "0") int page) {
         if (page < 0) throw new ApiException(HttpStatus.BAD_REQUEST);
-        return announcements.findAnnouncementSlice(condition, PageRequest.of(page, 20));
+        return announcements.findAdminAnnouncementSlice(condition, PageRequest.of(page, 20));
     }
     @GetMapping("/announcements/{id}")
     public AnnouncementDetailResponse announcement(@PathVariable long id) {
-        return announcements.findDetailResponse(id).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND));
+        return announcements.findAdminDetailResponse(id).orElseThrow(() -> new ApiException(HttpStatus.NOT_FOUND));
+    }
+    @GetMapping("/announcements/{id}/history")
+    public java.util.List<com.inhatc.demp.domain.announcement.PublicationRevision> history(@PathVariable long id) {
+        return announcements.findPublicationHistory(id);
     }
     @PostMapping("/announcements")
     @ResponseStatus(HttpStatus.CREATED)
-    public AdminMutationResult createAnnouncement(@Valid @ModelAttribute AnnouncementCreateRequest request) throws IOException {
-        announcements.createAnnouncement(request); return new AdminMutationResult(false);
+    public AdminMutationResult createAnnouncement(@Valid @ModelAttribute AnnouncementCreateRequest request, java.security.Principal principal) throws IOException {
+        announcements.createAnnouncement(request, principal.getName()); return new AdminMutationResult(false);
     }
     @PatchMapping("/announcements/{id}")
-    public AdminMutationResult updateAnnouncement(@PathVariable long id, @Valid @ModelAttribute AnnouncementUpdateRequest request) throws IOException {
-        return management.update(id, request);
+    public AdminMutationResult updateAnnouncement(@PathVariable long id, @Valid @ModelAttribute AnnouncementUpdateRequest request, java.security.Principal principal) throws IOException {
+        return management.update(id, request, principal.getName());
     }
     @DeleteMapping("/announcements/{id}")
     public AdminMutationResult deleteAnnouncement(@PathVariable long id) { return management.delete(id); }
