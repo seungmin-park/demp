@@ -188,6 +188,20 @@ class AnnouncementControllerTest {
     }
 
     @Test
+    @DisplayName("대표 이미지를 생략한 텍스트 공고 등록 요청을 허용한다")
+    void acceptsWithoutImage() throws Exception {
+        mockMvc.perform(multipart("/api/announce/add")
+                .param("title", "텍스트 공고").param("company", "DEMP")
+                .param("type", "EMP").param("position", "BACKEND")
+                .param("startedDate", "2026-09-01T00:00:00").param("deadLineDate", "2026-09-30T00:00:00")
+                .param("content", "<p>업무 요약</p>").param("accessUrl", "https://example.com/jobs/1")
+                .param("language", "JAVA")).andExpect(status().isOk());
+        ArgumentCaptor<AnnouncementCreateRequest> request = ArgumentCaptor.forClass(AnnouncementCreateRequest.class);
+        verify(announcementService).createAnnouncement(request.capture());
+        assertThat(request.getValue().getImage()).isNull();
+    }
+
+    @Test
     @DisplayName("없는 공고를 상세 조회하면 404를 반환한다")
     void returnsNotFoundWhenAnnouncementDoesNotExist() throws Exception {
         when(announcementService.findDetailResponse(999L)).thenReturn(Optional.empty());

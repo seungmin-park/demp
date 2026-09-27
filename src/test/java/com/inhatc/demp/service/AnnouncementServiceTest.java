@@ -114,6 +114,23 @@ class AnnouncementServiceTest {
         assertThat(description.getContent()).contains("<script>", "onclick");
     }
 
+    @Test
+    @DisplayName("대표 이미지 없이 생성한 공고도 상세·검색·관련 목록에서 원문과 본문을 조회한다")
+    void createsWithoutCoverImage() throws IOException {
+        AnnouncementCreateRequest request = request("텍스트 원문 공고");
+        request.setImage(null);
+        announcementService.createAnnouncement(request);
+        Announcement saved = announcementRepository.findByTitle("텍스트 원문 공고").orElseThrow();
+        var detail = announcementService.findDetailResponse(saved.getId()).orElseThrow();
+        assertThat(detail.getImage()).isEmpty();
+        assertThat(detail.getAccessUrl()).isEqualTo("https://example.com/jobs");
+        assertThat(detail.getContent()).contains("채용");
+        assertThat(announcementService.findScrollResponses()).extracting(item -> item.getImage()).containsExactly("");
+        assertThat(announcementService.findAnnouncementSlice(new AnnouncementSearchCondition(), PageRequest.of(0, 8))
+                .getContent()).extracting(item -> item.getImage()).containsExactly("");
+        verifyNoInteractions(fileService);
+    }
+
     private Description description() {
         return new Description("<p onclick=\"alert(1)\"><strong>채용</strong></p><script>alert(1)</script>",
                 "https://example.com/jobs", 3000, Set.of());

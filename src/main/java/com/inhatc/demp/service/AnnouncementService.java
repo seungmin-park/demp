@@ -60,7 +60,8 @@ public class AnnouncementService {
         if (announcementRepository.findByTitle(announcementCreateRequest.getTitle()).isPresent()) {
             throw new ApiException(HttpStatus.CONFLICT);
         }
-        UploadFile image = fileStorage.save(announcementCreateRequest.getImage());
+        UploadFile image = announcementCreateRequest.getImage() == null || announcementCreateRequest.getImage().isEmpty()
+                ? null : fileStorage.save(announcementCreateRequest.getImage());
 
         Announcement announcement = Announcement.builder()
                 .title(announcementCreateRequest.getTitle())
@@ -82,6 +83,7 @@ public class AnnouncementService {
     }
 
     private void compensate(UploadFile image, RuntimeException originalFailure) {
+        if (image == null) return;
         try {
             fileStorage.delete(image.getSaveFileName());
         } catch (RuntimeException compensationFailure) {
@@ -101,18 +103,18 @@ public class AnnouncementService {
     public Slice<AnnouncementResponse> findAnnouncementSlice(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
         return announcementQueryRepository.findAnnouncementSlice(announcementSearchCondition, pageable)
                 .map(announcement -> new AnnouncementResponse(announcement,
-                        imageUrl.forKey(announcement.getImage().getSaveFileName())));
+                        imageUrl.forImage(announcement.getImage())));
     }
 
     public Optional<AnnouncementDetailResponse> findDetailResponse(Long id) {
         return announcementRepository.findById(id).map(announcement -> AnnouncementDetailResponse.from(
-                announcement, imageUrl.forKey(announcement.getImage().getSaveFileName())));
+                announcement, imageUrl.forImage(announcement.getImage())));
     }
 
     public List<AnnouncementScroll> findScrollResponses() {
         return announcementRepository.findAll().stream()
                 .map(announcement -> new AnnouncementScroll(announcement,
-                        imageUrl.forKey(announcement.getImage().getSaveFileName())))
+                        imageUrl.forImage(announcement.getImage())))
                 .collect(Collectors.toList());
     }
 }

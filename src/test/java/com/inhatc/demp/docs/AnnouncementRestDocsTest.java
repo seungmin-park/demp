@@ -106,10 +106,10 @@ class AnnouncementRestDocsTest {
                                 partWithName("startedDate").description("모집 시작 일시"),
                                 partWithName("deadLineDate").description("모집 마감 일시"),
                                 partWithName("content").description("공고 본문"),
-                                partWithName("accessUrl").description("지원 URL"),
+                                partWithName("accessUrl").description("지원하기 버튼으로 이동할 원문 공고 URL"),
                                 partWithName("payment").description("연봉 또는 교육비, 만원 단위"),
                                 partWithName("language").description("기술 언어 목록"),
-                                partWithName("image").description("필수 JPEG 또는 PNG 이미지"))));
+                                partWithName("image").description("선택 JPEG 또는 PNG 대표 이미지").optional())));
         verify(announcementService).createAnnouncement(org.mockito.ArgumentMatchers.any());
     }
 
@@ -152,7 +152,7 @@ class AnnouncementRestDocsTest {
                                 fieldWithPath("startedDate").description("모집 시작 일시"),
                                 fieldWithPath("deadLineDate").description("모집 마감 일시"),
                                 fieldWithPath("content").description("정제된 공고 본문"),
-                                fieldWithPath("accessUrl").description("지원 URL"),
+                                fieldWithPath("accessUrl").description("지원하기 버튼으로 이동할 원문 공고 URL"),
                                 fieldWithPath("payment").description("연봉 또는 교육비, 만원 단위"),
                                 fieldWithPath("language").description("기술 언어 목록"),
                                 fieldWithPath("position").description("직무 enum"),

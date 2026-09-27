@@ -11,6 +11,10 @@ public class AnnouncementImageUrl {
         this.baseUrl = baseUrl;
     }
 
+    public String forImage(com.inhatc.demp.domain.announcement.UploadFile image) {
+        return image == null ? "" : forKey(image.getSaveFileName());
+    }
+
     public String forKey(String key) {
         return (baseUrl.endsWith("/") ? baseUrl : baseUrl + "/") + key;
     }
