@@ -28,7 +28,7 @@ assert summary,'No samples'
 output=args.results.parent
 (output/'summary.json').write_text(json.dumps(summary,indent=2)+'\n')
 with (output/'summary.csv').open('w',newline='') as f:
- writer=csv.DictWriter(f,fieldnames=list(summary[0]));writer.writeheader();writer.writerows(summary)
+ writer=csv.DictWriter(f,fieldnames=list(summary[0]),lineterminator='\n');writer.writeheader();writer.writerows(summary)
 checksums={p.name:hashlib.sha256(p.read_bytes()).hexdigest() for p in sorted(args.results.glob('*.jsonl'))}
 (output/'raw-sha256.json').write_text(json.dumps(checksums,indent=2)+'\n')
 lines=['# 반복 측정 결과','', '단위: 서버 내부 HTTP 처리 ms. 각 행은 3개 JVM × 15개 표본이며 워밍업 제외. p95는 nearest rank. RPS는 순차 요청 처리량으로 최대 동시 용량을 뜻하지 않는다.', '', '| 비교군 | 데이터 규모 | 경로 | p50 ms | p95 ms | 순차 RPS | SQL | 로딩 엔티티 | 반환 건수 |', '|---|---:|---|---:|---:|---:|---:|---:|---:|']
