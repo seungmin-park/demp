@@ -1,9 +1,11 @@
 # Phase 7 실행 계획
 
-Spec: ../../../../spec.md 및 ../../../../tasks.md Phase 7. 공통 제약은 루트 AGENTS.md.
+Spec: ../../../spec.md 및 ../../../tasks.md Phase 7. 공통 제약은 루트 AGENTS.md.
 
 ## Global Constraints
 기존 HTTP/DB 계약 보존, 사용자 데이터 접근 금지, main 유지, 각 T마다 체크·커밋. 새 기능/오류 수정은 실패 assertion을 먼저 관찰한다. 라이브러리 소스 호환 오류는 기능 Red로 보고하지 않는다. 기존 테스트를 먼저 실행하고 그대로 회귀 게이트로 사용한다. E2E는 현재 cmux 보조 pane에서 headed runner와 실제 브라우저를 구분하여 실행한다.
+
+2026-09-27 추가 요구: 앱 이름은 **DEMP**로 유지한다. 제공 ZIP은 디자인 기준이며, Phase 7 완료 후 별도 Phase 8에서 기존 API·인증·비동기 회귀 수정 위에 화면을 이식한다. 상세 체크리스트는 tasks.md Phase 8을 참조한다.
 
 ## Task 60: 기준선과 목표 조합
 기존 전체 B/F 검증, 공식 지원표와 인프런 목록 검토, asdf local 고정.

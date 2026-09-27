@@ -14,9 +14,9 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.restdocs.test.autoconfigure.AutoConfigureRestDocs;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import com.inhatc.demp.support.WithMember;
 import org.springframework.test.context.ContextConfiguration;
@@ -37,7 +37,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.formParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -48,9 +49,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureRestDocs
 class MemberRestDocsTest {
 
-    @MockBean
+    @MockitoBean
     private MemberService memberService;
-    @MockBean
+    @MockitoBean
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
     private MockMvc mockMvc;
@@ -86,14 +87,14 @@ class MemberRestDocsTest {
 
         mockMvc.perform(post("/api/member/login")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("username", request.getUsername())
-                        .param("password", request.getPassword()))
+                        .formField("username", request.getUsername())
+                        .formField("password", request.getPassword()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.username").value("docs-member"))
                 .andExpect(jsonPath("$.jwt").value("docs-only-jwt-token"))
                 .andDo(document("member-login",
                         requestHeaders(headerWithName("Content-Type").description("폼 요청 형식")),
-                        requestParameters(
+                        formParameters(
                                 parameterWithName("username").description("로그인 이름"),
                                 parameterWithName("password").description("로그인 비밀번호")),
                         responseFields(
@@ -111,14 +112,14 @@ class MemberRestDocsTest {
 
         mockMvc.perform(post("/api/member/save")
                         .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                        .param("username", request.getUsername())
-                        .param("password", request.getPassword()))
+                        .formField("username", request.getUsername())
+                        .formField("password", request.getPassword()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(43))
                 .andExpect(jsonPath("$.username").value("docs-new-member"))
                 .andDo(document("member-save",
                         requestHeaders(headerWithName("Content-Type").description("폼 요청 형식")),
-                        requestParameters(
+                        formParameters(
                                 parameterWithName("username").description("가입할 로그인 이름"),
                                 parameterWithName("password").description("가입할 비밀번호")),
                         responseFields(
@@ -134,10 +135,10 @@ class MemberRestDocsTest {
         String username = "docs-available-member";
         when(memberService.isUsernameAvailable(username)).thenReturn(true);
 
-        mockMvc.perform(get("/api/member/validUsername").param("username", username))
+        mockMvc.perform(get("/api/member/validUsername").queryParam("username", username))
                 .andExpect(status().isOk())
                 .andExpect(content().string("true"))
                 .andDo(document("member-valid-username",
-                        requestParameters(parameterWithName("username").description("중복 확인할 로그인 이름"))));
+                        queryParameters(parameterWithName("username").description("중복 확인할 로그인 이름"))));
     }
 }

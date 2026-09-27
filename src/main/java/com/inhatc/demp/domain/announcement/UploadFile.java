@@ -1,6 +1,6 @@
 package com.inhatc.demp.domain.announcement;
 
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

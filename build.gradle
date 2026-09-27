@@ -1,111 +1,70 @@
 plugins {
-    id 'org.springframework.boot' version '2.5.10'
-    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
-    id "com.ewerk.gradle.plugins.querydsl" version "1.0.10" // (1)
-    id 'org.asciidoctor.jvm.convert' version '3.3.2'
     id 'java'
+    id 'org.springframework.boot' version '4.1.1'
+    id 'org.asciidoctor.jvm.convert.classic' version '5.0.1'
 }
 
 group = 'com.inhatc'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '11'
 
+java {
+    toolchain { languageVersion = JavaLanguageVersion.of(25) }
+}
+
+repositories { mavenCentral() }
 configurations {
-    asciidoctorExtensions // dependencies 에서 적용한 것 추가
-    compileOnly {
-        extendsFrom annotationProcessor
-    }
+    asciidoctorExtensions
+    compileOnly { extendsFrom annotationProcessor }
 }
+dependencyLocking { lockAllConfigurations() }
 
-repositories {
-    mavenCentral()
-}
-
-dependencyLocking {
-    lockAllConfigurations()
-}
+def bootBom = org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES
 
 dependencies {
+    implementation platform(bootBom)
+    annotationProcessor platform(bootBom)
+    asciidoctorExtensions platform(bootBom)
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.jsoup:jsoup:1.23.2'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-security'
-    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'io.springfox:springfox-boot-starter:3.0.0'
-    implementation 'io.springfox:springfox-swagger-ui:3.0.0'
-    // https://mvnrepository.com/artifact/com.querydsl/querydsl-jpa
-    implementation group: 'com.querydsl', name: 'querydsl-jpa'
-    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-webmvc'
+    implementation 'org.jsoup:jsoup:1.23.2'
+    implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.13.0'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:3.0.3'
+    implementation 'io.github.openfeign.querydsl:querydsl-jpa:7.7'
+    annotationProcessor 'io.github.openfeign.querydsl:querydsl-apt:7.7:jpa'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+    implementation platform('software.amazon.awssdk:bom:2.55.6')
+    implementation 'software.amazon.awssdk:s3'
     compileOnly 'org.projectlombok:lombok'
-    runtimeOnly 'com.h2database:h2'
-    runtimeOnly 'mysql:mysql-connector-java'
     annotationProcessor 'org.projectlombok:lombok'
+    // 2.4.240 caches CHECK expressions against closed sessions (H2 #4302).
+    runtimeOnly 'com.h2database:h2:2.5.252'
+    runtimeOnly 'com.mysql:mysql-connector-j'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'
-
-    // build/generated-snippets 에 생긴 .adoc 조각들을 프로젝트 내의 .adoc 파일에서 읽어들일 수 있도록 연동해줍니다.
-    // 이 덕분에 .adoc 파일에서 operation 같은 매크로를 사용하여 스니펫 조각들을 연동할 수 있는 것입니다.
-    // 그리고 최종적으로 .adoc 파일을 HTML로 만들어 export 해줍니다.
-    asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
-
-    // restdocs-mockmvc의 testCompile 구성 -> mockMvc를 사용해서 snippets 조각들을 뽑아낼 수 있게 된다.
-    // MockMvc 대신 WebTestClient을 사용하려면 spring-restdocs-webtestclient 추가
-    // MockMvc 대신 REST Assured를 사용하려면 spring-restdocs-restassured 를 추가
+    testImplementation 'org.springframework.boot:spring-boot-starter-webmvc-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-security-test'
+    testImplementation 'org.springframework.boot:spring-boot-starter-restdocs'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 }
 
+tasks.withType(JavaCompile).configureEach { options.compilerArgs.add('-parameters') }
+def snippetsDir = layout.buildDirectory.dir('generated-snippets')
 tasks.named('test') {
     useJUnitPlatform()
-    systemProperty 'com.amazonaws.sdk.disableEc2Metadata', 'true'
-}
-
-//querydsl 추가 시작
-def querydslDir = "$buildDir/generated/querydsl"
-
-querydsl {
-    jpa = true
-    querydslSourcesDir = querydslDir
-}
-sourceSets {
-    main.java.srcDir querydslDir
-}
-configurations {
-    querydsl.extendsFrom compileClasspath
-}
-compileQuerydsl {
-    options.annotationProcessorPath = configurations.querydsl
-}
-//querydsl 추가 끝
-
-ext {
-    // 아래서 사용할 변수 선언
-    snippetsDir = file('build/generated-snippets')
-}
-
-
-test {
-    // 위에서 작성한 snippetsDir 디렉토리를 test의 output으로 구성하는 설정 -> 스니펫 조각들이 build/generated-snippets로 출력
     outputs.dir snippetsDir
-    useJUnitPlatform()
 }
 
-asciidoctor { // asciidoctor 작업 구성
-    dependsOn test // test 작업 이후에 작동하도록 하는 설정
-    configurations 'asciidoctorExtensions' // 위에서 작성한 configuration 적용
-    inputs.dir snippetsDir // snippetsDir 를 입력으로 구성
-
-    // source가 없으면 .adoc파일을 전부 html로 만들어버림
-    // source 지정시 특정 adoc만 HTML로 만든다.
-    sources{
-        include("**/index.adoc","**/common/*.adoc")
-    }
-
-    // 특정 .adoc에 다른 adoc 파일을 가져와서(include) 사용하고 싶을 경우 경로를 baseDir로 맞춰주는 설정입니다.
-    // 개별 adoc으로 운영한다면 필요 없는 옵션입니다.
+asciidoctor {
+    dependsOn test
+    configurations 'asciidoctorExtensions'
+    inputs.dir snippetsDir
+    sources { include '**/index.adoc', '**/common/*.adoc' }
     baseDirFollowsSourceFile()
 }
-
-// 추적 중인 src/main/resources/static/docs는 생성 과정에서 삭제하거나 덮어쓰지 않는다.
-// 생성 문서의 단일 산출 위치는 build/docs/asciidoc이다.

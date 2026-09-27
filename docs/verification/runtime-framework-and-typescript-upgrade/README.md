@@ -56,3 +56,31 @@ T60 기준선 완료. 문서·환경 설정 변경이며 기능 Red/Green으로 
 
 - 실제 cmux 가입 POST에서 초기 403: Origin `127.0.0.1:5050`과 기본 CORS `localhost:5050` 불일치. 실행 환경 `APP_CORS_ALLOWED_ORIGINS=http://127.0.0.1:5050` 설정 후 가입→로그인 화면 확인.
 - asdf Java 구형 plugin의 Zulu 압축 구조 대응: 설치 루트에서 `Contents/Home`의 각 자식으로 symlink를 연결하고 `asdf reshim java zulu-25.36.205`; `asdf exec java -version`에서 25.0.4.1 LTS 확인. 전역 선택 버전 불변.
+
+## T61 Java·Spring 전환 검증
+
+### 실패 원인 → 변경
+
+1. javax 제거, Security adapter 제거, REST Docs API 이동은 소스 호환성 오류였다. 이를 기능 Red로 계산하지 않았다. Jakarta·SecurityFilterChain·Jackson 3·새 test slice/MockitoBean·query/form/multipart 문서 API로 옮겼다. Boot 4에서 제거된 `@MockBean`은 Spring Framework `@MockitoBean`으로 대체하되 MockMvc의 Spring MVC 구성을 유지한다.
+2. **실제 Red**: `./gradlew test --tests '*LegacySchemaCompatibilityTest' --write-locks`에서 `announcement_seq`가 없는 기존 Hibernate 5 schema에 컨텍스트 실패 assertion. 공유 `hibernate_sequence`를 명시하고 enum을 VARCHAR로 고정해 schema 변경 없이 Green. fixture는 기존 main의 Hibernate 5 DDL이다.
+3. **실제 Red**: 공고 Repository 39개가 H2 2.4.240의 `CHECK constraint invalid / database has been closed`로 실패. [H2 #4342](https://github.com/h2database/h2database/issues/4342) 및 [#4302 수정 릴리스](https://github.com/h2database/h2database/releases)를 확인해 최신 2.5.252로 고정했다. 체크 제약을 유지한 채 대상 40개 통과.
+4. Hibernate 7/H2의 페이지 SQL은 ANSI `fetch first`를 사용한다. SQL 형태 assertion만 해당 문법으로 이식했고 내용·정렬·hasNext assertion은 유지했다. 제거된 MySQL57Dialect를 local/test H2Dialect로 교체했다.
+5. 이전 JJWT와 같은 raw UTF-8 HS256 키·subject/roles/iat/exp 계약을 독립 JCA 서명으로 검증했다. 신규 테스트의 첫 404는 잘못 입력한 테스트 URL이 원인이므로 기능 Red가 아니다. 실제 `/detail/{id}` 경로에서 인증 성공을 확인했다.
+6. AWS SDK 2의 저장 요청에서 bucket/key/content-type/length/ACL 및 전송 바이트를 검증했다. 실제 S3는 호출하지 않았다.
+
+### 책임·이름 검토
+
+- OpenApiConfig는 OpenAPI 구성만 맡는다(이전 SwaggerConfig 이름 갱신). SecurityConfiguration은 HTTP 보안 경계와 CORS만 구성한다.
+- JWT 발급/검증과 FileStorage 구현의 외부 경계를 유지했다. Controller/Service/Repository의 HTTP 계약과 트랜잭션 책임은 바꾸지 않았다.
+- 네 엔티티의 ID generator 이름은 각 매핑에서 유일하며 기존 공유 sequence를 가리킨다. enum의 문자열 DB 계약을 명시했다. 외부 JSON 키·URL·파일 저장 키는 보존했다.
+- Gradle은 Java toolchain 25, 표준 annotation processor, native BOM, lockfile을 사용한다. 사용되지 않는 thymeleaf 및 구형 Querydsl Gradle plugin/Springfox/AWS1를 제거했다.
+
+### 검증 범위
+
+- Zulu25 `clean test asciidoctor bootJar` 34 suites / **197 tests**, failure/error/skipped 0. lockfile 갱신 후 `--write-locks` 없는 재실행 성공.
+- 기본 production 설정을 격리된 H2로 시작→저장→종료→재시작한 테스트에서 데이터 보존, seed 없음 확인. 실제 운영 MySQL에는 연결하지 않았다.
+- REST Docs HTML 존재, 미해결 snippet·내부 테스트 키 없음. OpenAPI `/v3/api-docs` 실제 응답에서 `DEMP API` 확인.
+- cmux workspace:2 terminal surface:7에서 Java25 JAR + 기존 Node18/Vue 클라이언트 실행. 실제 API 14요청 및 403/401/저장 후 재조회 assertion 성공(exit 0). 브라우저 surface:9에서 회원가입→로그인→공고 목록 확인. 기존 클라이언트가 새 서버와 동작한다.
+- 최종 로그 `/tmp/demp-t61-final.log`, 경계 검증 `/tmp/demp-t61-boundaries.log`, 서버 `/tmp/demp-t61-spring.log`, 브라우저 앱 서버 `/tmp/demp-t61-vue.log`.
+- Gradle 10 예정 deprecation 및 JVM native access/Mockito attach 경고는 현재 실행 실패가 아니다. Windows wrapper는 생성 파일을 갱신했지만 Windows 실행은 검증하지 않았다.
+- 배포/rollback 및 H2 1.4 파일 이관 주의는 루트 README에 기록했다. Java 25 CI 설정은 갱신했으며 원격 Actions 실행은 아직 수행하지 않았다.

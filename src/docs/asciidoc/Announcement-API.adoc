@@ -17,9 +17,6 @@ include::{snippets}/announcement-add/http-request.adoc[]
 .요청 헤더
 include::{snippets}/announcement-add/request-headers.adoc[]
 
-.요청 파라미터
-include::{snippets}/announcement-add/request-parameters.adoc[]
-
 .요청 파트
 include::{snippets}/announcement-add/request-parts.adoc[]
 
@@ -49,7 +46,7 @@ include::{snippets}/announcement-detail/response-fields.adoc[]
 include::{snippets}/announcement-list/http-request.adoc[]
 
 .요청 파라미터
-include::{snippets}/announcement-list/request-parameters.adoc[]
+include::{snippets}/announcement-list/query-parameters.adoc[]
 
 .HTTP 응답
 include::{snippets}/announcement-list/http-response.adoc[]

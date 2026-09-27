@@ -1,7 +1,7 @@
 package com.inhatc.demp.controller;
 
 import com.inhatc.demp.error.*;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;

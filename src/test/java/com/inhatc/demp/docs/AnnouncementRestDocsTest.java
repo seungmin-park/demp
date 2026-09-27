@@ -25,9 +25,9 @@ import java.util.Set;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.restdocs.test.autoconfigure.AutoConfigureRestDocs;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -49,13 +49,13 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.response
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.partWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.requestParts;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@MockBean(JwtTokenProvider.class)
+@MockitoBean(types = JwtTokenProvider.class)
 @WebMvcTest(AnnouncementController.class)
 @ContextConfiguration(classes = {AnnouncementController.class, ExController.class, SecurityConfiguration.class})
 @WithMember
@@ -64,7 +64,7 @@ class AnnouncementRestDocsTest {
 
     private static final String DOCS_TOKEN = "docs-only-jwt-token";
 
-    @MockBean
+    @MockitoBean
     private AnnouncementService announcementService;
     @Autowired
     private MockMvc mockMvc;
@@ -79,36 +79,37 @@ class AnnouncementRestDocsTest {
         mockMvc.perform(org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart("/api/announce/add")
                         .file(image)
                         .header("X-AUTH-TOKEN", DOCS_TOKEN)
-                        .param("title", "docs-backend-job")
-                        .param("company", "docs-company")
-                        .param("position", "BACKEND")
-                        .param("type", "EMP")
-                        .param("minCareer", "0")
-                        .param("maxCareer", "3")
-                        .param("startedDate", "2026-09-01T00:00:00")
-                        .param("deadLineDate", "2026-09-30T23:59:00")
-                        .param("content", "docs-description")
-                        .param("accessUrl", "https://example.com/jobs/71")
-                        .param("payment", "3000")
-                        .param("language", "JAVA", "SPRING"))
+                        .part(new org.springframework.mock.web.MockPart("title", "docs-backend-job".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                        .part(new org.springframework.mock.web.MockPart("company", "docs-company".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                        .part(new org.springframework.mock.web.MockPart("position", "BACKEND".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                        .part(new org.springframework.mock.web.MockPart("type", "EMP".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                        .part(new org.springframework.mock.web.MockPart("minCareer", "0".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                        .part(new org.springframework.mock.web.MockPart("maxCareer", "3".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                        .part(new org.springframework.mock.web.MockPart("startedDate", "2026-09-01T00:00:00".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                        .part(new org.springframework.mock.web.MockPart("deadLineDate", "2026-09-30T23:59:00".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                        .part(new org.springframework.mock.web.MockPart("content", "docs-description".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                        .part(new org.springframework.mock.web.MockPart("accessUrl", "https://example.com/jobs/71".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                        .part(new org.springframework.mock.web.MockPart("payment", "3000".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                        .part(new org.springframework.mock.web.MockPart("language", "JAVA".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                        .part(new org.springframework.mock.web.MockPart("language", "SPRING".getBytes(java.nio.charset.StandardCharsets.UTF_8))))
                 .andExpect(status().isOk())
                 .andExpect(content().string("ok"))
                 .andDo(document("announcement-add",
                         requestHeaders(headerWithName("X-AUTH-TOKEN").description("테스트용 인증 헤더")),
-                        requestParameters(
-                                parameterWithName("title").description("공고 제목"),
-                                parameterWithName("company").description("회사 또는 교육기관 이름"),
-                                parameterWithName("type").description("공고 유형: EMP 또는 EDU"),
-                                parameterWithName("position").description("직무 enum"),
-                                parameterWithName("minCareer").description("최소 경력"),
-                                parameterWithName("maxCareer").description("최대 경력, 0은 상한 없음"),
-                                parameterWithName("startedDate").description("모집 시작 일시"),
-                                parameterWithName("deadLineDate").description("모집 마감 일시"),
-                                parameterWithName("content").description("공고 본문"),
-                                parameterWithName("accessUrl").description("지원 URL"),
-                                parameterWithName("payment").description("연봉 또는 교육비, 만원 단위"),
-                                parameterWithName("language").description("기술 언어 목록")),
-                        requestParts(partWithName("image").description("필수 JPEG 또는 PNG 이미지"))));
+                        requestParts(
+                                partWithName("title").description("공고 제목"),
+                                partWithName("company").description("회사 또는 교육기관 이름"),
+                                partWithName("type").description("공고 유형: EMP 또는 EDU"),
+                                partWithName("position").description("직무 enum"),
+                                partWithName("minCareer").description("최소 경력"),
+                                partWithName("maxCareer").description("최대 경력, 0은 상한 없음"),
+                                partWithName("startedDate").description("모집 시작 일시"),
+                                partWithName("deadLineDate").description("모집 마감 일시"),
+                                partWithName("content").description("공고 본문"),
+                                partWithName("accessUrl").description("지원 URL"),
+                                partWithName("payment").description("연봉 또는 교육비, 만원 단위"),
+                                partWithName("language").description("기술 언어 목록"),
+                                partWithName("image").description("필수 JPEG 또는 PNG 이미지"))));
         verify(announcementService).createAnnouncement(org.mockito.ArgumentMatchers.any());
     }
 
@@ -189,15 +190,15 @@ class AnnouncementRestDocsTest {
                 .thenReturn(response);
 
         mockMvc.perform(get("/api/announce")
-                        .param("announcementType", request.getAnnouncementType().name())
-                        .param("positions", request.getPositions().get(0).name())
-                        .param("language", request.getLanguage().name())
-                        .param("career", String.valueOf(request.getCareer()))
-                        .param("payment", String.valueOf(request.getPayment()))
-                        .param("title", request.getTitle())
-                        .param("page", "0")
-                        .param("size", "10")
-                        .param("sort", "title,asc"))
+                        .queryParam("announcementType", request.getAnnouncementType().name())
+                        .queryParam("positions", request.getPositions().get(0).name())
+                        .queryParam("language", request.getLanguage().name())
+                        .queryParam("career", String.valueOf(request.getCareer()))
+                        .queryParam("payment", String.valueOf(request.getPayment()))
+                        .queryParam("title", request.getTitle())
+                        .queryParam("page", "0")
+                        .queryParam("size", "10")
+                        .queryParam("sort", "title,asc"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()").value(1))
                 .andExpect(jsonPath("$.content[0].id").value(71))
@@ -205,7 +206,7 @@ class AnnouncementRestDocsTest {
                 .andExpect(jsonPath("$.content[0].image").value("https://inhatc-demp.s3.ap-northeast-2.amazonaws.com/docs-saved-image.png"))
                 .andExpect(jsonPath("$.last").value(true))
                 .andDo(document("announcement-list",
-                        requestParameters(
+                        queryParameters(
                                 parameterWithName("announcementType").description("공고 유형: EMP 또는 EDU"),
                                 parameterWithName("positions").description("직무 목록"),
                                 parameterWithName("language").description("기술 언어"),

@@ -24,7 +24,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -288,7 +288,7 @@ class AnnouncementQueryRepositoryTest {
                 .containsExactly(ids.get(2), ids.get(3));
         assertThat(first.hasNext()).isTrue();
         assertThat(second.hasNext()).isTrue();
-        assertThat(paginationSql).anySatisfy(sql -> assertThat(sql.toLowerCase()).contains("limit"));
+        assertThat(paginationSql).anySatisfy(sql -> assertThat(sql.toLowerCase()).contains("fetch first ? rows only"));
         assertThat(paginationSql).noneMatch(sql -> sql.toLowerCase().contains("count("));
     }
 

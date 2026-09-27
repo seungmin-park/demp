@@ -1,6 +1,6 @@
 package com.inhatc.demp.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.inhatc.demp.config.SecurityConfiguration;
 import com.inhatc.demp.config.jwt.JwtTokenProvider;
 import com.inhatc.demp.controller.ExController;
@@ -17,8 +17,8 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import com.inhatc.demp.support.WithMember;
 import org.springframework.test.context.ContextConfiguration;
@@ -31,12 +31,12 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@MockBean(JwtTokenProvider.class)
+@MockitoBean(types = JwtTokenProvider.class)
 @WebMvcTest(AnswerController.class)
 @ContextConfiguration(classes = {AnswerController.class, ExController.class, SecurityConfiguration.class})
 @WithMember
 class AnswerControllerTest {
-    @MockBean
+    @MockitoBean
     private AnswerService answerService;
     @Autowired
     private MockMvc mockMvc;

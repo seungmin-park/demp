@@ -1,6 +1,6 @@
 package com.inhatc.demp.config;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.inhatc.demp.config.jwt.JwtTokenProvider;
 import com.inhatc.demp.domain.*;
 import com.inhatc.demp.dto.question.QuestionForm;
@@ -15,7 +15,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.web.servlet.MockMvc;
@@ -178,6 +178,26 @@ class ApiSecurityTest {
                 Base64.getEncoder().encodeToString(jwtSecret.getBytes(java.nio.charset.StandardCharsets.UTF_8))).compact();
         mvc.perform(delete("/api/question/delete").header("X-AUTH-TOKEN", token).param("questionId", "1"))
                 .andExpect(status().isUnauthorized()).andExpect(jsonPath("$.errorCode").value(401));
+    }
+
+    @Test
+    @DisplayName("업그레이드 전과 같은 HS256 서명 방식의 토큰으로 인증한다")
+    void acceptsLegacySigningContract() throws Exception {
+        Member actor = member("security-legacy-token", List.of("ROLE_USER"));
+        // JJWT 0.9의 Base64 문자열 키 overload와 독립된 JCA로 이전 wire 계약을 재현한다.
+        Base64.Encoder encoder = Base64.getUrlEncoder().withoutPadding();
+        String header = encoder.encodeToString("{\"alg\":\"HS256\"}".getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        String payload = encoder.encodeToString(mapper.writeValueAsBytes(Map.of(
+                "sub", actor.getId().toString(), "roles", List.of("ROLE_USER"),
+                "iat", System.currentTimeMillis() / 1000, "exp", System.currentTimeMillis() / 1000 + 3600)));
+        String unsigned = header + "." + payload;
+        javax.crypto.Mac signer = javax.crypto.Mac.getInstance("HmacSHA256");
+        signer.init(new javax.crypto.spec.SecretKeySpec(jwtSecret.getBytes(java.nio.charset.StandardCharsets.UTF_8), "HmacSHA256"));
+        String legacyToken = unsigned + "." + encoder.encodeToString(signer.doFinal(unsigned.getBytes(java.nio.charset.StandardCharsets.US_ASCII)));
+
+        mvc.perform(get("/api/question/detail/{questionId}", question(actor).getId())
+                        .header("X-AUTH-TOKEN", legacyToken))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.title").value("original"));
     }
 
     @Test

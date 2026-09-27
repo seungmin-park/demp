@@ -13,7 +13,7 @@ endif::[]
 include::{snippets}/question-list/http-request.adoc[]
 
 .요청 파라미터
-include::{snippets}/question-list/request-parameters.adoc[]
+include::{snippets}/question-list/query-parameters.adoc[]
 
 .HTTP 응답
 include::{snippets}/question-list/http-response.adoc[]
@@ -89,7 +89,7 @@ include::{snippets}/question-delete/http-request.adoc[]
 include::{snippets}/question-delete/request-headers.adoc[]
 
 .요청 파라미터
-include::{snippets}/question-delete/request-parameters.adoc[]
+include::{snippets}/question-delete/query-parameters.adoc[]
 
 .HTTP 응답
 include::{snippets}/question-delete/http-response.adoc[]

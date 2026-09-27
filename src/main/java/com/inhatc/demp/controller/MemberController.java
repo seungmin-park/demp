@@ -7,7 +7,7 @@ import com.inhatc.demp.dto.member.MemberLoginForm;
 import com.inhatc.demp.dto.member.MemberSaveForm;
 import com.inhatc.demp.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

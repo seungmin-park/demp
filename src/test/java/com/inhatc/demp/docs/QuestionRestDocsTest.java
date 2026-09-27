@@ -1,6 +1,6 @@
 package com.inhatc.demp.docs;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.inhatc.demp.config.SecurityConfiguration;
 import com.inhatc.demp.config.jwt.JwtTokenProvider;
 import com.inhatc.demp.controller.ExController;
@@ -20,9 +20,9 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.restdocs.test.autoconfigure.AutoConfigureRestDocs;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.SliceImpl;
@@ -47,12 +47,12 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@MockBean(JwtTokenProvider.class)
+@MockitoBean(types = JwtTokenProvider.class)
 @WebMvcTest(QuestionController.class)
 @ContextConfiguration(classes = {QuestionController.class, ExController.class, SecurityConfiguration.class})
 @WithMember
@@ -61,7 +61,7 @@ class QuestionRestDocsTest {
 
     private static final String DOCS_TOKEN = "docs-only-jwt-token";
 
-    @MockBean
+    @MockitoBean
     private QuestionService questionService;
     @Autowired
     private ObjectMapper objectMapper;
@@ -85,12 +85,12 @@ class QuestionRestDocsTest {
                 .thenReturn(new SliceImpl<>(List.of(response), PageRequest.of(0, 20), false));
 
         mockMvc.perform(get("/api/question")
-                        .param("title", request.getTitle())
-                        .param("content", request.getContent())
-                        .param("orderBy", request.getOrderBy())
-                        .param("hashtags", request.getHashtags().toArray(new String[0]))
-                        .param("page", "0")
-                        .param("size", "20"))
+                        .queryParam("title", request.getTitle())
+                        .queryParam("content", request.getContent())
+                        .queryParam("orderBy", request.getOrderBy())
+                        .queryParam("hashtags", request.getHashtags().toArray(new String[0]))
+                        .queryParam("page", "0")
+                        .queryParam("size", "20"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.content.length()").value(1))
                 .andExpect(jsonPath("$.content[0].id").value(51))
@@ -98,7 +98,7 @@ class QuestionRestDocsTest {
                 .andExpect(jsonPath("$.last").value(true))
                 .andExpect(jsonPath("$.number").value(0))
                 .andDo(document("question-list",
-                        requestParameters(
+                        queryParameters(
                                 parameterWithName("title").description("제목 검색어"),
                                 parameterWithName("content").description("본문 검색어"),
                                 parameterWithName("orderBy").description("정렬 기준"),
@@ -216,12 +216,12 @@ class QuestionRestDocsTest {
 
         mockMvc.perform(delete("/api/question/delete")
                         .header("X-AUTH-TOKEN", DOCS_TOKEN)
-                        .param("questionId", questionId.toString()))
+                        .queryParam("questionId", questionId.toString()))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""))
                 .andDo(document("question-delete",
                         requestHeaders(headerWithName("X-AUTH-TOKEN").description("로그인 시 발급된 JWT")),
-                        requestParameters(parameterWithName("questionId").description("삭제할 질문 ID"))));
+                        queryParameters(parameterWithName("questionId").description("삭제할 질문 ID"))));
         verify(questionService).deleteQuestion(41L, questionId);
     }
 }

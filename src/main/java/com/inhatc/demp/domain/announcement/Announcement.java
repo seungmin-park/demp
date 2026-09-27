@@ -1,12 +1,15 @@
 package com.inhatc.demp.domain.announcement;
 
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+import jakarta.persistence.Embedded;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,7 +25,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 public class Announcement {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "announcement_legacy_id")
+    @SequenceGenerator(name = "announcement_legacy_id", sequenceName = "hibernate_sequence", allocationSize = 1)
     private Long id;
     private String title;
     @Embedded
@@ -36,8 +40,10 @@ public class Announcement {
     @Embedded
     private RecruitPeriod recruitPeriod;
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     private AnnouncementType announcementType;
     @Enumerated(EnumType.STRING)
+    @JdbcTypeCode(SqlTypes.VARCHAR)
     private JobPosition jobPosition;
 
 
