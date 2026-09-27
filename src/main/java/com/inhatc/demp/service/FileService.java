@@ -1,10 +1,10 @@
 package com.inhatc.demp.service;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.DeleteObjectRequest;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.ObjectCannedACL;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.core.sync.RequestBody;
 import com.inhatc.demp.domain.announcement.UploadFile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,12 +18,13 @@ import java.io.InputStream;
 import java.util.UUID;
 
 @Service
+@org.springframework.context.annotation.Profile("!local")
 @RequiredArgsConstructor
 public class FileService implements FileStorage {
 
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
-    private final AmazonS3 amazonS3;
+    private final S3Client s3Client;
     private final ImageValidator imageValidator;
 
     @Override
@@ -33,13 +34,11 @@ public class FileService implements FileStorage {
         String originalFilename = multipartFile.getOriginalFilename();
         String saveFileName = UUID.randomUUID() + "." + extension;
 
-        ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentLength(multipartFile.getSize());
-        objectMetadata.setContentType(multipartFile.getContentType());
-
-        try(InputStream inputStream = multipartFile.getInputStream()) {
-            amazonS3.putObject(new PutObjectRequest(bucket, saveFileName, inputStream, objectMetadata)
-                    .withCannedAcl(CannedAccessControlList.PublicRead));
+        PutObjectRequest request = PutObjectRequest.builder().bucket(bucket).key(saveFileName)
+                .contentLength(multipartFile.getSize()).contentType(multipartFile.getContentType())
+                .acl(ObjectCannedACL.PUBLIC_READ).build();
+        try (InputStream inputStream = multipartFile.getInputStream()) {
+            s3Client.putObject(request, RequestBody.fromInputStream(inputStream, multipartFile.getSize()));
         } catch(IOException e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
         }
@@ -49,7 +48,7 @@ public class FileService implements FileStorage {
 
     @Override
     public void delete(String saveFileName) {
-        amazonS3.deleteObject(new DeleteObjectRequest(bucket, saveFileName));
+        s3Client.deleteObject(DeleteObjectRequest.builder().bucket(bucket).key(saveFileName).build());
     }
 
 }

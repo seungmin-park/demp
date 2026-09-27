@@ -5,9 +5,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.doAnswer;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import com.inhatc.demp.domain.announcement.UploadFile;
 import com.inhatc.demp.error.ApiException;
 import java.io.IOException;
@@ -24,7 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 class FileServiceTest {
 
-    private final AmazonS3 amazonS3 = org.mockito.Mockito.mock(AmazonS3.class);
+    private final S3Client s3Client = org.mockito.Mockito.mock(S3Client.class);
     private final FileService fileService = fileService();
 
     @ParameterizedTest
@@ -60,11 +61,25 @@ class FileServiceTest {
     @DisplayName("JPEG와 PNG 이미지는 검증 후 저장한다")
     @MethodSource("validImages")
     void savesValidImage(MultipartFile image, String expectedExtension) throws IOException {
+        org.mockito.ArgumentCaptor<PutObjectRequest> request = org.mockito.ArgumentCaptor.forClass(PutObjectRequest.class);
+        doAnswer(invocation -> {
+            software.amazon.awssdk.core.sync.RequestBody body = invocation.getArgument(1);
+            try (java.io.InputStream stream = body.contentStreamProvider().newStream()) {
+                assertThat(stream.readAllBytes()).isEqualTo(image.getBytes());
+            }
+            assertThat(body.contentLength()).isEqualTo(image.getSize());
+            return software.amazon.awssdk.services.s3.model.PutObjectResponse.builder().build();
+        }).when(s3Client).putObject(any(PutObjectRequest.class), any(software.amazon.awssdk.core.sync.RequestBody.class));
         UploadFile saved = fileService.save(image);
 
         assertThat(saved.getUploadFileName()).isEqualTo(image.getOriginalFilename());
         assertThat(saved.getSaveFileName()).endsWith(expectedExtension);
-        verify(amazonS3).putObject(any(PutObjectRequest.class));
+        verify(s3Client).putObject(request.capture(), any(software.amazon.awssdk.core.sync.RequestBody.class));
+        assertThat(request.getValue().bucket()).isEqualTo("test-bucket");
+        assertThat(request.getValue().key()).isEqualTo(saved.getSaveFileName());
+        assertThat(request.getValue().contentType()).isEqualTo(image.getContentType());
+        assertThat(request.getValue().contentLength()).isEqualTo(image.getSize());
+        assertThat(request.getValue().acl()).isEqualTo(software.amazon.awssdk.services.s3.model.ObjectCannedACL.PUBLIC_READ);
     }
 
     static Stream<Arguments> validImages() {
@@ -89,13 +104,13 @@ class FileServiceTest {
         assertThatThrownBy(() -> fileService.save(image))
                 .isInstanceOfSatisfying(ApiException.class,
                         exception -> assertThat(exception.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST));
-        verifyNoInteractions(amazonS3);
+        verifyNoInteractions(s3Client);
     }
 
     private FileService fileService() {
         ImageValidator validator = new ImageValidator();
         ReflectionTestUtils.setField(validator, "maxSizeBytes", 5L * 1024 * 1024);
-        FileService service = new FileService(amazonS3, validator);
+        FileService service = new FileService(s3Client, validator);
         ReflectionTestUtils.setField(service, "bucket", "test-bucket");
         return service;
     }

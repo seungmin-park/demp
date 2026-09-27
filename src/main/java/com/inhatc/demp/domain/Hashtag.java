@@ -3,7 +3,7 @@ package com.inhatc.demp.domain;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +13,8 @@ import java.util.List;
 public class Hashtag {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "hashtag_legacy_id")
+    @SequenceGenerator(name = "hashtag_legacy_id", sequenceName = "hibernate_sequence", allocationSize = 1)
     @Column(name = "hashtag_id")
     private Long id;
 

@@ -21,7 +21,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
@@ -40,7 +40,7 @@ class AnnouncementServiceTest {
     private AnnouncementService announcementService;
     @Autowired
     private AnnouncementRepository announcementRepository;
-    @MockBean
+    @MockitoBean
     private FileService fileService;
 
     @AfterEach
@@ -112,6 +112,24 @@ class AnnouncementServiceTest {
 
         assertSanitized("엔티티 정제 공고");
         assertThat(description.getContent()).contains("<script>", "onclick");
+    }
+
+    @Test
+    @DisplayName("대표 이미지 없이 생성한 공고도 상세·검색·관련 목록에서 원문과 본문을 조회한다")
+    void createsWithoutCoverImage() throws IOException {
+        AnnouncementCreateRequest request = request("텍스트 원문 공고");
+        request.setImage(null);
+        request.setPublicationStatus(com.inhatc.demp.domain.announcement.PublicationStatus.PUBLISHED);
+        announcementService.createAnnouncement(request);
+        Announcement saved = announcementRepository.findByTitle("텍스트 원문 공고").orElseThrow();
+        var detail = announcementService.findDetailResponse(saved.getId()).orElseThrow();
+        assertThat(detail.getImage()).isEmpty();
+        assertThat(detail.getAccessUrl()).isEqualTo("https://example.com/jobs");
+        assertThat(detail.getContent()).contains("채용");
+        assertThat(announcementService.findScrollResponses()).extracting(item -> item.getImage()).containsExactly("");
+        assertThat(announcementService.findAnnouncementSlice(new AnnouncementSearchCondition(), PageRequest.of(0, 8))
+                .getContent()).extracting(item -> item.getImage()).containsExactly("");
+        verifyNoInteractions(fileService);
     }
 
     private Description description() {

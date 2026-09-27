@@ -28,7 +28,7 @@ include::{snippets}/member-login/http-request.adoc[]
 include::{snippets}/member-login/request-headers.adoc[]
 
 .요청 파라미터
-include::{snippets}/member-login/request-parameters.adoc[]
+include::{snippets}/member-login/form-parameters.adoc[]
 
 .HTTP 응답
 include::{snippets}/member-login/http-response.adoc[]
@@ -45,7 +45,7 @@ include::{snippets}/member-save/http-request.adoc[]
 include::{snippets}/member-save/request-headers.adoc[]
 
 .요청 파라미터
-include::{snippets}/member-save/request-parameters.adoc[]
+include::{snippets}/member-save/form-parameters.adoc[]
 
 .HTTP 응답
 include::{snippets}/member-save/http-response.adoc[]
@@ -59,7 +59,7 @@ include::{snippets}/member-save/response-fields.adoc[]
 include::{snippets}/member-valid-username/http-request.adoc[]
 
 .요청 파라미터
-include::{snippets}/member-valid-username/request-parameters.adoc[]
+include::{snippets}/member-valid-username/query-parameters.adoc[]
 
 .HTTP 응답
 include::{snippets}/member-valid-username/http-response.adoc[]

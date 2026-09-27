@@ -1,6 +1,6 @@
 package com.inhatc.demp.docs;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import tools.jackson.databind.ObjectMapper;
 import com.inhatc.demp.config.SecurityConfiguration;
 import com.inhatc.demp.config.jwt.JwtTokenProvider;
 import com.inhatc.demp.controller.AnswerController;
@@ -17,9 +17,9 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.restdocs.test.autoconfigure.AutoConfigureRestDocs;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import com.inhatc.demp.support.WithMember;
 import org.springframework.test.context.ContextConfiguration;
@@ -42,12 +42,12 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.requestF
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
-import static org.springframework.restdocs.request.RequestDocumentation.requestParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@MockBean(JwtTokenProvider.class)
+@MockitoBean(types = JwtTokenProvider.class)
 @WebMvcTest(AnswerController.class)
 @ContextConfiguration(classes = {AnswerController.class, ExController.class, SecurityConfiguration.class})
 @WithMember
@@ -56,7 +56,7 @@ class AnswerRestDocsTest {
 
     private static final String DOCS_TOKEN = "docs-only-jwt-token";
 
-    @MockBean
+    @MockitoBean
     private AnswerService answerService;
     @Autowired
     private ObjectMapper objectMapper;
@@ -155,12 +155,12 @@ class AnswerRestDocsTest {
 
         mockMvc.perform(delete("/api/answer/delete")
                         .header("X-AUTH-TOKEN", DOCS_TOKEN)
-                        .param("answerId", answerId.toString()))
+                        .queryParam("answerId", answerId.toString()))
                 .andExpect(status().isOk())
                 .andExpect(content().string(""))
                 .andDo(document("answer-delete",
                         requestHeaders(headerWithName("X-AUTH-TOKEN").description("로그인 시 발급된 JWT")),
-                        requestParameters(parameterWithName("answerId").description("삭제할 답변 ID"))));
+                        queryParameters(parameterWithName("answerId").description("삭제할 답변 ID"))));
         verify(answerService).delete(41L, answerId);
     }
 }

@@ -4,7 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.AccessLevel;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Getter
@@ -12,7 +12,8 @@ import javax.persistence.*;
 public class QuestionHashtag {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "questionhashtag_legacy_id")
+    @SequenceGenerator(name = "questionhashtag_legacy_id", sequenceName = "hibernate_sequence", allocationSize = 1)
     private Long id;
 
     @JoinColumn(name = "question_id")

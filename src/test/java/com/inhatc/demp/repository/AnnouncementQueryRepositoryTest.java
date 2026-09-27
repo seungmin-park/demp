@@ -24,7 +24,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -288,7 +288,7 @@ class AnnouncementQueryRepositoryTest {
                 .containsExactly(ids.get(2), ids.get(3));
         assertThat(first.hasNext()).isTrue();
         assertThat(second.hasNext()).isTrue();
-        assertThat(paginationSql).anySatisfy(sql -> assertThat(sql.toLowerCase()).contains("limit"));
+        assertThat(paginationSql).anySatisfy(sql -> assertThat(sql.toLowerCase()).contains("fetch first ? rows only"));
         assertThat(paginationSql).noneMatch(sql -> sql.toLowerCase().contains("count("));
     }
 
@@ -319,6 +319,84 @@ class AnnouncementQueryRepositoryTest {
                 .containsExactly(first.getId());
         assertThat(page0.hasNext()).isTrue();
         assertThat(page1.isLast()).isTrue();
+    }
+
+    @org.springframework.test.context.bean.override.mockito.MockitoBean
+    private java.time.Clock clock;
+
+    @Test
+    @DisplayName("기술 다중 선택은 OR이며 회사 검색·직무와 AND로 조합하고 페이지가 중복되지 않는다")
+    void combinesLanguagesCompanyAndPosition() {
+        Announcement first = saveAnnouncement("first", AnnouncementType.EMP, JobPosition.BACKEND, Set.of(Language.JAVA, SPRING), 4000);
+        Announcement second = saveAnnouncement("second", AnnouncementType.EMP, JobPosition.BACKEND, Set.of(SPRING), 4000);
+        saveAnnouncement("other", AnnouncementType.EMP, JobPosition.FRONTEND, Set.of(Language.JAVA), 4000);
+        saveAnnouncement("css", AnnouncementType.EMP, JobPosition.BACKEND, Set.of(Language.CSS), 4000);
+        AnnouncementSearchCondition condition = new AnnouncementSearchCondition();
+        condition.setTitle("COMPANY");
+        condition.setPositions(List.of(JobPosition.BACKEND));
+        condition.setLanguages(List.of(Language.JAVA, SPRING));
+
+        Slice<Announcement> page0 = announcementQueryRepository.findAnnouncementSlice(condition, PageRequest.of(0, 1));
+        Slice<Announcement> page1 = announcementQueryRepository.findAnnouncementSlice(condition, PageRequest.of(1, 1));
+
+        assertThat(page0.getContent()).extracting(Announcement::getId).containsExactly(second.getId());
+        assertThat(page0.hasNext()).isTrue();
+        assertThat(page1.getContent()).extracting(Announcement::getId).containsExactly(first.getId());
+        assertThat(page1.hasNext()).isFalse();
+    }
+
+    @ParameterizedTest
+    @DisplayName("교육 비용 조건은 무료·유료를 구분하고 채용 급여와 섞이지 않는다")
+    @MethodSource("tuitionCases")
+    void filtersTuition(com.inhatc.demp.dto.announcement.Tuition tuition, String title) {
+        saveAnnouncement("free", AnnouncementType.EDU, JobPosition.BACKEND, Set.of(Language.JAVA), 0);
+        saveAnnouncement("paid", AnnouncementType.EDU, JobPosition.BACKEND, Set.of(Language.JAVA), 100);
+        saveAnnouncement("employment", AnnouncementType.EMP, JobPosition.BACKEND, Set.of(Language.JAVA), 0);
+        AnnouncementSearchCondition condition = new AnnouncementSearchCondition();
+        condition.setTuition(tuition);
+
+        Slice<Announcement> result = announcementQueryRepository.findAnnouncementSlice(condition, PageRequest.of(0, 10));
+        assertThat(result.getContent()).extracting(Announcement::getTitle).containsExactly(title);
+        assertThat(result.hasNext()).isFalse();
+    }
+
+    static Stream<Arguments> tuitionCases() {
+        return Stream.of(Arguments.of(com.inhatc.demp.dto.announcement.Tuition.FREE, "free"),
+                Arguments.of(com.inhatc.demp.dto.announcement.Tuition.PAID, "paid"));
+    }
+
+    @ParameterizedTest
+    @DisplayName("모집 상태는 고정 시각과 시작·마감 경계를 포함해 구분한다")
+    @MethodSource("recruitmentCases")
+    void filtersRecruitment(com.inhatc.demp.dto.announcement.RecruitmentStatus status, List<String> titles) {
+        java.time.Clock fixed = java.time.Clock.fixed(java.time.Instant.parse("2026-09-27T00:00:00Z"), java.time.ZoneId.of("Asia/Seoul"));
+        org.mockito.Mockito.when(clock.instant()).thenReturn(fixed.instant());
+        org.mockito.Mockito.when(clock.getZone()).thenReturn(fixed.getZone());
+        LocalDateTime now = LocalDateTime.of(2026, 9, 27, 9, 0);
+        saveAtPeriod("starting", now, now.plusDays(1));
+        saveAtPeriod("ending", now.minusDays(1), now);
+        saveAtPeriod("closed", now.minusDays(1), now.minusSeconds(1));
+        saveAtPeriod("upcoming", now.plusSeconds(1), now.plusDays(1));
+        AnnouncementSearchCondition condition = new AnnouncementSearchCondition();
+        condition.setRecruitmentStatus(status);
+
+        Slice<Announcement> result = announcementQueryRepository.findAnnouncementSlice(condition, PageRequest.of(0, 10));
+        assertThat(result.getContent()).extracting(Announcement::getTitle).containsExactlyElementsOf(titles);
+        assertThat(result.hasNext()).isFalse();
+    }
+
+    static Stream<Arguments> recruitmentCases() {
+        return Stream.of(Arguments.of(com.inhatc.demp.dto.announcement.RecruitmentStatus.OPEN, List.of("ending", "starting")),
+                Arguments.of(com.inhatc.demp.dto.announcement.RecruitmentStatus.CLOSED, List.of("closed")),
+                Arguments.of(com.inhatc.demp.dto.announcement.RecruitmentStatus.UPCOMING, List.of("upcoming")));
+    }
+
+    private void saveAtPeriod(String title, LocalDateTime start, LocalDateTime end) {
+        announcementRepository.save(Announcement.builder().title(title).career(new Career(0, 3))
+                .description(new Description("body", "https://example.test", 0, Set.of(Language.JAVA)))
+                .company(new Company("company")).image(new UploadFile())
+                .recruitPeriod(new RecruitPeriod(start, end)).announcementType(AnnouncementType.EMP)
+                .jobPosition(JobPosition.BACKEND).build());
     }
 
     private Announcement saveAnnouncement(String title, AnnouncementType type, JobPosition position,

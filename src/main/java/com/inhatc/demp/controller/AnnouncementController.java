@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
@@ -41,8 +41,8 @@ public class AnnouncementController {
     }
 
     @PostMapping(value = "/add")
-    public String createAnnouncement(@Valid @ModelAttribute AnnouncementCreateRequest param) throws IOException {
-        announcementService.createAnnouncement(param);
+    public String createAnnouncement(@Valid @ModelAttribute AnnouncementCreateRequest param, java.security.Principal principal) throws IOException {
+        announcementService.createAnnouncement(param, principal.getName());
         return "ok";
     }
 }

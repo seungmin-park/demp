@@ -1,7 +1,7 @@
 package com.inhatc.demp.domain.announcement;
 
 import java.time.LocalDateTime;
-import javax.persistence.Embeddable;
+import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;

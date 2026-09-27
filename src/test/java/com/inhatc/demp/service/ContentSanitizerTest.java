@@ -57,4 +57,13 @@ class ContentSanitizerTest {
         String sanitized = sanitizer.sanitize("<p><strong>본문 &amp; 코드</strong></p><img src=x>");
         assertThat(sanitizer.sanitize(sanitized)).isEqualTo(sanitized);
     }
+    @Test
+    @DisplayName("Markdown의 제목과 표 및 구분선을 보존하고 이벤트 속성은 제거한다")
+    void preservesMarkdownStructureWithoutActiveAttributes() {
+        String input = "<h2 onclick=\"evil()\">제목</h2><hr><p><del>삭제</del></p>"
+                + "<table><thead><tr><th>언어</th></tr></thead><tbody><tr><td onmouseover=\"evil()\">Java</td></tr></tbody></table>";
+        String expected = "<h2>제목</h2><hr><p><del>삭제</del></p>"
+                + "<table><thead><tr><th>언어</th></tr></thead><tbody><tr><td>Java</td></tr></tbody></table>";
+        assertThat(sanitizer.sanitize(input)).isEqualTo(expected);
+    }
 }

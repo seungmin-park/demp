@@ -17,9 +17,6 @@ include::{snippets}/announcement-add/http-request.adoc[]
 .요청 헤더
 include::{snippets}/announcement-add/request-headers.adoc[]
 
-.요청 파라미터
-include::{snippets}/announcement-add/request-parameters.adoc[]
-
 .요청 파트
 include::{snippets}/announcement-add/request-parts.adoc[]
 
@@ -49,7 +46,7 @@ include::{snippets}/announcement-detail/response-fields.adoc[]
 include::{snippets}/announcement-list/http-request.adoc[]
 
 .요청 파라미터
-include::{snippets}/announcement-list/request-parameters.adoc[]
+include::{snippets}/announcement-list/query-parameters.adoc[]
 
 .HTTP 응답
 include::{snippets}/announcement-list/http-response.adoc[]
@@ -84,3 +81,45 @@ include::{snippets}/announcement-detail-not-found/path-parameters.adoc[]
 
 .HTTP 응답
 include::{snippets}/announcement-detail-not-found/http-response.adoc[]
+
+=== 원문과 본문 이미지
+
+`accessUrl`은 지원하기 버튼에서 새 탭으로 열 원문 공고 URL이다.
+대표 이미지 `image`는 선택 항목이며 생략하면 기본 회사 아이콘을 표시한다.
+본문은 서식 HTML이고 신규 첨부는 multipart `bodyImages`를 반복해서 전달한다(최대 10개, 각 JPEG/PNG 5MB 이내, 전체 요청 10MB 이내).
+본문 `<img src="attachment:0" alt="설명">`의 번호는 이번 요청의 첨부 순서다.
+수정에서 기존 본문 이미지 URL을 유지하면 파일도 유지하고, 본문에서 제거하면 커밋 후 정리한다.
+외부 페이지의 이미지 URL은 자동으로 가져오지 않는다. 업로드 파일을 참조하지 않는 요청은 400으로 거절한다.
+본문 파일은 `announcement_body_image` 컬렉션 테이블에 소속을 보관한다. 운영 반영 전에 테이블 생성이 필요하며 기존 공고에는 첨부 행이 없다.
+
+운영 DDL: `src/main/resources/db/manual/announcement-body-images.sql`. 자동 실행되지 않는다. 기존 스키마에 이 SQL을 적용한 뒤 `ddl-auto=validate`로 기동·기존 데이터 보존을 검증한다.
+
+=== 선택 금액과 연봉 공개 상태
+
+`payment`는 선택 정보이며 단위는 만원이다. 생략/null은 미확인, 교육의 명시적인 0만 무료다.
+채용의 `salaryStatus`는 UNDISCLOSED(미공개), NEGOTIABLE(협의), DISCLOSED(공개)다.
+공개 시 payment는 양수이며 선택 `salaryMax`는 최소 금액 이상이다. 미공개/협의는 금액을 제거한다.
+기존 양수 연봉은 상태가 없어도 공개 금액으로 해석한다. 연봉 필터는 프런트에서 제거했으며 과거 URL의 payment도 전송하지 않는다.
+배포 전 MySQL에 `db/manual/announcement-compensation.sql`을 적용한다. 기존 0원을 미확인으로 일괄 변경하지 않는다.
+
+=== 교육과정 정보와 검색
+
+EDU 등록/수정 multipart는 다음 선택 필드를 받는다. 생략 값은 미확인이다. 응답은 `education` 객체로 반환하고 EMP의 education은 null이다.
+
+[cols="1,3"]
+|===
+|필드 |값
+|deliveryMode |ONLINE / OFFLINE / HYBRID
+|region |SEOUL / BUSAN / DAEGU / INCHEON / GWANGJU / DAEJEON / ULSAN / SEJONG / GYEONGGI / GANGWON / CHUNGBUK / CHUNGNAM / JEONBUK / JEONNAM / GYEONGBUK / GYEONGNAM / JEJU / OVERSEAS
+|commitment |FULL_TIME / PART_TIME / SELF_PACED
+|fundingType |CARD_REQUIRED / GOVERNMENT / SPONSORED / SELF_FUNDED
+|selectionProcess |CODING / NO_CODING / NONE
+|learningLevel |BEGINNER / BASIC_REQUIRED / ADVANCED / ALL_LEVELS
+|learningStartDate, learningEndDate |YYYY-MM-DD. 시작일만 확인된 경우 종료일 생략 가능. 종료일만 있거나 기간 역전은 거절.
+|===
+
+목록 API는 위 여섯 enum과 `startAfter`, `startBefore`(개강일 포함 범위), `duration`(SHORT 1~30일, MEDIUM 31~90일, LONG 91~180일, EXTENDED 181일 이상)을 검색한다.
+조건끼리는 AND이고 미확인 정보는 선택 조건과 일치하지 않는다. 교육 조건이 있으면 EDU만 검색한다.
+교육 기간은 시작·종료일을 모두 포함한 일수이며 모집 기간과 별개다. 기간을 모르면 durationDays는 null이다.
+비용과 지원 유형은 별도 조건이다. 국비 지원을 무료로 추정하지 않는다.
+배포 전 `db/manual/announcement-education.sql` 적용 필요. 기존 데이터의 새 필드는 null로 유지한다.

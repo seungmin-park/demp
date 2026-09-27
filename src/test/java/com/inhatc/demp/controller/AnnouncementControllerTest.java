@@ -26,8 +26,8 @@ import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.http.MediaType;
@@ -48,13 +48,13 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@MockBean(JwtTokenProvider.class)
+@MockitoBean(types = JwtTokenProvider.class)
 @WebMvcTest(AnnouncementController.class)
 @ContextConfiguration(classes = {AnnouncementController.class, ExController.class, SecurityConfiguration.class})
-@WithMember
+@org.springframework.security.test.context.support.WithMockUser(roles = {"ADMIN", "USER"})
 class AnnouncementControllerTest {
 
-    @MockBean
+    @MockitoBean
     private AnnouncementService announcementService;
     @Autowired
     private MockMvc mockMvc;
@@ -68,6 +68,7 @@ class AnnouncementControllerTest {
 
         mockMvc.perform(multipart("/api/announce/add")
                         .file(image)
+                        .file(new MockMultipartFile("bodyImages", "body.png", "image/png", new byte[]{1}))
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .param("title", "백엔드 채용")
                         .param("company", "DEMP")
@@ -84,7 +85,8 @@ class AnnouncementControllerTest {
                 .andExpect(status().isOk());
 
         ArgumentCaptor<AnnouncementCreateRequest> request = ArgumentCaptor.forClass(AnnouncementCreateRequest.class);
-        verify(announcementService).createAnnouncement(request.capture());
+        verify(announcementService).createAnnouncement(request.capture(), org.mockito.ArgumentMatchers.eq("user"));
+        assertThat(request.getValue().getBodyImages()).extracting(file -> file.getOriginalFilename()).containsExactly("body.png");
         BeanWrapper fields = new BeanWrapperImpl(request.getValue());
         assertThat(fields.getPropertyValue("title")).isEqualTo("백엔드 채용");
         assertThat(fields.getPropertyValue("company")).isEqualTo("DEMP");
@@ -98,6 +100,61 @@ class AnnouncementControllerTest {
         assertThat(fields.getPropertyValue("accessUrl")).isEqualTo("https://example.com/jobs/1");
         assertThat(fields.getPropertyValue("payment")).isEqualTo(3000);
         assertThat(fields.getPropertyValue("language")).isEqualTo(Set.of(Language.JAVA, Language.SPRING));
+    }
+
+    @Test
+    @DisplayName("금액을 생략하면 무료나 0원으로 변환하지 않는다")
+    void omittedPaymentRemainsUnknown() throws Exception {
+        mockMvc.perform(validOptionalPaymentRequest()).andExpect(status().isOk());
+        var captured = ArgumentCaptor.forClass(AnnouncementCreateRequest.class);
+        verify(announcementService).createAnnouncement(captured.capture(), org.mockito.ArgumentMatchers.eq("user"));
+        assertThat((Object) captured.getValue().getPayment()).isNull();
+    }
+
+    @ParameterizedTest
+    @DisplayName("공개 연봉의 누락 금액과 역전 범위를 거절한다")
+    @CsvSource({"'',5000", "6000,5000"})
+    void rejectsInvalidSalary(String amount, String maximum) throws Exception {
+        mockMvc.perform(validOptionalPaymentRequest().param("salaryStatus", "DISCLOSED")
+                .param("payment", amount).param("salaryMax", maximum)).andExpect(status().isBadRequest());
+        verifyNoInteractions(announcementService);
+    }
+
+    @Test
+    @DisplayName("교육 정보는 평면 multipart에서 바인딩되어 서비스로 전달된다")
+    void bindsEducationDetails() throws Exception {
+        mockMvc.perform(validOptionalPaymentRequest("EDU").param("deliveryMode", "ONLINE")
+                .param("commitment", "PART_TIME").param("fundingType", "CARD_REQUIRED")
+                .param("learningStartDate", "2026-10-01").param("learningEndDate", "2026-12-31"))
+                .andExpect(status().isOk());
+        var captured = ArgumentCaptor.forClass(AnnouncementCreateRequest.class);
+        verify(announcementService).createAnnouncement(captured.capture(), org.mockito.ArgumentMatchers.eq("user"));
+        var fields = new BeanWrapperImpl(captured.getValue());
+        assertThat(fields.isReadableProperty("deliveryMode")).isTrue();
+        assertThat(fields.getPropertyValue("deliveryMode").toString()).isEqualTo("ONLINE");
+        assertThat(fields.getPropertyValue("learningStartDate").toString()).isEqualTo("2026-10-01");
+    }
+
+    @Test
+    @DisplayName("교육 종료가 시작보다 이르거나 존재하지 않는 수업 방식은 거절한다")
+    void rejectsInvalidEducation() throws Exception {
+        mockMvc.perform(validOptionalPaymentRequest("EDU")
+                .param("learningStartDate", "2026-12-01").param("learningEndDate", "2026-10-01"))
+                .andExpect(status().isBadRequest());
+        mockMvc.perform(validOptionalPaymentRequest("EDU").param("deliveryMode", "INVALID"))
+                .andExpect(status().isBadRequest());
+        verifyNoInteractions(announcementService);
+    }
+
+    private org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder validOptionalPaymentRequest() {
+        return validOptionalPaymentRequest("EMP");
+    }
+
+    private org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder validOptionalPaymentRequest(String type) {
+        return multipart("/api/announce/add").param("title", "선택 연봉")
+                .param("company", "DEMP").param("type", type).param("position", "BACKEND")
+                .param("startedDate", "2026-09-01T00:00:00").param("deadLineDate", "2026-09-30T23:59:00")
+                .param("content", "설명").param("accessUrl", "https://example.com/jobs/1").param("language", "JAVA");
     }
 
     @Test
@@ -185,6 +242,32 @@ class AnnouncementControllerTest {
                 .andExpect(jsonPath("$.career").doesNotExist())
                 .andExpect(jsonPath("$.recruitPeriod").doesNotExist())
                 .andExpect(jsonPath("$.description").doesNotExist());
+    }
+
+    @Test
+    @DisplayName("대표 이미지를 생략한 텍스트 공고 등록 요청을 허용한다")
+    void acceptsWithoutImage() throws Exception {
+        mockMvc.perform(multipart("/api/announce/add")
+                .param("title", "텍스트 공고").param("company", "DEMP")
+                .param("type", "EMP").param("position", "BACKEND")
+                .param("startedDate", "2026-09-01T00:00:00").param("deadLineDate", "2026-09-30T00:00:00")
+                .param("content", "<p>업무 요약</p>").param("accessUrl", "https://example.com/jobs/1")
+                .param("language", "JAVA")).andExpect(status().isOk());
+        ArgumentCaptor<AnnouncementCreateRequest> request = ArgumentCaptor.forClass(AnnouncementCreateRequest.class);
+        verify(announcementService).createAnnouncement(request.capture(), org.mockito.ArgumentMatchers.eq("user"));
+        assertThat(request.getValue().getImage()).isNull();
+    }
+
+    @ParameterizedTest
+    @DisplayName("공고 본문이 비어 있거나 원문 주소가 웹 주소가 아니면 거절한다")
+    @CsvSource({"<p></p>, https://example.com/job", "<p>업무</p>, ftp://example.com/job"})
+    void rejectsEmptyBodyOrNonWebSource(String content, String source) throws Exception {
+        mockMvc.perform(multipart("/api/announce/add")
+                .param("title", "텍스트 공고").param("company", "DEMP").param("type", "EMP").param("position", "BACKEND")
+                .param("startedDate", "2026-09-01T00:00:00").param("deadLineDate", "2026-09-30T00:00:00")
+                .param("content", content).param("accessUrl", source).param("language", "JAVA"))
+                .andExpect(status().isBadRequest());
+        verifyNoInteractions(announcementService);
     }
 
     @Test

@@ -67,7 +67,7 @@ class DatabaseLifecycleTest {
                 "--spring.profiles.active=" + profile,
                 "--spring.datasource.url=jdbc:h2:mem:" + database + ";MODE=MySQL;DB_CLOSE_DELAY=-1",
                 "--spring.datasource.driver-class-name=org.h2.Driver", "--spring.datasource.username=sa",
-                "--spring.datasource.password=", "--spring.jpa.database-platform=org.hibernate.dialect.MySQL57Dialect",
+                "--spring.datasource.password=", "--spring.jpa.database-platform=org.hibernate.dialect.H2Dialect",
                 "--spring.jwt.secret=test-only-jwt-secret-not-for-production", "--server.port=0",
                 "--cloud.aws.credentials.access-key=test", "--cloud.aws.credentials.secret-key=test",
                 "--cloud.aws.region.static=ap-northeast-2", "--cloud.aws.s3.bucket=test-unused",

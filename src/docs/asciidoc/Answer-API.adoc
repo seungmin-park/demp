@@ -64,7 +64,7 @@ include::{snippets}/answer-delete/http-request.adoc[]
 include::{snippets}/answer-delete/request-headers.adoc[]
 
 .요청 파라미터
-include::{snippets}/answer-delete/request-parameters.adoc[]
+include::{snippets}/answer-delete/query-parameters.adoc[]
 
 .HTTP 응답
 include::{snippets}/answer-delete/http-response.adoc[]

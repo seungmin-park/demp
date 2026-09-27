@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import com.inhatc.demp.support.WithMember;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -22,12 +22,12 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@MockBean(JwtTokenProvider.class)
+@MockitoBean(types = JwtTokenProvider.class)
 @WebMvcTest(MemberController.class)
 @ContextConfiguration(classes = {MemberController.class, ExController.class, SecurityConfiguration.class})
 @WithMember
 class MemberControllerTest {
-    @MockBean
+    @MockitoBean
     private MemberService memberService;
     @Autowired
     private MockMvc mockMvc;

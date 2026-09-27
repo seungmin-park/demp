@@ -1,8 +1,10 @@
 package com.inhatc.demp.controller;
 
 import com.inhatc.demp.error.*;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
@@ -31,6 +33,10 @@ public class ExController {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResult> forbidden(Exception ex, HttpServletRequest request) {
         return error(HttpStatus.FORBIDDEN, request);
+    }
+    @ExceptionHandler({NoResourceFoundException.class, NoHandlerFoundException.class})
+    public ResponseEntity<ErrorResult> notFound(Exception ex, HttpServletRequest request) {
+        return error(HttpStatus.NOT_FOUND, request);
     }
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResult> internal(Exception ex, HttpServletRequest request) {

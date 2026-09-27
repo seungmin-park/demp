@@ -4,7 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 @Entity
 @Getter
@@ -12,7 +12,8 @@ import javax.persistence.*;
 public class Answer {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(generator = "answer_legacy_id")
+    @SequenceGenerator(name = "answer_legacy_id", sequenceName = "hibernate_sequence", allocationSize = 1)
     @Column(name = "answer_id")
     private Long id;
 

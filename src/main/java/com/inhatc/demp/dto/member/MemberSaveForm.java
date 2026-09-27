@@ -3,7 +3,7 @@ package com.inhatc.demp.dto.member;
 import com.inhatc.demp.domain.Member;
 import lombok.Getter;
 import lombok.Setter;
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 import java.util.Collections;
 

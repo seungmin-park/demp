@@ -441,32 +441,246 @@ npx playwright test
 
 ## Phase 7 · 런타임·프레임워크 갱신과 TypeScript 도입 (T50 완료 후)
 
-실행 예정 브랜치: `refactor/runtime-framework-and-typescript-upgrade`. 백엔드·프런트엔드에 각각 같은 이름의 worktree를 만들고, T50의 통과 기준 커밋에서 시작한다. 아래 항목은 후속 작업 체크리스트이며 버전과 호환성은 시작 시 공식 지원표를 확인해 결정한다.
+실행 브랜치: `refactor/runtime-framework-and-typescript-upgrade`. 백엔드·프런트엔드에 각각 같은 이름의 worktree를 만들고, T50의 통과 기준 커밋에서 시작한다. 아래 항목은 후속 작업 체크리스트이며 버전과 호환성은 시작 시 공식 지원표를 확인해 결정한다.
 
 ### T60 · 기준선과 업그레이드 순서
 
-- [ ] 현재 Java/JDK, Gradle, Spring Boot 및 의존성, Node/npm, Vue/CLI, Jest, 브라우저 지원 범위와 배포 환경을 기록한다.
-- [ ] 공식 호환성·지원 종료 정보에 맞춰 목표 버전을 정하고, 중간 버전 경유가 필요한 변경 순서를 기록한다.
-- [ ] T50 전체 검증과 핵심 사용자 흐름을 기준선으로 재실행하고 결과를 남긴다.
+- [x] 현재 Java/JDK, Gradle, Spring Boot 및 의존성, Node/npm, Vue/CLI, Jest, 브라우저 지원 범위와 배포 환경을 기록한다.
+- [x] 공식 호환성·지원 종료 정보에 맞춰 목표 버전을 정하고, 중간 버전 경유가 필요한 변경 순서를 기록한다.
+- [x] T50 전체 검증과 핵심 사용자 흐름을 기준선으로 재실행하고 결과를 남긴다.
+
+2026-09-27: [T60 기준선·호환성 기록](docs/verification/runtime-framework-and-typescript-upgrade/README.md). 별도 worktree, asdf Zulu25/Node24, B 195·F45·headed E2E4 및 실제 API14 통과.
 
 ### T61 · Java·Spring 업그레이드
 
-- [ ] Java, Gradle, Spring Boot를 호환되는 순서로 올리고 빌드·테스트 실패를 각각 원인별로 해결한다.
-- [ ] Security/JPA/validation/REST Docs 설정과 인증, 트랜잭션, 페이지네이션, 파일 업로드 계약을 회귀 테스트로 검증한다.
-- [ ] `clean test asciidoctor bootJar`와 운영 프로필 시작·종료를 확인하고 배포 JDK 설정을 갱신한다.
+- [x] Java, Gradle, Spring Boot를 호환되는 순서로 올리고 빌드·테스트 실패를 각각 원인별로 해결한다.
+- [x] Security/JPA/validation/REST Docs 설정과 인증, 트랜잭션, 페이지네이션, 파일 업로드 계약을 회귀 테스트로 검증한다.
+- [x] `clean test asciidoctor bootJar`와 운영 프로필 시작·종료를 확인하고 배포 JDK 설정을 갱신한다.
+
+2026-09-27: [T61 기록](docs/verification/runtime-framework-and-typescript-upgrade/README.md). Zulu25/Gradle9.8/Boot4.1.1 전환, 기존 sequence/enum 보존 Red→Green, H2 upstream CHECK 오류 수정. 전체 34 suite·197 test, REST Docs·bootJar 성공. 현재 cmux에서 실제 API14·브라우저 가입/로그인 확인. 운영 설정 재시작은 격리 H2로 검증했으며 운영 MySQL은 미접속.
 
 ### T62 · Node·Vue 업그레이드
 
-- [ ] 지원되는 Node/npm 버전과 Vue 생태계(Vue, Router, Vuex 또는 대체 상태 관리, CLI 또는 빌드 도구, Jest 또는 대체 러너)의 목표 조합을 결정한다.
-- [ ] lockfile을 갱신하고 `npm ci`, 컴포넌트 테스트, lint, build, E2E를 순서대로 실행한다.
-- [ ] 인증 만료, 검색·페이지 응답 역전, 에디터·태그 입력, 공고 더보기의 실제 브라우저 흐름을 확인한다.
+- [x] 지원되는 Node/npm 버전과 Vue 생태계(Vue, Router, Vuex 또는 대체 상태 관리, CLI 또는 빌드 도구, Jest 또는 대체 러너)의 목표 조합을 결정한다.
+- [x] lockfile을 갱신하고 `npm ci`, 컴포넌트 테스트, lint, build, E2E를 순서대로 실행한다.
+- [x] 인증 만료, 검색·페이지 응답 역전, 에디터·태그 입력, 공고 더보기의 실제 브라우저 흐름을 확인한다.
+- [x] 사용자 추가 요청: 여러 페이지 분량의 격리 데이터로 인피니티 스크롤을 실제 cmux에서 확인한다. 다음 페이지 1회 요청·중복 방지·필터 변경 시 초기화·응답 역전·마지막 페이지·오류 재시도를 자동 E2E에도 고정한다.
+
+2026-09-27: Node24.21/Vue3.5.43/Router5.3.1/Vite8.3.1/Vitest5.0.2, npm ci333개. 기존45개와 스크롤 Red→Green3개로 unit48개, lint/build 통과. 자동 E2E7개 exit0. 현재 cmux 내장 브라우저와 실제 Spring/H2에서 8→16→24→28개, 교육 필터8→10개 확인. 실제 에디터·태그 입력/저장/재조회 및 인증 만료 이동 확인. [자세한 기록](docs/verification/runtime-framework-and-typescript-upgrade/README.md).
 
 ### T63 · TypeScript 단계적 도입
 
-- [ ] `tsconfig`, 타입 검사 명령, Vue SFC 타입 지원, CI 필수 검사를 마련하고 작은 API 모듈 하나로 실패→통과를 확인한다.
-- [ ] API 요청/응답 DTO, 인증 상태, 라우트, 비동기 목록 상태를 경계부터 타입화한다. `any` 사용 이유와 남은 JS 범위를 기록한다.
-- [ ] Vue 컴포넌트를 기능 단위로 옮기며 props/emits와 nullable 응답을 검증한다. 각 단위마다 테스트·타입 검사·lint·build를 실행한다.
-- [ ] 양쪽 계약 fixture, 전체 E2E, 배포·롤백 절차와 README를 갱신하고 최종 전체 검증 결과를 기록한다.
+- [x] `tsconfig`, 타입 검사 명령, Vue SFC 타입 지원, CI 필수 검사를 마련하고 작은 API 모듈 하나로 실패→통과를 확인한다.
+- [x] API 요청/응답 DTO, 인증 상태, 라우트, 비동기 목록 상태를 경계부터 타입화한다. `any` 사용 이유와 남은 JS 범위를 기록한다.
+- [x] Vue 컴포넌트를 기능 단위로 옮기며 props/emits와 nullable 응답을 검증한다. 각 단위마다 테스트·타입 검사·lint·build를 실행한다.
+- [x] 양쪽 계약 fixture, 전체 E2E, 배포·롤백 절차와 README를 갱신하고 최종 전체 검증 결과를 기록한다.
+
+## Phase 8 · 제공 디자인 적용과 채용·부트캠프 탐색 개선
+
+사용자 제공 `/Users/seungmin/Downloads/dempfrontend-redesigned.zip`을 디자인 기준으로 삼는다. **앱 이름은 DEMP로 유지**한다(화면·로고·문서 제목·메타데이터 포함). Phase 7의 완료 지점에서 양쪽 저장소의 `refactor/redesigned-discovery-and-bootcamp-filters` 브랜치와 별도 worktree로 시작한다. ZIP의 구형 인증·API·상태 코드는 가져오지 않고 Phase 7 코드에 디자인을 이식한다. 참고 사이트는 [원티드](https://www.wanted.co.kr/wdlist/518), [점핏](https://jumpit.saramin.co.kr/positions), [부트텐트](https://boottent.com/camps)이며 콘텐츠나 상표를 복제하지 않는다.
+
+2026-09-27 시작: 양쪽 브랜치 `refactor/redesigned-discovery-and-bootcamp-filters`, worktree `.worktrees/redesigned-discovery-and-bootcamp-filters/{backend,frontend}`. 기준 B3da14a5/F ac5b7fd. [실행 계획](docs/verification/redesigned-discovery/plan.md).
+
+### T70 · 디자인 기준·공통 화면·Markdown 작성기
+
+- [x] 공고 목록·상세의 기술 배열을 `Java, Spring`처럼 쉼표로 구분해 표시하고 따옴표·괄호를 제거한다. ISO 날짜의 T/초를 숨기고 날짜·시간과 빈값을 공통 표시 함수로 정리해 검증한다.
+- [x] 추천·비추천·조회수·회원 이모지를 통일된 SVG 아이콘·아바타로 교체하고 숫자 배치, 접근 가능한 이름, 선택/비활성/포커스 상태 검증.
+
+- [x] ZIP과 현재 라우트 전수 대조, 부족한 페이지·상태 목록과 디자인 계획을 기록한다.
+- [x] ZIP의 색상·타이포·여백·카드·헤더를 공통 토큰으로 정리하고 DEMP 이름을 보존한다.
+- [x] 로그인·가입·공고·질문/답변·작성 화면에 동일한 디자인을 적용한다. 기존 공개 계약과 보안 동작을 검증한다.
+- [x] 사용자 추가 요청: 글쓰기 화면과 낡은 에디터를 교체한다. 공통 Markdown 작성기(제목/굵게/목록/링크/코드 도구, 작성·미리보기, 데스크톱 분할 보기, 모바일 입력/저장)를 질문·답변·공고에 적용한다. 기존 HTML 표시와 HTML↔Markdown 변환/XSS 방어를 단위 검증한다. 기존 HTML의 실제 편집·저장 UI 검증은 T81 관리자 수정 화면에서 수행한다.
+- [x] 모바일·키보드 포커스·명도 대비·reduced-motion을 확인하고 전체 unit/typecheck/lint/build 후 체크·커밋한다.
+
+2026-09-27: [T70 실행·검증 기록](docs/verification/redesigned-discovery/t70.md). B205/F75, 타입·lint·build, 자동 E2E7 및 현재 cmux 실제 작성/저장/재조회 통과.
+
+### T71 · 공고·부트캠프 필터
+
+- [x] 원티드·점핏·사람인·잡코리아와 네이버·카카오·토스·당근의 자체 채용 페이지 등 다수 사례를 조사한다. 필터·공고 카드·상세 구조·지원 동선·모바일·모집 상태별 장점과 DEMP 반영/제외 이유를 비교표에 남긴다. 부트캠프는 부트텐트를 별도 참고한다. DEMP가 저장하는 필드와 대조해 조건별 지원 범위를 확정한다.
+- [x] 채용과 교육의 필터를 각각 설계한다. 선택 조건 칩·개별 해제·전체 초기화·결과 안내·모바일 필터를 구현한다.
+- [x] URL에 필터를 저장해 새로고침·뒤로 가기·링크 공유 때 동일한 결과가 나오게 한다.
+- [x] API에서 지원하지 않는 필터가 필요하면 저장·작성·조회 계약을 먼저 추가한다. 일부 로드된 카드만 거르거나 없는 정보를 추측하지 않는다.
+- [x] 필터 조합·페이지 초기화·응답 역전·오류 재시도·빈 결과를 Red→Green으로 검증하고 양쪽 전체 검증 후 체크·커밋한다.
+
+2026-09-27: [T71 검증 기록](docs/verification/redesigned-discovery/t71.md). B211/F80, 타입·lint·build·REST Docs 및 cmux pane의 E2E8 통과.
+
+### T72 · 누락 화면과 최종 사용자 흐름
+
+- [x] 404·로딩·빈 결과·권한/서버 오류·재시도 화면을 디자인에 맞춰 완성한다.
+- [x] 기존 headed E2E를 유지하고 필터 복원·채용/교육 전환·모바일 사용자 흐름을 추가한다.
+- [x] 현재 cmux pane에서 실제 API 연결과 브라우저 클릭/입력으로 주요 흐름을 확인한다. 화면별 데스크톱·모바일 캡처를 점검한다.
+- [x] 양쪽 전체 테스트·typecheck·lint·build·REST Docs와 최종 리뷰를 완료하고 체크·커밋한다.
+
+## Phase 9 · DEMP 관리자 페이지와 서버 권한
+
+2026-09-27 사용자가 관리자 페이지 부재를 지적해 범위에 추가했다. 양쪽 `refactor/admin-console-and-authorization` 브랜치·worktree를 Phase 8 완료 지점에서 만든다. 앱 이름은 DEMP이며 ZIP 디자인 토큰을 공유한다. 기본 범위는 운영 현황, 공고·부트캠프 CRUD, 질문·답변 조회·관리다.
+
+### T80 · 관리자 접근 계약
+
+- [x] 기존 역할·로그인·가입 계약을 대조하고 `ROLE_ADMIN`과 관리자 확인 API, `/admin` 라우트의 인증/권한 경계를 설계한다.
+- [x] 일반 회원이 관리자 역할을 요청하거나 토큰/localStorage를 변조해 승격할 수 없게 한다. 관리자 역할은 서버 저장값으로 검증한다.
+- [x] 관리자 계정 준비 절차를 문서화한다. 공개 가입을 통한 관리자 생성이나 운영용 기본 비밀번호를 두지 않는다.
+- [x] 비로그인 401·일반 회원 403·관리자 성공·권한 회수 후 거절 테스트를 Red→Green으로 통과시키고 체크·커밋한다.
+
+2026-09-27: [T80 기록](docs/verification/admin-console/t80.md). 별도 관리자 worktree, B214/F101 전체 검증 통과.
+
+### T81 · 관리자 운영 화면과 API
+
+- [x] 실제 DB 집계 기반 현황, 공고/부트캠프 목록·검색·등록·수정·삭제, 질문/답변 목록·상세·관리 화면을 구현한다.
+- [x] 기존 회원의 자기 글 수정·삭제 권한과 별개로 관리자 관리 유스케이스를 명시한다. 파일 정리·연관 데이터·트랜잭션 계약을 검증한다.
+- [x] 삭제 확인, 저장 중 중복 제출 방지, 필드 오류, 빈 목록, 서버 오류/재시도를 제공한다.
+- [x] 관리자 API REST Docs·DTO·프런트 타입을 함께 갱신하고 양쪽 전체 검증 후 체크·커밋한다.
+
+2026-09-27: [T81 기록](docs/verification/admin-console/t81.md). B229/F106 전체 검증과 REST Docs 통과.
+
+### T82 · 관리자 인수 검증
+
+- [x] 직접 URL 접근·권한 만료·다른 역할·일반 사용자 회귀를 headed E2E로 확인한다.
+- [x] 현재 cmux 브라우저에서 격리된 관리자 fixture로 등록→수정→별도 재조회→삭제 흐름을 보여준다. 운영 데이터에는 접근하지 않는다.
+- [x] 데스크톱·모바일 관리자 화면, 전체 unit/typecheck/lint/build/REST Docs/E2E와 최종 리뷰를 통과한 후 체크·커밋한다.
+
+2026-09-27: [T82 기록](docs/verification/admin-console/t82.md). 실제 cmux CRUD·HTML/이미지 보존, B231/F124·headed E2E16 통과.
+
+### T83 · 공고 모집 대상 표시
+
+- [x] 이미지 기능 유지. 카드·상세·관련 공고에 모집 구분 배지와 경력 연차를 공통 기준으로 표시한다.
+- [x] 교육, 경력 무관(0~상한 없음), 신입·경력(0~N), 경력(N~M/상한 없음), 정보 누락을 구분하고 교육에 경력 문구를 붙이지 않는다.
+- [x] 관련 공고 API에 모집 유형·경력 범위를 추가하고 REST Docs·타입·표현 테스트를 갱신한다.
+- [x] 단위/전체 검증 및 현재 cmux에서 모바일·데스크톱 표시를 확인한 후 체크·커밋한다.
+
+2026-09-27: [T83 기록](docs/verification/admin-console/t83.md). B231/F114, headed E2E15 통과.
+
+### T84 · 상황별 빈 결과 안내
+
+- [x] 전체·채용·부트캠프/교육과정의 미등록, 필터 결과 없음, 검색어 결과 없음을 구분한다.
+- [x] 로딩·실패·다음 페이지 실패·목록 끝을 구분하고 기존 결과를 보존한다.
+- [x] 검색·필터 해제로 현재 종류 탭을 유지하며 목록 복구, 등록된 종류가 없으면 전체 공고 이동을 제공한다.
+- [x] 실제 Red→Green, 전체 프런트 검증, 현재 cmux 빈 교육 검색/복구, headed E2E 통과 후 체크·커밋한다.
+
+2026-09-27: [T84 기록](docs/verification/admin-console/t84.md). F124·typecheck/lint/build, headed E2E16 통과.
+
+### T85 · 국내 서비스 등록 운영 조사와 DEMP 점검
+
+- [x] 잡코리아·사람인·인디스워크·부트텐트의 공식 안내로 작성 주체/작성 도구/검수/수정·삭제 흐름을 비교한다.
+- [x] 공개 확인 사실과 비공개 편집기·자동수집에 대한 미확인 사항을 구분한다.
+- [x] 기존 일반 공고 등록 API와 관리자 등록, 도메인/DTO/폼을 대조하고 우선순위를 기록한다.
+- [x] [조사·점검 보고서](docs/research/recruitment-publication-workflows.md)에 출처·코드 근거·후속 체크리스트를 남긴다.
+
+### T85A · 직행 등록·수집 운영 추가 조사
+
+- [x] 직행 공식 앱 소개와 실제 목록·상세에서 외부 공고 집계·출처·요약/원문 표시를 확인한다.
+- [x] cmux에서 기업 서비스·회원가입 화면을 확인하고 기업 직접 등록과 광고 신청을 구분한다.
+- [x] 공개 사실과 미확인 수집 기술·편집기·검수 절차를 나눠 [비교 보고서](docs/research/recruitment-publication-workflows.md)에 추가한다.
+
+2026-09-27: 기업 무료 등록·기업 정보 관리 안내, 사업자등록증/업무용 이메일 인증 입력, 별도 광고 폼 확인. 계정 생성·신청 제출 없음. 문서와 출처 정합성 및 `git diff --check` 검증. 코드 변경이 없어 애플리케이션 테스트 재실행 없음.
+
+#### 조사 후속 항목 · T92–T96 반영 결과
+
+- [x] 초기 게시 주체를 운영자 전용 또는 승인된 기관 담당자+검수로 결정하고 일반 등록 API의 권한을 일치시킨다.
+- [x] 게시 상태(초안/검수/공개/비공개)와 모집 상태를 분리한다. 원문 URL·지원 URL·작성자·기관·확인일·변경 이력을 설계한다.
+- [x] 채용/교육 전용 입력 항목·본문 템플릿을 분리하고 교육 기간·기수·수업 방식·지원금 등을 구조화한다. (T88/T90 본문·일정·수업 방식, T94 기수·지원금 완료.)
+- [x] 신입/경력/무관/혼합 모집 대상을 명시적으로 저장하고 연차의 상한 없음과 구별한다.
+- [x] 제목 전역 중복 거절을 기관/원문/기수 기준으로 재설계한다.
+- [x] 이미지 기능은 유지하면서 기관 로고 재사용·선택 업로드·기본 이미지와 헤더 크롭 정책을 결정한다.
+- **조건부 미도입:** 기관 직접 제출은 현재 범위에서 도입하지 않는다. 도입 시 소속 승인·기관 권한·반려/재제출·게시본 유지 규칙을 별도 구현한다.
+- [x] 외부 공고 도입 시 등록 경로·원문 플랫폼/식별값·확인일, 중복·변경·마감 처리, 운영자 수정 보존·정보 누락 검토·오류 제보를 설계한다. 광고 노출 관리는 일반 게시와 구분한다.
+- [x] 확정한 동작마다 TDD 및 현재 cmux 등록→검수→게시→수정/종료 검증을 수행한다.
+
+근거: [운영 정책](docs/plans/curated-publication-policy.md), [T96 QA](docs/verification/publication-workflow/t96-qa.md).
+
+### T86 · 원문 지원 링크와 선택 대표 이미지
+
+- [x] 원문 공고 URL을 등록하고 지원하기가 해당 주소를 새 탭으로 여는 계약을 검증한다.
+- [x] 대표 이미지 없이 등록·목록·상세·관련 공고 조회가 가능하고 기존 이미지는 유지한다.
+- [x] 테스트 Red→Green, 전체 검증, 체크·커밋.
+
+### T87 · 공고 본문 이미지 저장
+
+- [x] 본문 이미지를 공고 저장 요청과 함께 업로드하고 안전한 HTML·이미지 참조를 저장한다.
+- [x] 수정 시 유지/삭제, 공고 삭제 시 정리, 실패 시 업로드 보상을 검증한다.
+- [x] 외부 HTML의 이미지를 자동 수집하지 않고 기존 본문 서식을 보존한다.
+- [x] API 문서·테스트·검증 기록 후 체크·커밋.
+
+검증 기록: [T87](docs/verification/admin-console/t87.md).
+
+### T88 · 서식 편집과 원문 이동 인수
+
+- [x] 채용/교육 섹션, 텍스트 붙여넣기 정돈, 이미지 파일·붙여넣기·드래그, 모바일 미리보기를 제공한다.
+- [x] 실패 시 입력/첨부 보존, 중복 제출 방지, 수정 재조회 보존을 검증한다.
+- [x] 현재 cmux terminal12/browser13에서 등록→수정→상세→지원하기 원문 이동을 확인한다.
+- [x] 전체 unit/typecheck/lint/build/REST Docs/headed E2E와 리뷰 후 체크·커밋.
+
+검증 기록: [T88](docs/verification/admin-console/t88.md).
+
+작업 위치: Phase 9 후속, `refactor/admin-console-and-authorization`, `.worktrees/admin-console-and-authorization/{backend,frontend}`. 사용자 승인: 텍스트 기본 본문+선택 이미지+원문 링크, 지원하기는 원문으로 이동. 기존 `accessUrl`을 원문 URL로 사용해 저장 계약을 유지한다. 자동 수집·기업 제출/검수 시스템은 별도 후속 항목이다.
+
+## Phase 10 · 선택 연봉과 교육과정 탐색
+
+작업 위치: `refactor/compensation-and-education-filters`, `.worktrees/compensation-and-education-filters/{backend,frontend}`. 기준 B `db4ecfc`, F `352ae74`. 사용자는 연봉 필터 숨김/상세 표시를 선택했고 부트텐트 참고 상세 교육 필터 구현을 요청했다.
+
+### T89 · 연봉 선택 정보와 금액 미확인 구분
+
+- [x] 연봉 필터·칩·URL/API 조건 제거, 상세에서 미공개/협의/공개 연봉 범위 표시.
+- [x] 양쪽 등록 폼에 선택 연봉과 교육비 미확인/무료/유료 구분, null 금액 보존.
+- [x] 기존 양수 금액 호환, 잘못된 범위 거절, DB·REST Docs·전체 테스트 후 커밋.
+
+검증 기록: [T89](docs/verification/education-discovery/t89.md).
+
+### T90 · 교육 조건 저장과 상세 검색
+
+- [x] 부트텐트 상세 필터 조사 근거와 DEMP 적용 기준 기록.
+- [x] 수업 방식·지역·참여 시간·지원 유형·선발 방식·학습 수준·교육 일정 등록/재조회.
+- [x] 해당 조건과 시작일·기간 검색을 DB 쿼리/페이지/카운트에 일관되게 적용, 미확인 항목은 필터에 임의 포함하지 않음.
+- [x] 반응형 필터·URL 복원·개별 해제·초기화·구체적인 빈 결과·상세/카드 표시.
+- [x] 현재 cmux에서 실제 등록→검색→수정 흐름, headed E2E·전체 검증·리뷰 후 커밋.
+
+검증 기록: [T90](docs/verification/education-discovery/t90.md).
+
+### T91 · QA 스킬 기반 실제 사용자 흐름 점검
+
+- [x] 현재 cmux에서 연봉/교육 등록·수정, 필터·URL 복원, 빈 결과, 오류 안내, 반응형 화면을 탐색 검증한다.
+- [x] 로그인·권한·무한 스크롤 등 기존 자동 E2E를 headed로 실행하고 실제 서버 검증과 구분한다.
+- [x] 발견 결함은 재현·Red→Green으로 수정하고 QA 보고서·완료 체크·커밋을 남긴다.
+
+작업 위치는 Phase 10 후속의 기존 `refactor/compensation-and-education-filters` worktree다. QA 스킬의 원격 Firecrawl 수집은 로컬 주소에 직접 접근할 수 없어 사용자 지정 cmux 브라우저로 대체한다.
+
+## Phase 11 · 운영자 중심 외부 공고 게시 마무리
+
+브랜치: `refactor/curated-publication-workflow`, worktree: `.worktrees/curated-publication-workflow/{backend,frontend}`. Java zulu-25.36.205 / Node24.21.0 고정, 현재 cmux workspace:2 surface12/13 재사용. [실행 계획](docs/plans/curated-publication-workflow.md).
+
+### T92 · 등록 권한 통일
+- [x] 기존 공고 등록 API도 ADMIN으로 제한하고 프런트 진입을 관리자 등록으로 통합한다.
+- [x] 회원/관리자/비로그인 경계 Red→Green, 전체 검증 후 체크·커밋.
+
+검증: [T92](docs/verification/publication-workflow/t92.md).
+
+### T93 · 게시 상태와 출처·감사 기록
+- [x] 신규 공고는 초안, 운영 검토/공개/비공개 구분, 공개 조회는 게시 허용 공고만 반환.
+- [x] 원문/별도 지원 URL·출처 식별·확인일·작성자/수정자·변경 이력 저장과 관리자 UI.
+- [x] 기존 공개 데이터 보존, 관리자 조회와 공개 조회 분리, 전체 검증 후 체크·커밋.
+
+검증: [T93](docs/verification/publication-workflow/t93.md).
+
+### T94 · 모집 대상·교육 기수·지원금과 중복 기준
+- [x] 명시적 신입/경력/무관/혼합 저장, 기존 데이터의 불명확한 신입 추정 금지.
+- [x] 교육 기수·지원금 금액/조건 입력·조회, 연봉/교육비와 혼용 방지.
+- [x] 제목 중복을 폐지하고 원문 URL·기관·기수 기준 중복 검증, 동시성 보장.
+- [x] 기존 호출부·스키마·검색 계약 검증 후 체크·커밋.
+
+검증: [T94](docs/verification/publication-workflow/t94.md).
+
+### T95 · 운영 확인·마감·오류 제보와 이미지 정책
+- [x] 운영자 원문 확인/수정/마감 처리, 사용자 오류 제보→관리자 확인·처리.
+- [x] 이미지 선택 업로드·기본 이미지·크롭과 기관 로고 재사용 정책 확정/문서화.
+- [x] 자동 수집/광고/기관 직접 제출의 도입 여부를 명시하고 현재 운영 흐름과 구분.
+- [x] 실패·권한·미확인 정보·운영자 수정 보존 검증 후 체크·커밋.
+
+검증: [T95](docs/verification/publication-workflow/t95.md), [운영 정책](docs/plans/curated-publication-policy.md).
+
+### T96 · 최종 인수와 통합
+- [x] T91 QA를 현재 cmux에서 완료하고 독립 리뷰 중요 결함을 수정한다.
+- [x] 남은 체크리스트를 구현 완료/조건부 미도입/사용자 보류로 정확히 정리한다.
+- [ ] 최종 전체 검증 후 브랜치를 보존하고 기존 요청에 따라 main 병합·push한다.
 
 ## 추적표와 작업 종료 기록
 
@@ -498,7 +712,7 @@ npx playwright test
 
 각 작업 완료 시 이 파일의 해당 항목 아래에 실행 날짜, Red 명령/실패 assertion, Green 최소 변경, Refactor 변경 이유, 대상/전체 검증 결과를 추가한다. 커밋을 명시적으로 요청받아 생성한 경우에만 SHA를 적는다. 순수 이름·구조 정리는 기존 Green 계약을 먼저 기록한다. 동작 변경의 Red가 처음부터 통과하면 회귀 재현에 실패한 것이므로 사례를 다시 구성한다. T00의 합의된 컴파일 복원은 이 기능 Red 기록과 분리한다.
 
-현재 상태: Phase 0~3 구현·검증 완료. Phase 4, Phase 5의 T46~T49, Phase 6은 미착수다. T30의 트랜잭션·재조회 검증은 T12에서 선행 적용했고 2026-09-26에 원본 보존 검증을 보강했다. 같은 날 `refactor/announcement-upload-contract` 브랜치의 원본 작업 디렉터리에서 Phase 5의 T45 정적 전수 검토를 선행했다.
+현재 상태(2026-09-27): Phase 0~6 구현·검증·main 병합·push 완료. Phase 7 완료. Phase 8 T70~T72 완료. Phase 9 T80~T84 구현·검증 완료. T85·T85A 조사·점검 완료, 후속 운영 모델 설계/구현은 별도 미완료 항목으로 기록. Phase 7~9 작업 브랜치 유지.
 
 ### 2026-09-21 Phase 1 리뷰 반영
 

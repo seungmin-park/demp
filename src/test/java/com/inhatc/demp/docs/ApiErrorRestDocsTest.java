@@ -11,9 +11,9 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.boot.restdocs.test.autoconfigure.AutoConfigureRestDocs;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
@@ -28,15 +28,15 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {MemberController.class, QuestionController.class, ExController.class, SecurityConfiguration.class})
 @AutoConfigureRestDocs
 @WithMember
-@MockBean(JwtTokenProvider.class)
+@MockitoBean(types = JwtTokenProvider.class)
 class ApiErrorRestDocsTest {
     @Autowired MockMvc mvc;
-    @MockBean MemberService members;
-    @MockBean QuestionService questions;
+    @MockitoBean MemberService members;
+    @MockitoBean QuestionService questions;
     @Test
     @DisplayName("가입 입력 오류의 400 응답을 문서화한다")
     void documentsBadRequest() throws Exception {
-        mvc.perform(post("/api/member/save").param("username", " ").param("password", "secret"))
+        mvc.perform(post("/api/member/save").queryParam("username", " ").queryParam("password", "secret"))
                 .andExpect(status().isBadRequest()).andDo(document("error-400", fields()));
         verifyNoInteractions(members);
     }
@@ -44,14 +44,14 @@ class ApiErrorRestDocsTest {
     @DisplayName("로그인 실패의 401 응답을 문서화한다")
     void documentsUnauthorized() throws Exception {
         when(members.login(any())).thenThrow(new ApiException(HttpStatus.UNAUTHORIZED));
-        mvc.perform(post("/api/member/login").param("username", "docs-member").param("password", "wrong"))
+        mvc.perform(post("/api/member/login").queryParam("username", "docs-member").queryParam("password", "wrong"))
                 .andExpect(status().isUnauthorized()).andDo(document("error-401", fields()));
     }
     @Test
     @DisplayName("중복 가입의 409 응답을 문서화한다")
     void documentsConflict() throws Exception {
         doThrow(new ApiException(HttpStatus.CONFLICT)).when(members).registerMember(any());
-        mvc.perform(post("/api/member/save").param("username", "docs-member").param("password", "secret"))
+        mvc.perform(post("/api/member/save").queryParam("username", "docs-member").queryParam("password", "secret"))
                 .andExpect(status().isConflict()).andDo(document("error-409", fields()));
     }
     @ParameterizedTest
@@ -59,7 +59,7 @@ class ApiErrorRestDocsTest {
     @ValueSource(ints = {403, 404, 500})
     void documentsQuestionErrors(int status) throws Exception {
         doThrow(new ApiException(HttpStatus.valueOf(status))).when(questions).deleteQuestion(41L, 99L);
-        mvc.perform(delete("/api/question/delete").param("questionId", "99"))
+        mvc.perform(delete("/api/question/delete").queryParam("questionId", "99"))
                 .andExpect(status().is(status)).andExpect(jsonPath("$.errorCode").value(status))
                 .andDo(document("error-" + status, fields()));
     }

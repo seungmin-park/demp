@@ -17,7 +17,18 @@ import lombok.Getter;
 @AllArgsConstructor
 public class AnnouncementDetailResponse {
 
+    private com.inhatc.demp.domain.announcement.RecruitmentAudience recruitmentAudience;
+    private String cohort;
+    private Integer stipendAmount;
+    private String stipendNote;
+    private String sourceName;
+    private String sourceIdentifier;
+    private String applicationUrl;
+    private LocalDateTime sourceVerifiedAt;
+    private boolean recruitmentClosed;
     private String image;
+    private com.inhatc.demp.domain.announcement.PublicationStatus publicationStatus;
+    private com.inhatc.demp.domain.announcement.EducationDetails education;
     private Company company;
     private String title;
     private int minCareer;
@@ -26,13 +37,22 @@ public class AnnouncementDetailResponse {
     private LocalDateTime deadLineDate;
     private String content;
     private String accessUrl;
-    private int payment;
+    private Integer payment;
+    private com.inhatc.demp.domain.announcement.SalaryStatus salaryStatus;
+    private Integer salaryMax;
     private Set<Language> language;
     private JobPosition position;
     private AnnouncementType announcementType;
 
     public static AnnouncementDetailResponse from(Announcement announcement, String imageUrl) {
         return AnnouncementDetailResponse.builder()
+                .recruitmentAudience(announcement.getRecruitmentAudience()).cohort(announcement.getCohort())
+                .stipendAmount(announcement.getStipendAmount()).stipendNote(announcement.getStipendNote())
+                .recruitmentClosed(announcement.isRecruitmentClosed())
+                .publicationStatus(announcement.getPublicationStatus())
+                .sourceName(announcement.getSourceName()).sourceIdentifier(announcement.getSourceIdentifier())
+                .applicationUrl(announcement.getApplicationUrl()).sourceVerifiedAt(announcement.getSourceVerifiedAt())
+                .education(announcement.getEducation())
                 .title(announcement.getTitle())
                 .company(announcement.getCompany())
                 .announcementType(announcement.getAnnouncementType())
@@ -45,6 +65,8 @@ public class AnnouncementDetailResponse {
                 .content(announcement.getDescription().getContent())
                 .accessUrl(announcement.getDescription().getAccessUrl())
                 .payment(announcement.getDescription().getPayment())
+                .salaryStatus(announcement.getDescription().getSalaryStatus())
+                .salaryMax(announcement.getDescription().getSalaryMax())
                 .language(new LinkedHashSet<>(announcement.getDescription().getLanguages()))
                 .build();
     }

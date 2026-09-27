@@ -1,0 +1,67 @@
+== 관리자 API
+
+모든 `/api/admin/**` 요청은 X-AUTH-TOKEN과 DB에 저장된 ROLE_ADMIN이 필요하다. 가입으로 역할을 요청할 수 없다. 401은 로그인 필요, 403은 권한 부족이다.
+
+GET `/api/admin/me`: 현재 관리자의 id, username. 운영 현황은 실제 DB 집계다. 목록은 한 페이지 20개이며 page는 0부터 시작한다. 공고 검색은 title/announcementType, 질문·답변 검색은 q(질문 제목 또는 작성자)다.
+
+공고 생성과 수정은 multipart다. title/company/position/type/startedDate/deadLineDate/content/accessUrl/payment/minCareer/maxCareer/language를 사용한다. 생성은 image 필수, 수정은 생략 시 기존 이미지 보존이다. language는 반복 필드이며 content는 HTML이다. 문서 예시의 파일 바이트는 fixture이고 실제 업로드는 JPEG/PNG 시그니처 검증을 거친다.
+
+질문 수정은 JSON title/content, 답변 수정은 content. 작성자·추천·조회수·태그는 보존한다. 질문 삭제는 연결 답변/태그 관계도 삭제한다. 기존 회원 소유자 API와 별개다.
+
+공고 변경 후 cleanupPending=true이면 DB 변경은 성공했으나 파일 정리가 필요하다. 운영 로그의 key와 현재 DB 참조 여부를 확인하여 저장소 담당자가 정리한다. 자동 재시도 큐는 없다.
+
+=== admin-overview
+include::{snippets}/admin-overview/http-request.adoc[]
+include::{snippets}/admin-overview/http-response.adoc[]
+
+=== admin-announcements
+include::{snippets}/admin-announcements/http-request.adoc[]
+include::{snippets}/admin-announcements/http-response.adoc[]
+
+=== admin-announcement-detail
+include::{snippets}/admin-announcement-detail/http-request.adoc[]
+include::{snippets}/admin-announcement-detail/http-response.adoc[]
+
+=== admin-announcement-create
+include::{snippets}/admin-announcement-create/http-request.adoc[]
+include::{snippets}/admin-announcement-create/http-response.adoc[]
+
+=== admin-announcement-update
+include::{snippets}/admin-announcement-update/http-request.adoc[]
+include::{snippets}/admin-announcement-update/http-response.adoc[]
+
+=== admin-announcement-delete
+include::{snippets}/admin-announcement-delete/http-request.adoc[]
+include::{snippets}/admin-announcement-delete/http-response.adoc[]
+
+=== admin-questions
+include::{snippets}/admin-questions/http-request.adoc[]
+include::{snippets}/admin-questions/http-response.adoc[]
+
+=== admin-questions-detail
+include::{snippets}/admin-questions-detail/http-request.adoc[]
+include::{snippets}/admin-questions-detail/http-response.adoc[]
+
+=== admin-questions-update
+include::{snippets}/admin-questions-update/http-request.adoc[]
+include::{snippets}/admin-questions-update/http-response.adoc[]
+
+=== admin-questions-delete
+include::{snippets}/admin-questions-delete/http-request.adoc[]
+include::{snippets}/admin-questions-delete/http-response.adoc[]
+
+=== admin-answers
+include::{snippets}/admin-answers/http-request.adoc[]
+include::{snippets}/admin-answers/http-response.adoc[]
+
+=== admin-answers-detail
+include::{snippets}/admin-answers-detail/http-request.adoc[]
+include::{snippets}/admin-answers-detail/http-response.adoc[]
+
+=== admin-answers-update
+include::{snippets}/admin-answers-update/http-request.adoc[]
+include::{snippets}/admin-answers-update/http-response.adoc[]
+
+=== admin-answers-delete
+include::{snippets}/admin-answers-delete/http-request.adoc[]
+include::{snippets}/admin-answers-delete/http-response.adoc[]

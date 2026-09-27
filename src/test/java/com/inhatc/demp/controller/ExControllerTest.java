@@ -5,8 +5,8 @@ import com.inhatc.demp.config.jwt.JwtTokenProvider;
 import com.inhatc.demp.service.MemberService;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.validation.BeanPropertyBindingResult;
@@ -18,10 +18,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(MemberController.class)
 @ContextConfiguration(classes = {MemberController.class, ExController.class, SecurityConfiguration.class})
-@MockBean(JwtTokenProvider.class)
+@MockitoBean(types = JwtTokenProvider.class)
 class ExControllerTest {
     @Autowired MockMvc mvc;
-    @MockBean MemberService members;
+    @MockitoBean MemberService members;
     @Test
     @DisplayName("필드 오류가 없는 검증 실패도 안전한 400으로 반환한다")
     void handlesGlobalValidationError() throws Exception {
@@ -39,5 +39,14 @@ class ExControllerTest {
         mvc.perform(get("/api/member/99")).andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.errorCode").value(500))
                 .andExpect(jsonPath("$.errorMessage").value("Internal server error"));
+    }
+    @Test
+    @DisplayName("매핑되지 않은 공개 API 경로는 내부 오류 대신 JSON 404를 반환한다")
+    void returnsNotFoundForUnmappedApi() throws Exception {
+        mvc.perform(get("/api/member/missing/path"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errorCode").value(404))
+                .andExpect(jsonPath("$.errorMessage").value("Resource not found"))
+                .andExpect(jsonPath("$.instance").value("/api/member/missing/path"));
     }
 }
