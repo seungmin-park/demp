@@ -4,6 +4,7 @@ import static com.inhatc.demp.domain.announcement.QAnnouncement.announcement;
 import static org.springframework.util.StringUtils.hasText;
 
 import com.inhatc.demp.domain.announcement.Announcement;
+import com.inhatc.demp.domain.announcement.RecruitmentAudience;
 import com.inhatc.demp.domain.announcement.AnnouncementType;
 import com.inhatc.demp.domain.announcement.JobPosition;
 import com.inhatc.demp.domain.announcement.Language;
@@ -189,7 +190,8 @@ public class AnnouncementQueryRepository {
     }
 
     private BooleanExpression minCareerLoe(int career) {
-        return career == 0 ? null : announcement.career.minCareer.loe(career);
+        return career == 0 ? null : announcement.career.minCareer.loe(career)
+                .and(announcement.recruitmentAudience.isNull().or(announcement.recruitmentAudience.ne(RecruitmentAudience.NEW)));
     }
 
     private BooleanBuilder maxCareerGoe(int career) {

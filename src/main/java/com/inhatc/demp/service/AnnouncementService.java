@@ -85,7 +85,7 @@ public class AnnouncementService {
         announcement.replaceBodyImages(body.images());
         announcement.changeRecruitment(announcementCreateRequest.getRecruitmentAudience(), announcementCreateRequest.getCohort(), announcementCreateRequest.getStipendAmount(), announcementCreateRequest.getStipendNote());
         announcement.changeEducation(announcementCreateRequest.toEducationDetails());
-        announcement.changePublication(announcementCreateRequest.getPublicationStatus());
+        announcement.changePublication(announcementCreateRequest.getPublicationStatus() == null ? com.inhatc.demp.domain.announcement.PublicationStatus.DRAFT : announcementCreateRequest.getPublicationStatus());
         announcement.changeRecruitmentClosed(announcementCreateRequest.getRecruitmentClosed());
         announcement.recordPublication(announcementCreateRequest.getSourceName(), announcementCreateRequest.getSourceIdentifier(),
                 announcementCreateRequest.getApplicationUrl(), announcementCreateRequest.isSourceVerified(), actor, java.time.LocalDateTime.now(clock));

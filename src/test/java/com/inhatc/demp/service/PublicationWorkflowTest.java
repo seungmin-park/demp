@@ -103,6 +103,47 @@ class PublicationWorkflowTest {
         assertThat(service.findDetailResponse(id)).isPresent();
     }
 
+    @Test
+    @DisplayName("빈 multipart 게시 상태가 바인딩되어도 신규 공고는 공개되지 않는다")
+    void emptyBoundStatusStaysDraft() throws Exception {
+        var request = new AnnouncementCreateRequest(); fill(request);
+        var binder = new org.springframework.validation.DataBinder(request);
+        binder.bind(new org.springframework.beans.MutablePropertyValues(Map.of("publicationStatus", "")));
+        assertThat(binder.getBindingResult().hasErrors()).isFalse();
+        service.createAnnouncement(request);
+        long id = repository.findByTitle(request.getTitle()).orElseThrow().getId();
+        assertThat(service.findDetailResponse(id)).isEmpty();
+        assertThat(service.findAdminDetailResponse(id).orElseThrow().getPublicationStatus()).isEqualTo(PublicationStatus.DRAFT);
+    }
+    @Test
+    @DisplayName("한글 도메인 원문을 등록하고 같은 punycode 출처의 중복을 막는다")
+    void internationalSourceUrl() throws Exception {
+        var request = new AnnouncementCreateRequest(); fill(request); request.setAccessUrl("https://채용.example.com/jobs/1");
+        service.createAnnouncement(request);
+        assertThat(repository.count()).isEqualTo(1);
+        request.setTitle("같은 원문 다른 표기"); request.setAccessUrl("https://" + java.net.IDN.toASCII("채용.example.com") + "/jobs/1");
+        assertThatThrownBy(() -> service.createAnnouncement(request)).isInstanceOfSatisfying(com.inhatc.demp.error.ApiException.class, e -> assertThat(e.getStatus()).isEqualTo(org.springframework.http.HttpStatus.CONFLICT));
+    }
+    @Test
+    @DisplayName("잘못된 기존 원문 URL 한 행이 무관한 신규 등록을 막지 않는다")
+    void malformedLegacyUrlDoesNotBlockWrites() throws Exception {
+        repository.save(Announcement.builder().title("기존 레코드").company(new Company("DEMP")).career(new Career(0,0))
+            .description(new Description("예전 본문", "old invalid url", null, Set.of(Language.JAVA))).build());
+        var request = new AnnouncementCreateRequest(); fill(request); service.createAnnouncement(request);
+        assertThat(repository.count()).isEqualTo(2);
+    }
+    @Test
+    @DisplayName("경력 검색은 명시적 신입을 제외하고 무관과 기존 경력 범위를 유지한다")
+    void careerSearchRespectsExplicitAudience() throws Exception {
+        for (var audience : List.of(RecruitmentAudience.NEW, RecruitmentAudience.ANY, RecruitmentAudience.EXPERIENCED)) {
+            var request = new AnnouncementCreateRequest(); fill(request); request.setTitle(audience.name()); request.setAccessUrl("https://example.com/" + audience);
+            request.setRecruitmentAudience(audience); request.setMinCareer(3); request.setMaxCareer(5); request.setPublicationStatus(PublicationStatus.PUBLISHED); service.createAnnouncement(request);
+        }
+        var legacy = new AnnouncementCreateRequest(); fill(legacy); legacy.setTitle("legacy"); legacy.setAccessUrl("https://example.com/legacy"); legacy.setMinCareer(2); legacy.setMaxCareer(4); legacy.setPublicationStatus(PublicationStatus.PUBLISHED); service.createAnnouncement(legacy);
+        var search = new AnnouncementSearchCondition(); search.setCareer(3);
+        assertThat(service.findAnnouncementSlice(search, PageRequest.of(0,8)).getContent()).extracting(AnnouncementResponse::getTitle).containsExactlyInAnyOrder("ANY", "EXPERIENCED", "legacy");
+    }
+
     private void fill(AnnouncementFields request) {
         request.setTitle("게시 상태 검증"); request.setCompany("DEMP"); request.setType(AnnouncementType.EMP);
         request.setPosition(JobPosition.BACKEND); request.setLanguage(Set.of(Language.JAVA));

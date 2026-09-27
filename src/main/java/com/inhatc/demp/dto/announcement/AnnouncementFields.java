@@ -47,7 +47,11 @@ public class AnnouncementFields {
         return type == AnnouncementType.EDU || recruitmentAudience == RecruitmentAudience.NEW || recruitmentAudience == RecruitmentAudience.ANY
                 ? new Career(0, 0) : new Career(minCareer, maxCareer);
     }
-    public String sourceKey() { return AnnouncementSourceKey.of(accessUrl, company, type == AnnouncementType.EDU ? cohort : null); }
+    public String sourceKey() {
+        String key = AnnouncementSourceKey.of(accessUrl, company, type == AnnouncementType.EDU ? cohort : null);
+        if (key == null) throw new com.inhatc.demp.error.ApiException(org.springframework.http.HttpStatus.BAD_REQUEST);
+        return key;
+    }
 
     public EducationDetails toEducationDetails() {
         return type == AnnouncementType.EDU ? new EducationDetails(deliveryMode, region, commitment,
