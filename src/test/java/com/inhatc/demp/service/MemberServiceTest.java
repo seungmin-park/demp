@@ -18,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import com.inhatc.demp.error.ApiException;
+import org.springframework.http.HttpStatus;
 
 @SpringBootTest
 class MemberServiceTest {
@@ -80,6 +83,46 @@ class MemberServiceTest {
     @ValueSource(strings = {" ", "   "})
     void rejectsBlankUsername(String username) {
         assertThat(memberService.isUsernameAvailable(username)).isFalse();
+    }
+
+    @ParameterizedTest
+    @DisplayName("72 UTF-8 바이트를 넘는 신규 비밀번호는 저장 없이 400으로 거절한다")
+    @ValueSource(strings = {"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", "가나다라마바사아자차카타파하가나다라마바사아자차카"})
+    void rejectsOverlongPassword(String password) {
+        assertThatThrownBy(() -> memberService.registerMember(new MemberSaveForm("long-password", password)))
+                .isInstanceOfSatisfying(ApiException.class,
+                        ex -> assertThat(ex.getStatus()).isEqualTo(HttpStatus.BAD_REQUEST));
+        assertThat(memberRepository.findByUsername("long-password")).isEmpty();
+    }
+
+    @Test
+    @DisplayName("72 UTF-8 바이트 경계의 한글 비밀번호로 가입하고 로그인한다")
+    void acceptsPasswordAtByteLimit() {
+        String password = "가".repeat(24);
+        MemberDto saved = memberService.registerMember(new MemberSaveForm("password-boundary", password));
+        MemberLoginForm form = new MemberLoginForm();
+        form.setUsername("password-boundary");
+        form.setPassword(password);
+
+        MemberInfo result = memberService.login(form);
+
+        assertThat(jwtTokenProvider.getUserPk(result.getJwt())).isEqualTo(saved.getId().toString());
+    }
+
+    @Test
+    @DisplayName("기존 BCrypt에 저장된 긴 비밀번호의 로그인은 계속 허용한다")
+    void acceptsExistingLongPasswordAtLogin() {
+        // 이전 BCrypt가 긴 ASCII 비밀번호에 사용한 첫 72바이트의 해시와 같은 저장값이다.
+        String hash = new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder().encode("a".repeat(72));
+        Member member = memberRepository.save(Member.builder().username("legacy-long-password")
+                .password(hash).roles(List.of("ROLE_USER")).build());
+        MemberLoginForm form = new MemberLoginForm();
+        form.setUsername("legacy-long-password");
+        form.setPassword("a".repeat(73));
+
+        MemberInfo result = memberService.login(form);
+
+        assertThat(jwtTokenProvider.getUserPk(result.getJwt())).isEqualTo(member.getId().toString());
     }
 
 }

@@ -94,4 +94,10 @@ require_status("other member update", request("/api/question/update", "PATCH", {
 require_status("expired token", request(f"/api/question/detail/{question_id}", token="expired-token"), 401)
 question = require_status("question requery", request(f"/api/question/detail/{question_id}", token=writer_token), 200)
 assert question["title"] == title
+missing = json.loads(require_status("unmapped API", request("/api/member/missing/path"), 404))
+assert missing == {"errorMessage": "Resource not found", "errorCode": 404, "instance": "/api/member/missing/path"}
+invalid = json.loads(require_status("overlong registration password", request("/api/member/save", "POST", form={
+    "username": f"long-{uuid.uuid4().hex[:8]}", "password": "가" * 25,
+}), 400))
+assert invalid["errorCode"] == 400 and invalid["errorMessage"] == "Invalid request"
 print("local Spring flow: passed")

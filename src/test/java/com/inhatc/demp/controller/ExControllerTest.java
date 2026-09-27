@@ -40,4 +40,13 @@ class ExControllerTest {
                 .andExpect(jsonPath("$.errorCode").value(500))
                 .andExpect(jsonPath("$.errorMessage").value("Internal server error"));
     }
+    @Test
+    @DisplayName("매핑되지 않은 공개 API 경로는 내부 오류 대신 JSON 404를 반환한다")
+    void returnsNotFoundForUnmappedApi() throws Exception {
+        mvc.perform(get("/api/member/missing/path"))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.errorCode").value(404))
+                .andExpect(jsonPath("$.errorMessage").value("Resource not found"))
+                .andExpect(jsonPath("$.instance").value("/api/member/missing/path"));
+    }
 }

@@ -65,7 +65,7 @@ T60 기준선은 문서·환경 설정 변경이며 기능 Red/Green으로 주�
 2. **실제 Red**: `./gradlew test --tests '*LegacySchemaCompatibilityTest' --write-locks`에서 `announcement_seq`가 없는 기존 Hibernate 5 schema에 컨텍스트 실패 assertion. 공유 `hibernate_sequence`를 명시하고 enum을 VARCHAR로 고정해 schema 변경 없이 Green. fixture는 기존 main의 Hibernate 5 DDL이다.
 3. **실제 Red**: 공고 Repository 39개가 H2 2.4.240의 `CHECK constraint invalid / database has been closed`로 실패. [H2 #4342](https://github.com/h2database/h2database/issues/4342) 및 [#4302 수정 릴리스](https://github.com/h2database/h2database/releases)를 확인해 최신 2.5.252로 고정했다. 체크 제약을 유지한 채 대상 40개 통과.
 4. Hibernate 7/H2의 페이지 SQL은 ANSI `fetch first`를 사용한다. SQL 형태 assertion만 해당 문법으로 이식했고 내용·정렬·hasNext assertion은 유지했다. 제거된 MySQL57Dialect를 local/test H2Dialect로 교체했다.
-5. 이전 JJWT와 같은 raw UTF-8 HS256 키·subject/roles/iat/exp 계약을 독립 JCA 서명으로 검증했다. 신규 테스트의 첫 404는 잘못 입력한 테스트 URL이 원인이므로 기능 Red가 아니다. 실제 `/detail/{id}` 경로에서 인증 성공을 확인했다.
+5. 32 UTF-8 바이트 이상의 같은 키에서 이전 JJWT의 raw UTF-8 HS256·subject/roles/iat/exp 계약을 독립 JCA 서명으로 검증했다. 신규 테스트의 첫 404는 잘못 입력한 테스트 URL이 원인이므로 기능 Red가 아니다. 실제 `/detail/{id}` 경로에서 인증 성공을 확인했다.
 6. AWS SDK 2의 저장 요청에서 bucket/key/content-type/length/ACL 및 전송 바이트를 검증했다. 실제 S3는 호출하지 않았다.
 
 ### 책임·이름 검토
@@ -115,3 +115,16 @@ T62 실제 cmux 검증(새 surface:13): 로컬 예제 계정 로그인 후 목�
 - 문서: 프런트 README에 설치·타입 도구 peer 선택·남은 JS/any·인증 저장 형식·롤백을 기록했다. API/DB 변경 없음. 원격 CI/운영 배포는 실행하지 않았다.
 
 T63 최종 게이트: `npm ci`354개 → unit19 suites/54 tests → typecheck/lint/build exit0. 마지막 Playwright는 **7 passed (4.6s)**, 러너 pipeline exit0 후 서버 유지. 직전 재설치 직후 실행은 5개 navigation/module-load timeout, 2개 pass로 실패했다. 같은 코드·assertion·30초 제한을 유지한 재시작에서 전체 통과했다. CLI 조회까지 약46초 걸렸던 시점과 겹치나 지연의 근본 원인은 확정하지 않는다. 실패 trace는 `/tmp/demp-t63-cold-start-failure/test-results/`, 원본 로그는 같은 디렉터리 e2e.log에 보존했다. 시간 제한 증가·assertion 완화 없음. 최종 로그 `/tmp/demp-t63-final-{unit,typecheck,lint,build}.log`, `/tmp/demp-t63-{ci,e2e,spring,vue}.log`.
+
+## Phase 7 전체 리뷰와 수정
+
+executing-plans 지시에 따라 새 컨텍스트 reviewer가 B b30e1c9..fe0d0ff, F85a2e04..17354f5를 읽었다. Critical 없음, Important3개와 nullable DTO Minor1개. Important를 한 차례 TDD로 수정했다. nullable DTO는 T63의 명시적 API/nullable 타입 요구를 충족하지 못하므로 Important로 재분류해 같은 수정에 포함했다.
+
+- 없는 URL: Spring7 NoResourceFoundException이 기존 catch-all에 잡혀500. 실제 MockMvc `/api/member/missing/path` expected404/actual500 Red → framework missing-resource/handler 예외를 공통404로 변환. 본문 `errorCode/errorMessage/instance`도 검증.
+- 신규 비밀번호: ASCII73자·한글25자의 registerMember가 IllegalArgumentException으로 실패하여 ApiException400 기대와 불일치(Red2). 서버는 UTF-8바이트 길이를 입력 경계에서 검사하고 DB 저장 없이400. UI도 초과 입력을 안내하며 전송하지 않음(Red2→Green). 한글24자=72바이트 가입·로그인 통과. 이전 BCrypt의 첫72바이트 해시를 가진73자 비밀번호는 로그인 계속 통과하며 로그인 제한/절단을 추가하지 않았다.
+- JWT 최소 키: 짧은 키의 시작 오류가 설정 이름을 안내하지 않는 assertion Red → JWT_SECRET과32 UTF-8바이트 요구만 출력하는 명확한 설정 오류.32바이트 한글/ASCII 혼합 키 발급·검증 Green. 보안 제한을 완화하지 않았으며 동일키 호환성 전제·회전 시 강제 재로그인·롤백 영향을 README에 명시했다.
+- nullable 질문제목/질문·답변 본문: null DTO fixture의 TS2322를 확인하고 응답타입과 SafeHtml 입력을 정리했다. 실제 API 값의 타입을 좁게 가정하지 않는다.
+- 리뷰 범위 밖 판단: Phase8/9는 승인된 후속 작업. 운영 MySQL/S3·원격 Actions/Windows/전체 브라우저 버전은 실행 증거 범위 밖이며 배포 전에 별도 검증이 필요하다. E2E 지연 근본 원인은 미확정으로 유지한다. 기존 상세 응답 경합·일부 작성 오류 안내는 Phase8 T70/T72에 포함해 다룬다. 기존 긴 BCrypt 로그인은 코드·신규 실제 서비스 테스트로 호환 확인하여 오류로 판단하지 않는다.
+- Red로그 `/tmp/demp-phase7-review-{red,jwt-red,password-ui-red,null-types-red}.log`, 대상Green `/tmp/demp-phase7-review-{green,password-ui-green,null-types-green}.log`.
+
+리뷰 수정 최종 게이트: B35 suites/**204 tests** failures/errors/skips0, `clean test asciidoctor bootJar` exit0. F20 suites/**57 tests**, strict typecheck/lint/build exit0. 현재 cmux terminal surface12에서 실제 Spring/H2 **16요청**(새404/긴비밀번호400 포함) assertion 통과, Playwright **7 passed(4.6s)**, 각각exit0. 범위 외 접근 없음. 남겨둔 Minor 없음(타입 계약은 상향하여 수정).

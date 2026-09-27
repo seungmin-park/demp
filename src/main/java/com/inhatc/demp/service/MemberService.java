@@ -10,6 +10,7 @@ import com.inhatc.demp.error.ApiException;
 import com.inhatc.demp.error.ResourceNotFoundException;
 import com.inhatc.demp.repository.MemberRepository;
 import java.util.List;
+import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,8 @@ public class MemberService {
     @Transactional
     public MemberDto registerMember(MemberSaveForm form) {
         Member member = form.toEntity();
-        if (!StringUtils.hasText(member.getUsername()) || !StringUtils.hasText(member.getPassword())) {
+        if (!StringUtils.hasText(member.getUsername()) || !StringUtils.hasText(member.getPassword())
+                || member.getPassword().getBytes(StandardCharsets.UTF_8).length > 72) {
             throw new ApiException(HttpStatus.BAD_REQUEST);
         }
         if (memberRepository.findByUsername(member.getUsername()).isPresent()) {

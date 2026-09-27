@@ -31,7 +31,11 @@ public class JwtTokenProvider {
 
     @PostConstruct
     protected void init() {
-        signingKey = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
+        byte[] secretBytes = secretKey.getBytes(StandardCharsets.UTF_8);
+        if (secretBytes.length < 32) {
+            throw new IllegalArgumentException("JWT_SECRET must contain at least 32 UTF-8 bytes");
+        }
+        signingKey = Keys.hmacShaKeyFor(secretBytes);
     }
 
     // Jwt 토큰 생성
