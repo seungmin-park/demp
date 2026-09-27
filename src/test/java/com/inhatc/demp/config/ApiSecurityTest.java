@@ -225,6 +225,41 @@ class ApiSecurityTest {
                 .andExpect(jsonPath("$.errorCode").value(401));
     }
 
+    @Test
+    @DisplayName("관리자 확인은 비로그인 401과 일반 회원 403을 반환한다")
+    void adminAccessRequiresStoredRole() throws Exception {
+        mvc.perform(get("/api/admin/me")).andExpect(status().isUnauthorized());
+        Member user = member("admin-ordinary", List.of("ROLE_USER"));
+        mvc.perform(get("/api/admin/me").header("X-AUTH-TOKEN", token(user)))
+                .andExpect(status().isForbidden());
+        mvc.perform(get("/api/admin/me").header("X-AUTH-TOKEN",
+                tokens.createToken(user.getId().toString(), List.of("ROLE_ADMIN", "ROLE_USER"))))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("관리자는 서버 회원 정보로 확인하고 권한 회수 직후 기존 토큰도 거절한다")
+    void adminRevocationTakesEffectImmediately() throws Exception {
+        Member admin = member("admin-revoked", new ArrayList<>(List.of("ROLE_USER", "ROLE_ADMIN")));
+        String token = token(admin);
+        mvc.perform(get("/api/admin/me").header("X-AUTH-TOKEN", token))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.username").value(admin.getUsername()))
+                .andExpect(jsonPath("$.id").value(admin.getId())).andExpect(jsonPath("$.password").doesNotExist());
+        admin.getRoles().remove("ROLE_ADMIN"); members.save(admin);
+        mvc.perform(get("/api/admin/me").header("X-AUTH-TOKEN", token)).andExpect(status().isForbidden());
+    }
+
+    @Test
+    @DisplayName("공개 가입에서 요청한 관리자 역할은 저장되지 않는다")
+    void signupCannotRequestAdminRole() throws Exception {
+        try {
+            mvc.perform(post("/api/member/save").param("username", "admin-injection")
+                    .param("password", "secret").param("roles", "ROLE_ADMIN"))
+                    .andExpect(status().isOk());
+            assertThat(members.findByUsername("admin-injection").orElseThrow().getRoles()).containsExactly("ROLE_USER");
+        } finally { members.findByUsername("admin-injection").ifPresent(m -> memberIds.add(m.getId())); }
+    }
+
     private Member member(String username, List<String> roles) {
         Member member = members.save(new Member(username, new BCryptPasswordEncoder().encode("secret"), roles));
         memberIds.add(member.getId()); return member;
