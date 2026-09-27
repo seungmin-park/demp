@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 
 @Entity
+@org.hibernate.annotations.DynamicUpdate
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Answer {
@@ -54,5 +55,9 @@ public class Answer {
         this.content = content;
         this.recommend = recommend;
         this.dislike = dislike;
+    }
+    public void changeReaction(ReactionType previous, ReactionType next) {
+        recommend += next.recommendValue() - previous.recommendValue();
+        dislike += next.dislikeValue() - previous.dislikeValue();
     }
 }

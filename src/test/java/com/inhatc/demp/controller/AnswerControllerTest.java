@@ -86,7 +86,7 @@ class AnswerControllerTest {
     @Test
     @DisplayName("답변이 없는 질문의 조회 응답은 빈 배열이다")
     void returnsEmptyAnswers() throws Exception {
-        when(answerService.findByQuestion(41L)).thenReturn(List.of());
+        when(answerService.findByQuestion(41L, 41L)).thenReturn(List.of());
 
         mockMvc.perform(get("/api/answer/41"))
                 .andExpect(status().isOk())

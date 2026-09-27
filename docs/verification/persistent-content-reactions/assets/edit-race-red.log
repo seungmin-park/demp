@@ -1,0 +1,42 @@
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :compileTestJava
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+OpenJDK 64-Bit Server VM warning: Sharing is only supported for boot loader classes because bootstrap classpath has been appended
+2026-09-28T02:38:38.438+09:00  INFO 56567 --- [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-09-28T02:38:38.439+09:00  INFO 56567 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-09-28T02:38:38.439+09:00  INFO 56567 --- [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+
+> Task :test
+
+ContentReactionServiceTest > 반응 저장 전에 읽은 본문 수정이 새 반응 집계를 덮어쓰지 않는다 > [1] onQuestion = true FAILED
+    org.opentest4j.AssertionFailedError at ContentReactionServiceTest.java:105
+
+ContentReactionServiceTest > 반응 저장 전에 읽은 본문 수정이 새 반응 집계를 덮어쓰지 않는다 > [2] onQuestion = false FAILED
+    org.opentest4j.AssertionFailedError at ContentReactionServiceTest.java:105
+
+2 tests completed, 2 failed
+
+> Task :test FAILED
+
+[Incubating] Problems report is available at: file:///Users/seungmin/Desktop/repo/archive/demp/.worktrees/persistent-content-reactions/backend/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///Users/seungmin/Desktop/repo/archive/demp/.worktrees/persistent-content-reactions/backend/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.8.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 4s
+5 actionable tasks: 2 executed, 3 up-to-date

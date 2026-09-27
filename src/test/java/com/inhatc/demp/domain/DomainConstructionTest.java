@@ -10,7 +10,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class DomainConstructionTest {
     static Stream<Class<?>> persistentTypes() {
-        return Stream.of(Member.class, Question.class, Answer.class, Hashtag.class, QuestionHashtag.class,
+        return Stream.of(ContentReaction.class, Member.class, Question.class, Answer.class, Hashtag.class, QuestionHashtag.class,
                 Announcement.class, Career.class, Company.class, Description.class, RecruitPeriod.class,
                 UploadFile.class, EducationDetails.class, PublicationRevision.class, AnnouncementReport.class);
     }

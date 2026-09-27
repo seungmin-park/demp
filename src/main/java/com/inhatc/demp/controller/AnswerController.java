@@ -16,7 +16,7 @@ import java.util.List;
 public class AnswerController {
     private final AnswerService answerService;
     @GetMapping("/{questionId}")
-    public List<QuestionAnswer> getAnswersByQuestion(@PathVariable Long questionId) { return answerService.findByQuestion(questionId); }
+    public List<QuestionAnswer> getAnswersByQuestion(@AuthenticationPrincipal MemberPrincipal principal, @PathVariable Long questionId) { return answerService.findByQuestion(questionId, principal.getMemberId()); }
     @PostMapping("/save")
     public List<QuestionAnswer> saveAnswer(@AuthenticationPrincipal MemberPrincipal principal, @RequestBody AnswerForm form) {
         return answerService.createAnswerAndList(principal.getMemberId(), form);

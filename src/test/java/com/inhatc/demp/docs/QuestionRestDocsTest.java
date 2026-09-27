@@ -130,7 +130,7 @@ class QuestionRestDocsTest {
         Hashtag hashtag = Hashtag.builder().tagName("spring").build();
         question.addHashtag(hashtag);
         QuestionDetail response = new QuestionDetail(question);
-        when(questionService.findById(51L)).thenReturn(response);
+        when(questionService.findById(51L, 41L)).thenReturn(response);
 
         mockMvc.perform(get("/api/question/detail/{questionId}", 51L)
                         .header("X-AUTH-TOKEN", DOCS_TOKEN))
@@ -147,6 +147,7 @@ class QuestionRestDocsTest {
                                 fieldWithPath("content").description("질문 본문"),
                                 fieldWithPath("hits").description("조회 수"),
                                 fieldWithPath("recommend").description("추천 수"),
+                                fieldWithPath("myReaction").description("로그인 회원의 반응 NONE/RECOMMEND/DISLIKE"),
                                 fieldWithPath("dislike").description("비추천 수"),
                                 fieldWithPath("username").description("작성자 이름"),
                                 fieldWithPath("hashtags").description("태그 목록"))));

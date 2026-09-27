@@ -1,0 +1,30 @@
+
+> dempfrontend@0.1.0 test
+> vitest run tests/unit/ContentReactionControl.spec.js
+
+
+ RUN  v5.0.2 /Users/seungmin/Desktop/repo/archive/demp/.worktrees/persistent-content-reactions/frontend
+
+ ❯ tests/unit/ContentReactionControl.spec.js (2 tests | 1 failed) 19ms
+   × 같은 답변의 새 집계 props가 저장 중 요청을 해제하거나 성공 응답을 버리지 않는다 15ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/ContentReactionControl.spec.js > 같은 답변의 새 집계 props가 저장 중 요청을 해제하거나 성공 응답을 버리지 않는다
+AssertionError: expected undefined to be defined
+ ❯ tests/unit/ContentReactionControl.spec.js:14:56
+     12|   await wrapper.get('button').trigger('click');
+     13|   await wrapper.setProps({ recommend: 1 });
+     14|   expect(wrapper.get('button').attributes('disabled')).toBeDefined();
+       |                                                        ^
+     15|   await wrapper.get('button').trigger('click');
+     16|   expect(axios.put).toHaveBeenCalledTimes(1);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 1 passed (2)
+   Start at  02:42:28
+   Duration  868ms (environment 67%, transform 23%, setup 4%, import 3%, tests 2%, worker 1%)
+

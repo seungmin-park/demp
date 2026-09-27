@@ -1,0 +1,180 @@
+
+> dempfrontend@0.1.0 test
+> vitest run tests/unit/QuestionDetail.spec.js tests/unit/QuestionAnswer.spec.js
+
+
+ RUN  v5.0.2 /Users/seungmin/Desktop/repo/archive/demp/.worktrees/persistent-content-reactions/frontend
+
+stderr | tests/unit/QuestionDetail.spec.js > 질문 추천을 서버에 저장한 개수와 내 선택으로 표시하고 다시 누르면 취소한다
+[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | tests/unit/QuestionDetail.spec.js > 질문 추천을 서버에 저장한 개수와 내 선택으로 표시하고 다시 누르면 취소한다
+[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "username". Expected String with value "undefined", got Undefined  
+  at <MemberBadge username=undefined > 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | tests/unit/QuestionDetail.spec.js > 새로 조회한 내 선택을 표시하고 반대 반응으로 전환한다
+[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | tests/unit/QuestionDetail.spec.js > 새로 조회한 내 선택을 표시하고 반대 반응으로 전환한다
+[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "username". Expected String with value "undefined", got Undefined  
+  at <MemberBadge username=undefined > 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | tests/unit/QuestionDetail.spec.js > 저장 실패는 기존 개수와 선택을 보존하고 재시도할 수 있다
+[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | tests/unit/QuestionDetail.spec.js > 저장 실패는 기존 개수와 선택을 보존하고 재시도할 수 있다
+[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "username". Expected String with value "undefined", got Undefined  
+  at <MemberBadge username=undefined > 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | tests/unit/QuestionDetail.spec.js > 저장 중에는 연타를 막고 컴포넌트 종료 후 늦은 응답을 적용하지 않는다
+[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+stderr | tests/unit/QuestionDetail.spec.js > 저장 중에는 연타를 막고 컴포넌트 종료 후 늦은 응답을 적용하지 않는다
+[Vue warn]: Failed to resolve component: router-link
+If this is a native custom element, make sure to exclude it from component resolution via compilerOptions.isCustomElement. 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+[Vue warn]: Invalid prop: type check failed for prop "username". Expected String with value "undefined", got Undefined  
+  at <MemberBadge username=undefined > 
+  at <QuestionDetail ref="VTU_COMPONENT" > 
+  at <VTUROOT>
+
+ ❯ tests/unit/QuestionDetail.spec.js (4 tests | 4 failed) 35ms
+   × 질문 추천을 서버에 저장한 개수와 내 선택으로 표시하고 다시 누르면 취소한다 20ms
+   × 새로 조회한 내 선택을 표시하고 반대 반응으로 전환한다 4ms
+   × 저장 실패는 기존 개수와 선택을 보존하고 재시도할 수 있다 8ms
+   × 저장 중에는 연타를 막고 컴포넌트 종료 후 늦은 응답을 적용하지 않는다 3ms
+ ❯ tests/unit/QuestionAnswer.spec.js (2 tests | 1 failed) 62ms
+   × 답변 비추천을 답변 전용 경로에 저장하고 내 선택을 표시한다 7ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/QuestionAnswer.spec.js > 답변 비추천을 답변 전용 경로에 저장하고 내 선택을 표시한다
+AssertionError: expected "vi.fn()" to be called with arguments: [ '/api/answer/4/reaction', …(1) ]
+
+Number of calls: 0
+
+ ❯ tests/unit/QuestionAnswer.spec.js:40:21
+     38|   expect(buttons[0].text()).toContain('3');
+     39|   await buttons[1].trigger('click'); await flushPromises();
+     40|   expect(axios.put).toHaveBeenCalledWith('/api/answer/4/reaction', { r…
+       |                     ^
+     41|   expect(buttons[1].attributes('aria-pressed')).toBe('true');
+     42|   expect(buttons[1].text()).toContain('1');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/unit/QuestionDetail.spec.js > 질문 추천을 서버에 저장한 개수와 내 선택으로 표시하고 다시 누르면 취소한다
+AssertionError: expected '' to be undefined
+
+- Expected:
+undefined
+
++ Received:
+""
+
+ ❯ tests/unit/QuestionDetail.spec.js:22:37
+     20|   const wrapper = await page();
+     21|   const up = wrapper.get('.content-reactions button');
+     22|   expect(up.attributes('disabled')).toBeUndefined();
+       |                                     ^
+     23|   await up.trigger('click'); await flushPromises();
+     24|   expect(axios.put).toHaveBeenLastCalledWith('/api/question/7/reaction…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/unit/QuestionDetail.spec.js > 새로 조회한 내 선택을 표시하고 반대 반응으로 전환한다
+AssertionError: expected undefined to be 'true' // Object.is equality
+
+- Expected:
+"true"
+
++ Received:
+undefined
+
+ ❯ tests/unit/QuestionDetail.spec.js:34:49
+     32|   const wrapper = await page({ ...detail, myReaction: 'RECOMMEND' });
+     33|   const buttons = wrapper.findAll('.content-reactions button');
+     34|   expect(buttons[0].attributes('aria-pressed')).toBe('true');
+       |                                                 ^
+     35|   await buttons[1].trigger('click'); await flushPromises();
+     36|   expect(axios.put).toHaveBeenLastCalledWith('/api/question/7/reaction…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/unit/QuestionDetail.spec.js > 저장 실패는 기존 개수와 선택을 보존하고 재시도할 수 있다
+Error: Unable to get [role="alert"] within: <!--v-if-->
+<article class="question-detail">
+  <header class="article-heading"><span class="section-label">면접 질문</span>
+    <h1>질문</h1>
+    <div class="article-meta"><span class="member-badge" aria-label="회원 undefined"><span class="member-avatar"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-icon="user"><path d="M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z"></path><path d="M4 21v-2a8 8 0 0 1 16 0v2"></path></svg></span><span></span></span><span class="meta-count" aria-label="조회수 undefined"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-icon="eye"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"></path><path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"></path></svg></span></div>
+  </header>
+  <div class="safe-html article-content">본문</div>
+  <div class="tag-list"></div>
+  <div class="content-reactions"><button type="button" disabled="" aria-label="추천 3" title="반응 저장 기능 준비 중"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-icon="thumbsUp">
+        <path d="M7 10v11H3V10h4Z"></path>
+        <path d="M7 10l5-8c3 0 3 3 1 7h6a2 2 0 0 1 2 2l-2 8a2 2 0 0 1-2 2H7"></path>
+      </svg><span>3</span></button><button type="button" disabled="" aria-label="비추천 1" title="반응 저장 기능 준비 중"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false" data-icon="thumbsDown">
+        <path d="M7 14V3H3v11h4Z"></path>
+        <path d="M7 14l5 8c3 0 3-3 1-7h6a2 2 0 0 0 2-2l-2-8a2 2 0 0 0-2-2H7"></path>
+      </svg><span>1</span></button><span class="reaction-note">반응 저장 기능 준비 중</span></div>
+</article>
+ ❯ VueWrapper.get node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:7333:15
+ ❯ tests/unit/QuestionDetail.spec.js:43:18
+     41|   const wrapper = await page(); const up = wrapper.get('.content-react…
+     42|   await up.trigger('click'); await flushPromises();
+     43|   expect(wrapper.get('[role="alert"]').text()).toContain('저장하지 못했습니다');
+       |                  ^
+     44|   expect(up.text()).toContain('3');
+     45|   await up.trigger('click'); await flushPromises();
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/unit/QuestionDetail.spec.js > 저장 중에는 연타를 막고 컴포넌트 종료 후 늦은 응답을 적용하지 않는다
+AssertionError: expected "vi.fn()" to be called 1 times, but got 0 times
+ ❯ tests/unit/QuestionDetail.spec.js:52:21
+     50|   const wrapper = await page(); const up = wrapper.get('.content-react…
+     51|   await up.trigger('click'); await up.trigger('click');
+     52|   expect(axios.put).toHaveBeenCalledTimes(1); expect(up.attributes('di…
+       |                     ^
+     53|   wrapper.unmount(); resolve({ data: { recommend: 4, dislike: 1, myRea…
+     54| });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  2 failed (2)
+      Tests  5 failed | 1 passed (6)
+   Start at  02:30:04
+   Duration  643ms (environment 58%, transform 20%, tests 9%, import 6%, setup 6%, worker 1%)
+

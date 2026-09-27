@@ -71,7 +71,7 @@ class AnswerRestDocsTest {
         ReflectionTestUtils.setField(answer, "id", 61L);
         answer.assignMember(member);
         List<Answer> response = List.of(answer);
-        when(answerService.findByQuestion(51L)).thenReturn(List.of(new QuestionAnswer(answer)));
+        when(answerService.findByQuestion(51L, 41L)).thenReturn(List.of(new QuestionAnswer(answer)));
 
         mockMvc.perform(get("/api/answer/{questionId}", 51L)
                         .header("X-AUTH-TOKEN", DOCS_TOKEN))
@@ -88,6 +88,7 @@ class AnswerRestDocsTest {
                                 fieldWithPath("[].username").description("답변 작성자 이름"),
                                 fieldWithPath("[].content").description("답변 본문"),
                                 fieldWithPath("[].recommend").description("추천 수"),
+                                fieldWithPath("[].myReaction").description("로그인 회원의 반응 NONE/RECOMMEND/DISLIKE"),
                                 fieldWithPath("[].dislike").description("비추천 수"))));
     }
 
@@ -123,6 +124,7 @@ class AnswerRestDocsTest {
                                 fieldWithPath("[].username").description("답변 작성자 이름"),
                                 fieldWithPath("[].content").description("답변 본문"),
                                 fieldWithPath("[].recommend").description("추천 수"),
+                                fieldWithPath("[].myReaction").description("로그인 회원의 반응 NONE/RECOMMEND/DISLIKE"),
                                 fieldWithPath("[].dislike").description("비추천 수"))));
     }
 

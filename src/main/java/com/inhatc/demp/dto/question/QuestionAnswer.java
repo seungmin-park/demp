@@ -13,6 +13,7 @@ public class QuestionAnswer {
     private String content;
     private int recommend;
     private int dislike;
+    private com.inhatc.demp.domain.ReactionType myReaction = com.inhatc.demp.domain.ReactionType.NONE;
 
     public QuestionAnswer(Answer answer) {
         this.answerId = answer.getId();

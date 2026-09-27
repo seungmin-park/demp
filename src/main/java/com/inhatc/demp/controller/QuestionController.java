@@ -34,8 +34,8 @@ public class QuestionController {
     }
 
     @GetMapping("/detail/{questionId}")
-    public ResponseEntity<QuestionDetail> getQuestion(@PathVariable Long questionId) {
-        return ResponseEntity.ok(questionService.findById(questionId));
+    public ResponseEntity<QuestionDetail> getQuestion(@AuthenticationPrincipal MemberPrincipal principal, @PathVariable Long questionId) {
+        return ResponseEntity.ok(questionService.findById(questionId, principal.getMemberId()));
     }
 
     @GetMapping("/hashtags")
