@@ -6,7 +6,7 @@ Spec: tasks.md Phase 8, docs/design/redesigned-discovery.md, 사용자 ZIP 및 �
 앱 이름 DEMP 유지. ZIP 색상·타이포·공통 구조를 기존의 검증된 API/인증/스크롤 위에 이식. 각 작업 실제 assertion Red→Green과 전체 unit/typecheck/lint/build, task 체크·commit. 로컬 사용자 흐름은 현재 cmux workspace 보조 terminal+내장browser. 기존 임시 테스트 데이터와 운영 데이터 구분. 서버 전체 검색, nullable 값, 응답 역전, HTML 정화 계약 유지.
 
 ## Task 70: 공통 디자인과 작성기
-ZIP route/style inventory와 누락 상태를 기록한다. 공통 CSS 토큰/버튼/입력/상태/헤더, 자체 SVG 아이콘/회원 아바타, 모든 기존 화면 템플릿을 이식한다. 질문·답변·공고에 공통 MarkdownEditor를 적용한다. source↔HTML 변환은 별도 TS 모듈, 출력은 SafeHtml; 서버의 제목/표 등 안전한 서식 whitelist와 동일하게 맞춘다. 기존 HTML(밑줄 포함) 편집·저장, toolbar cursor·preview·XSS·실패 재시도·중복 제출을 먼저 검사한다. 기존 Summernote/CDN과 미사용 Bootstrap 경계를 제거한다.
+ZIP route/style inventory와 누락 상태를 기록한다. 공통 CSS 토큰/버튼/입력/상태/헤더, 자체 SVG 아이콘/회원 아바타, 모든 기존 화면 템플릿을 이식한다. 질문·답변·공고에 공통 MarkdownEditor를 적용한다. source↔HTML 변환은 별도 TS 모듈, 출력은 SafeHtml; 서버의 제목/표 등 안전한 서식 whitelist와 동일하게 맞춘다. 기존 HTML(밑줄 포함)의 변환 왕복을 단위 검증하고 실제 수정 UI는 T81에서 연결한다. toolbar cursor·preview·XSS·실패 재시도·중복 제출을 먼저 검사한다. 기존 Summernote/CDN과 미사용 Bootstrap 경계를 제거한다.
 Expected: component API regression, Markdown rendering/roundtrip/toolbars/security RED→GREEN; B sanitizer+전체 tests; F unit/typecheck/lint/build; cmux desktop/mobile actual writing and submission; checkbox/commit.
 Consumes: Phase7 API/types/auth/scroll. Produces: 공통 디자인 토큰·아이콘·안전한 MarkdownEditor.
 
