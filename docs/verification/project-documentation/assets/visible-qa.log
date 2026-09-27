@@ -1,0 +1,114 @@
+2026-09-28T03:27:45.712+09:00  INFO 80016 --- [           main] r$InitializeUserDetailsManagerConfigurer : Global AuthenticationManager configured with UserDetailsService bean with name customUserDetailService
+2026-09-28T03:27:47.151+09:00  INFO 80016 --- [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 18080 (http) with context path '/'
+2026-09-28T03:27:47.195+09:00  INFO 80016 --- [           main] com.inhatc.demp.DempApplication          : Started DempApplication in 12.856 seconds (process running for 13.426)
+2026-09-28T03:27:47.200+09:00  WARN 80016 --- [           main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /v3/api-docs endpoint is enabled by default. To disable it in production, set the property 'springdoc.api-docs.enabled=false'
+2026-09-28T03:27:47.201+09:00  WARN 80016 --- [           main] o.s.core.events.SpringDocAppInitializer  : SpringDoc /swagger-ui.html endpoint is enabled by default. To disable it in production, set the property 'springdoc.swagger-ui.enabled=false'
+2026-09-28T03:27:47.935+09:00  INFO 80016 --- [io-18080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-28T03:27:47.936+09:00  INFO 80016 --- [io-18080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-09-28T03:27:47.939+09:00  INFO 80016 --- [io-18080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 2 ms
+announcement list: 200
+register: 200
+login: 200
+announcement detail: 200
+question create: 200
+question list: 200
+question detail: 200
+answer create: 200
+answer requery: 200
+register: 200
+login: 200
+other member update: 403
+expired token: 401
+question requery: 200
+unmapped API: 404
+overlong registration password: 400
+local Spring flow: passed
+
+> dempfrontend@0.1.0 typecheck
+> vue-tsc --noEmit
+
+
+> dempfrontend@0.1.0 lint
+> eslint . --no-fix
+
+
+> dempfrontend@0.1.0 build
+> vite build
+
+vite v8.3.1 building client environment for production...
+transforming...
+✓ 267 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                                     0.77 kB │ gzip:   0.44 kB
+dist/assets/QuestionDetail-DQw7mjp4.css             0.20 kB │ gzip:   0.16 kB
+dist/assets/QuestionWrite-BNAbTYSP.css              2.20 kB │ gzip:   0.72 kB
+dist/assets/MarkdownEditor-DK8qKhpP.css             2.54 kB │ gzip:   0.79 kB
+dist/assets/index-CdvNNYLu.css                     33.73 kB │ gzip:   7.18 kB
+dist/assets/publication-XvoIqykF.js                 0.09 kB │ gzip:   0.11 kB
+dist/assets/query-BLUyZylO.js                       0.12 kB │ gzip:   0.09 kB
+dist/assets/AdminAnnouncements-NwtTL6PL.js          0.24 kB │ gzip:   0.20 kB
+dist/assets/members-B21Ru_40.js                     0.24 kB │ gzip:   0.16 kB
+dist/assets/AdminPosts-BBWb7dl_.js                  0.25 kB │ gzip:   0.21 kB
+dist/assets/announcementReports-D8kSWKlH.js         0.28 kB │ gzip:   0.19 kB
+dist/assets/positions-CDbEDubk.js                   0.30 kB │ gzip:   0.22 kB
+dist/assets/SafeHtml-j-6gRGEY.js                    0.38 kB │ gzip:   0.28 kB
+dist/assets/questions-D15kmjGG.js                   0.40 kB │ gzip:   0.23 kB
+dist/assets/AnnouncementAudience-BOiMItq1.js        0.55 kB │ gzip:   0.37 kB
+dist/assets/NotFound-DQSwdMAU.js                    0.58 kB │ gzip:   0.45 kB
+dist/assets/AsyncState-DMa0kRk7.js                  0.76 kB │ gzip:   0.54 kB
+dist/assets/requestError-B9scBohH.js                0.94 kB │ gzip:   0.59 kB
+dist/assets/admin-Cb8mxNw7.js                       1.00 kB │ gzip:   0.42 kB
+dist/assets/announcement-BbCzVLkD.js                1.11 kB │ gzip:   0.64 kB
+dist/assets/AdminLayout-k7gT55eS.js                 1.57 kB │ gzip:   0.92 kB
+dist/assets/AdminDashboard-CaFF8Q4k.js              1.86 kB │ gzip:   1.09 kB
+dist/assets/CompanyImage-BKhgIM_-.js                1.95 kB │ gzip:   1.23 kB
+dist/assets/LoginForm-BRKWYHaw.js                   2.98 kB │ gzip:   1.43 kB
+dist/assets/AdminAnnouncementReports-DWIzkSco.js    3.22 kB │ gzip:   1.65 kB
+dist/assets/AdminPostEditor-D7-KQ4v0.js             3.41 kB │ gzip:   1.65 kB
+dist/assets/announcements-Bv3ak0Na.js               3.45 kB │ gzip:   1.90 kB
+dist/assets/AccountForm-CVjt8xIw.js                 4.34 kB │ gzip:   1.92 kB
+dist/assets/QuestionWrite-B46Ul1Tv.js               6.33 kB │ gzip:   2.71 kB
+dist/assets/AdminCollection-BSGFdMuX.js             7.15 kB │ gzip:   3.13 kB
+dist/assets/QuestionList-DMO-AXAb.js                7.23 kB │ gzip:   2.89 kB
+dist/assets/AnnouncementDetail-BAuZARV_.js          8.46 kB │ gzip:   3.39 kB
+dist/assets/QuestionDetail-BqvYBIIm.js              8.54 kB │ gzip:   3.13 kB
+dist/assets/AnnouncementList-B6Cr1MEw.js           19.31 kB │ gzip:   6.40 kB
+dist/assets/sanitizeHtml-C_Zzpafl.js               28.95 kB │ gzip:  11.39 kB
+dist/assets/vee-validate-rules-DaNv529k.js         36.24 kB │ gzip:  12.10 kB
+dist/assets/MarkdownEditor-BKU4Rj8r.js             59.91 kB │ gzip:  19.25 kB
+dist/assets/runtime-core.esm-bundler-C2SXUZG4.js   60.63 kB │ gzip:  23.67 kB
+dist/assets/index-uDbgYYuG.js                     113.25 kB │ gzip:  42.37 kB
+dist/assets/AdminAnnouncementEditor-CjJXW6Ss.js   458.55 kB │ gzip: 145.03 kB
+
+✓ built in 375ms
+
+> dempfrontend@0.1.0 test:e2e
+> playwright test --headed
+
+
+Running 20 tests using 4 workers
+
+  ✓   3 tests/e2e/admin.spec.js:58:1 › localStorage 관리자 역할을 넣어도 일반 회원은 운영 화면을 볼 수 없다 (2.1s)
+  ✓   2 tests/e2e/admin.spec.js:52:1 › 관리자 직접 URL은 비로그인 사용자를 로그인으로 보낸다 (2.5s)
+  ✓   5 tests/e2e/admin.spec.js:122:1 › 운영 중 권한 회수와 토큰 만료는 다음 서버 요청에서 반영된다 (1.7s)
+  ✓   1 tests/e2e/admin.spec.js:109:1 › 관리자가 기존 HTML 질문을 수정해도 제목 서식과 밑줄은 재조회에서 유지된다 (3.9s)
+  ✓   4 tests/e2e/admin.spec.js:64:1 › 모바일 관리자는 공고 등록 수정 재조회 삭제 확인을 진행한다 (4.9s)
+  ✓   9 tests/e2e/community.spec.js:144:1 › 타인 수정 거절과 만료된 인증 상태 정리 (4.1s)
+  ✓   6 tests/e2e/admin.spec.js:136:1 › 본문 붙여넣기와 이미지 저장 후 재조회하고 지원하기는 원문을 새 탭으로 연다 (7.9s)
+  ✓   8 tests/e2e/community.spec.js:107:1 › 회원가입부터 공고·질문·답변의 별도 재조회까지 (8.1s)
+  ✓  11 tests/e2e/community.spec.js:174:1 › 늦게 도착한 이전 검색 결과가 새 결과를 덮지 않는다 (3.7s)
+  ✓  12 tests/e2e/community.spec.js:199:1 › 실제 스크롤은 다음 페이지를 한 번씩 요청하고 마지막에서 멈춘다 (4.3s)
+  ✓  10 tests/e2e/community.spec.js:162:1 › HTML 콘텐츠를 안전하게 렌더링하고 새로고침 후 인증을 유지한다 (7.6s)
+  ✓  13 tests/e2e/community.spec.js:221:1 › 스크롤 실패는 목록을 보존하고 같은 페이지를 재시도한다 (4.2s)
+  ✓   7 tests/e2e/admin.spec.js:181:1 › 초안은 공개 상세에서 숨기고 검토 후 게시하며 수동 마감 상태를 보존한다 (16.0s)
+  ✓  14 tests/e2e/community.spec.js:247:1 › 스크롤 중 필터 변경은 첫 페이지부터 조회하고 늦은 이전 페이지를 버린다 (4.4s)
+  ✓  15 tests/e2e/community.spec.js:278:1 › 모바일 교육 필터는 URL·새로고침·뒤로 가기에서 복원된다 (6.9s)
+  ✓  18 tests/e2e/community.spec.js:351:1 › 교육 빈 검색은 상황을 설명하고 필터 해제로 교육 목록을 복구한다 (5.3s)
+  ✓  17 tests/e2e/community.spec.js:327:1 › 모집 구분은 모바일 카드와 상세·관련 공고에서 연차와 함께 구별된다 (6.7s)
+  ✓  16 tests/e2e/community.spec.js:305:1 › 없는 페이지·상세 오류는 안내하고 재시도로 복구된다 (9.5s)
+  ✓  19 tests/e2e/community.spec.js:372:1 › 상세 교육 필터는 모바일 입력·새로고침·뒤로가기·빈 결과 해제에 연동된다 (6.2s)
+  ✓  20 tests/e2e/community.spec.js:402:1 › 질문·답변 반응 저장과 취소는 새로고침 후에도 유지된다 (5.5s)
+
+  20 passed (33.8s)
+T105_QA_EXIT=0

@@ -1,0 +1,17 @@
+announcement list: 200
+register: 200
+login: 200
+announcement detail: 200
+question create: 200
+question list: 200
+question detail: 200
+answer create: 200
+answer requery: 200
+register: 200
+login: 200
+other member update: 403
+expired token: 401
+question requery: 200
+unmapped API: 404
+overlong registration password: 400
+local Spring flow: passed

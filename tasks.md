@@ -712,7 +712,7 @@ npx playwright test
 
 각 작업 완료 시 이 파일의 해당 항목 아래에 실행 날짜, Red 명령/실패 assertion, Green 최소 변경, Refactor 변경 이유, 대상/전체 검증 결과를 추가한다. 커밋을 명시적으로 요청받아 생성한 경우에만 SHA를 적는다. 순수 이름·구조 정리는 기존 Green 계약을 먼저 기록한다. 동작 변경의 Red가 처음부터 통과하면 회귀 재현에 실패한 것이므로 사례를 다시 구성한다. T00의 합의된 컴파일 복원은 이 기능 Red 기록과 분리한다.
 
-현재 상태(2026-09-28): Phase 0~12 및 마지막 보류 항목 T97 생성자 제한·builder 통일 완료. QA·전체 검증·main 병합·push 완료. 당시 미체크 항목 없음. 이후 사용자 요청한 Phase 13~15는 아래 별도 추적. 작업 브랜치/worktree 유지. 상세 검증과 기능별 의도적 범위는 각 Phase 기록 참조.
+현재 상태(2026-09-28): Phase 0~12 및 마지막 보류 항목 T97 생성자 제한·builder 통일 완료. QA·전체 검증·main 병합·push 완료. 당시 미체크 항목 없음. 이후 사용자 요청한 Phase 13~15도 완료했으며 최종 기록은 아래 참조. 작업 브랜치/worktree 유지. 상세 검증과 기능별 의도적 범위는 각 Phase 기록 참조.
 
 ### 2026-09-21 Phase 1 리뷰 반영
 
@@ -746,10 +746,10 @@ T98 결과: 현재 cmux workspace:2의 기존 보조 pane에서 회원 가입→
 - [x] T102: 최초 리팩터링 직전 기준 커밋과 실행 가능한 최소 복원, 동일 가상 데이터/환경/시나리오 정의.
 - [x] T103: 데이터 규모별 응답시간·처리량·SQL 수 반복 측정, 병목 개선과 재측정, 원시 결과·한계·재현 절차 기록. 개선/악화 모두 공개.
 
-## Phase 15 — 포트폴리오 문서 정리
+## Phase 15 — 프로젝트 문서 정리
 
-- [ ] T104: 양쪽 README 전면 개편: 현재 화면·제품 흐름·설계·실행·테스트·개선 수치·한계·관련 저장소. 과거 정보와 현재 상태 분리.
-- [ ] T105: 문서 링크/명령 검증, 최종 QA·리뷰·브랜치 보존·main 병합/push·전체 체크.
+- [x] T104: 양쪽 README 전면 개편: 현재 화면·제품 흐름·설계·실행·테스트·개선 수치·한계·관련 저장소. 과거 정보와 현재 상태 분리.
+- [x] T105: 문서 링크/명령 검증, 최종 QA·리뷰·브랜치 보존·main 병합/push·전체 체크.
 
 T99: B314건·REST Docs·bootJar 통과. API 404 Red와 본문 수정 경쟁 조건 Red 재현 후 Green. [상세 기록](docs/verification/persistent-content-reactions/t99-t101.md).
 
@@ -758,3 +758,7 @@ T100/T101: F156건·타입/lint/build, headed E2E20건 종료0. 실제 cmux 반�
 T102: 기준선 a8b057b(제품 코드는 cb6e0b3과 동일), 현재 2f4d749, Java25 과거 조회 대조군 준비. 원본 컴파일 실패 재현 후 두 파일만 기계적 복원. 1천 건 파일럿에서 6개 실제 HTTP 경로/응답 건수 검증 통과. [측정 계약](benchmarks/README.md). Phase14 브랜치 `refactor/measured-query-performance`, worktree `.worktrees/measured-query-performance/{backend,baseline}`.
 
 T103: 최종 56개 그룹·2,520표본, 316개 백엔드 테스트·REST Docs·bootJar 통과. 답변 SQL53→3, 상세7→3. H2 지연 증가와 baseline10만 OOM도 공개. actual SQL budget Red2→Green, 독립 검토 반영. [보고서](docs/verification/measured-query-performance/README.md).
+
+Phase15: 브랜치 `refactor/project-documentation`, worktree `.worktrees/project-documentation/{backend,frontend}`. T104 양쪽 README 전면 개편과 운영 문서 분리. 현재 기능·화면·설계 도식·실측 개선/악화·실행·검증 경계를 정리했다.
+
+T104/T105 최종: 성능 merge825dbab 이후 양쪽 프로젝트 문서를 정리했다. B316·F156·headed20·실제 cmux 반응 저장/전환/취소 QA 통과. 로컬 문서 링크56개·원시 체크섬·벤치마크 클래스 JAR 제외 확인. 독립 문서 리뷰의 일반 사용자/관리자 기능 구분·Node 설치·운영 환경변수 안내 수정. 두 main과 `refactor/project-documentation` 브랜치 원격 동기화, 미체크 작업0, 브랜치/worktree 보존. [최종 인수 기록](docs/verification/project-documentation/t104-t105.md).
