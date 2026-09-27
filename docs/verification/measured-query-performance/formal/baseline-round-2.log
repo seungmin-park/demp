@@ -1,0 +1,55 @@
+> Task :initQuerydslSourcesDir
+> Task :compileQuerydsl UP-TO-DATE
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :compileBenchmarkJava UP-TO-DATE
+> Task :processBenchmarkResources NO-SOURCE
+> Task :benchmarkClasses UP-TO-DATE
+
+> Task :queryBenchmark
+
+QueryBenchmarkTest STANDARD_OUT
+    03:18:06.343 [Test worker] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating CacheAwareContextLoaderDelegate from class [org.springframework.test.context.cache.DefaultCacheAwareContextLoaderDelegate]
+    03:18:06.347 [Test worker] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating BootstrapContext using constructor [public org.springframework.test.context.support.DefaultBootstrapContext(java.lang.Class,org.springframework.test.context.CacheAwareContextLoaderDelegate)]
+    03:18:06.361 [Test worker] DEBUG org.springframework.test.context.BootstrapUtils - Instantiating TestContextBootstrapper for test class [bench.QueryBenchmarkTest] from class [org.springframework.boot.test.context.SpringBootTestContextBootstrapper]
+    03:18:06.365 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Neither @ContextConfiguration nor @ContextHierarchy found for test class [bench.QueryBenchmarkTest], using SpringBootContextLoader
+    03:18:06.367 [Test worker] DEBUG org.springframework.test.context.support.AbstractContextLoader - Did not detect default resource location for test class [bench.QueryBenchmarkTest]: class path resource [bench/QueryBenchmarkTest-context.xml] does not exist
+    03:18:06.367 [Test worker] DEBUG org.springframework.test.context.support.AbstractContextLoader - Did not detect default resource location for test class [bench.QueryBenchmarkTest]: class path resource [bench/QueryBenchmarkTestContext.groovy] does not exist
+    03:18:06.367 [Test worker] INFO org.springframework.test.context.support.AbstractContextLoader - Could not detect default resource locations for test class [bench.QueryBenchmarkTest]: no resource found for suffixes {-context.xml, Context.groovy}.
+    03:18:06.435 [Test worker] DEBUG org.springframework.boot.test.context.SpringBootTestContextBootstrapper - @TestExecutionListeners is not present for class [bench.QueryBenchmarkTest]: using defaults.
+    03:18:06.435 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Loaded default TestExecutionListener class names from location [META-INF/spring.factories]: [org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener, org.springframework.security.test.context.support.ReactorContextTestExecutionListener, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener, org.springframework.test.context.web.ServletTestExecutionListener, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener, org.springframework.test.context.event.ApplicationEventsTestExecutionListener, org.springframework.test.context.support.DependencyInjectionTestExecutionListener, org.springframework.test.context.support.DirtiesContextTestExecutionListener, org.springframework.test.context.transaction.TransactionalTestExecutionListener, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener, org.springframework.test.context.event.EventPublishingTestExecutionListener]
+    03:18:06.442 [Test worker] INFO org.springframework.boot.test.context.SpringBootTestContextBootstrapper - Using TestExecutionListeners: [org.springframework.test.context.web.ServletTestExecutionListener@c20be82, org.springframework.test.context.support.DirtiesContextBeforeModesTestExecutionListener@13c612bd, org.springframework.test.context.event.ApplicationEventsTestExecutionListener@3ef41c66, org.springframework.boot.test.mock.mockito.MockitoTestExecutionListener@6b739528, org.springframework.boot.test.autoconfigure.SpringBootDependencyInjectionTestExecutionListener@622ef26a, org.springframework.test.context.support.DirtiesContextTestExecutionListener@41de5768, org.springframework.test.context.transaction.TransactionalTestExecutionListener@5f577419, org.springframework.test.context.jdbc.SqlScriptsTestExecutionListener@28fa700e, org.springframework.security.test.context.support.WithSecurityContextTestExecutionListener@3d526ad9, org.springframework.test.context.event.EventPublishingTestExecutionListener@e041f0c, org.springframework.security.test.context.support.ReactorContextTestExecutionListener@6a175569, org.springframework.boot.test.autoconfigure.restdocs.RestDocsTestExecutionListener@11963225, org.springframework.boot.test.autoconfigure.web.client.MockRestServiceServerResetTestExecutionListener@3f3c966c, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcPrintOnlyOnFailureTestExecutionListener@11ee02f8, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverTestExecutionListener@4102b1b1, org.springframework.boot.test.autoconfigure.webservices.client.MockWebServiceServerTestExecutionListener@61a5b4ae, org.springframework.boot.test.mock.mockito.ResetMocksTestExecutionListener@3a71c100]
+    03:18:06.443 [Test worker] DEBUG org.springframework.test.context.support.AbstractDirtiesContextTestExecutionListener - Before test class: context [DefaultTestContext@308a6984 testClass = QueryBenchmarkTest, testInstance = [null], testMethod = [null], testException = [null], mergedContextConfiguration = [WebMergedContextConfiguration@66b72664 testClass = QueryBenchmarkTest, locations = '{}', classes = '{class com.inhatc.demp.DempApplication}', contextInitializerClasses = '[]', activeProfiles = '{benchmark}', propertySourceLocations = '{}', propertySourceProperties = '{spring.datasource.url=jdbc:h2:mem:benchmark;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE, spring.datasource.username=sa, spring.datasource.password=, spring.datasource.driver-class-name=org.h2.Driver, spring.jpa.hibernate.ddl-auto=create-drop, spring.sql.init.mode=never, spring.jpa.properties.hibernate.generate_statistics=true, spring.jpa.open-in-view=true, spring.jpa.properties.hibernate.query.fail_on_pagination_over_collection_fetch=false, spring.jwt.secret=benchmark-only-secret-never-for-production, cloud.aws.credentials.access-key=benchmark-unused, cloud.aws.credentials.secret-key=benchmark-unused, cloud.aws.region.static=ap-northeast-2, cloud.aws.stack.auto=false, cloud.aws.s3.bucket=benchmark-unused, spring.mvc.pathmatch.matching-strategy=ant_path_matcher, logging.level.root=ERROR, logging.level.org.hibernate.SQL=OFF, logging.level.org.hibernate.stat=OFF, logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener=OFF, org.springframework.boot.test.context.SpringBootTestContextBootstrapper=true}', contextCustomizers = set[org.springframework.boot.test.autoconfigure.actuate.metrics.MetricsExportContextCustomizerFactory$DisableMetricExportContextCustomizer@60dce7ea, org.springframework.boot.test.autoconfigure.properties.PropertyMappingContextCustomizer@97ec307a, org.springframework.boot.test.autoconfigure.web.servlet.WebDriverContextCustomizerFactory$Customizer@40499e4f, [ImportsContextCustomizer@7a34b7b8 key = [org.springframework.boot.test.autoconfigure.web.servlet.MockMvcAutoConfiguration, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcWebClientAutoConfiguration, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcWebDriverAutoConfiguration, org.springframework.boot.autoconfigure.security.oauth2.client.servlet.OAuth2ClientAutoConfiguration, org.springframework.boot.autoconfigure.security.oauth2.resource.servlet.OAuth2ResourceServerAutoConfiguration, org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration, org.springframework.boot.autoconfigure.security.servlet.SecurityFilterAutoConfiguration, org.springframework.boot.autoconfigure.security.servlet.UserDetailsServiceAutoConfiguration, org.springframework.boot.test.autoconfigure.web.servlet.MockMvcSecurityConfiguration]], org.springframework.boot.test.context.filter.ExcludeFilterContextCustomizer@4e28bdd1, org.springframework.boot.test.json.DuplicateJsonObjectContextCustomizerFactory$DuplicateJsonObjectContextCustomizer@f0e995e, org.springframework.boot.test.mock.mockito.MockitoContextCustomizer@0, org.springframework.boot.test.web.client.TestRestTemplateContextCustomizer@3829ac1, org.springframework.boot.test.context.SpringBootTestArgs@1, org.springframework.boot.test.context.SpringBootTestWebEnvironment@3fce8fd9], resourceBasePath = 'src/main/webapp', contextLoader = 'org.springframework.boot.test.context.SpringBootContextLoader', parent = [null]], attributes = map['org.springframework.test.context.web.ServletTestExecutionListener.activateListener' -> true]], class annotated with @DirtiesContext [false] with mode [null].
+
+      .   ____          _            __ _ _
+     /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+    ( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+     \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+      '  |____| .__|_| |_|_| |_\__, | / / / /
+     =========|_|==============|___/=/_/_/_/
+     :: Spring Boot ::               (v2.5.10)
+
+
+QueryBenchmarkTest > 동일 가상 데이터에서 실제 조회 HTTP 처리와 SQL 비용을 반복 측정한다 STANDARD_OUT
+    BENCH baseline n=1000 question_list PASS
+    BENCH baseline n=1000 question_detail PASS
+    BENCH baseline n=1000 announcement_first PASS
+    BENCH baseline n=1000 announcement_deep PASS
+    BENCH baseline n=1000 announcement_filtered PASS
+    BENCH baseline n=1000 answer_list PASS
+    BENCH baseline n=10000 question_list PASS
+    BENCH baseline n=10000 question_detail PASS
+    BENCH baseline n=10000 announcement_first PASS
+    BENCH baseline n=10000 announcement_deep PASS
+    BENCH baseline n=10000 announcement_filtered PASS
+    BENCH baseline n=10000 answer_list PASS
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 8.0.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+See https://docs.gradle.org/7.4/userguide/command_line_interface.html#sec:command_line_warnings
+
+BUILD SUCCESSFUL in 19s
+6 actionable tasks: 2 executed, 4 up-to-date

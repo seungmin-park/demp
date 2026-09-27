@@ -1,0 +1,42 @@
+package bench;
+
+import com.inhatc.demp.domain.announcement.*;
+import com.inhatc.demp.dto.announcement.*;
+import com.inhatc.demp.dto.question.QuestionList;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.core.types.Projections;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.*;
+import java.util.*;
+import java.util.stream.Collectors;
+import static com.inhatc.demp.domain.announcement.QAnnouncement.announcement;
+import static com.inhatc.demp.domain.QQuestion.question;
+import static com.inhatc.demp.domain.QQuestionHashtag.questionHashtag;
+import static com.inhatc.demp.domain.QHashtag.hashtag;
+
+@RestController
+@Transactional(readOnly=true)
+public class LegacyQueryControl {
+    private final JPAQueryFactory query;
+    public LegacyQueryControl(JPAQueryFactory query) { this.query=query; }
+    // Approximate control: historical fetch-join strategy on the current runtime/schema/DTO.
+    // Service path, ordering and image URL also differ; this is not a single-variable experiment.
+    @GetMapping("/bench/legacy/announce")
+    public Slice<AnnouncementResponse> announcements(@ModelAttribute AnnouncementSearchCondition filter, Pageable pageable) {
+        var result=query.selectFrom(announcement).leftJoin(announcement.description.languages).fetchJoin()
+            .where(announcement.publicationStatus.eq(PublicationStatus.PUBLISHED),
+                filter.getAnnouncementType()==null?null:announcement.announcementType.eq(filter.getAnnouncementType()),
+                filter.getLanguage()==null?null:announcement.description.languages.contains(filter.getLanguage()))
+            .offset(pageable.getOffset()).limit(pageable.getPageSize()+1).distinct().fetchResults();
+        List<AnnouncementResponse> rows=result.getResults().stream().map(a->new AnnouncementResponse(a,"/local-files/logo.png")).collect(Collectors.toList());
+        boolean next=rows.size()>pageable.getPageSize();
+        return new SliceImpl<>(next?rows.subList(0,pageable.getPageSize()):rows,pageable,next);
+    }
+    @GetMapping("/bench/legacy/question")
+    public List<QuestionList> questions() {
+        return query.select(Projections.fields(QuestionList.class,question.id,question.title,question.hits,question.recommend))
+            .from(question).join(question.questionHashtags,questionHashtag).join(questionHashtag.hashtag,hashtag)
+            .orderBy(question.createdDate.desc()).distinct().fetch();
+    }
+}

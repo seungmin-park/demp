@@ -1,0 +1,40 @@
+diff --git a/src/main/java/com/inhatc/demp/repository/AnswerRepository.java b/src/main/java/com/inhatc/demp/repository/AnswerRepository.java
+index 131e35a..9cbd177 100644
+--- a/src/main/java/com/inhatc/demp/repository/AnswerRepository.java
++++ b/src/main/java/com/inhatc/demp/repository/AnswerRepository.java
+@@ -11,6 +11,7 @@ import java.util.List;
+ 
+ public interface AnswerRepository extends JpaRepository<Answer, Long> {
+ 
++    @EntityGraph(attributePaths = "member")
+     List<Answer> findByQuestion_Id(Long questionId);
+     @EntityGraph(attributePaths = {"member", "question"})
+     @Query("select q from Answer q where lower(q.question.title) like lower(concat('%', :term, '%')) escape '!' or lower(q.member.username) like lower(concat('%', :term, '%')) escape '!'")
+diff --git a/src/main/java/com/inhatc/demp/repository/question/QuestionRepository.java b/src/main/java/com/inhatc/demp/repository/question/QuestionRepository.java
+index b5f0782..0a9ac3e 100644
+--- a/src/main/java/com/inhatc/demp/repository/question/QuestionRepository.java
++++ b/src/main/java/com/inhatc/demp/repository/question/QuestionRepository.java
+@@ -8,6 +8,10 @@ import org.springframework.data.domain.Page;
+ import org.springframework.data.domain.Pageable;
+ 
+ public interface QuestionRepository extends JpaRepository<Question, Long> {
++    @EntityGraph(attributePaths = {"member", "questionHashtags.hashtag"})
++    @Query("select q from Question q where q.id = :id")
++    java.util.Optional<Question> findDetailById(Long id);
++
+     @EntityGraph(attributePaths = "member")
+     @Query("select q from Question q where lower(q.title) like lower(concat('%', :term, '%')) escape '!' or lower(q.member.username) like lower(concat('%', :term, '%')) escape '!'")
+     Page<Question> searchForAdmin(String term, Pageable pageable);
+diff --git a/src/main/java/com/inhatc/demp/service/QuestionService.java b/src/main/java/com/inhatc/demp/service/QuestionService.java
+index 84f0ed1..56deda4 100644
+--- a/src/main/java/com/inhatc/demp/service/QuestionService.java
++++ b/src/main/java/com/inhatc/demp/service/QuestionService.java
+@@ -59,7 +59,7 @@ public class QuestionService {
+     }
+ 
+     public QuestionDetail findById(Long id) {
+-        return questionRepository.findById(id)
++        return questionRepository.findDetailById(id)
+                 .map(QuestionDetail::new)
+                 .orElseThrow(ResourceNotFoundException::new);
+     }

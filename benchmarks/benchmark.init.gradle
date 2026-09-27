@@ -1,0 +1,29 @@
+allprojects {
+    afterEvaluate { p ->
+        if (!p.plugins.hasPlugin('java')) return
+        sourceSets {
+            benchmark {
+                java.srcDir layout.buildDirectory.dir('benchmark-src')
+                compileClasspath = sourceSets.main.output + configurations.testCompileClasspath + configurations.testRuntimeClasspath
+                runtimeClasspath = output + compileClasspath
+            }
+        }
+        tasks.register('queryBenchmark', Test) {
+            description = 'Isolated synthetic MockMvc query benchmark (never production DB)'
+            testClassesDirs = sourceSets.benchmark.output.classesDirs
+            classpath = sourceSets.benchmark.runtimeClasspath
+            useJUnitPlatform()
+            minHeapSize = p.findProperty('benchHeap') ?: '2048m'; maxHeapSize = minHeapSize
+            jvmArgs '-XX:ActiveProcessorCount=4', '-XX:+ExitOnOutOfMemoryError'
+            systemProperty 'bench.label', p.findProperty('benchLabel') ?: 'current'
+            systemProperty 'bench.contract', p.findProperty('benchContract') ?: 'false'
+            systemProperty 'bench.sizes', p.findProperty('benchSizes') ?: '1000,10000,100000'
+            systemProperty 'bench.round', p.findProperty('benchRound') ?: '1'
+            systemProperty 'bench.samples', p.findProperty('benchSamples') ?: '15'
+            systemProperty 'bench.warmups', p.findProperty('benchWarmups') ?: '5'
+            systemProperty 'bench.output', p.findProperty('benchOutput') ?: new File(p.buildDir, 'benchmark-results.jsonl').absolutePath
+            outputs.upToDateWhen { false }
+            testLogging { events 'failed'; exceptionFormat 'full'; showStandardStreams = true }
+        }
+    }
+}

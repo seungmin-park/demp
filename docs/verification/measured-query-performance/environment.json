@@ -1,0 +1,23 @@
+{
+  "platform": "macOS-27.0-arm64-arm-64bit-Mach-O",
+  "machine": "arm64",
+  "baseline": "a8b057b2ffabc34d17f836e5a8c2b52b6e028b94",
+  "current": "2f4d7497cba45c5aebdebf38d90f6bafd40100f1",
+  "heap": "2048m fixed; historical 100000 repeated run failed, excluded from completed comparisons",
+  "activeProcessorCount": 4,
+  "warmups": 5,
+  "samplesPerRound": 15,
+  "rounds": 3,
+  "sizes": [
+    1000,
+    10000,
+    100000
+  ],
+  "transport": "MockMvc (real Spring MVC/security/JPA; no socket/Internet latency)",
+  "seed": "benchmarks/QueryBenchmarkTest.java.in seed()",
+  "hw.model": "Mac14,2",
+  "hw.memsize": 17179869184,
+  "machdep.cpu.brand_string": "Apple M2",
+  "matrix": "comparison-matrix.json",
+  "executionOrder": "baseline (3 rounds), current (3), current-control (3), current-optimized (3)"
+}

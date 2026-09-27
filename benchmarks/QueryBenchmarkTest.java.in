@@ -1,0 +1,157 @@
+package bench;
+
+import com.inhatc.demp.DempApplication;
+import com.inhatc.demp.config.jwt.JwtTokenProvider;
+import @PERSISTENCE@.persistence.EntityManagerFactory;
+import @JACKSON@.databind.ObjectMapper;
+import org.hibernate.SessionFactory;
+import org.hibernate.stat.Statistics;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import @AUTO_CONFIGURE_PACKAGE@.AutoConfigureMockMvc;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.jdbc.core.JdbcTemplate;
+import java.nio.file.*;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.assertj.core.api.Assertions.assertThat;
+
+@SpringBootTest(classes = DempApplication.class, properties = {
+    "spring.datasource.url=jdbc:h2:mem:benchmark;MODE=MySQL;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE",
+    "spring.datasource.username=sa", "spring.datasource.password=", "spring.datasource.driver-class-name=org.h2.Driver",
+    "spring.jpa.hibernate.ddl-auto=create-drop", "spring.sql.init.mode=never",
+    "spring.jpa.properties.hibernate.generate_statistics=true", "spring.jpa.open-in-view=true",
+    "spring.jpa.properties.hibernate.query.fail_on_pagination_over_collection_fetch=false",
+    "spring.jwt.secret=benchmark-only-secret-never-for-production",
+    "cloud.aws.credentials.access-key=benchmark-unused", "cloud.aws.credentials.secret-key=benchmark-unused",
+    "cloud.aws.region.static=ap-northeast-2", "cloud.aws.stack.auto=false", "cloud.aws.s3.bucket=benchmark-unused",
+    "spring.mvc.pathmatch.matching-strategy=ant_path_matcher",
+    "logging.level.root=ERROR", "logging.level.org.hibernate.SQL=OFF", "logging.level.org.hibernate.stat=OFF",
+    "logging.level.org.hibernate.engine.internal.StatisticalLoggingSessionEventListener=OFF"
+})
+@ActiveProfiles("benchmark")
+@AutoConfigureMockMvc(print = @AUTO_CONFIGURE_PACKAGE@.MockMvcPrint.NONE)
+@CONTROL_IMPORT@
+class QueryBenchmarkTest {
+    static final boolean LEGACY = @LEGACY@;
+    @Autowired MockMvc mvc;
+    @Autowired JdbcTemplate jdbc;
+    @Autowired EntityManagerFactory emf;
+    @Autowired JwtTokenProvider tokens;
+    @Autowired ObjectMapper mapper;
+
+    @Test
+    @DisplayName("동일 가상 데이터에서 실제 조회 HTTP 처리와 SQL 비용을 반복 측정한다")
+    void benchmark() throws Exception {
+        if (Boolean.getBoolean("bench.contract")) { verifyQuerySemantics(); return; }
+        String label = System.getProperty("bench.label");
+        Path output = Path.of(System.getProperty("bench.output"));
+        if (!Files.isDirectory(output.toAbsolutePath().getParent())) Files.createDirectories(output.toAbsolutePath().getParent());
+        Statistics stats = emf.unwrap(SessionFactory.class).getStatistics();
+        for (String rawSize : System.getProperty("bench.sizes").split(",")) {
+            int size = Integer.parseInt(rawSize); seed(size);
+            String token = tokens.createToken("1", List.of("ROLE_USER"));
+            LinkedHashMap<String,String> scenarios = new LinkedHashMap<>();
+            scenarios.put("announcement_first", "/api/announce?page=0&size=20");
+            scenarios.put("announcement_deep", "/api/announce?page=" + Math.min(200,size/40) + "&size=20");
+            scenarios.put("announcement_filtered", "/api/announce?page=0&size=20&announcementType=EMP&language=JAVA");
+            scenarios.put("question_list", "/api/question?page=0&size=20&orderBy=createdDate");
+            scenarios.put("question_detail", "/api/question/detail/1");
+            scenarios.put("answer_list", "/api/answer/1");
+            if (label.equals("current-control")) {
+                scenarios.clear();
+                scenarios.put("announcement_first", "/bench/legacy/announce?page=0&size=20");
+                scenarios.put("announcement_deep", "/bench/legacy/announce?page=" + Math.min(200,size/40) + "&size=20");
+                scenarios.put("announcement_filtered", "/bench/legacy/announce?page=0&size=20&announcementType=EMP&language=JAVA");
+                scenarios.put("question_list", "/bench/legacy/question");
+            }
+            List<Map.Entry<String,String>> order = new ArrayList<>(scenarios.entrySet());
+            Collections.shuffle(order, new Random(20260928L + Integer.parseInt(System.getProperty("bench.round"))));
+            for (Map.Entry<String,String> scenario : order) {
+                int warmups = Integer.parseInt(System.getProperty("bench.warmups"));
+                int samples = Integer.parseInt(System.getProperty("bench.samples"));
+                for (int i=0;i<warmups;i++) request(scenario.getValue(), token);
+                for (int i=0;i<samples;i++) {
+                    stats.clear(); long start=System.nanoTime();
+                    byte[] response = request(scenario.getValue(), token);
+                    double milliseconds=(System.nanoTime()-start)/1_000_000.0;
+                    var json=mapper.readTree(response);
+                    int rows=json.isArray()?json.size():json.has("content")&&json.get("content").isArray()?json.get("content").size():1;
+                    int expected=scenario.getKey().equals("answer_list")?50:scenario.getKey().equals("question_detail")?1:
+                            scenario.getKey().equals("question_list")&&(LEGACY||label.equals("current-control"))?size:20;
+                    assertThat(rows).as(scenario.getKey()).isEqualTo(expected);
+                    if (scenario.getKey().startsWith("announcement")) assertThat(json.get("last").asBoolean()).isFalse();
+                    Map<String,Object> row = new LinkedHashMap<>();
+                    row.put("label",label); row.put("size",size); row.put("round",Integer.parseInt(System.getProperty("bench.round")));
+                    row.put("scenario",scenario.getKey());row.put("sample",i);row.put("ms",milliseconds);
+                    row.put("sql",stats.getPrepareStatementCount());row.put("entities",stats.getEntityLoadCount());
+                    row.put("rows",rows);row.put("bytes",response.length);row.put("java",System.getProperty("java.version"));
+                    Files.writeString(output,mapper.writeValueAsString(row)+"\n", StandardCharsets.UTF_8,StandardOpenOption.CREATE,StandardOpenOption.APPEND);
+                }
+                System.out.println("BENCH " + label+" n="+size+" "+scenario.getKey()+" PASS");
+            }
+        }
+    }
+
+    private void verifyQuerySemantics() throws Exception {
+        seed(1000);
+        // Deliberately make the language condition selective, independently of EMP/EDU.
+        jdbc.update("UPDATE language SET languages='HTML' WHERE languages='JAVA' AND MOD(announcement_id,4)=0");
+        String token=tokens.createToken("1",List.of("ROLE_USER"));
+        String base=System.getProperty("bench.label").equals("current-control")?"/bench/legacy/announce":"/api/announce";
+        Set<Long> first=new HashSet<>();
+        for (var row:mapper.readTree(request(base+"?page=0&size=20",token)).get("content")) first.add(row.get("id").asLong());
+        assertThat(first).hasSize(20);
+        Set<Long> deep=new HashSet<>();
+        for (var row:mapper.readTree(request(base+"?page=10&size=20",token)).get("content")) deep.add(row.get("id").asLong());
+        assertThat(deep).hasSize(20).doesNotContainAnyElementsOf(first);
+        var filtered=mapper.readTree(request(base+"?page=0&size=20&announcementType=EMP&language=JAVA",token)).get("content");
+        assertThat(filtered.size()).isEqualTo(20);
+        Set<Long> filteredIds=new HashSet<>();
+        for (var row:filtered) {
+            filteredIds.add(row.get("id").asLong());
+            // The historical DTO did not expose announcementType; verify its source row too.
+            assertThat(jdbc.queryForObject("SELECT announcement_type FROM announcement WHERE id=?",String.class,row.get("id").asLong())).isEqualTo("EMP");
+            if (!LEGACY) assertThat(row.get("announcementType").asText()).isEqualTo("EMP");
+            assertThat(row.get("language").toString()).contains("\"JAVA\"");
+            assertThat(row.get("id").asLong()%4).isEqualTo(2);
+        }
+        assertThat(filteredIds).hasSize(20);
+        System.out.println("QUERY CONTRACT PASS: distinct pages and selective EMP/JAVA filter");
+    }
+
+    private byte[] request(String path,String token) throws Exception {
+        var response=mvc.perform(get(path).header("X-AUTH-TOKEN",token)).andReturn().getResponse();
+        assertThat(response.getStatus()).as(path).isEqualTo(200);
+        return response.getContentAsByteArray();
+    }
+
+    private void seed(int size) {
+        // Only this hard-coded, process-local H2 DB can be populated.
+        String url=jdbc.execute((org.springframework.jdbc.core.ConnectionCallback<String>) c->c.getMetaData().getURL());
+        if (!url.startsWith("jdbc:h2:mem:benchmark")) throw new IllegalStateException("Refuse non-benchmark DB");
+        jdbc.execute("SET REFERENTIAL_INTEGRITY FALSE");
+        List<String> tables=jdbc.queryForList("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_SCHEMA='PUBLIC'",String.class);
+        for (String table:tables) jdbc.execute("TRUNCATE TABLE "+table);
+        jdbc.execute("SET REFERENTIAL_INTEGRITY TRUE");
+        jdbc.execute("INSERT INTO member(member_id,username,password) SELECT X, CONCAT('bench-member-',X), 'unused-hash' FROM SYSTEM_RANGE(1,1000)");
+        jdbc.execute("INSERT INTO member_roles(member_member_id,roles) SELECT X,'ROLE_USER' FROM SYSTEM_RANGE(1,1000)");
+        String publication=LEGACY?"":",publication_status,recruitment_closed";
+        String publicationValues=LEGACY?"":",'PUBLISHED',FALSE";
+        jdbc.execute("INSERT INTO announcement(id,title,announcement_type,min_career,max_career,name,content,access_url,payment,job_position,started_date,dead_line_date,upload_file_name,save_file_name"+publication+") SELECT X,CONCAT('JAVA opportunity ',X),CASE WHEN MOD(X,2)=0 THEN 'EMP' ELSE 'EDU' END,0,3,'Bench company',REPEAT('job description ',20),'https://example.invalid/jobs',3000,'BACKEND',TIMESTAMP '2026-01-01 00:00:00',TIMESTAMP '2030-12-31 00:00:00','logo.png','logo.png'"+publicationValues+" FROM SYSTEM_RANGE(1,"+size+")");
+        jdbc.execute("INSERT INTO language(announcement_id,languages) SELECT X,'JAVA' FROM SYSTEM_RANGE(1,"+size+")");
+        jdbc.execute("INSERT INTO language(announcement_id,languages) SELECT X,'SPRING' FROM SYSTEM_RANGE(1,"+size+")");
+        jdbc.execute("INSERT INTO question(question_id,title,content,created_date,hits,recommend,dislike,member_id) SELECT X,CONCAT('JAVA question ',X),REPEAT('question body ',20),DATEADD('SECOND',X,TIMESTAMP '2026-01-01 00:00:00'),MOD(X,100),MOD(X,10),0,MOD(X,1000)+1 FROM SYSTEM_RANGE(1,"+size+")");
+        jdbc.execute("INSERT INTO hashtag(hashtag_id,tag_name) SELECT X,CONCAT('tag-',X) FROM SYSTEM_RANGE(1,20)");
+        jdbc.execute("INSERT INTO question_hashtag(id,question_id,hashtag_id) SELECT X*2,X,MOD(X,20)+1 FROM SYSTEM_RANGE(1,"+size+")");
+        jdbc.execute("INSERT INTO question_hashtag(id,question_id,hashtag_id) SELECT X*2+1,X,MOD(X+1,20)+1 FROM SYSTEM_RANGE(1,"+size+")");
+        jdbc.execute("INSERT INTO answer(answer_id,question_id,member_id,content,recommend,dislike) SELECT X,1,X+1,'answer body',0,0 FROM SYSTEM_RANGE(1,50)");
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM announcement",Integer.class)).isEqualTo(size);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM question",Integer.class)).isEqualTo(size);
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM language",Integer.class)).isEqualTo(size*2);
+    }
+}

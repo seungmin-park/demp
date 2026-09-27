@@ -1,0 +1,12 @@
+{
+  "currentHead": "d0613fe64a1b3f093701f7d44763fb68023c9167",
+  "files": {
+    "benchmarks/benchmark.init.gradle": "ac8602251a0d4648b4f1395aaee2163a0abfec5bc0b2bb2db0a7a3a80e58b87c",
+    "build/benchmark-src/bench/QueryBenchmarkTest.java": "e94a0248988226f96c5b8eed1796ff482cf38ed7bc54d13ce76b5ca6634da73c",
+    "build/benchmark-src/bench/LegacyQueryControl.java": "ffe05fa008011f1af1aa19ef64931c35b94a02cbc3a7123d2e33540a7a574171",
+    "../baseline/build/benchmark-src/bench/QueryBenchmarkTest.java": "a4f38339f9bb48223b69a6e844ea5ded34030d5e08615b84c8f1bf85e486cd23",
+    "docs/verification/measured-query-performance/assets/baseline-restore.patch": "314204a9ae039987d20a6240d8b3599ee87e9a4c0d51b0b031b04d8884cd1ed1"
+  },
+  "commandScript": "assets/run-before-optimization.sh",
+  "runtimeChanges": "No production changes since 2f4d749; benchmark/test/documentation working changes only"
+}

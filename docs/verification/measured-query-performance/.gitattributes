@@ -1,0 +1,5 @@
+# Keep captured evidence byte-for-byte; generated output may contain trailing spaces.
+*.log -whitespace
+*.patch -whitespace
+*.xml -whitespace
+*.svg -whitespace

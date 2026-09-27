@@ -59,7 +59,7 @@ public class QuestionService {
     }
 
     public QuestionDetail findById(Long id) {
-        return questionRepository.findById(id)
+        return questionRepository.findDetailById(id)
                 .map(QuestionDetail::new)
                 .orElseThrow(ResourceNotFoundException::new);
     }

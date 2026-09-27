@@ -1,0 +1,11 @@
+{
+  "files": {
+    "benchmarks/benchmark.init.gradle": "910b0e89e32410f364f08a31bdd16c774f00f65916d7dc84afd98596eddc9ea9",
+    "build/benchmark-src/bench/QueryBenchmarkTest.java": "4739c8bc8bbcee1f57fa8a03fa99932f2d17da1866044f4e6d7464e7903fc652",
+    "build/benchmark-src/bench/LegacyQueryControl.java": "c9e301451fd832b3a655900ae8a65aa68353de30580e00af25ef20e21ad8de6b",
+    "docs/verification/measured-query-performance/assets/optimized-production.patch": "5534e22340191200025096993fe8a422de0f981836edd5fdb1e5100155b8dcb5"
+  },
+  "productionBase": "2f4d749",
+  "productionPatch": "assets/optimized-production.patch",
+  "changeToHarness": "Added optional non-timed contract verification; measurement loop unchanged"
+}
