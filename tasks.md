@@ -441,13 +441,15 @@ npx playwright test
 
 ## Phase 7 · 런타임·프레임워크 갱신과 TypeScript 도입 (T50 완료 후)
 
-실행 예정 브랜치: `refactor/runtime-framework-and-typescript-upgrade`. 백엔드·프런트엔드에 각각 같은 이름의 worktree를 만들고, T50의 통과 기준 커밋에서 시작한다. 아래 항목은 후속 작업 체크리스트이며 버전과 호환성은 시작 시 공식 지원표를 확인해 결정한다.
+실행 브랜치: `refactor/runtime-framework-and-typescript-upgrade`. 백엔드·프런트엔드에 각각 같은 이름의 worktree를 만들고, T50의 통과 기준 커밋에서 시작한다. 아래 항목은 후속 작업 체크리스트이며 버전과 호환성은 시작 시 공식 지원표를 확인해 결정한다.
 
 ### T60 · 기준선과 업그레이드 순서
 
-- [ ] 현재 Java/JDK, Gradle, Spring Boot 및 의존성, Node/npm, Vue/CLI, Jest, 브라우저 지원 범위와 배포 환경을 기록한다.
-- [ ] 공식 호환성·지원 종료 정보에 맞춰 목표 버전을 정하고, 중간 버전 경유가 필요한 변경 순서를 기록한다.
-- [ ] T50 전체 검증과 핵심 사용자 흐름을 기준선으로 재실행하고 결과를 남긴다.
+- [x] 현재 Java/JDK, Gradle, Spring Boot 및 의존성, Node/npm, Vue/CLI, Jest, 브라우저 지원 범위와 배포 환경을 기록한다.
+- [x] 공식 호환성·지원 종료 정보에 맞춰 목표 버전을 정하고, 중간 버전 경유가 필요한 변경 순서를 기록한다.
+- [x] T50 전체 검증과 핵심 사용자 흐름을 기준선으로 재실행하고 결과를 남긴다.
+
+2026-09-27: [T60 기준선·호환성 기록](docs/verification/runtime-framework-and-typescript-upgrade/README.md). 별도 worktree, asdf Zulu25/Node24, B 195·F45·headed E2E4 및 실제 API14 통과.
 
 ### T61 · Java·Spring 업그레이드
 
