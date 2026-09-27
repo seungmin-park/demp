@@ -26,8 +26,8 @@ class AnswerServiceTest {
     @Test
     @DisplayName("회원이 없으면 답변을 저장하지 않고 기존 답변을 유지한다")
     void rejectsMissingAuthor() {
-        Member member = members.save(new Member("answer-member", "hash", List.of("ROLE_USER")));
-        Question question = new Question("질문", "본문", 0, 0, 0);
+        Member member = members.save(Member.builder().username("answer-member").password("hash").roles(List.of("ROLE_USER")).build());
+        Question question = Question.builder().title("질문").content("본문").hits(0).recommend(0).dislike(0).build();
         question.assignMember(member); questions.save(question);
 
         assertThatThrownBy(() -> service.createAnswerAndList(-1L,
@@ -39,10 +39,10 @@ class AnswerServiceTest {
     @Test
     @DisplayName("답변 저장 결과는 같은 질문의 기존 답변과 새 답변을 반환한다")
     void returnsAnswersAfterSave() {
-        Member member = members.save(new Member("answer-member", "hash", List.of("ROLE_USER")));
-        Question question = new Question("질문", "본문", 0, 0, 0);
+        Member member = members.save(Member.builder().username("answer-member").password("hash").roles(List.of("ROLE_USER")).build());
+        Question question = Question.builder().title("질문").content("본문").hits(0).recommend(0).dislike(0).build();
         question.assignMember(member); questions.save(question);
-        Answer existing = new Answer("기존", 2, 1);
+        Answer existing = Answer.builder().content("기존").recommend(2).dislike(1).build();
         existing.assignMember(member); existing.assignQuestion(question); answers.save(existing);
 
         List<QuestionAnswer> result = service.createAnswerAndList(member.getId(),
@@ -57,7 +57,7 @@ class AnswerServiceTest {
     @Test
     @DisplayName("질문이 없으면 답변을 저장하지 않는다")
     void rejectsMissingQuestion() {
-        Member member = members.save(new Member("answer-member", "hash", List.of("ROLE_USER")));
+        Member member = members.save(Member.builder().username("answer-member").password("hash").roles(List.of("ROLE_USER")).build());
 
         assertThatThrownBy(() -> service.createAnswerAndList(member.getId(),
                 new AnswerForm(member.getUsername(), -1L, "답변")))
@@ -67,8 +67,8 @@ class AnswerServiceTest {
     @Test
     @DisplayName("답변 작성자는 인증 회원이며 정제된 내용을 실제 저장한다")
     void savesSanitizedAnswerWithAuthenticatedAuthor() {
-        Member actor = members.save(new Member("answer-actor", "hash", List.of("ROLE_USER")));
-        Question question = new Question("title", "body", 0, 0, 0);
+        Member actor = members.save(Member.builder().username("answer-actor").password("hash").roles(List.of("ROLE_USER")).build());
+        Question question = Question.builder().title("title").content("body").hits(0).recommend(0).dislike(0).build();
         question.assignMember(actor); questions.save(question);
 
         List<QuestionAnswer> response = service.createAnswerAndList(actor.getId(), new AnswerForm("forged", question.getId(), "<b>safe</b><script>bad()</script>"));
@@ -79,10 +79,10 @@ class AnswerServiceTest {
     @Test
     @DisplayName("답변 수정은 정제된 내용을 커밋하여 별도 조회에도 반영한다")
     void commitsSanitizedUpdate() {
-        Member actor = members.save(new Member("answer-actor", "hash", List.of("ROLE_USER")));
-        Question question = new Question("title", "body", 0, 0, 0);
+        Member actor = members.save(Member.builder().username("answer-actor").password("hash").roles(List.of("ROLE_USER")).build());
+        Question question = Question.builder().title("title").content("body").hits(0).recommend(0).dislike(0).build();
         question.assignMember(actor); questions.save(question);
-        Answer answer = new Answer("original", 0, 0);
+        Answer answer = Answer.builder().content("original").recommend(0).dislike(0).build();
         answer.assignMember(actor); answer.assignQuestion(question); answers.save(answer);
 
         service.update(actor.getId(), new UpdateAnswerForm(answer.getId(), "<p onclick='bad()'>changed</p>"));
@@ -92,11 +92,11 @@ class AnswerServiceTest {
     @Test
     @DisplayName("다른 회원의 답변 수정은 거절되고 저장된 내용은 유지된다")
     void rejectsOtherMembersUpdateWithoutChangingAnswer() {
-        Member owner = members.save(new Member("answer-owner", "hash", List.of("ROLE_USER")));
-        Member other = members.save(new Member("answer-other", "hash", List.of("ROLE_USER")));
-        Question question = new Question("title", "body", 0, 0, 0);
+        Member owner = members.save(Member.builder().username("answer-owner").password("hash").roles(List.of("ROLE_USER")).build());
+        Member other = members.save(Member.builder().username("answer-other").password("hash").roles(List.of("ROLE_USER")).build());
+        Question question = Question.builder().title("title").content("body").hits(0).recommend(0).dislike(0).build();
         question.assignMember(owner); questions.save(question);
-        Answer answer = new Answer("original", 0, 0);
+        Answer answer = Answer.builder().content("original").recommend(0).dislike(0).build();
         answer.assignMember(owner); answer.assignQuestion(question); answers.save(answer);
 
         assertThatThrownBy(() -> service.update(other.getId(), new UpdateAnswerForm(answer.getId(), "changed")))

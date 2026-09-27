@@ -66,8 +66,8 @@ class AnswerRestDocsTest {
     @Test
     @DisplayName("답변 목록 조회 응답을 문서화한다")
     void documentsAnswerList() throws Exception {
-        Member member = new Member("docs-member", "docs-password-hash", List.of("ROLE_USER"));
-        Answer answer = new Answer("docs-answer", 2, 1);
+        Member member = Member.builder().username("docs-member").password("docs-password-hash").roles(List.of("ROLE_USER")).build();
+        Answer answer = Answer.builder().content("docs-answer").recommend(2).dislike(1).build();
         ReflectionTestUtils.setField(answer, "id", 61L);
         answer.assignMember(member);
         List<Answer> response = List.of(answer);
@@ -95,8 +95,8 @@ class AnswerRestDocsTest {
     @DisplayName("답변 등록 요청과 응답을 문서화한다")
     void documentsAnswerSave() throws Exception {
         AnswerForm request = new AnswerForm("docs-member", 51L, "docs-answer");
-        Member member = new Member("docs-member", "docs-password-hash", List.of("ROLE_USER"));
-        Answer savedAnswer = new Answer("docs-answer", 0, 0);
+        Member member = Member.builder().username("docs-member").password("docs-password-hash").roles(List.of("ROLE_USER")).build();
+        Answer savedAnswer = Answer.builder().content("docs-answer").recommend(0).dislike(0).build();
         ReflectionTestUtils.setField(savedAnswer, "id", 61L);
         savedAnswer.assignMember(member);
         QuestionAnswer response = new QuestionAnswer(savedAnswer);
@@ -130,7 +130,7 @@ class AnswerRestDocsTest {
     @DisplayName("답변 수정 요청과 응답을 문서화한다")
     void documentsAnswerUpdate() throws Exception {
         UpdateAnswerForm request = new UpdateAnswerForm(61L, "docs-updated-answer");
-        Answer answer = new Answer("docs-answer", 0, 0);
+        Answer answer = Answer.builder().content("docs-answer").recommend(0).dislike(0).build();
 
         mockMvc.perform(patch("/api/answer/update")
                         .header("X-AUTH-TOKEN", DOCS_TOKEN)

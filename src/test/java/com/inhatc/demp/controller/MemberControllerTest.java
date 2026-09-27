@@ -35,7 +35,7 @@ class MemberControllerTest {
     @Test
     @DisplayName("회원 조회 결과를 현재 응답 형식으로 반환한다")
     void memberGet() throws Exception {
-        Member member = new Member("member-a", "test-password", List.of("ROLE_USER"));
+        Member member = Member.builder().username("member-a").password("test-password").roles(List.of("ROLE_USER")).build();
         ReflectionTestUtils.setField(member, "id", 41L);
         when(memberService.findById(41L)).thenReturn(member);
 

@@ -9,9 +9,9 @@ class AnswerTest {
     @Test
     @DisplayName("답변 질문을 바꾸면 이전 질문의 답변 목록에서 제거한다")
     void movesAnswerBetweenQuestions() {
-        Question first = new Question("첫 질문", "본문", 0, 0, 0);
-        Question second = new Question("둘째 질문", "본문", 0, 0, 0);
-        Answer answer = new Answer("답변", 0, 0);
+        Question first = Question.builder().title("첫 질문").content("본문").hits(0).recommend(0).dislike(0).build();
+        Question second = Question.builder().title("둘째 질문").content("본문").hits(0).recommend(0).dislike(0).build();
+        Answer answer = Answer.builder().content("답변").recommend(0).dislike(0).build();
         answer.assignQuestion(first);
 
         answer.assignQuestion(second);
@@ -24,9 +24,9 @@ class AnswerTest {
     @Test
     @DisplayName("답변 작성자를 바꾸면 이전 회원의 답변 목록에서 제거한다")
     void movesAnswerBetweenMembers() {
-        Member first = new Member("first", "secret", List.of("ROLE_USER"));
-        Member second = new Member("second", "secret", List.of("ROLE_USER"));
-        Answer answer = new Answer("답변", 0, 0);
+        Member first = Member.builder().username("first").password("secret").roles(List.of("ROLE_USER")).build();
+        Member second = Member.builder().username("second").password("secret").roles(List.of("ROLE_USER")).build();
+        Answer answer = Answer.builder().content("답변").recommend(0).dislike(0).build();
         answer.assignMember(first);
 
         answer.assignMember(second);

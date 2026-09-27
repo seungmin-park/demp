@@ -29,7 +29,7 @@ public class AnswerService {
     public List<QuestionAnswer> createAnswerAndList(Long actorId, AnswerForm form) {
         Member member = members.findById(actorId).orElseThrow(ResourceNotFoundException::new);
         Question question = questions.findById(form.getQuestionId()).orElseThrow(ResourceNotFoundException::new);
-        Answer answer = new Answer(sanitizer.sanitize(form.getAnswerContent()), 0, 0);
+        Answer answer = Answer.builder().content(sanitizer.sanitize(form.getAnswerContent())).recommend(0).dislike(0).build();
         answer.assignMember(member); answer.assignQuestion(question); answers.save(answer);
         return findByQuestion(question.getId());
     }

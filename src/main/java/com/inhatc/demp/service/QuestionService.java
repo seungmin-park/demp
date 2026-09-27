@@ -29,7 +29,13 @@ public class QuestionService {
     @Transactional
     public void createQuestion(Long actorId, QuestionForm questionForm) {
         Member author = memberRepository.findById(actorId).orElseThrow(ResourceNotFoundException::new);
-        Question question = new Question(questionForm.getTitle(), contentSanitizer.sanitize(questionForm.getContent()), 0, 0, 0);
+        Question question = Question.builder()
+                .title(questionForm.getTitle())
+                .content(contentSanitizer.sanitize(questionForm.getContent()))
+                .hits(0)
+                .recommend(0)
+                .dislike(0)
+                .build();
         ArrayList<String> hashtags = questionForm.getHashtags();
 
         question.replaceHashtags(hashtagResolver.resolve(hashtags));

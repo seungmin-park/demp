@@ -59,7 +59,7 @@ class MemberRestDocsTest {
     @Test
     @DisplayName("회원 단일 조회 응답을 문서화한다")
     void documentsMemberGet() throws Exception {
-        Member member = new Member("docs-member", "docs-password", List.of("ROLE_USER"));
+        Member member = Member.builder().username("docs-member").password("docs-password").roles(List.of("ROLE_USER")).build();
         ReflectionTestUtils.setField(member, "id", 41L);
         when(memberService.findById(41L)).thenReturn(member);
 

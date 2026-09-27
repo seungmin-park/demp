@@ -118,7 +118,7 @@ class ApiSecurityTest {
     void forbidsForeignAnswerWrites() throws Exception {
         Member owner = member("security-answer-owner", List.of("ROLE_USER"));
         Member attacker = member("security-answer-attacker", List.of("ROLE_USER"));
-        Answer answer = new Answer("original", 0, 0);
+        Answer answer = Answer.builder().content("original").recommend(0).dislike(0).build();
         answer.assignMember(owner); answer.assignQuestion(question(owner)); answers.save(answer);
         mvc.perform(patch("/api/answer/update").header("X-AUTH-TOKEN", token(attacker)).contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(new UpdateAnswerForm(answer.getId(), "changed"))))
@@ -261,11 +261,15 @@ class ApiSecurityTest {
     }
 
     private Member member(String username, List<String> roles) {
-        Member member = members.save(new Member(username, new BCryptPasswordEncoder().encode("secret"), roles));
+        Member member = members.save(Member.builder()
+                .username(username)
+                .password(new BCryptPasswordEncoder().encode("secret"))
+                .roles(roles)
+                .build());
         memberIds.add(member.getId()); return member;
     }
     private Question question(Member owner) {
-        Question question = new Question("original", "body", 0, 0, 0);
+        Question question = Question.builder().title("original").content("body").hits(0).recommend(0).dislike(0).build();
         question.assignMember(owner); return questions.save(question);
     }
     private String token(Member member) { return tokens.createToken(member.getId().toString(), member.getRoles()); }

@@ -34,9 +34,20 @@ class AnnouncementReportServiceTest {
         assertThat(reports.list(true,0).getContent()).isEmpty();
     }
     private long published() {
-        return repository.save(Announcement.builder().title("제보 테스트").company(new Company("DEMP")).career(new Career(0,0))
-            .description(new Description("본문", "https://example.com/report", null, Set.of(Language.JAVA)))
-            .recruitPeriod(new RecruitPeriod(LocalDateTime.of(2026,1,1,0,0), LocalDateTime.of(2026,12,31,0,0)))
+        return repository.save(Announcement.builder()
+                .title("제보 테스트")
+                .company(Company.builder().name("DEMP").build())
+                .career(Career.builder().minCareer(0).maxCareer(0).build())
+            .description(Description.builder()
+                    .content("본문")
+                    .accessUrl("https://example.com/report")
+                    .payment(null)
+                    .languages(Set.of(Language.JAVA))
+                    .build())
+            .recruitPeriod(RecruitPeriod.builder()
+                    .startedDate(LocalDateTime.of(2026,1,1,0,0))
+                    .deadLineDate(LocalDateTime.of(2026,12,31,0,0))
+                    .build())
             .announcementType(AnnouncementType.EMP).jobPosition(JobPosition.BACKEND).build()).getId();
     }
 }

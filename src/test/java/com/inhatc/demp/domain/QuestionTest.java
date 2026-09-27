@@ -10,9 +10,9 @@ class QuestionTest {
     @Test
     @DisplayName("질문 작성자를 바꾸면 이전 회원 목록에서 질문을 제거한다")
     void movesQuestionBetweenMembers() {
-        Member first = new Member("first", "secret", List.of("ROLE_USER"));
-        Member second = new Member("second", "secret", List.of("ROLE_USER"));
-        Question question = new Question("제목", "본문", 0, 0, 0);
+        Member first = Member.builder().username("first").password("secret").roles(List.of("ROLE_USER")).build();
+        Member second = Member.builder().username("second").password("secret").roles(List.of("ROLE_USER")).build();
+        Question question = Question.builder().title("제목").content("본문").hits(0).recommend(0).dislike(0).build();
         question.assignMember(first);
 
         question.assignMember(second);
@@ -25,9 +25,9 @@ class QuestionTest {
     @Test
     @DisplayName("태그 교체는 이전 양방향 연결을 끊고 새 연결을 맺는다")
     void replacesBothSidesOfHashtagRelation() {
-        Question question = new Question("질문", "내용", 0, 0, 0);
-        Hashtag java = new Hashtag("JAVA");
-        Hashtag spring = new Hashtag("SPRING");
+        Question question = Question.builder().title("질문").content("내용").hits(0).recommend(0).dislike(0).build();
+        Hashtag java = Hashtag.builder().tagName("JAVA").build();
+        Hashtag spring = Hashtag.builder().tagName("SPRING").build();
         question.replaceHashtags(List.of(java));
         QuestionHashtag oldRelation = question.getQuestionHashtags().get(0);
 

@@ -15,8 +15,9 @@ public class AnnouncementReport {
     @Column(length = 1000) private String resolution;
     private String resolvedBy;
     private LocalDateTime resolvedAt;
-    public AnnouncementReport(Announcement announcement, String message, String reporter, LocalDateTime now) {
-        this.announcement = announcement; this.message = message; this.reporter = reporter; this.createdAt = now;
+    @Builder
+    private AnnouncementReport(Announcement announcement, String message, String reporter, LocalDateTime createdAt) {
+        this.announcement = announcement; this.message = message; this.reporter = reporter; this.createdAt = createdAt;
     }
     public void resolve(String note, String actor, LocalDateTime now) {
         if (resolvedAt != null) return;

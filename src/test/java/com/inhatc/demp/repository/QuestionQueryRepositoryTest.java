@@ -34,8 +34,8 @@ class QuestionQueryRepositoryTest {
     @Test
     @DisplayName("태그 필터가 없으면 태그 없는 질문도 검색 결과에 포함한다")
     void includesQuestionWithoutHashtags() {
-        Member member = members.save(new Member("query-member", "hash", List.of("ROLE_USER")));
-        Question question = new Question("태그 없는 질문", "내용", 0, 0, 0);
+        Member member = members.save(Member.builder().username("query-member").password("hash").roles(List.of("ROLE_USER")).build());
+        Question question = Question.builder().title("태그 없는 질문").content("내용").hits(0).recommend(0).dislike(0).build();
         question.assignMember(member);
         questions.save(question);
 
@@ -50,10 +50,10 @@ class QuestionQueryRepositoryTest {
     @Test
     @DisplayName("여러 태그는 OR로, 제목과 내용은 AND로 검색하고 질문을 중복 반환하지 않는다")
     void combinesSearchConditionsWithoutDuplicateQuestions() {
-        Member member = members.save(new Member("query-member", "hash", List.of("ROLE_USER")));
-        Hashtag javaTag = hashtags.save(new Hashtag("JAVA"));
-        Hashtag spring = hashtags.save(new Hashtag("SPRING"));
-        Hashtag css = hashtags.save(new Hashtag("CSS"));
+        Member member = members.save(Member.builder().username("query-member").password("hash").roles(List.of("ROLE_USER")).build());
+        Hashtag javaTag = hashtags.save(Hashtag.builder().tagName("JAVA").build());
+        Hashtag spring = hashtags.save(Hashtag.builder().tagName("SPRING").build());
+        Hashtag css = hashtags.save(Hashtag.builder().tagName("CSS").build());
         Question bothTags = saveQuestion(member, "Java 질문", "guide", javaTag, spring);
         Question springOnly = saveQuestion(member, "Java 실습", "guide", spring);
         saveQuestion(member, "Java CSS", "guide", css);
@@ -77,12 +77,12 @@ class QuestionQueryRepositoryTest {
     @DisplayName("정렬값이 같은 질문도 ID 기준으로 안정되게 페이지를 나눈다")
     @ValueSource(strings = {"createdDate", "hits", "recommend"})
     void slicesTiedQuestionsById(String orderBy) {
-        Member member = members.save(new Member("query-member", "hash", List.of("ROLE_USER")));
-        Hashtag javaTag = hashtags.save(new Hashtag("JAVA"));
-        Hashtag spring = hashtags.save(new Hashtag("SPRING"));
+        Member member = members.save(Member.builder().username("query-member").password("hash").roles(List.of("ROLE_USER")).build());
+        Hashtag javaTag = hashtags.save(Hashtag.builder().tagName("JAVA").build());
+        Hashtag spring = hashtags.save(Hashtag.builder().tagName("SPRING").build());
         LocalDateTime sameDate = LocalDateTime.of(2026, 9, 1, 12, 0);
         for (int i = 0; i < 5; i++) {
-            Question question = new Question("Java " + i, "guide", 0, 0, 0);
+            Question question = Question.builder().title("Java " + i).content("guide").hits(0).recommend(0).dislike(0).build();
             ReflectionTestUtils.setField(question, "createdDate", sameDate);
             question.assignMember(member);
             question.addHashtag(i % 2 == 0 ? javaTag : spring);
@@ -117,7 +117,7 @@ class QuestionQueryRepositoryTest {
     }
 
     private Question saveQuestion(Member member, String title, String content, Hashtag... tags) {
-        Question question = new Question(title, content, 0, 0, 0);
+        Question question = Question.builder().title(title).content(content).hits(0).recommend(0).dislike(0).build();
         question.assignMember(member);
         for (Hashtag tag : tags) {
             question.addHashtag(tag);

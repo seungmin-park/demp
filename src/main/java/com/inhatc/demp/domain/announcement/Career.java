@@ -1,5 +1,6 @@
 package com.inhatc.demp.domain.announcement;
 
+import lombok.Builder;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -15,7 +16,8 @@ public class Career {
     private int minCareer;
     private int maxCareer;
 
-    public Career(int minCareer, int maxCareer) {
+    @Builder
+    private Career(int minCareer, int maxCareer) {
         if (minCareer < 0 || maxCareer < 0) {
             throw new IllegalArgumentException("경력은 음수가 될 수 없습니다.");
         }

@@ -24,7 +24,7 @@ public class HashtagResolver {
         List<Hashtag> resolved = new ArrayList<>();
         for (String name : names) {
             resolved.add(hashtags.findByTagName(name)
-                    .orElseGet(() -> hashtags.save(new Hashtag(name))));
+                    .orElseGet(() -> hashtags.save(Hashtag.builder().tagName(name).build())));
         }
         return resolved;
     }

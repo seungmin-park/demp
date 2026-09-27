@@ -52,10 +52,17 @@ class AnnouncementServiceTest {
     @DisplayName("공고의 상세·스크롤·검색 이미지 주소는 설정한 공개 주소를 사용한다")
     void usesConfiguredImageUrlInResponses() {
         Announcement announcement = Announcement.builder().title("이미지 공고")
-                .career(new Career(0, 1)).description(new Description("본문", "https://example.test/job", 0, Set.of()))
-                .company(new Company("DEMP")).image(new UploadFile("image.png", "saved.png"))
-                .recruitPeriod(new RecruitPeriod(LocalDateTime.of(2026, 9, 1, 0, 0),
-                        LocalDateTime.of(2026, 9, 30, 0, 0)))
+                .career(Career.builder()
+                        .minCareer(0)
+                        .maxCareer(1)
+                        .build()).description(Description.builder().content("본문").accessUrl("https://example.test/job").payment(0).languages(Set.of()).build())
+                .company(Company.builder()
+                        .name("DEMP")
+                        .build()).image(UploadFile.builder().uploadFileName("image.png").saveFileName("saved.png").build())
+                .recruitPeriod(RecruitPeriod.builder()
+                        .startedDate(LocalDateTime.of(2026, 9, 1, 0, 0))
+                        .deadLineDate(LocalDateTime.of(2026, 9, 30, 0, 0))
+                        .build())
                 .announcementType(AnnouncementType.EMP).jobPosition(JobPosition.BACKEND)
                 .build();
         announcementService.saveAnnouncementEntity(announcement);
@@ -77,7 +84,10 @@ class AnnouncementServiceTest {
         request.setContent(description.getContent());
         request.setAccessUrl(description.getAccessUrl());
         request.setPayment(description.getPayment());
-        when(fileService.save(request.getImage())).thenReturn(new UploadFile("image.png", "saved.png"));
+        when(fileService.save(request.getImage())).thenReturn(UploadFile.builder()
+                .uploadFileName("image.png")
+                .saveFileName("saved.png")
+                .build());
 
         announcementService.createAnnouncement(request);
 
@@ -90,9 +100,9 @@ class AnnouncementServiceTest {
     void rejectsDuplicateBeforeUpload() {
         announcementService.saveAnnouncementEntity(Announcement.builder()
                 .title("중복 공고")
-                .career(new Career(0, 1))
+                .career(Career.builder().minCareer(0).maxCareer(1).build())
                 .description(description())
-                .company(new Company("DEMP"))
+                .company(Company.builder().name("DEMP").build())
                 .build());
 
         assertThatThrownBy(() -> announcementService.createAnnouncement(request("중복 공고")))
@@ -106,7 +116,7 @@ class AnnouncementServiceTest {
     void sanitizeJoin() {
         Description description = description();
         Announcement announcement = Announcement.builder().title("엔티티 정제 공고")
-                .description(description).career(new Career(0, 1)).build();
+                .description(description).career(Career.builder().minCareer(0).maxCareer(1).build()).build();
 
         announcementService.saveAnnouncementEntity(announcement);
 
@@ -133,8 +143,12 @@ class AnnouncementServiceTest {
     }
 
     private Description description() {
-        return new Description("<p onclick=\"alert(1)\"><strong>채용</strong></p><script>alert(1)</script>",
-                "https://example.com/jobs", 3000, Set.of());
+        return Description.builder()
+                .content("<p onclick=\"alert(1)\"><strong>채용</strong></p><script>alert(1)</script>")
+                .accessUrl("https://example.com/jobs")
+                .payment(3000)
+                .languages(Set.of())
+                .build();
     }
 
     private AnnouncementCreateRequest request(String title) {

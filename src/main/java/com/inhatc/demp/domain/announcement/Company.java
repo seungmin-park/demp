@@ -1,5 +1,6 @@
 package com.inhatc.demp.domain.announcement;
 
+import lombok.Builder;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
 import lombok.EqualsAndHashCode;
@@ -14,7 +15,8 @@ public class Company {
 
     private String name;
 
-    public Company(String name) {
+    @Builder
+    private Company(String name) {
         this.name = name;
     }
 }

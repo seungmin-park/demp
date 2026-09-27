@@ -1,5 +1,6 @@
 package com.inhatc.demp.domain.announcement;
 
+import lombok.Builder;
 import java.time.LocalDateTime;
 import jakarta.persistence.Embeddable;
 import lombok.AccessLevel;
@@ -16,7 +17,8 @@ public class RecruitPeriod {
     private LocalDateTime startedDate;
     private LocalDateTime deadLineDate;
 
-    public RecruitPeriod(LocalDateTime startedDate, LocalDateTime deadLineDate) {
+    @Builder
+    private RecruitPeriod(LocalDateTime startedDate, LocalDateTime deadLineDate) {
         if (startedDate == null || deadLineDate == null) {
             throw new IllegalArgumentException("공고 기간은 필수입니다.");
         }

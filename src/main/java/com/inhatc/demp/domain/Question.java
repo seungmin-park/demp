@@ -1,5 +1,6 @@
 package com.inhatc.demp.domain;
 
+import lombok.Builder;
 import jdk.jfr.Timestamp;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -69,7 +70,8 @@ public class Question {
         }
     }
 
-    public Question(String title, String content, int hits, int recommend, int dislike) {
+    @Builder
+    private Question(String title, String content, int hits, int recommend, int dislike) {
         this.title = title;
         this.content = content;
         this.hits = hits;

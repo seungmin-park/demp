@@ -38,7 +38,10 @@ public class AdminAnnouncementService {
         if (!repository.existsById(id)) throw new ApiException(HttpStatus.NOT_FOUND);
         if (repository.sourceExists(request.sourceKey(), id)) throw new ApiException(HttpStatus.CONFLICT);
         Career career = request.toCareer();
-        RecruitPeriod period = new RecruitPeriod(request.getStartedDate(), request.getDeadLineDate());
+        RecruitPeriod period = RecruitPeriod.builder()
+                .startedDate(request.getStartedDate())
+                .deadLineDate(request.getDeadLineDate())
+                .build();
         UploadFile replacement = request.getImage() == null || request.getImage().isEmpty() ? null : files.save(request.getImage());
         List<UploadFile> uploaded = List.of();
         List<String> oldKeys;
@@ -54,7 +57,7 @@ public class AdminAnnouncementService {
                         .forEach(file -> keys.add(file.getSaveFileName()));
                 Description description = request.toDescription(body.html());
                 item.replaceBodyImages(body.images());
-                item.revise(request.getTitle(), new Company(request.getCompany()), career, period, description,
+                item.revise(request.getTitle(), Company.builder().name(request.getCompany()).build(), career, period, description,
                         request.getType(), request.getPosition(), replacement);
                 item.changeRecruitment(request.getRecruitmentAudience(), request.getCohort(), request.getStipendAmount(), request.getStipendNote());
                 item.changeEducation(request.toEducationDetails());

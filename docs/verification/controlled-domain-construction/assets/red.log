@@ -1,0 +1,81 @@
+> Task :compileJava UP-TO-DATE
+> Task :processResources UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :compileTestJava
+> Task :processTestResources UP-TO-DATE
+> Task :testClasses
+
+> Task :test FAILED
+
+DomainConstructionTest > 도메인은 공개 생성자로 생성 규칙을 우회할 수 없다 > [1] type = class com.inhatc.demp.domain.Member FAILED
+    java.lang.AssertionError at DomainConstructionTest.java:22
+
+DomainConstructionTest > 도메인은 공개 생성자로 생성 규칙을 우회할 수 없다 > [2] type = class com.inhatc.demp.domain.Question FAILED
+    java.lang.AssertionError at DomainConstructionTest.java:22
+
+DomainConstructionTest > 도메인은 공개 생성자로 생성 규칙을 우회할 수 없다 > [3] type = class com.inhatc.demp.domain.Answer FAILED
+    java.lang.AssertionError at DomainConstructionTest.java:22
+
+DomainConstructionTest > 도메인은 공개 생성자로 생성 규칙을 우회할 수 없다 > [4] type = class com.inhatc.demp.domain.Hashtag FAILED
+    java.lang.AssertionError at DomainConstructionTest.java:22
+
+DomainConstructionTest > 도메인은 공개 생성자로 생성 규칙을 우회할 수 없다 > [5] type = class com.inhatc.demp.domain.QuestionHashtag FAILED
+    java.lang.AssertionError at DomainConstructionTest.java:22
+
+DomainConstructionTest > 도메인은 공개 생성자로 생성 규칙을 우회할 수 없다 > [7] type = class com.inhatc.demp.domain.announcement.Career FAILED
+    java.lang.AssertionError at DomainConstructionTest.java:22
+
+DomainConstructionTest > 도메인은 공개 생성자로 생성 규칙을 우회할 수 없다 > [8] type = class com.inhatc.demp.domain.announcement.Company FAILED
+    java.lang.AssertionError at DomainConstructionTest.java:22
+
+DomainConstructionTest > 도메인은 공개 생성자로 생성 규칙을 우회할 수 없다 > [9] type = class com.inhatc.demp.domain.announcement.Description FAILED
+    java.lang.AssertionError at DomainConstructionTest.java:22
+
+DomainConstructionTest > 도메인은 공개 생성자로 생성 규칙을 우회할 수 없다 > [10] type = class com.inhatc.demp.domain.announcement.RecruitPeriod FAILED
+    java.lang.AssertionError at DomainConstructionTest.java:22
+
+DomainConstructionTest > 도메인은 공개 생성자로 생성 규칙을 우회할 수 없다 > [11] type = class com.inhatc.demp.domain.announcement.UploadFile FAILED
+    java.lang.AssertionError at DomainConstructionTest.java:22
+
+DomainConstructionTest > 도메인은 공개 생성자로 생성 규칙을 우회할 수 없다 > [12] type = class com.inhatc.demp.domain.announcement.EducationDetails FAILED
+    java.lang.AssertionError at DomainConstructionTest.java:22
+
+DomainConstructionTest > 도메인은 공개 생성자로 생성 규칙을 우회할 수 없다 > [13] type = class com.inhatc.demp.domain.announcement.PublicationRevision FAILED
+    java.lang.AssertionError at DomainConstructionTest.java:22
+
+DomainConstructionTest > 도메인은 공개 생성자로 생성 규칙을 우회할 수 없다 > [14] type = class com.inhatc.demp.domain.announcement.AnnouncementReport FAILED
+    java.lang.AssertionError at DomainConstructionTest.java:22
+
+DomainConstructionTest > JPA 복원을 위한 기본 생성자는 protected로 유지한다 > [1] type = class com.inhatc.demp.domain.Member FAILED
+    org.opentest4j.AssertionFailedError at DomainConstructionTest.java:30
+
+DomainConstructionTest > JPA 복원을 위한 기본 생성자는 protected로 유지한다 > [4] type = class com.inhatc.demp.domain.Hashtag FAILED
+    org.opentest4j.AssertionFailedError at DomainConstructionTest.java:30
+
+DomainConstructionTest > JPA 복원을 위한 기본 생성자는 protected로 유지한다 > [5] type = class com.inhatc.demp.domain.QuestionHashtag FAILED
+    org.opentest4j.AssertionFailedError at DomainConstructionTest.java:30
+
+DomainConstructionTest > JPA 복원을 위한 기본 생성자는 protected로 유지한다 > [11] type = class com.inhatc.demp.domain.announcement.UploadFile FAILED
+    org.opentest4j.AssertionFailedError at DomainConstructionTest.java:30
+
+28 tests completed, 17 failed
+
+[Incubating] Problems report is available at: file:///Users/seungmin/Desktop/repo/archive/demp/.worktrees/controlled-domain-construction/backend/build/reports/problems/problems-report.html
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':test'.
+> There were failing tests. See the report at: file:///Users/seungmin/Desktop/repo/archive/demp/.worktrees/controlled-domain-construction/backend/build/reports/tests/test/index.html
+
+* Try:
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+
+Deprecated Gradle features were used in this build, making it incompatible with Gradle 10.
+
+You can use '--warning-mode all' to show the individual deprecation warnings and determine if they come from your own scripts or plugins.
+
+For more on this, please refer to https://docs.gradle.org/9.8.0/userguide/command_line_interface.html#sec:command_line_warnings in the Gradle documentation.
+
+BUILD FAILED in 1s
+5 actionable tasks: 2 executed, 3 up-to-date

@@ -22,7 +22,11 @@ class DatabaseLifecycleTest {
         String database = "lifecycle_" + UUID.randomUUID().toString().replace("-", "");
         prepareSchema(database);
         try (ConfigurableApplicationContext context = start(database, "")) {
-            context.getBean(MemberRepository.class).save(new Member("retained-member", "password", List.of("ROLE_USER")));
+            context.getBean(MemberRepository.class).save(Member.builder()
+                    .username("retained-member")
+                    .password("password")
+                    .roles(List.of("ROLE_USER"))
+                    .build());
         }
         try (ConfigurableApplicationContext context = start(database, "")) {
             assertThat(context.getBean(MemberRepository.class).findByUsername("retained-member")).isPresent();

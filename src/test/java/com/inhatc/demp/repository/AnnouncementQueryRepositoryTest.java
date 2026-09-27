@@ -392,20 +392,33 @@ class AnnouncementQueryRepositoryTest {
     }
 
     private void saveAtPeriod(String title, LocalDateTime start, LocalDateTime end) {
-        announcementRepository.save(Announcement.builder().title(title).career(new Career(0, 3))
-                .description(new Description("body", "https://example.test", 0, Set.of(Language.JAVA)))
-                .company(new Company("company")).image(new UploadFile())
-                .recruitPeriod(new RecruitPeriod(start, end)).announcementType(AnnouncementType.EMP)
+        announcementRepository.save(Announcement.builder().title(title).career(Career.builder().minCareer(0).maxCareer(3).build())
+                .description(Description.builder()
+                        .content("body")
+                        .accessUrl("https://example.test")
+                        .payment(0)
+                        .languages(Set.of(Language.JAVA))
+                        .build())
+                .company(Company.builder().name("company").build()).image(UploadFile.builder().build())
+                .recruitPeriod(RecruitPeriod.builder().startedDate(start).deadLineDate(end).build()).announcementType(AnnouncementType.EMP)
                 .jobPosition(JobPosition.BACKEND).build());
     }
 
     private Announcement saveAnnouncement(String title, AnnouncementType type, JobPosition position,
                                           Set<Language> languages, int payment) {
         return announcementRepository.save(Announcement.builder()
-                .title(title).career(new Career(0, 3))
-                .description(new Description("description", "https://example.test/jobs", payment, new HashSet<>(languages)))
-                .company(new Company("company")).image(new UploadFile())
-                .recruitPeriod(new RecruitPeriod(LocalDateTime.of(2021, 3, 4, 0, 0), LocalDateTime.of(2021, 3, 21, 0, 0)))
+                .title(title).career(Career.builder().minCareer(0).maxCareer(3).build())
+                .description(Description.builder()
+                        .content("description")
+                        .accessUrl("https://example.test/jobs")
+                        .payment(payment)
+                        .languages(new HashSet<>(languages))
+                        .build())
+                .company(Company.builder().name("company").build()).image(UploadFile.builder().build())
+                .recruitPeriod(RecruitPeriod.builder()
+                        .startedDate(LocalDateTime.of(2021, 3, 4, 0, 0))
+                        .deadLineDate(LocalDateTime.of(2021, 3, 21, 0, 0))
+                        .build())
                 .announcementType(type).jobPosition(position).build());
     }
 }

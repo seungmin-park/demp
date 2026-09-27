@@ -1,0 +1,7 @@
+PASS empty-bound publication status stays DRAFT/private
+PASS IDN original and punycode duplicate contract
+PASS experienced search excludes NEW and includes ANY
+PASS member report -> operator resolution and access restrictions
+PASS education tuition unknown / stipend / cohort / authenticated audit; id=5
+PASS empty education search returns 200 and empty collection
+T96 REAL HTTP ASSERTIONS: PASS

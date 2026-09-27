@@ -76,7 +76,13 @@ public class Announcement {
         this.sourceIdentifier = sourceIdentifier;
         this.applicationUrl = applicationUrl == null || applicationUrl.isBlank() ? null : applicationUrl;
         this.sourceVerifiedAt = verified ? now : null;
-        publicationHistory.add(new PublicationRevision(actor, now, publicationStatus, title, description.getAccessUrl()));
+        publicationHistory.add(PublicationRevision.builder()
+                .actor(actor)
+                .changedAt(now)
+                .status(publicationStatus)
+                .title(title)
+                .sourceUrl(description.getAccessUrl())
+                .build());
     }
 
     @Embedded

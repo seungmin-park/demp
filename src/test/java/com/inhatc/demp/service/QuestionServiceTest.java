@@ -49,7 +49,11 @@ class QuestionServiceTest {
     @Test
     @DisplayName("질문과 해시태그를 저장한 결과를 다시 조회한다")
     void saveQuestion() {
-        Member member = memberRepository.save(new Member("question-service-member", "password", List.of("ROLE_USER")));
+        Member member = memberRepository.save(Member.builder()
+                .username("question-service-member")
+                .password("password")
+                .roles(List.of("ROLE_USER"))
+                .build());
         QuestionForm form = new QuestionForm("제목테스트", "내용테스트", "question-service-member", new ArrayList<>(List.of("test-java", "test-jpa")));
 
         questionService.createQuestion(member.getId(), form);
@@ -68,7 +72,11 @@ class QuestionServiceTest {
     @Test
     @DisplayName("선택한 해시태그에 해당하는 질문만 조회한다")
     void findAllByHashtag() {
-        Member member = memberRepository.save(new Member("question-service-member", "password", List.of("ROLE_USER")));
+        Member member = memberRepository.save(Member.builder()
+                .username("question-service-member")
+                .password("password")
+                .roles(List.of("ROLE_USER"))
+                .build());
         saveQuestion(member, "Java 질문", "Java 내용", "test-java", "test-jpa");
         saveQuestion(member, "두 번째 Java 질문", "두 번째 Java 내용", "test-java");
         saveQuestion(member, "CSS 질문", "CSS 내용", "test-css");
@@ -84,7 +92,11 @@ class QuestionServiceTest {
     @Test
     @DisplayName("저장한 해시태그를 중복 없이 조회한다")
     void findAllHashtags() {
-        Member member = memberRepository.save(new Member("question-service-member", "password", List.of("ROLE_USER")));
+        Member member = memberRepository.save(Member.builder()
+                .username("question-service-member")
+                .password("password")
+                .roles(List.of("ROLE_USER"))
+                .build());
         saveQuestion(member, "질문1", "내용1", "test-java", "test-jpa");
         saveQuestion(member, "질문2", "내용2", "test-spring", "test-jpa");
         saveQuestion(member, "질문3", "내용3", "test-html", "test-css");
@@ -95,7 +107,11 @@ class QuestionServiceTest {
     @Test
     @DisplayName("같은 이름의 태그를 두 질문에 등록해도 태그는 하나만 저장한다")
     void reusesHashtagByName() {
-        Member member = memberRepository.save(new Member("question-service-member", "hash", List.of("ROLE_USER")));
+        Member member = memberRepository.save(Member.builder()
+                .username("question-service-member")
+                .password("hash")
+                .roles(List.of("ROLE_USER"))
+                .build());
         questionService.createQuestion(member.getId(), new QuestionForm("첫 질문", "내용", member.getUsername(),
                 new ArrayList<>(List.of("JAVA"))));
         questionService.createQuestion(member.getId(), new QuestionForm("둘째 질문", "내용", member.getUsername(),
@@ -108,7 +124,11 @@ class QuestionServiceTest {
     @Test
     @DisplayName("한 질문의 태그를 교체해도 다른 질문의 같은 이름 태그 연결은 유지된다")
     void replacingOneQuestionsTagsKeepsOtherQuestionsRelation() {
-        Member member = memberRepository.save(new Member("question-service-member", "hash", List.of("ROLE_USER")));
+        Member member = memberRepository.save(Member.builder()
+                .username("question-service-member")
+                .password("hash")
+                .roles(List.of("ROLE_USER"))
+                .build());
         questionService.createQuestion(member.getId(), new QuestionForm("첫 질문", "내용", member.getUsername(),
                 new ArrayList<>(List.of("JAVA"))));
         questionService.createQuestion(member.getId(), new QuestionForm("둘째 질문", "내용", member.getUsername(),
@@ -127,7 +147,11 @@ class QuestionServiceTest {
     @Test
     @DisplayName("태그는 공백과 중복을 제거하고 대소문자 차이는 보존한다")
     void normalizesTagNamesWithoutChangingCase() {
-        Member member = memberRepository.save(new Member("question-service-member", "hash", List.of("ROLE_USER")));
+        Member member = memberRepository.save(Member.builder()
+                .username("question-service-member")
+                .password("hash")
+                .roles(List.of("ROLE_USER"))
+                .build());
         questionService.createQuestion(member.getId(), new QuestionForm("질문", "내용", member.getUsername(),
                 new ArrayList<>(List.of(" JAVA ", "JAVA", " ", "java"))));
         Question saved = questionRepository.findAll().get(0);
@@ -140,7 +164,11 @@ class QuestionServiceTest {
     @Test
     @DisplayName("동일한 태그로 질문을 수정해도 관계와 태그는 중복되지 않는다")
     void updatingWithSameTagKeepsSingleRelation() {
-        Member member = memberRepository.save(new Member("question-service-member", "hash", List.of("ROLE_USER")));
+        Member member = memberRepository.save(Member.builder()
+                .username("question-service-member")
+                .password("hash")
+                .roles(List.of("ROLE_USER"))
+                .build());
         questionService.createQuestion(member.getId(), new QuestionForm("질문", "내용", member.getUsername(),
                 new ArrayList<>(List.of("JAVA"))));
         Question question = questionRepository.findAll().get(0);
@@ -157,7 +185,11 @@ class QuestionServiceTest {
     @Test
     @DisplayName("질문 삭제 시 연결된 답변도 삭제한다")
     void deleteQuestion() {
-        Member member = memberRepository.save(new Member("question-service-member", "password", List.of("ROLE_USER")));
+        Member member = memberRepository.save(Member.builder()
+                .username("question-service-member")
+                .password("password")
+                .roles(List.of("ROLE_USER"))
+                .build());
         Question question = saveQuestion(member, "질문", "내용", "test-java");
         Long questionId = question.getId();
         answerService.createAnswerAndList(member.getId(), new AnswerForm(member.getUsername(), questionId, "댓글"));
@@ -172,7 +204,11 @@ class QuestionServiceTest {
     @Test
     @DisplayName("질문 제목과 내용을 수정하고 기존 해시태그를 교체한다")
     void updateQuestion() {
-        Member member = memberRepository.save(new Member("question-service-member", "password", List.of("ROLE_USER")));
+        Member member = memberRepository.save(Member.builder()
+                .username("question-service-member")
+                .password("password")
+                .roles(List.of("ROLE_USER"))
+                .build());
         Question question = saveQuestion(member, "원래 제목", "원래 내용", "test-java");
         Long questionId = question.getId();
 
@@ -199,7 +235,11 @@ class QuestionServiceTest {
     @Test
     @DisplayName("질문 등록과 수정은 HTML을 정제하고 별도 조회에 반영한다")
     void persistsSanitizedContent() {
-        Member member = memberRepository.save(new Member("question-service-member", "hash", List.of("ROLE_USER")));
+        Member member = memberRepository.save(Member.builder()
+                .username("question-service-member")
+                .password("hash")
+                .roles(List.of("ROLE_USER"))
+                .build());
         questionService.createQuestion(member.getId(), new QuestionForm("safe-question", "<b>safe</b><script>bad()</script>", "forged", new ArrayList<>()));
         Question saved = questionRepository.findAll().get(0);
         assertThat(saved.getContent()).isEqualTo("<b>safe</b>");
