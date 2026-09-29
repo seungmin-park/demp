@@ -14,6 +14,8 @@ jobs:
           distribution: zulu
           java-version: '25'
           cache: gradle
+      - name: Check agent boundaries and official documentation versions
+        run: python3 scripts/check_agent_contracts.py
       - name: Run all tests including REST Docs
         run: ./gradlew clean test --console=plain
       - name: Generate API HTML

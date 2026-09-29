@@ -762,3 +762,11 @@ T103: 최종 56개 그룹·2,520표본, 316개 백엔드 테스트·REST Docs·b
 Phase15: 브랜치 `refactor/project-documentation`, worktree `.worktrees/project-documentation/{backend,frontend}`. T104 양쪽 README 전면 개편과 운영 문서 분리. 현재 기능·화면·설계 도식·실측 개선/악화·실행·검증 경계를 정리했다.
 
 T104/T105 최종: 성능 merge825dbab 이후 양쪽 프로젝트 문서를 정리했다. B316·F156·headed20·실제 cmux 반응 저장/전환/취소 QA 통과. 로컬 문서 링크56개·원시 체크섬·벤치마크 클래스 JAR 제외 확인. 독립 문서 리뷰의 일반 사용자/관리자 기능 구분·Node 설치·운영 환경변수 안내 수정. 두 main과 `refactor/project-documentation` 브랜치 원격 동기화, 미체크 작업0, 브랜치/worktree 보존. [최종 인수 기록](docs/verification/project-documentation/t104-t105.md).
+
+## Phase 16 — 에이전트 검증 경로와 공식 문서 동기화 (2026-09-29)
+
+브랜치 `refactor/agent-verification-and-official-docs`, worktree `.worktrees/agent-verification-and-official-docs/{backend,frontend}`.
+
+- [x] T106: 양쪽 저장소의 현재 버전과 공식 문서 출처·적용 범위를 맞추고 manifest 변경을 CI가 거절한다. 2026-09-29 `docs/engineering/official-docs.{json,md}`와 양쪽 CI 검사를 추가했다. 실제 manifest 버전 대조 종료 0, 임시 `0.0.0` 불일치 종료 1. Java 25/Gradle 9.8.0, Node 24.21.0과 lockfile 설치 버전을 확인했다.
+- [ ] T107: 반응 저장 기능 지도·책임 경계·로컬 verify 스킬을 실제 경로에 연결하고 임시 위반으로 강제 검사 실패를 입증한다.
+- [ ] T108: 현재 cmux의 실제 Spring/H2 브라우저 흐름·기존 자동 테스트·문서 링크 검증 후 작업별 커밋, 브랜치 보존, 기존 지시의 main 병합/push.

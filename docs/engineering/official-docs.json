@@ -1,0 +1,26 @@
+{
+  "checked_on": "2026-09-29",
+  "entries": [
+    {
+      "name": "Java",
+      "version": "25",
+      "manifest": ".tool-versions",
+      "url": "https://docs.oracle.com/en/java/javase/25/docs/api/",
+      "scope": "고정된 Java SE 25 API"
+    },
+    {
+      "name": "Spring Boot",
+      "version": "4.1.1",
+      "manifest": "build.gradle",
+      "url": "https://docs.spring.io/spring-boot/reference/",
+      "scope": "2026-09-29 확인 당시 4.1.1, 링크는 최신 버전으로 이동 가능"
+    },
+    {
+      "name": "Gradle",
+      "version": "9.8.0",
+      "manifest": "gradle/wrapper/gradle-wrapper.properties",
+      "url": "https://docs.gradle.org/current/userguide/java_plugin.html",
+      "scope": "2026-09-29 확인 당시 9.8.0, 링크는 최신 버전으로 이동 가능"
+    }
+  ]
+}
