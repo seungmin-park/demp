@@ -768,5 +768,5 @@ T104/T105 최종: 성능 merge825dbab 이후 양쪽 프로젝트 문서를 정�
 브랜치 `refactor/agent-verification-and-official-docs`, worktree `.worktrees/agent-verification-and-official-docs/{backend,frontend}`.
 
 - [x] T106: 양쪽 저장소의 현재 버전과 공식 문서 출처·적용 범위를 맞추고 manifest 변경을 CI가 거절한다. 2026-09-29 `docs/engineering/official-docs.{json,md}`와 양쪽 CI 검사를 추가했다. 실제 manifest 버전 대조 종료 0, 임시 `0.0.0` 불일치 종료 1. Java 25/Gradle 9.8.0, Node 24.21.0과 lockfile 설치 버전을 확인했다.
-- [ ] T107: 반응 저장 기능 지도·책임 경계·로컬 verify 스킬을 실제 경로에 연결하고 임시 위반으로 강제 검사 실패를 입증한다.
+- [x] T107: 반응 저장 기능 지도·책임 경계·로컬 verify 스킬을 실제 경로에 연결하고 임시 위반으로 강제 검사 실패를 입증한다. 2026-09-29 양쪽 기능 지도·아키텍처·verify 스킬과 README/AGENTS 진입점을 추가했다. 임시 Java 저장소 직접 쓰기와 Vue API 직접 import가 각각 종료 1; 이름만 같은 Java 서비스 파일도 거절됨을 확인했다. 정상 소스는 양쪽 검사 종료 0.
 - [ ] T108: 현재 cmux의 실제 Spring/H2 브라우저 흐름·기존 자동 테스트·문서 링크 검증 후 작업별 커밋, 브랜치 보존, 기존 지시의 main 병합/push.

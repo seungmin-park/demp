@@ -108,3 +108,7 @@ View/Component ── 사용자 이벤트 ──► Store/상태 관리 ──�
 - 기존 실패도 원인을 밝힌다. 관련 없다는 설명 없이 무시하거나 실행 불가를 통과로 취급하지 않는다.
 - 컴파일·테스트·lint·build의 필수 검증이 실패한 상태를 배포 가능하다고 보고하지 않는다.
 - 문서만 변경한 작업은 링크·참조·내용 정합성을 검증하고, 애플리케이션 테스트를 실행한 것으로 표현하지 않는다.
+
+## 에이전트 검증 진입점
+
+[기능 지도](docs/engineering/feature-map.md) → [책임 경계](docs/engineering/architecture.md) → [검증 스킬](.agents/skills/verify-demp/SKILL.md) 순서로 반응 저장 기능의 관찰 가능한 경로를 확인한다. `python3 scripts/check_agent_contracts.py`는 반응 쓰기 소유권과 [공식 문서 기록](docs/engineering/official-docs.md)의 로컬 버전 일치를 CI에서 검사한다. 실제 Spring/H2 사용자 흐름은 위 cmux 규칙대로 검증한다. 형제 프런트 저장소에는 별도의 지침·검증 스킬이 있다.

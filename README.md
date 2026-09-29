@@ -188,3 +188,7 @@ python3 scripts/verify_local_flow.py  # 별도로 실행 중인 임시 local 서
 운영 배포는 수행하지 않았습니다. 실제 MySQL 복제본에서 수동 스키마 변경·기존 데이터·인덱스·동시 부하를 확인해야 합니다. 이번 성능 측정은 로컬 재현 실험이며 운영 처리량이나 SLA가 아닙니다. 운영 이미지의 이용 권한·출처는 등록 시 확인해야 합니다.
 
 운영은 `ddl-auto=validate`이며 환경변수, CORS, JWT 키 전환, 파일 저장과 롤백 절차는 [운영 가이드](docs/operations.md)에 정리했습니다. 기능별 의도적 범위·실패 기록·작업별 커밋 근거는 [tasks.md](tasks.md)와 `docs/verification/`에 남겼습니다.
+
+## 에이전트 작업과 공식 문서
+
+[기능 지도](docs/engineering/feature-map.md), [공식 문서·버전표](docs/engineering/official-docs.md), [반응 저장 검증 절차](.agents/skills/verify-demp/SKILL.md)를 함께 사용한다. `python3 scripts/check_agent_contracts.py`는 버전 기록과 반응 저장의 쓰기 경계를 검사한다. 이 검사는 실제 API·브라우저 테스트를 대체하지 않는다.
