@@ -1,33 +1,45 @@
-name: backend-ci
+name: DEMP CI
 
 on:
-  push:
   pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: demp-verify-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   verify:
+    name: DEMP verify
     runs-on: ubuntu-22.04
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-java@v4
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@b6effb05e454b25005698d916606bdc6ffcbf961 # v5
         with:
           distribution: zulu
           java-version: '25'
           cache: gradle
-      - name: Check agent boundaries and official documentation versions
-        run: python3 scripts/check_agent_contracts.py
-      - name: Run all tests including REST Docs
-        run: ./gradlew clean test --console=plain
-      - name: Generate API HTML
-        run: ./gradlew asciidoctor bootJar --console=plain
-      - name: Check generated API document
-        run: |
-          test -s build/docs/asciidoc/index.html
-          if grep -R -n -E 'test-only-jwt-secret|local-only-jwt-secret|test-access-key|test-secret-key' build/docs/asciidoc build/generated-snippets; then
-            echo 'Test-only internal credentials appeared in API documentation' >&2
-            exit 1
-          fi
-          if grep -n -E 'Unresolved directive|include::' build/docs/asciidoc/index.html; then
-            echo 'API document has unresolved snippets' >&2
-            exit 1
-          fi
+      - name: Verify boundaries, tests, documentation and local HTTP flow
+        run: bash scripts/verify.sh
+      - name: Preserve verification evidence
+        if: always()
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: demp-verification-${{ github.run_id }}-${{ github.run_attempt }}
+          retention-days: 7
+          if-no-files-found: error
+          path: |
+            build/test-results/test/
+            build/reports/tests/test/
+            build/verification/
+            build/generated-snippets/
+            build/docs/asciidoc/

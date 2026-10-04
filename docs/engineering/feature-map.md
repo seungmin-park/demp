@@ -1,5 +1,7 @@
 # 기능 지도
 
+공용 CI 경로와 검증 책임은 [CI·보호된 전달](ci-and-delivery.md)을 따른다. `bash scripts/verify.sh`는 기존 소유권 검사, 실제 전체 테스트와 구조 검사, 필수 XML, 생성 문서·JAR·인증 HTTP 일치, 방금 만든 JAR의 Spring/H2 저장·재조회 경로를 연결한다. 프런트 실제 브라우저 경로는 별도로 검증한다.
+
 | 기능 | 사용자 경로 | 저장 소유자 | 검증 |
 |---|---|---|---|
 | 질문·답변 반응 | 로그인 → 질문 상세 → 추천/비추천 → 새로고침 | `ContentReactionService` + DB | 아래 흐름, `./gradlew test --tests '*ContentReaction*'` 및 실제 cmux 브라우저 |

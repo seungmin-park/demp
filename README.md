@@ -125,8 +125,7 @@ DEV_API_TARGET=http://127.0.0.1:18080 npm run dev
 
 ```sh
 # demp
-python3 scripts/check_agent_contracts.py
-./gradlew test asciidoctor bootJar
+bash scripts/verify.sh
 
 # dempfrontend
 npm run check:agent-contracts

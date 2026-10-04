@@ -111,4 +111,6 @@ View/Component ── 사용자 이벤트 ──► Store/상태 관리 ──�
 
 ## 에이전트 검증 진입점
 
+공용 전체 CI 검증은 Java 25의 `JAVA_HOME`을 지정한 `bash scripts/verify.sh`다. [CI·보호된 전달](docs/engineering/ci-and-delivery.md)에 따라 동작의 정확성은 동작 테스트로, 의존성과 변경 경로의 형태는 구조 검사로, 규칙의 적절한 소유 객체·이름·공개 계약은 리뷰로 확인한다. 핵심 suite 삭제·이름 변경에는 [필수 목록](docs/engineering/required-test-suites.json)과 대체 검증을 함께 리뷰한다. PR·머지까지 요청된 작업만 보호 설정 조회 후 정확한 head SHA의 native auto-merge를 신청하고 실제 머지·main CI를 확인한다. 일반 구현·체크 요청의 commit 규칙과 로컬 cmux 규칙은 유지한다.
+
 [기능 지도](docs/engineering/feature-map.md) → [책임 경계](docs/engineering/architecture.md) → [검증 스킬](.agents/skills/verify-demp/SKILL.md) 순서로 반응 저장 기능의 관찰 가능한 경로를 확인한다. `python3 scripts/check_agent_contracts.py`는 반응 쓰기 소유권과 [공식 문서 기록](docs/engineering/official-docs.md)의 로컬 버전 일치를 CI에서 검사한다. 실제 Spring/H2 사용자 흐름은 위 cmux 규칙대로 검증한다. 형제 프런트 저장소에는 별도의 지침·검증 스킬이 있다.
