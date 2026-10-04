@@ -25,8 +25,8 @@ DEMP의 현재 Service는 구체 클래스이므로 PlugPass의 인터페이스�
 - [x] 실제 구조 위반과 필수 보고서 누락을 임시로 넣어 거부 확인 후 복원.
 - [x] Refactor: 검사 정책·입력·실행 조정을 분리하고 이름/호출부/공개 계약 검토.
 - [x] 전체 공용 검증 및 문서/JSON/diff 정합성 확인.
-- [ ] main 보호·native auto-merge 설정, 서명 commit/push와 PR 생성·첨부.
-- [ ] 정확한 PR head CI 성공 → 자동 squash 머지 → 머지된 main CI 성공 확인.
+- [x] main 보호·native auto-merge 설정, 서명 commit/push와 PR 생성·첨부.
+- [x] 정확한 PR head CI 성공 → 자동 squash 머지 → 머지된 main CI 성공 확인(PR #1).
 
 ## 검증 환경과 한계
 
@@ -51,3 +51,13 @@ DEMP의 현재 Service는 구체 클래스이므로 PlugPass의 인터페이스�
 probe와 최초 Red 로그는 로컬 `/tmp/demp-ci-*.log`, 최종 실행 산출물은 `build/verification/`에 남긴다. GitHub의 필수 check와 머지 후 main 실행은 PR/checks의 정확한 SHA에서 별도로 확인한다.
 
 복원 후 최종 공용 검증도 종료 0, Java 333개·Python 15개·실패/오류/skip 0과 동일한 실제 HTTP assertion을 확인했다. 위 GitHub 전달 체크리스트는 PR 생성 전의 소스 기록이며 최종 완료 여부는 PR의 MERGED 상태와 해당 merge SHA의 main CI로 기록한다.
+
+## 전달과 문서 전체 범위 보완
+
+[PR #1](https://github.com/seungmin-park/demp/pull/1)의 정확한 head `6018fe9`에서 필수 [원격 CI](https://github.com/seungmin-park/demp/actions/runs/37224063631)가 통과하고 native 자동 squash 머지됐다. merge SHA `353be5b`의 [main CI](https://github.com/seungmin-park/demp/actions/runs/37224288992)도 통과했다. PR 필수·GitHub Actions 앱 15368의 `DEMP verify`·strict 최신 main·관리자 동일 적용·강제 push/삭제 금지·auto-merge/squash 활성화를 실제 API에서 확인했다. 로컬 main도 해당 SHA로 fast-forward했고 사용자 `docs/interview/`는 보존했다.
+
+최초 HTTPS push는 credential 연결 없음으로, GitHub CLI OAuth push는 workflow scope 없음으로 거부됐다. 기존 SSH 인증이 `seungmin-park`임을 확인하고 명시적인 `ssh://git@github.com/seungmin-park/demp.git`으로 업로드했다. 전역 인증·remote 설정은 바꾸지 않았다.
+
+마지막 기존 CI와의 범위 비교에서 생성 HTML 하위 폴더의 내부 테스트 키 검사를 빠뜨린 것을 실제 입력으로 발견했다. 같은 CI worktree를 재사용하고 `refactor/complete-generated-document-verification`을 최신 main `353be5b`에서 시작했다. 먼저 하위 `common/extra.html`에 합성 테스트 키를 둔 회귀를 작성했다. Python 16개 중 이 사례만 `RuntimeError not raised`로 실패(종료 1)했다. HTML 파일의 부모 출력 폴더 전체와 snippet 폴더를 재귀 검사하도록 최소 변경해 원래의 검사 범위를 복원했다. 공개 HTTP·DB·구조 선택·XML 계약은 그대로이며 추가 책임 추출은 필요 없다. 전체 검증 후 후속 PR에도 같은 보호·auto-merge 절차를 적용한다.
+
+이 보완의 대상 검사는 Python 16개·실패 0으로 Green이며, `bash scripts/verify.sh` 전체도 종료 0, Java 333개·Python 16개·실패/오류/skip 0이었다. 실제 JAR API·반응 저장/재조회·문서 일치도 유지됐다. 로그는 `/tmp/demp-ci-document-tree-final.log`, 실제 HTTP 결과는 `build/verification/runtime.json`이다.
