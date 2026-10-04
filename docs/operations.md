@@ -4,7 +4,7 @@
 
 ## CI 및 인수 절차
 
-CI는 Zulu Java 25와 Gradle wrapper, `gradle.lockfile`의 고정 의존성을 사용해 `./gradlew clean test` 후 `./gradlew asciidoctor`를 실행한다. 전체 테스트에 REST Docs 생성 테스트가 포함되며, 생성 HTML의 존재, unresolved snippet 표기, 테스트 전용 내부 키 노출을 검사한다. 테스트 설정은 고유 H2 메모리 DB와 테스트 전용 S3 설정을 사용하며 파일 저장은 테스트 대역으로 격리한다. 운영 DB와 S3에 접속하는 테스트 명령은 없다.
+CI는 Zulu Java 25와 Gradle wrapper, `gradle.lockfile`의 고정 의존성으로 `bash scripts/verify.sh`를 실행한다. 검사기 회귀·반응 쓰기 소유권·전체 테스트·구조 경계·필수 suite XML·REST Docs·생성 문서와 JAR/HTTP의 일치·실제 Spring/H2 API 흐름을 확인한다. 운영 DB/S3에 접속하지 않는다. main은 PR와 필수 `DEMP verify`, 최신 main 조건으로 보호하고 native auto-merge를 사용한다. [검사 범위와 전달 절차](engineering/ci-and-delivery.md).
 
 실제 Spring API 흐름은 별도 프로세스에서 임시 메모리 H2로 검증할 수 있다. 첫 터미널에서 다음 서버를 시작하고, 둘째 터미널에서 `python3 scripts/verify_local_flow.py`를 실행한 뒤 서버를 종료한다. 이 스크립트는 loopback 주소만 허용하며 공고 이미지를 업로드하지 않는다. 서버 종료 시 임시 DB fixture가 사라진다.
 

@@ -51,6 +51,7 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-restdocs'
     testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+    testImplementation 'com.tngtech.archunit:archunit:1.5.1'
     asciidoctorExtensions 'org.springframework.restdocs:spring-restdocs-asciidoctor'
 }
 
@@ -67,4 +68,11 @@ asciidoctor {
     inputs.dir snippetsDir
     sources { include '**/index.adoc', '**/common/*.adoc' }
     baseDirFollowsSourceFile()
+}
+
+tasks.named('bootJar') {
+    dependsOn tasks.named('asciidoctor')
+    from(tasks.named('asciidoctor').map { it.outputDir }) {
+        into 'BOOT-INF/classes/static/docs'
+    }
 }
