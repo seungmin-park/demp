@@ -77,6 +77,15 @@ class VerificationTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'Internal test credentials'):
             verify_ci.check_documentation(html, snippets)
 
+    def test_rejects_internal_test_credentials_in_nested_generated_documentation(self):
+        html = self.root / 'index.html'
+        html.write_bytes(b'<html>API</html>')
+        common = self.root / 'common'
+        common.mkdir()
+        (common / 'extra.html').write_text('test-access-key')
+        with self.assertRaisesRegex(RuntimeError, 'Internal test credentials'):
+            verify_ci.check_documentation(html, self.root / 'snippets')
+
     def test_accepts_matching_packaged_documentation(self):
         jar = self.root / 'application.jar'
         with ZipFile(jar, 'w') as archive:

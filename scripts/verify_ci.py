@@ -32,7 +32,8 @@ def check_documentation(html, snippets):
     content = Path(html).read_bytes()
     require(content, 'Empty documentation')
     require(b'Unresolved directive' not in content and b'include::' not in content, 'Unresolved documentation')
-    paths = [Path(html)] + [path for path in Path(snippets).rglob('*') if path.is_file()]
+    paths = [path for directory in (Path(html).parent, Path(snippets))
+             for path in directory.rglob('*') if path.is_file()]
     for path in paths:
         text = path.read_bytes()
         require(not any(secret in text for secret in (b'test-only-jwt-secret', b'local-only-jwt-secret', b'test-access-key', b'test-secret-key')),
