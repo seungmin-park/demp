@@ -1,0 +1,325 @@
+{
+  "status": "passed",
+  "environment": "cmux visible built dist / Vite preview proxy / actual Spring MySQL",
+  "fixture_api_mock": false,
+  "workspace": "workspace:3",
+  "surface": "surface:8",
+  "focus_note": "Saving temporarily disables the reaction button; second Space action explicitly refocused it.",
+  "steps": [
+    {
+      "label": "logout",
+      "command": "cmux browser --surface surface:8 click --selector '#logout'",
+      "chunk_id": "779c9c",
+      "wall_time_seconds": 9.791e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "return to protected question",
+      "command": "cmux browser --surface surface:8 goto 'http://127.0.0.1:5057/questions/1001'",
+      "chunk_id": "a6a5ec",
+      "wall_time_seconds": 8.209e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "login field ready",
+      "command": "cmux browser --surface surface:8 wait --selector '#username' --timeout-ms 15000",
+      "chunk_id": "b31e4e",
+      "wall_time_seconds": 6.292e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "username",
+      "command": "cmux browser --surface surface:8 fill --selector '#username' --text 'mysql-qa-u'",
+      "chunk_id": "29f445",
+      "wall_time_seconds": 7.292e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "synthetic password",
+      "command": "cmux browser --surface surface:8 fill --selector '#password' --text '<synthetic password omitted>'",
+      "chunk_id": "40d1fd",
+      "wall_time_seconds": 6.666e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "submit login",
+      "command": "cmux browser --surface surface:8 click --selector 'button[type=submit]'",
+      "chunk_id": "602950",
+      "wall_time_seconds": 8.5e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "authenticated redirect",
+      "command": "cmux browser --surface surface:8 wait --url 'http://127.0.0.1:5057/questions/1001' --timeout-ms 15000",
+      "chunk_id": "e1c3c1",
+      "wall_time_seconds": 7.959e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "question ready",
+      "command": "cmux browser --surface surface:8 wait --selector '.question-detail button[aria-label=\"추천 2\"][aria-pressed=\"true\"]' --timeout-ms 15000",
+      "chunk_id": "305f13",
+      "wall_time_seconds": 7.083e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "answer ready",
+      "command": "cmux browser --surface surface:8 wait --text 'MySQL 한글 답변' --timeout-ms 15000",
+      "chunk_id": "bc2bf4",
+      "wall_time_seconds": 6.291e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "switch question",
+      "command": "cmux browser --surface surface:8 click --selector '.question-detail button[aria-label=\"비추천 0\"]'",
+      "chunk_id": "280b3b",
+      "wall_time_seconds": 7.208e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "switch committed",
+      "command": "cmux browser --surface surface:8 wait --selector '.question-detail button[aria-label=\"비추천 1\"][aria-pressed=\"true\"]' --timeout-ms 15000",
+      "chunk_id": "70487a",
+      "wall_time_seconds": 6.459e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "fresh page",
+      "command": "cmux browser --surface surface:8 reload",
+      "chunk_id": "580d24",
+      "wall_time_seconds": 8.042e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "switch survives reload",
+      "command": "cmux browser --surface surface:8 wait --selector '.question-detail button[aria-label=\"비추천 1\"][aria-pressed=\"true\"]' --timeout-ms 15000",
+      "chunk_id": "42f760",
+      "wall_time_seconds": 7.625e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "cancel question",
+      "command": "cmux browser --surface surface:8 click --selector '.question-detail button[aria-label=\"비추천 1\"]'",
+      "chunk_id": "af6b71",
+      "wall_time_seconds": 6.791e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "cancel committed",
+      "command": "cmux browser --surface surface:8 wait --selector '.question-detail button[aria-label=\"비추천 0\"][aria-pressed=\"false\"]' --timeout-ms 15000",
+      "chunk_id": "f0d79b",
+      "wall_time_seconds": 6.709e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "answer ready",
+      "command": "cmux browser --surface surface:8 wait --selector '.question-answer button[aria-label=\"추천 0\"]' --timeout-ms 15000",
+      "chunk_id": "0cff15",
+      "wall_time_seconds": 6.791e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "recommend answer",
+      "command": "cmux browser --surface surface:8 click --selector '.question-answer button[aria-label=\"추천 0\"]'",
+      "chunk_id": "adfee4",
+      "wall_time_seconds": 8.875e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "answer committed",
+      "command": "cmux browser --surface surface:8 wait --selector '.question-answer button[aria-label=\"추천 1\"][aria-pressed=\"true\"]' --timeout-ms 15000",
+      "chunk_id": "c64582",
+      "wall_time_seconds": 6.75e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "fresh page",
+      "command": "cmux browser --surface surface:8 reload",
+      "chunk_id": "bea7ec",
+      "wall_time_seconds": 7.083e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "answer survives reload",
+      "command": "cmux browser --surface surface:8 wait --selector '.question-answer button[aria-label=\"추천 1\"][aria-pressed=\"true\"]' --timeout-ms 15000",
+      "chunk_id": "7ef83e",
+      "wall_time_seconds": 7.416e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "persisted state assertion",
+      "command": "cmux browser --surface surface:8 eval --script '(()=>{const q=[...document.querySelectorAll(\".question-detail .content-reactions button\")].map(b=>[b.getAttribute(\"aria-label\"),b.getAttribute(\"aria-pressed\")]);const a=[...document.querySelectorAll(\".question-answer .content-reactions button\")].map(b=>[b.getAttribute(\"aria-label\"),b.getAttribute(\"aria-pressed\")]);if(JSON.stringify(q)!==JSON.stringify([[\"추천 1\",\"false\"],[\"비추천 0\",\"false\"]])||JSON.stringify(a)!==JSON.stringify([[\"추천 1\",\"true\"],[\"비추천 1\",\"false\"]]))throw Error(\"persisted state mismatch\");return JSON.stringify({assertion:\"real MySQL fresh page selections\",question:q,answer:a})})()'",
+      "chunk_id": "4f0b0a",
+      "wall_time_seconds": 7.25e-06,
+      "exit_code": 0,
+      "original_token_count": 41,
+      "output": "{\"assertion\":\"real MySQL fresh page selections\",\"question\":[[\"추천 1\",\"false\"],[\"비추천 0\",\"false\"]],\"answer\":[[\"추천 1\",\"true\"],[\"비추천 1\",\"false\"]]}\n"
+    },
+    {
+      "label": "keyboard focus",
+      "command": "cmux browser --surface surface:8 focus --selector '.question-detail button[aria-label=\"추천 1\"]'",
+      "chunk_id": "46c5d0",
+      "wall_time_seconds": 6.833e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "Space select",
+      "command": "cmux browser --surface surface:8 press --key Space",
+      "chunk_id": "0473dc",
+      "wall_time_seconds": 8.084e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "keyboard select committed",
+      "command": "cmux browser --surface surface:8 wait --selector '.question-detail button[aria-label=\"추천 2\"][aria-pressed=\"true\"]' --timeout-ms 15000",
+      "chunk_id": "db03be",
+      "wall_time_seconds": 8.208e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "refocus after disabled saving",
+      "command": "cmux browser --surface surface:8 focus --selector '.question-detail button[aria-label=\"추천 2\"]'",
+      "chunk_id": "f83d7c",
+      "wall_time_seconds": 7.209e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "Space cancel",
+      "command": "cmux browser --surface surface:8 press --key Space",
+      "chunk_id": "23ff11",
+      "wall_time_seconds": 1.0708e-05,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "keyboard cancellation committed",
+      "command": "cmux browser --surface surface:8 wait --selector '.question-detail button[aria-label=\"추천 1\"][aria-pressed=\"false\"]' --timeout-ms 15000",
+      "chunk_id": "a8a308",
+      "wall_time_seconds": 6.542e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "mobile viewport",
+      "command": "cmux browser --surface surface:8 viewport 390 844",
+      "chunk_id": "d175d8",
+      "wall_time_seconds": 7e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "mobile overflow assertion",
+      "command": "cmux browser --surface surface:8 eval --script '(()=>{const width=document.documentElement.clientWidth;const actual=document.documentElement.scrollWidth;if(actual>width)throw Error(\"horizontal overflow\");return JSON.stringify({assertion:\"390px viewport no overflow\",width,actual})})()'",
+      "chunk_id": "2b51e0",
+      "wall_time_seconds": 7.208e-06,
+      "exit_code": 0,
+      "original_token_count": 17,
+      "output": "{\"assertion\":\"390px viewport no overflow\",\"width\":373,\"actual\":373}\n"
+    },
+    {
+      "label": "mobile screenshot",
+      "command": "cmux browser --surface surface:8 screenshot --out /private/tmp/demp-release-20261005/mysql-browser-390.png",
+      "chunk_id": "a42c90",
+      "wall_time_seconds": 6.5e-06,
+      "exit_code": 0,
+      "original_token_count": 15,
+      "output": "OK /private/tmp/demp-release-20261005/mysql-browser-390.png\n"
+    },
+    {
+      "label": "desktop viewport",
+      "command": "cmux browser --surface surface:8 viewport 1440 1000",
+      "chunk_id": "037b76",
+      "wall_time_seconds": 6.708e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "desktop overflow assertion",
+      "command": "cmux browser --surface surface:8 eval --script '(()=>{const width=document.documentElement.clientWidth;const actual=document.documentElement.scrollWidth;if(actual>width)throw Error(\"horizontal overflow\");return JSON.stringify({assertion:\"1440px viewport no overflow\",width,actual})})()'",
+      "chunk_id": "2d66cd",
+      "wall_time_seconds": 6.417e-06,
+      "exit_code": 0,
+      "original_token_count": 18,
+      "output": "{\"assertion\":\"1440px viewport no overflow\",\"width\":1423,\"actual\":1423}\n"
+    },
+    {
+      "label": "desktop screenshot",
+      "command": "cmux browser --surface surface:8 screenshot --out /private/tmp/demp-release-20261005/mysql-browser-1440.png",
+      "chunk_id": "8d3c96",
+      "wall_time_seconds": 6.375e-06,
+      "exit_code": 0,
+      "original_token_count": 16,
+      "output": "OK /private/tmp/demp-release-20261005/mysql-browser-1440.png\n"
+    },
+    {
+      "label": "final snapshot",
+      "command": "cmux browser --surface surface:8 snapshot --interactive",
+      "chunk_id": "fe12af",
+      "wall_time_seconds": 6.584e-06,
+      "exit_code": 0,
+      "original_token_count": 284,
+      "output": "- document \"DEMP\"\n    - link \"본문으로 이동\" [ref=e156]\n        - link \"DEMP 홈\" [ref=e157]\n          - link \"공고\" [ref=e158]\n          - link \"면접 질문\" [ref=e159]\n          - button \"로그아웃\" [ref=e160]\n          - button \"돌아가기\" [ref=e161]\n            - link \"#mysql-java\" [ref=e162]\n              - button \"추천 1\" [ref=e163]\n              - button \"비추천 0\" [ref=e164]\n                - button \"추천 1\" [ref=e165]\n                - button \"비추천 1\" [ref=e166]\n                  - button \"제목\" [ref=e167]\n                  - button \"굵게\" [ref=e168]\n                  - button \"기울임\" [ref=e169]\n                  - button \"목록\" [ref=e170]\n                  - button \"인용\" [ref=e171]\n                  - button \"링크\" [ref=e172]\n                  - button \"코드 블록\" [ref=e173]\n                  - button \"작성\" [ref=e174]\n                  - button \"미리보기\" [ref=e175]\n                  - button \"분할 보기\" [ref=e176]\n                - textbox \"답변 본문\" [ref=e177]\n              - button \"댓글 달기\" [ref=e178]\n      - link \"관리자\" [ref=e179]\n"
+    },
+    {
+      "label": "browser errors",
+      "command": "cmux browser --surface surface:8 errors list",
+      "chunk_id": "41eb0a",
+      "wall_time_seconds": 7.959e-06,
+      "exit_code": 0,
+      "original_token_count": 5,
+      "output": "No browser errors\n"
+    }
+  ]
+}

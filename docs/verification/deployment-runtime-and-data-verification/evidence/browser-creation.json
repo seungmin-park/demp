@@ -1,0 +1,330 @@
+{
+  "status": "passed",
+  "fixture_api_mock": false,
+  "steps": [
+    {
+      "label": "logout",
+      "command": "cmux browser --surface surface:8 click --selector '#logout'",
+      "chunk_id": "178860",
+      "wall_time_seconds": 8.959e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "registration page",
+      "command": "cmux browser --surface surface:8 goto 'http://127.0.0.1:5057/account'",
+      "chunk_id": "bb7369",
+      "wall_time_seconds": 8.709e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "registration ready",
+      "command": "cmux browser --surface surface:8 wait --selector '#checkedPassword' --timeout-ms 15000",
+      "chunk_id": "fe26a3",
+      "wall_time_seconds": 7.291e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "new QA username",
+      "command": "cmux browser --surface surface:8 fill --selector '#username' --text 'mysql-browser-w'",
+      "chunk_id": "3b8178",
+      "wall_time_seconds": 7.5e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "check available username",
+      "command": "cmux browser --surface surface:8 click --selector '.add-form button[type=button]'",
+      "chunk_id": "cac31c",
+      "wall_time_seconds": 6.75e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "availability confirmed",
+      "command": "cmux browser --surface surface:8 wait --text '사용 가능한 아이디' --timeout-ms 15000",
+      "chunk_id": "ede82f",
+      "wall_time_seconds": 6.709e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "synthetic password",
+      "command": "cmux browser --surface surface:8 fill --selector '#password' --text '<synthetic password omitted>'",
+      "chunk_id": "2d9d2f",
+      "wall_time_seconds": 6.583e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "confirm synthetic password",
+      "command": "cmux browser --surface surface:8 fill --selector '#checkedPassword' --text '<synthetic password omitted>'",
+      "chunk_id": "768adc",
+      "wall_time_seconds": 6.958e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "submit registration",
+      "command": "cmux browser --surface surface:8 click --selector 'button[type=submit]'",
+      "chunk_id": "d6c42e",
+      "wall_time_seconds": 7.208e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "registration completed",
+      "command": "cmux browser --surface surface:8 wait --url 'http://127.0.0.1:5057/login' --timeout-ms 15000",
+      "chunk_id": "e7fc0d",
+      "wall_time_seconds": 7.333e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "login username",
+      "command": "cmux browser --surface surface:8 fill --selector '#username' --text 'mysql-browser-w'",
+      "chunk_id": "9d6f92",
+      "wall_time_seconds": 4.5958e-05,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "login password",
+      "command": "cmux browser --surface surface:8 fill --selector '#password' --text '<synthetic password omitted>'",
+      "chunk_id": "c4a023",
+      "wall_time_seconds": 3.3417e-05,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "submit login",
+      "command": "cmux browser --surface surface:8 click --selector 'button[type=submit]'",
+      "chunk_id": "837ac2",
+      "wall_time_seconds": 8.792e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "login completed",
+      "command": "cmux browser --surface surface:8 wait --selector '#logout' --timeout-ms 15000",
+      "chunk_id": "f49444",
+      "wall_time_seconds": 9.959e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "write question page",
+      "command": "cmux browser --surface surface:8 goto 'http://127.0.0.1:5057/questions/new'",
+      "chunk_id": "d601ef",
+      "wall_time_seconds": 8.625e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "question form ready",
+      "command": "cmux browser --surface surface:8 wait --selector '#question-title' --timeout-ms 15000",
+      "chunk_id": "378acf",
+      "wall_time_seconds": 6.959e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "question title",
+      "command": "cmux browser --surface surface:8 fill --selector '#question-title' --text '브라우저에서 작성한 MySQL 질문'",
+      "chunk_id": "40d3e7",
+      "wall_time_seconds": 1.5084e-05,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "Markdown body",
+      "command": "cmux browser --surface surface:8 fill --selector '#content' --text '실제 브라우저 작성 **한글 본문**'",
+      "chunk_id": "6a562a",
+      "wall_time_seconds": 9.375e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "tag input visible",
+      "command": "cmux browser --surface surface:8 click --selector '.comp_hashtag'",
+      "chunk_id": "e1c13d",
+      "wall_time_seconds": 6.875e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "tag value",
+      "command": "cmux browser --surface surface:8 fill --selector 'input[aria-label=\"태그 입력\"]' --text 'mysqlbrowser'",
+      "chunk_id": "4a22f2",
+      "wall_time_seconds": 1.0042e-05,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "commit tag",
+      "command": "cmux browser --surface surface:8 press --key Enter",
+      "chunk_id": "c58550",
+      "wall_time_seconds": 6.875e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "submit question",
+      "command": "cmux browser --surface surface:8 click --selector 'button[type=submit]'",
+      "chunk_id": "fd34c9",
+      "wall_time_seconds": 1.1875e-05,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "list ready",
+      "command": "cmux browser --surface surface:8 wait --selector '.question-list-title' --timeout-ms 15000",
+      "chunk_id": "c6e11b",
+      "wall_time_seconds": 6.625e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "list contains created question",
+      "command": "cmux browser --surface surface:8 wait --text '브라우저에서 작성한 MySQL 질문' --timeout-ms 15000",
+      "chunk_id": "2896de",
+      "wall_time_seconds": 6.5e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "open newly created question",
+      "command": "cmux browser --surface surface:8 click --selector '.question-list:first-of-type .question-list-title'",
+      "chunk_id": "dcd07f",
+      "wall_time_seconds": 7.667e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "new detail ready",
+      "command": "cmux browser --surface surface:8 wait --selector '.question-detail h1' --timeout-ms 15000",
+      "chunk_id": "1a7b52",
+      "wall_time_seconds": 6.458e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "question data assertion",
+      "command": "cmux browser --surface surface:8 eval --script '(()=>{const q=document.querySelector(\".question-detail\");if(q.querySelector(\"h1\").textContent!==\"브라우저에서 작성한 MySQL 질문\"||!q.textContent.includes(\"mysql-browser-w\")||!q.querySelector(\"strong\")||!q.textContent.includes(\"#mysqlbrowser\"))throw Error(\"created question fields mismatch\");return JSON.stringify({assertion:\"registered member creates real persisted question with Markdown and tag\",url:location.pathname})})()'",
+      "chunk_id": "e8dac1",
+      "wall_time_seconds": 6.334e-06,
+      "exit_code": 0,
+      "original_token_count": 28,
+      "output": "{\"assertion\":\"registered member creates real persisted question with Markdown and tag\",\"url\":\"/questions/1002\"}\n"
+    },
+    {
+      "label": "answer form ready",
+      "command": "cmux browser --surface surface:8 wait --selector '#answer' --timeout-ms 15000",
+      "chunk_id": "289b4e",
+      "wall_time_seconds": 7.5e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "answer input",
+      "command": "cmux browser --surface surface:8 fill --selector '#answer' --text '브라우저에서 저장한 **MySQL 답변**'",
+      "chunk_id": "d9f30d",
+      "wall_time_seconds": 8.75e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "submit answer",
+      "command": "cmux browser --surface surface:8 click --selector '.answer-composer button[type=submit]'",
+      "chunk_id": "27c83b",
+      "wall_time_seconds": 9.417e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "answer committed",
+      "command": "cmux browser --surface surface:8 wait --text '브라우저에서 저장한' --timeout-ms 15000",
+      "chunk_id": "d19d5c",
+      "wall_time_seconds": 6.5e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "fresh detail page",
+      "command": "cmux browser --surface surface:8 reload",
+      "chunk_id": "ff1459",
+      "wall_time_seconds": 9.208e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "answer survives reload",
+      "command": "cmux browser --surface surface:8 wait --text '브라우저에서 저장한' --timeout-ms 15000",
+      "chunk_id": "d380df",
+      "wall_time_seconds": 6.75e-06,
+      "exit_code": 0,
+      "original_token_count": 1,
+      "output": "OK\n"
+    },
+    {
+      "label": "answer data assertion",
+      "command": "cmux browser --surface surface:8 eval --script '(()=>{const answers=[...document.querySelectorAll(\".question-answer\")];if(answers.length!==1||!answers[0].textContent.includes(\"mysql-browser-w\")||!answers[0].querySelector(\"strong\"))throw Error(\"answer author/Markdown mismatch\");return \"PASS: UI-written answer survives fresh page with authenticated author\"})()'",
+      "chunk_id": "d6ed2b",
+      "wall_time_seconds": 8.042e-06,
+      "exit_code": 0,
+      "original_token_count": 18,
+      "output": "PASS: UI-written answer survives fresh page with authenticated author\n"
+    },
+    {
+      "label": "final creation snapshot",
+      "command": "cmux browser --surface surface:8 snapshot --interactive",
+      "chunk_id": "266967",
+      "wall_time_seconds": 7.083e-06,
+      "exit_code": 0,
+      "original_token_count": 285,
+      "output": "- document \"DEMP\"\n    - link \"본문으로 이동\" [ref=e180]\n        - link \"DEMP 홈\" [ref=e181]\n          - link \"공고\" [ref=e182]\n          - link \"면접 질문\" [ref=e183]\n          - button \"로그아웃\" [ref=e184]\n          - button \"돌아가기\" [ref=e185]\n            - link \"#mysqlbrowser\" [ref=e186]\n              - button \"추천 0\" [ref=e187]\n              - button \"비추천 0\" [ref=e188]\n                - button \"추천 0\" [ref=e189]\n                - button \"비추천 0\" [ref=e190]\n                  - button \"제목\" [ref=e191]\n                  - button \"굵게\" [ref=e192]\n                  - button \"기울임\" [ref=e193]\n                  - button \"목록\" [ref=e194]\n                  - button \"인용\" [ref=e195]\n                  - button \"링크\" [ref=e196]\n                  - button \"코드 블록\" [ref=e197]\n                  - button \"작성\" [ref=e198]\n                  - button \"미리보기\" [ref=e199]\n                  - button \"분할 보기\" [ref=e200]\n                - textbox \"답변 본문\" [ref=e201]\n              - button \"댓글 달기\" [ref=e202]\n      - link \"관리자\" [ref=e203]\n"
+    },
+    {
+      "label": "creation screenshot",
+      "command": "cmux browser --surface surface:8 screenshot --out /private/tmp/demp-release-20261005/mysql-browser-created.png",
+      "chunk_id": "f362bd",
+      "wall_time_seconds": 8.125e-06,
+      "exit_code": 0,
+      "original_token_count": 16,
+      "output": "OK /private/tmp/demp-release-20261005/mysql-browser-created.png\n"
+    }
+  ]
+}

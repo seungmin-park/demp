@@ -1,0 +1,54 @@
+PASS: owned container label
+PASS: MySQL publishes only on loopback
+PASS: fresh translated legacy fixture exists
+PASS: actual MySQL manual SQL applied: announcement-body-images.sql
+PASS: actual MySQL manual SQL applied: announcement-compensation.sql
+PASS: actual MySQL manual SQL applied: announcement-education.sql
+PASS: actual MySQL manual SQL applied: announcement-publication.sql
+PASS: actual MySQL manual SQL applied: content-reaction.sql
+PASS: mysql-validate: current JAR starts with schema validation
+PASS: production profile creates no local seed
+PASS: legacy row survived migrations and validate
+PASS: migration preserves old amount, publication, and unknown nullable data
+PASS: actual MySQL accepts unknown salary as NULL
+PASS: login returns authenticated member: mysql-qa-u
+PASS: legacy member ID table continues at 1001
+PASS: legacy EMP announcement is readable through current HTTP contract
+PASS: legacy enum and dates survive migration
+PASS: legacy question ID table continues at 1001
+PASS: real MySQL author and unicode content persisted
+PASS: answer uses authenticated author
+PASS: login returns authenticated member: mysql-qa-v
+PASS: non-owner update is forbidden and leaves data unchanged
+PASS: invalid JWT refused by actual production security filter
+PASS: stored admin role permits existing JWT; user role alone is refused
+PASS: admin revocation immediately refuses the same JWT
+PASS: repeated recommendation is idempotent in MySQL
+PASS: reaction switch commits both counts
+PASS: reaction cancellation persists
+PASS: 12 concurrent requests from two members count once each
+PASS: exactly two question reaction rows committed
+PASS: answer reaction independently persists
+PASS: MySQL rejects unique member/question
+PASS: MySQL rejects foreign key
+PASS: MySQL rejects single target check
+PASS: MySQL rejects reaction value check
+PASS: mysql-restart: current JAR starts with schema validation
+PASS: fresh JVM retains question and member reaction
+PASS: restart neither seeds nor deletes members
+PASS: answer survives JVM restart
+PASS: mysqldump exits successfully
+PASS: all table row hashes match after dump/restore
+PASS: mysql-restored: current JAR starts with schema validation
+PASS: restored DB serves authenticated persisted reaction
+PASS: restored DB accepts new writes with preserved ID generator
+PASS: mysql-missing-column: expected startup refusal
+PASS: mysql-missing-column: secret not logged
+PASS: jwt-missing: expected startup refusal
+PASS: jwt-31-bytes: expected startup refusal
+PASS: jwt-31-bytes: secret not logged
+PASS: mysql-live: current JAR starts with schema validation
+PASS: exact 32-byte JWT secret supports startup and login
+PASS: configured preview Origin can login through production CORS filter
+PASS: unapproved Origin is still rejected
+MYSQL_REHEARSAL=passed; final owned server retained for visible browser verification
