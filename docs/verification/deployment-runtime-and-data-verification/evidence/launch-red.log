@@ -1,0 +1,81 @@
+test_configured_options_and_application_arguments (test_launch.LaunchContractTest)
+포트·프로필·JVM 옵션·앱 인자를 손실 없이 전달한다. ... FAIL
+test_default_port_profile_and_no_secret_files (test_launch.LaunchContractTest)
+기본 운영 기동은 후보 JAR만 실행하고 비밀 파일을 만들지 않는다. ... FAIL
+test_exec_keeps_process_identity_and_exit_status (test_launch.LaunchContractTest)
+프로세스 관리자가 JVM에 종료 신호를 보내고 실제 종료 코드를 받는다. ... FAIL
+test_invalid_port_refuses_before_starting_java (test_launch.LaunchContractTest)
+포트 경계 밖과 비숫자 입력은 JVM 실행 전에 거절한다. ... test_missing_artifact_refuses_before_starting_java (test_launch.LaunchContractTest)
+누락된 산출물은 JVM 실행 전에 명확히 거절한다. ... FAIL
+
+======================================================================
+FAIL: test_configured_options_and_application_arguments (test_launch.LaunchContractTest)
+포트·프로필·JVM 옵션·앱 인자를 손실 없이 전달한다.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/seungmin/Desktop/repo/archive/demp/.worktrees/deployment-runtime-and-data-verification/backend/scripts/test_launch.py", line 56, in test_configured_options_and_application_arguments
+    self.assertCountEqual(args[:jar_option], ['-Xms128m', '-Xmx512m', '-Dserver.port=8087', '-Dspring.profiles.active=staging'])
+AssertionError: Element counts were not equal:
+First has 1, Second has 0:  '-Dspring.profiles.active=prod'
+First has 0, Second has 1:  '-Dspring.profiles.active=staging'
+
+======================================================================
+FAIL: test_default_port_profile_and_no_secret_files (test_launch.LaunchContractTest)
+기본 운영 기동은 후보 JAR만 실행하고 비밀 파일을 만들지 않는다.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/seungmin/Desktop/repo/archive/demp/.worktrees/deployment-runtime-and-data-verification/backend/scripts/test_launch.py", line 44, in test_default_port_profile_and_no_secret_files
+    self.assertCountEqual(result['args'][:jar_option], ['-Dserver.port=8080', '-Dspring.profiles.active=prod'])
+AssertionError: Element counts were not equal:
+First has 1, Second has 0:  '-Dserver.port='
+First has 0, Second has 1:  '-Dserver.port=8080'
+
+======================================================================
+FAIL: test_exec_keeps_process_identity_and_exit_status (test_launch.LaunchContractTest)
+프로세스 관리자가 JVM에 종료 신호를 보내고 실제 종료 코드를 받는다.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/seungmin/Desktop/repo/archive/demp/.worktrees/deployment-runtime-and-data-verification/backend/scripts/test_launch.py", line 64, in test_exec_keeps_process_identity_and_exit_status
+    self.assertEqual(json.loads(output)['pid'], process.pid)
+AssertionError: 31901 != 31898
+
+======================================================================
+FAIL: test_invalid_port_refuses_before_starting_java (test_launch.LaunchContractTest) (port='0')
+포트 경계 밖과 비숫자 입력은 JVM 실행 전에 거절한다.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/seungmin/Desktop/repo/archive/demp/.worktrees/deployment-runtime-and-data-verification/backend/scripts/test_launch.py", line 80, in test_invalid_port_refuses_before_starting_java
+    self.assertNotEqual(process.returncode, 0)
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_invalid_port_refuses_before_starting_java (test_launch.LaunchContractTest) (port='65536')
+포트 경계 밖과 비숫자 입력은 JVM 실행 전에 거절한다.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/seungmin/Desktop/repo/archive/demp/.worktrees/deployment-runtime-and-data-verification/backend/scripts/test_launch.py", line 80, in test_invalid_port_refuses_before_starting_java
+    self.assertNotEqual(process.returncode, 0)
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_invalid_port_refuses_before_starting_java (test_launch.LaunchContractTest) (port='abc')
+포트 경계 밖과 비숫자 입력은 JVM 실행 전에 거절한다.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/seungmin/Desktop/repo/archive/demp/.worktrees/deployment-runtime-and-data-verification/backend/scripts/test_launch.py", line 80, in test_invalid_port_refuses_before_starting_java
+    self.assertNotEqual(process.returncode, 0)
+AssertionError: 0 == 0
+
+======================================================================
+FAIL: test_missing_artifact_refuses_before_starting_java (test_launch.LaunchContractTest)
+누락된 산출물은 JVM 실행 전에 명확히 거절한다.
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/seungmin/Desktop/repo/archive/demp/.worktrees/deployment-runtime-and-data-verification/backend/scripts/test_launch.py", line 70, in test_missing_artifact_refuses_before_starting_java
+    self.assertNotEqual(process.returncode, 0)
+AssertionError: 0 == 0
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.574s
+
+FAILED (failures=7)

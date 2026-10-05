@@ -2,6 +2,8 @@
 
 이 문서는 기존 운영 절차를 보존한다. 현재 기능·검증 결과는 [README](../README.md)를 참고한다. 실제 운영 배포 기록은 아니다.
 
+Google Cloud 배포의 요구사항별 시나리오, 기존 테스트 연결, 실제 MySQL·이미지 저장 검증과 실행 상태는 [배포 전 릴리스 테스트 계획](plans/deployment-test-plan.md)에 기록한다. Cloud Run·Cloud SQL(MySQL)·Cloud Storage·Firebase Hosting은 관리형 구성 후보이며 현재 운영 설정과 파일 저장 구현은 아래의 기존 S3 계약을 사용한다. Google Cloud 전환 구현과 실제 배포는 후속 작업이다.
+
 ## CI 및 인수 절차
 
 CI는 Zulu Java 25와 Gradle wrapper, `gradle.lockfile`의 고정 의존성으로 `bash scripts/verify.sh`를 실행한다. 검사기 회귀·반응 쓰기 소유권·전체 테스트·구조 경계·필수 suite XML·REST Docs·생성 문서와 JAR/HTTP의 일치·실제 Spring/H2 API 흐름을 확인한다. 운영 DB/S3에 접속하지 않는다. main은 PR와 필수 `DEMP verify`, 최신 main 조건으로 보호하고 native auto-merge를 사용한다. [검사 범위와 전달 절차](engineering/ci-and-delivery.md).
@@ -31,6 +33,10 @@ python3 scripts/verify_local_flow.py
 asdf exec java -version
 ./gradlew clean test asciidoctor bootJar
 ```
+
+빌드한 운영 후보는 Java 25가 PATH에 있는 환경에서 `./run.sh`로 시작한다. 이 명령은 `PORT` 기본 8080, `SPRING_PROFILES_ACTIVE` 기본 `prod`를 사용하고 JVM을 `exec`하므로 프로세스 관리자가 JVM의 종료 신호·종료 코드를 직접 처리한다. 호스팅의 buildpack 변경이나 비밀 JSON 파일 생성은 수행하지 않는다.
+
+`DEMP_JAR_PATH`로 다른 후보 JAR 경로를 지정할 수 있다. 기본 경로는 호출한 현재 디렉터리가 아니라 스크립트 기준 `build/libs/demp-0.0.1-SNAPSHOT.jar`다. `JAVA_OPTS`는 공백으로 나뉘는 옵션으로 전달하며 shell 따옴표/명령을 해석하지 않는다. JVM 표준 `JAVA_TOOL_OPTIONS`도 사용할 수 있다. 앱 인자는 `./run.sh --server.address=127.0.0.1`처럼 전달한다. 누락된 JAR와 1~65535 밖/비숫자 포트는 기동 전에 거절한다. [시작 명령·실제 MySQL·보이는 브라우저 검증 기록](verification/deployment-runtime-and-data-verification/README.md).
 
 Spring Boot 4.1.1, Jakarta API, Spring Security 7, Hibernate 7/Jackson 3, OpenFeign Querydsl 7.7, AWS SDK 2를 사용한다. H2는 BOM의 체크 제약 캐시 오류 수정 버전인 2.5.252로 고정한다. 상세 변경·호환성·검증은 [Phase 7 기록](verification/runtime-framework-and-typescript-upgrade/README.md)을 참조한다.
 
@@ -66,6 +72,8 @@ Spring Boot 4.1.1, Jakarta API, Spring Security 7, Hibernate 7/Jackson 3, OpenFe
 | `S3_PUBLIC_BASE_URL` | 공개 이미지 주소/CDN 접두부. 대상 버킷과 일치시킨다 |
 | `APP_CORS_ALLOWED_ORIGINS` | 직접 API 호출을 허용할 프런트 Origin 목록 |
 | `PORT` | HTTP 포트, 기본8080 |
+| `DEMP_JAR_PATH` | `run.sh`에서 실행할 후보 JAR. 기본은 스크립트 기준 build/libs |
+| `JAVA_OPTS`, `JAVA_TOOL_OPTIONS` | JVM 메모리 등 실행 옵션. 비밀 설정은 위 환경변수로 주입 |
 
 값은 배포 환경의 비밀 관리 경계에서 주입하며 저장소·README에 실제 키를 쓰지 않는다. S3 IAM 권한·버킷 공개 정책/배포 CDN은 실제 환경에서 검증해야 한다. 이번 작업은 운영 S3에 접속하거나 정책을 변경하지 않았다.
 

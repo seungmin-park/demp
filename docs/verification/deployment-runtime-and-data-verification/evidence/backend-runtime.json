@@ -1,0 +1,14 @@
+{
+  "tests": 333,
+  "required_suites": 55,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "packaged_docs_match": true,
+  "test_architecture_packaged": false,
+  "local_api_flow": "passed",
+  "reaction_commit_switch_cancel": "passed",
+  "unauthenticated_reaction_http": 401,
+  "served_docs_match": true,
+  "database": "isolated in-memory H2"
+}

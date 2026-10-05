@@ -1,0 +1,32 @@
+{
+  "recorded_at_utc": "2026-10-05T15:35:06.636252+00:00",
+  "baseline_head": "d6a3146ffa9d7491acdcabfd5665afc710798f14",
+  "command": "JAVA_HOME=<Zulu Java 25 installation> bash scripts/verify.sh",
+  "exit_code": 0,
+  "visible_cmux": {
+    "workspace": "workspace:3",
+    "surface": "surface:11"
+  },
+  "python_tests": 21,
+  "backend": {
+    "tests": 333,
+    "required_suites": 55,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "packaged_docs_match": true,
+    "test_architecture_packaged": false,
+    "local_api_flow": "passed",
+    "reaction_commit_switch_cancel": "passed",
+    "unauthenticated_reaction_http": 401,
+    "served_docs_match": true,
+    "database": "isolated in-memory H2"
+  },
+  "source_sha256": {
+    "run.sh": "a0cd9021b924b4b4646afe66cae432a58102d1c268c6fe3421b0afc3dbb5a267",
+    "scripts/test_launch.py": "2d44e1a87021bccfb2bb62dc262d835e8ead34100bf1ab2eb21204a9201be247"
+  },
+  "frontend_reexecuted": false,
+  "mysql_reexecuted": false,
+  "cloud_deployment_verified": false
+}

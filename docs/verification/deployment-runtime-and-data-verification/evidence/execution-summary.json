@@ -1,0 +1,33 @@
+{
+  "status": "local-scope-passed",
+  "production_deployment_verified": false,
+  "cloud_choice": "deferred by user; local preparation first",
+  "mysql_version": "8.4.11",
+  "mysql_assertions": 53,
+  "jar_sha256": "3024ea9aa3f20a6b043bed4baccaaee1208ef6afa74cc6fbe17798441edbee3f",
+  "launcher_sha256": "a0cd9021b924b4b4646afe66cae432a58102d1c268c6fe3421b0afc3dbb5a267",
+  "frontend_source_sha256": "996c962abfd1287a77ff745285030397c01b25751b5e032ce0089b6a4842faee",
+  "frontend_dist_sha256": "051062b77b52a4ecc479af7127031bc462a68e3852767337b53f01bc97fd3583",
+  "visible_browser": "workspace:3 / surface:8",
+  "retained_backend": {
+    "base_url": "http://127.0.0.1:52567",
+    "pid": 34757,
+    "database": "demp_release_20261006_001433",
+    "member_id": 1001,
+    "question_id": 1001,
+    "answer_id": 1003
+  },
+  "external_storage_verified": false,
+  "scope_notes": [
+    "Repository legacy fixture translated to MySQL; operational dump not provided",
+    "Restore is a separate schema in the same isolated MySQL instance; previous application version not tested",
+    "Built frontend uses local Vite preview proxy; production HTTPS ingress not tested",
+    "Saving disables reaction buttons and loses focus; second Space operation explicitly refocused"
+  ],
+  "code_paths": [
+    "run.sh",
+    "scripts/test_launch.py"
+  ],
+  "final_db_readback": "matches actual UI writes and reaction choices",
+  "known_secrets_in_logs": false
+}

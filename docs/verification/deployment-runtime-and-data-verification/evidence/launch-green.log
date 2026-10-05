@@ -1,0 +1,15 @@
+test_configured_options_and_application_arguments (test_launch.LaunchContractTest)
+포트·프로필·JVM 옵션·앱 인자를 손실 없이 전달한다. ... ok
+test_default_port_profile_and_no_secret_files (test_launch.LaunchContractTest)
+기본 운영 기동은 후보 JAR만 실행하고 비밀 파일을 만들지 않는다. ... ok
+test_exec_keeps_process_identity_and_exit_status (test_launch.LaunchContractTest)
+프로세스 관리자가 JVM에 종료 신호를 보내고 실제 종료 코드를 받는다. ... ok
+test_invalid_port_refuses_before_starting_java (test_launch.LaunchContractTest)
+포트 경계 밖과 비숫자 입력은 JVM 실행 전에 거절한다. ... ok
+test_missing_artifact_refuses_before_starting_java (test_launch.LaunchContractTest)
+누락된 산출물은 JVM 실행 전에 명확히 거절한다. ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.322s
+
+OK
