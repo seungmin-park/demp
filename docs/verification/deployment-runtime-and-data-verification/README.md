@@ -45,11 +45,13 @@ MySQL 이미지는 `mysql:8.4`의 digest `sha256:6ea90827b1100f8f2ae306a539f86d2
 
 Java 25의 `JAVA_HOME`을 지정한 `bash scripts/verify.sh`를 현재 백엔드 worktree에서 재실행했다. `workspace:3 / surface:11`에 명령과 로그를 표시했고 종료 0, Python 21개·Java 333개·필수 suite 55개, 실패/오류/skip 0, 생성 문서/JAR/HTTP 일치와 실제 H2 API 저장·재조회를 확인했다. build는 이 회차에서 28초였다. [전달 전 결과](evidence/publication-preflight.json). 원시 로그·종료 파일은 `/private/tmp/demp-release-20261005/github-preflight.{log,exit}`다. 프런트와 MySQL·실제 브라우저 결과는 위 로컬 회차의 기존 증거이며 이 전달 단계에서 새로 실행한 것으로 계산하지 않는다.
 
+사용자의 추가 정리 요청에 따라 사용하지 않는 배포 선언과 옛 플랫폼의 문서·테스트 설정을 제거했다. 시작 테스트는 정상 기동 후 작업 디렉터리의 파일 집합이 변하지 않는지 확인한다. 설정·인자 전달·PID/종료·잘못된 입력 assertion은 유지했다. 같은 cmux surface에서 공용 verify를 재실행해 종료 0, Python 21개·Java 333개·필수 suite 55개, 실패/오류/skip 0과 H2 API/문서 일치를 확인했다. build는 27초였다. [정리 후 결과와 현재 소스 해시](evidence/cleanup-preflight.json), 원시 로그·종료 파일 `/private/tmp/demp-release-20261005/cleanup-preflight.{log,exit}`. 앞의 전달 전 JSON은 정리 이전 회차의 소스 해시 기록으로 보존한다.
+
 ## 3. 시작 명령 변경: Red → Green → Refactor
 
-- **Red:** `python3 -m unittest discover -s scripts -p 'test_launch.py' -v`, 종료 1. 5개 테스트/7개 assertion 실패. 기본 포트가 비어 있고, JAR 경로/앱 인자·프로필을 전달하지 못하며, JVM PID가 launcher PID와 달랐다. 누락 JAR/잘못된 포트도 JVM 실행 전 거절하지 않았다. JVM fixture는 실제 로컬 실행 파일이므로 Qoddi 미설치 오류를 기능 Red로 삼지 않았다. [실패 로그](evidence/launch-red.log).
-- **Green:** [run.sh](../../../run.sh)에 shebang·실행 권한·8080/prod 기본값·산출물/포트 검사·`DEMP_JAR_PATH`·JVM/앱 인자 전달·`exec`를 추가했다. Qoddi buildpack 변경 및 `SECURE_FILE` 파일 생성은 제거했다. 대상 5개 모두 통과, 종료 0. [통과 로그](evidence/launch-green.log).
-- **Refactor:** 시작 스크립트의 책임은 JVM 실행으로 한정했다. `project_root`/`jar_path`/`port`/`java_command`가 실제 입력과 효과를 드러낸다. 기존 Procfile의 `web: ./run.sh` 공개 시작 계약을 유지하며 실제 MySQL 기동도 이 명령으로 재검증했다. 새 도메인 규칙·위임 객체는 추가하지 않았다.
+- **Red:** `python3 -m unittest discover -s scripts -p 'test_launch.py' -v`, 종료 1. 5개 테스트/7개 assertion 실패. 기본 포트가 비어 있고, JAR 경로/앱 인자·프로필을 전달하지 못하며, JVM PID가 launcher PID와 달랐다. 누락 JAR/잘못된 포트도 JVM 실행 전 거절하지 않았다. 실제 로컬 JVM fixture에서 관찰한 assertion 실패를 확인했다. [실패 로그](evidence/launch-red.log).
+- **Green:** [run.sh](../../../run.sh)에 shebang·실행 권한·8080/prod 기본값·산출물/포트 검사·`DEMP_JAR_PATH`·JVM/앱 인자 전달·`exec`를 추가했다. 대상 5개 모두 통과, 종료 0. [통과 로그](evidence/launch-green.log).
+- **Refactor:** 시작 스크립트의 책임은 JVM 실행으로 한정했다. `project_root`/`jar_path`/`port`/`java_command`가 실제 입력과 효과를 드러낸다. 공개 시작 명령은 `./run.sh`이며 실제 MySQL 기동도 이 명령으로 재검증했다. 새 도메인 규칙·위임 객체는 추가하지 않았다.
 - 최소 구현 중 macOS Bash 3.2에서 빈 배열+`set -u`가 기본 기동을 거절하는 것을 대상 테스트가 발견했다. 빈 옵션 배열 대신 항상 JVM 명령이 들어 있는 배열로 고친 뒤 대상·공용 전체 검증과 실제 MySQL을 재실행했다.
 - 테스트는 private 구현·옵션 순서 대신 실제 argv, 파일 부작용, 프로세스 ID/종료 코드, 잘못된 입력 거절을 확인한다. 새 Python 테스트는 기존 공용 verify의 discovery로 실행된다. Java/프런트 객체·JSON/DB 컬럼/라우트 계약을 바꾸지 않았다. 새 TypeScript 코드와 SOLID 판정 대상은 없다.
 

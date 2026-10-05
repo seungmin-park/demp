@@ -1,0 +1,31 @@
+{
+  "recorded_at_utc": "2026-10-05T15:42:12.826179+00:00",
+  "baseline_head": "6b8bab302926f8fab7b87c9b9033ad7790ced80d",
+  "command": "JAVA_HOME=<Zulu Java 25 installation> bash scripts/verify.sh",
+  "exit_code": 0,
+  "visible_cmux": {
+    "workspace": "workspace:3",
+    "surface": "surface:11"
+  },
+  "python_tests": 21,
+  "backend": {
+    "tests": 333,
+    "required_suites": 55,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "packaged_docs_match": true,
+    "test_architecture_packaged": false,
+    "local_api_flow": "passed",
+    "reaction_commit_switch_cancel": "passed",
+    "unauthenticated_reaction_http": 401,
+    "served_docs_match": true,
+    "database": "isolated in-memory H2"
+  },
+  "source_sha256": {
+    "run.sh": "a0cd9021b924b4b4646afe66cae432a58102d1c268c6fe3421b0afc3dbb5a267",
+    "scripts/test_launch.py": "867d7645cdf65c36ce4102df9946a27da899fde4f5e9d6c3346fb81d3830a3bc"
+  },
+  "scope": "launch fixture and deployment metadata/documentation cleanup; production launcher unchanged",
+  "cloud_deployment_verified": false
+}

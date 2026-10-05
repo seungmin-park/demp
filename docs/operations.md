@@ -34,7 +34,7 @@ asdf exec java -version
 ./gradlew clean test asciidoctor bootJar
 ```
 
-빌드한 운영 후보는 Java 25가 PATH에 있는 환경에서 `./run.sh`로 시작한다. 이 명령은 `PORT` 기본 8080, `SPRING_PROFILES_ACTIVE` 기본 `prod`를 사용하고 JVM을 `exec`하므로 프로세스 관리자가 JVM의 종료 신호·종료 코드를 직접 처리한다. 호스팅의 buildpack 변경이나 비밀 JSON 파일 생성은 수행하지 않는다.
+빌드한 운영 후보는 Java 25가 PATH에 있는 환경에서 `./run.sh`로 시작한다. 이 명령은 `PORT` 기본 8080, `SPRING_PROFILES_ACTIVE` 기본 `prod`를 사용하고 JVM을 `exec`하므로 프로세스 관리자가 JVM의 종료 신호·종료 코드를 직접 처리한다.
 
 `DEMP_JAR_PATH`로 다른 후보 JAR 경로를 지정할 수 있다. 기본 경로는 호출한 현재 디렉터리가 아니라 스크립트 기준 `build/libs/demp-0.0.1-SNAPSHOT.jar`다. `JAVA_OPTS`는 공백으로 나뉘는 옵션으로 전달하며 shell 따옴표/명령을 해석하지 않는다. JVM 표준 `JAVA_TOOL_OPTIONS`도 사용할 수 있다. 앱 인자는 `./run.sh --server.address=127.0.0.1`처럼 전달한다. 누락된 JAR와 1~65535 밖/비숫자 포트는 기동 전에 거절한다. [시작 명령·실제 MySQL·보이는 브라우저 검증 기록](verification/deployment-runtime-and-data-verification/README.md).
 

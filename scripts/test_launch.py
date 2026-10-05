@@ -27,7 +27,7 @@ class LaunchContractTest(unittest.TestCase):
         for name in ('PORT', 'JAVA_OPTS', 'JAVA_TOOL_OPTIONS', 'SPRING_PROFILES_ACTIVE'):
             self.env.pop(name, None)
         self.env.update(PATH=str(self.work) + os.pathsep + self.env['PATH'],
-                        DEMP_JAR_PATH=str(self.jar), SECURE_FILE='synthetic-do-not-materialize')
+                        DEMP_JAR_PATH=str(self.jar))
 
     def launch(self, *arguments):
         process = subprocess.Popen(['bash', str(LAUNCHER), *arguments], cwd=self.work,
@@ -43,8 +43,7 @@ class LaunchContractTest(unittest.TestCase):
         jar_option = result['args'].index('-jar')
         self.assertCountEqual(result['args'][:jar_option], ['-Dserver.port=8080', '-Dspring.profiles.active=prod'])
         self.assertEqual(result['args'][jar_option:], ['-jar', str(self.jar)])
-        self.assertFalse((self.work / 'env.json').exists())
-        self.assertFalse((self.work / 'secureFile.json').exists())
+        self.assertEqual({path.name for path in self.work.iterdir()}, {self.jar.name, 'java'})
 
     def test_configured_options_and_application_arguments(self):
         """포트·프로필·JVM 옵션·앱 인자를 손실 없이 전달한다."""
