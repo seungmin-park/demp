@@ -17,6 +17,13 @@ import org.springframework.security.core.AuthenticationException;
 
 @RestControllerAdvice
 public class ExController {
+    @ExceptionHandler(LoginRateLimitException.class)
+    public ResponseEntity<ErrorResult> loginRateLimit(LoginRateLimitException ex, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .header("Retry-After", Long.toString(ex.getRetryAfterSeconds()))
+                .body(ApiErrors.body(HttpStatus.TOO_MANY_REQUESTS, request.getRequestURI()));
+    }
+
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ErrorResult> business(ApiException ex, HttpServletRequest request) {
         return error(ex.getStatus(), request);

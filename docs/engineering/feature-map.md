@@ -15,3 +15,7 @@
 - 저장: `ContentReactionController`는 인증 주체의 ID를 전달한다. `ContentReactionService`가 대상 행을 잠그고 이전/다음 상태 차이를 계산해 반응 행과 집계를 한 트랜잭션에 저장한다. Repository는 저장 경계. 프런트 `useContentReaction`은 미확정 응답·화면 이동 시 UI 상태를 다룬다.
 - 실패: 미인증 401, 존재하지 않는 대상 404, 저장 실패 시 확정된 수치 보존/재시도, 화면 이동 뒤 늦은 응답 폐기.
 - 검증: `.agents/skills/verify-demp/SKILL.md`의 정확한 명령과 cmux 표면 확인 후 실행. unit/MVC 테스트는 HTTP 계약과 DB 저장을 검증하고, 실제 브라우저는 별도 범위다. 과거 실제 실행 근거 `docs/verification/persistent-content-reactions/t99-t101.md`; Phase16 재실행 결과는 `docs/verification/agent-verification-and-official-docs/README.md`에 기록.
+
+## 계정별 로그인 제한
+
+`/login` → 기존 계정의 15분 내 실패 5회 → 429·Retry-After → 입력 보존·대기 안내. 최종 제한 상태는 Member DB, 인증/commit은 MemberService, 표시 상태는 LoginForm이 소유한다. 정상 로그인·시간 경계·DB 재조회·동시 요청·두 독립 컨텍스트·HTTP/CORS·단위/개발·배포 브라우저와 실제 Spring 화면을 함께 검증한다.
