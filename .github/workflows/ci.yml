@@ -30,6 +30,17 @@ jobs:
           cache: gradle
       - name: Verify boundaries, tests, documentation and local HTTP flow
         run: bash scripts/verify.sh
+      - name: Package the verified deployment JAR
+        env:
+          DEPLOY_HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: python3 scripts/ci_component.py demp
+      - name: Preserve deployment payload
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: deployment-demp-${{ github.run_id }}-${{ github.run_attempt }}
+          path: build/deployment/
+          retention-days: 7
+          if-no-files-found: error
       - name: Preserve verification evidence
         if: always()
         uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
