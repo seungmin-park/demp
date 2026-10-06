@@ -55,5 +55,7 @@
   "com.inhatc.demp.service.QuestionServiceTest",
   "com.inhatc.demp.service.SharedLoginDatabaseTest",
   "com.inhatc.demp.service.admin.AdminAnnouncementConcurrencyTest",
-  "com.inhatc.demp.service.admin.AdminOperationsTest"
+  "com.inhatc.demp.service.admin.AdminOperationsTest",
+  "com.inhatc.demp.service.AnswerReadBudgetTest",
+  "com.inhatc.demp.service.AnswerPaginationTest"
 ]

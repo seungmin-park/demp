@@ -283,7 +283,7 @@ class ApiSecurityTest {
                     .andExpect(jsonPath("$.myReaction").value("RECOMMEND"));
         }
         String readPath = kind.equals("question") ? "/api/question/detail/" + id : "/api/answer/" + question.getId();
-        String prefix = kind.equals("question") ? "$" : "$[0]";
+        String prefix = kind.equals("question") ? "$" : "$.content[0]";
         mvc.perform(get(readPath).header("X-AUTH-TOKEN", token(voter)))
                 .andExpect(status().isOk()).andExpect(jsonPath(prefix + ".myReaction").value("RECOMMEND"));
         mvc.perform(get(readPath).header("X-AUTH-TOKEN", token(other)))

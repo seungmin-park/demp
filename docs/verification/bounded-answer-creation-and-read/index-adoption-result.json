@@ -1,0 +1,109 @@
+{
+  "recorded_at": "2026-10-06T15:42:53.216352+00:00",
+  "status": "passed",
+  "branch": "refactor/bounded-answer-creation-and-read",
+  "index": {
+    "name": "idx_answer_question_cursor",
+    "columns": [
+      "question_id",
+      "answer_id"
+    ],
+    "fresh_schema": "JPA @Table/@Index; physical H2 metadata verified",
+    "existing_schema": "manual DDL; actual isolated MySQL metadata and query plan verified"
+  },
+  "red": {
+    "tests": 6,
+    "failures": 2,
+    "reason": "physical index columns absent in fresh and legacy H2"
+  },
+  "targeted_green_tests": 6,
+  "backend_xml": {
+    "tests": 376,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": 59
+  },
+  "python_checker_tests": 21,
+  "jar_sha256": "17d409dbd1c92eb82ddbf5e24ee61ebd3b3b0c2008ec31ef48d0fb67ba714d58",
+  "mysql_assertions": 64,
+  "mysql_database": "demp_release_20261007_004154",
+  "manual_sql_sha256": "0304b80c28ed39d739a8aca3410c80a0e9456a33566443d248e2c59036ea6333",
+  "commands": {
+    "index-adoption-red": {
+      "project": "backend",
+      "cwd": "/Users/seungmin/Desktop/repo/archive/demp/.worktrees/bounded-answer-creation-and-read/backend",
+      "command": [
+        "./gradlew",
+        "test",
+        "--tests",
+        "com.inhatc.demp.repository.AnswerRepositoryTest",
+        "--tests",
+        "com.inhatc.demp.config.LegacySchemaCompatibilityTest",
+        "--rerun-tasks",
+        "--console=plain"
+      ],
+      "head": "bb6c6cfc1c831d183687b1d2b7d2279db9538408",
+      "started_at": "2026-10-06T15:40:09.651296+00:00",
+      "finished_at": "2026-10-06T15:40:17.230135+00:00",
+      "exit_code": 1,
+      "log": "/private/tmp/demp-bounded-answers-20261006/index-adoption-red.log"
+    },
+    "index-adoption-green": {
+      "project": "backend",
+      "cwd": "/Users/seungmin/Desktop/repo/archive/demp/.worktrees/bounded-answer-creation-and-read/backend",
+      "command": [
+        "./gradlew",
+        "test",
+        "--tests",
+        "com.inhatc.demp.repository.AnswerRepositoryTest",
+        "--tests",
+        "com.inhatc.demp.config.LegacySchemaCompatibilityTest",
+        "--console=plain"
+      ],
+      "head": "bb6c6cfc1c831d183687b1d2b7d2279db9538408",
+      "started_at": "2026-10-06T15:40:28.410664+00:00",
+      "finished_at": "2026-10-06T15:40:34.885461+00:00",
+      "exit_code": 0,
+      "log": "/private/tmp/demp-bounded-answers-20261006/index-adoption-green.log"
+    },
+    "index-adoption-backend-verify": {
+      "project": "backend",
+      "cwd": "/Users/seungmin/Desktop/repo/archive/demp/.worktrees/bounded-answer-creation-and-read/backend",
+      "command": [
+        "bash",
+        "scripts/verify.sh"
+      ],
+      "head": "bb6c6cfc1c831d183687b1d2b7d2279db9538408",
+      "started_at": "2026-10-06T15:40:53.867676+00:00",
+      "finished_at": "2026-10-06T15:41:50.748331+00:00",
+      "exit_code": 0,
+      "log": "/private/tmp/demp-bounded-answers-20261006/index-adoption-backend-verify.log"
+    },
+    "index-adoption-mysql-verify": {
+      "project": "backend",
+      "cwd": "/Users/seungmin/Desktop/repo/archive/demp/.worktrees/bounded-answer-creation-and-read/backend",
+      "command": [
+        "python3",
+        "docs/verification/bounded-answer-creation-and-read/mysql_answers.py"
+      ],
+      "head": "bb6c6cfc1c831d183687b1d2b7d2279db9538408",
+      "started_at": "2026-10-06T15:41:54.373590+00:00",
+      "finished_at": "2026-10-06T15:42:07.481878+00:00",
+      "exit_code": 0,
+      "log": "/private/tmp/demp-bounded-answers-20261006/index-adoption-mysql-verify.log"
+    }
+  },
+  "visible_terminal": {
+    "workspace": "workspace:3",
+    "caller": "surface:6",
+    "pane": "pane:10",
+    "runner": "surface:18"
+  },
+  "source_fingerprints": 350,
+  "frontend_changed_by_index_adoption": false,
+  "frontend_retested_for_index_adoption": false,
+  "browser_e2e_repeated_for_index_adoption": false,
+  "production_database_modified": false,
+  "github_delivery": "not approved for answer phase; changes uncommitted"
+}

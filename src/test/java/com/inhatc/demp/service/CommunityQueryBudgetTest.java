@@ -39,7 +39,7 @@ class CommunityQueryBudgetTest {
         var statistics = entityManagerFactory.unwrap(SessionFactory.class).getStatistics();
         statistics.clear();
 
-        var result = service.findByQuestion(question.getId(), reader.getId());
+        var result = service.findAnswerPage(question.getId(), reader.getId(), null).content();
 
         assertThat(result).extracting(item -> item.getUsername()).containsExactlyInAnyOrder("author-0", "author-1", "author-2", "author-3");
         assertThat(result).extracting(item -> item.getMyReaction()).containsOnly(ReactionType.NONE);

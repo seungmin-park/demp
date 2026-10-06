@@ -192,7 +192,7 @@ class QuestionServiceTest {
                 .build());
         Question question = saveQuestion(member, "질문", "내용", "test-java");
         Long questionId = question.getId();
-        answerService.createAnswerAndList(member.getId(), new AnswerForm(member.getUsername(), questionId, "댓글"));
+        answerService.createAnswer(member.getId(), new AnswerForm(member.getUsername(), questionId, "댓글"));
 
         questionService.deleteQuestion(member.getId(), questionId);
 

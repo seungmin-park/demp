@@ -192,7 +192,7 @@ def verify_reactions(base, question_id, answer_id, member_id, other_id, token, o
     check((detail['recommend'], detail['dislike']) == (2, 0), '12 concurrent requests from two members count once each')
     check(sql(f'SELECT COUNT(*) FROM content_reaction WHERE question_id={question_id};').stdout.strip() == '2', 'exactly two question reaction rows committed')
     request(base, f'/api/answer/{answer_id}/reaction', 'PUT', {'reaction': 'DISLIKE'}, token=other_token)
-    answers = request(base, f'/api/answer/{question_id}', token=other_token)
+    answers = request(base, f'/api/answer/{question_id}', token=other_token)['content']
     check(len(answers) == 1 and (answers[0]['dislike'], answers[0]['myReaction']) == (1, 'DISLIKE'), 'answer reaction independently persists')
     violations = [
         (f"INSERT INTO content_reaction(member_id,question_id,reaction) VALUES({member_id},{question_id},'RECOMMEND');", '1062', 'unique member/question'),
@@ -241,9 +241,9 @@ def main():
     check(question_id == 1001, 'legacy question ID table continues at 1001')
     question = request(base, f'/api/question/detail/{question_id}', token=token)
     check(question['username'] == 'mysql-qa-u' and '한글 본문' in question['content'], 'real MySQL author and unicode content persisted')
-    answers = request(base, '/api/answer/save', 'POST', payload={'username': 'ignored', 'questionId': question_id, 'answerContent': 'MySQL 한글 답변'}, token=token)
-    check(len(answers) == 1 and answers[0]['username'] == 'mysql-qa-u', 'answer uses authenticated author')
-    answer_id = answers[0]['answerId']
+    created = request(base, '/api/answer/save', 'POST', payload={'username': 'ignored', 'questionId': question_id, 'answerContent': 'MySQL 한글 답변'}, token=token)
+    check(isinstance(created, dict) and created['username'] == 'mysql-qa-u', 'answer uses authenticated author')
+    answer_id = created['answerId']
     other_id, other_token = member(base, 'mysql-qa-v')
     request(base, '/api/question/update', 'PATCH', payload={'questionId': question_id, 'title': '변조', 'content': '변조', 'hashtags': []}, token=other_token, expected=403)
     check(request(base, f'/api/question/detail/{question_id}', token=token)['title'] == 'MySQL 한글 질문', 'non-owner update is forbidden and leaves data unchanged')

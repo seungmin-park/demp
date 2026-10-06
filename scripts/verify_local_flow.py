@@ -80,12 +80,16 @@ question = require_status("question detail", request(f"/api/question/detail/{que
 assert question["username"] == writer
 assert "onerror" not in question["content"]
 
-answers = require_status("answer create", request("/api/answer/save", "POST", {
+created_answer = require_status("answer create", request("/api/answer/save", "POST", {
     "username": "ignored", "questionId": question_id, "answerContent": "별도 조회 답변",
 }, token=writer_token), 200)
-assert len(answers) == 1
-answers = require_status("answer requery", request(f"/api/answer/{question_id}", token=writer_token), 200)
+assert isinstance(created_answer, dict) and created_answer["content"] == "별도 조회 답변"
+assert isinstance(created_answer["answerId"], str)
+assert created_answer["username"] == writer and created_answer["myReaction"] == "NONE"
+answer_page = require_status("answer requery", request(f"/api/answer/{question_id}", token=writer_token), 200)
+answers = answer_page["content"]
 assert len(answers) == 1 and answers[0]["content"] == "별도 조회 답변"
+assert not answer_page["hasNext"] and answer_page["nextCursor"] is None
 
 _, other_token = create_member()
 require_status("other member update", request("/api/question/update", "PATCH", {
