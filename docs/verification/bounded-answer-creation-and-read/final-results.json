@@ -1,0 +1,247 @@
+{
+  "recorded_at": "2026-10-06T15:09:50.613897+00:00",
+  "backend": {
+    "baseline_head": "bb6c6cfc1c831d183687b1d2b7d2279db9538408",
+    "xml": {
+      "tests": 375,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": 59
+    },
+    "command_exit": 0,
+    "final_jar_sha256": "9336c0c4ffc484e57201d4fba77c28b436d4ba10b8d2cf46673f08ac53081e01"
+  },
+  "frontend": {
+    "head": "d419900e8977f4b4802d91e9e1145fd775894507",
+    "startedAt": "2026-10-06T15:07:38.129Z",
+    "steps": [
+      {
+        "name": "contracts",
+        "command": "npm",
+        "arguments": [
+          "run",
+          "check:agent-contracts",
+          "--",
+          "--probe-violation"
+        ],
+        "exitCode": 0,
+        "signal": null
+      },
+      {
+        "name": "types",
+        "command": "npm",
+        "arguments": [
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "signal": null
+      },
+      {
+        "name": "unit",
+        "command": "npm",
+        "arguments": [
+          "test",
+          "--",
+          "--reporter=default",
+          "--reporter=json",
+          "--outputFile=.verification/unit.json"
+        ],
+        "exitCode": 0,
+        "signal": null
+      },
+      {
+        "name": "lint",
+        "command": "npm",
+        "arguments": [
+          "run",
+          "lint",
+          "--",
+          "--no-fix"
+        ],
+        "exitCode": 0,
+        "signal": null
+      },
+      {
+        "name": "build",
+        "command": "npm",
+        "arguments": [
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "signal": null
+      },
+      {
+        "name": "browser",
+        "command": "npm",
+        "arguments": [
+          "run",
+          "test:e2e",
+          "--",
+          "--headed"
+        ],
+        "exitCode": 0,
+        "signal": null
+      }
+    ],
+    "success": true,
+    "sourceSha256": "2e8237abfaf2b039555031bd7862ad2c3f7b6e9b201adcc565764fd2fcc9a163",
+    "sourceBaseline": "local-working-tree",
+    "unit": {
+      "files": 47,
+      "passed": 235
+    },
+    "build": {
+      "files": 41,
+      "sha256": "742a5f3caaec9e30530994ff2f461e45bb557576d25f0d55c3008f3ac319992b"
+    },
+    "browserPort": 61210,
+    "devBrowserPort": 61211,
+    "browser": {
+      "passed": 166
+    },
+    "finishedAt": "2026-10-06T15:09:01.832Z"
+  },
+  "mysql_checks": 64,
+  "cmux_checks": 8,
+  "visible_runtime": {
+    "frontend_url": "http://127.0.0.1:62814",
+    "backend_url": "http://127.0.0.1:62849",
+    "backend_pid": 6793,
+    "frontend_pid": 6976,
+    "runner_pid": 6781,
+    "api_status": 200,
+    "jar_sha256": "9336c0c4ffc484e57201d4fba77c28b436d4ba10b8d2cf46673f08ac53081e01",
+    "frontend_build_sha256": "742a5f3caaec9e30530994ff2f461e45bb557576d25f0d55c3008f3ac319992b",
+    "target": "http://127.0.0.1:62814/questions/1",
+    "fresh_final_artifacts": true
+  },
+  "commands": {
+    "final-backend-verify": {
+      "project": "backend",
+      "cwd": "/Users/seungmin/Desktop/repo/archive/demp/.worktrees/bounded-answer-creation-and-read/backend",
+      "command": [
+        "bash",
+        "scripts/verify.sh"
+      ],
+      "head": "bb6c6cfc1c831d183687b1d2b7d2279db9538408",
+      "started_at": "2026-10-06T15:03:52.391379+00:00",
+      "finished_at": "2026-10-06T15:04:30.479100+00:00",
+      "exit_code": 0,
+      "log": "/private/tmp/demp-bounded-answers-20261006/final-backend-verify.log"
+    },
+    "final-frontend-verify": {
+      "project": "frontend",
+      "cwd": "/Users/seungmin/Desktop/repo/archive/demp/.worktrees/bounded-answer-creation-and-read/frontend",
+      "command": [
+        "npm",
+        "run",
+        "verify",
+        "--",
+        "--headed"
+      ],
+      "head": "d419900e8977f4b4802d91e9e1145fd775894507",
+      "started_at": "2026-10-06T15:07:37.956544+00:00",
+      "finished_at": "2026-10-06T15:09:01.851010+00:00",
+      "exit_code": 0,
+      "log": "/private/tmp/demp-bounded-answers-20261006/final-frontend-verify.log"
+    },
+    "final-mysql-verify": {
+      "project": "backend",
+      "cwd": "/Users/seungmin/Desktop/repo/archive/demp/.worktrees/bounded-answer-creation-and-read/backend",
+      "command": [
+        "python3",
+        "docs/verification/bounded-answer-creation-and-read/mysql_answers.py"
+      ],
+      "head": "bb6c6cfc1c831d183687b1d2b7d2279db9538408",
+      "started_at": "2026-10-06T15:09:01.897149+00:00",
+      "finished_at": "2026-10-06T15:09:09.565067+00:00",
+      "exit_code": 0,
+      "log": "/private/tmp/demp-bounded-answers-20261006/final-mysql-verify.log"
+    },
+    "final-seed": {
+      "project": "backend",
+      "cwd": "/Users/seungmin/Desktop/repo/archive/demp/.worktrees/bounded-answer-creation-and-read/backend",
+      "command": [
+        "python3",
+        "docs/verification/bounded-answer-creation-and-read/seed_visible_flow.py"
+      ],
+      "head": "bb6c6cfc1c831d183687b1d2b7d2279db9538408",
+      "started_at": "2026-10-06T15:09:30.027803+00:00",
+      "finished_at": "2026-10-06T15:09:31.799117+00:00",
+      "exit_code": 0,
+      "log": "/private/tmp/demp-bounded-answers-20261006/final-seed.log"
+    },
+    "final-cmux-flow": {
+      "project": "backend",
+      "cwd": "/Users/seungmin/Desktop/repo/archive/demp/.worktrees/bounded-answer-creation-and-read/backend",
+      "command": [
+        "python3",
+        "docs/verification/bounded-answer-creation-and-read/cmux_flow.py"
+      ],
+      "head": "bb6c6cfc1c831d183687b1d2b7d2279db9538408",
+      "started_at": "2026-10-06T15:09:38.526400+00:00",
+      "finished_at": "2026-10-06T15:09:40.134490+00:00",
+      "exit_code": 0,
+      "log": "/private/tmp/demp-bounded-answers-20261006/final-cmux-flow.log"
+    }
+  },
+  "evidence_directory": "/private/tmp/demp-bounded-answers-20261006",
+  "commit_pr_merge": "not yet approved for answer phase",
+  "production_deployed": false,
+  "index_rehearsal": {
+    "status": "passed",
+    "decision": "Adopt the existing (question_id, answer_id) composite index DDL for the repository PK-only legacy baseline. The rehearsal establishes that question-scoped indexing is needed. Check existing equivalent indexes at deployment to avoid duplicate DDL; this does not defer the project decision or claim composite is always faster than a standalone index.",
+    "production_database_verified": false,
+    "checks": 82,
+    "measured_queries": 320,
+    "validated_page_requests": 448
+  },
+  "index_adoption": {
+    "recorded_at": "2026-10-06T15:42:53.216352+00:00",
+    "status": "passed",
+    "branch": "refactor/bounded-answer-creation-and-read",
+    "index": {
+      "name": "idx_answer_question_cursor",
+      "columns": [
+        "question_id",
+        "answer_id"
+      ],
+      "fresh_schema": "JPA @Table/@Index; physical H2 metadata verified",
+      "existing_schema": "manual DDL; actual isolated MySQL metadata and query plan verified"
+    },
+    "red": {
+      "tests": 6,
+      "failures": 2,
+      "reason": "physical index columns absent in fresh and legacy H2"
+    },
+    "targeted_green_tests": 6,
+    "backend_xml": {
+      "tests": 376,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "suites": 59
+    },
+    "python_checker_tests": 21,
+    "jar_sha256": "17d409dbd1c92eb82ddbf5e24ee61ebd3b3b0c2008ec31ef48d0fb67ba714d58",
+    "mysql_assertions": 64,
+    "mysql_database": "demp_release_20261007_004154",
+    "manual_sql_sha256": "0304b80c28ed39d739a8aca3410c80a0e9456a33566443d248e2c59036ea6333",
+    "visible_terminal": {
+      "workspace": "workspace:3",
+      "caller": "surface:6",
+      "pane": "pane:10",
+      "runner": "surface:18"
+    },
+    "source_fingerprints": 350,
+    "frontend_changed_by_index_adoption": false,
+    "frontend_retested_for_index_adoption": false,
+    "browser_e2e_repeated_for_index_adoption": false,
+    "production_database_modified": false,
+    "github_delivery": "not approved for answer phase; changes uncommitted"
+  },
+  "prior_results_note": "Original ID-fix/visible-browser/performance results retain their original JAR and timestamps. Later index mapping adoption is recorded separately under index_adoption."
+}

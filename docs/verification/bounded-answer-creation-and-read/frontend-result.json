@@ -1,0 +1,92 @@
+{
+  "head": "d419900e8977f4b4802d91e9e1145fd775894507",
+  "startedAt": "2026-10-06T15:07:38.129Z",
+  "steps": [
+    {
+      "name": "contracts",
+      "command": "npm",
+      "arguments": [
+        "run",
+        "check:agent-contracts",
+        "--",
+        "--probe-violation"
+      ],
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "name": "types",
+      "command": "npm",
+      "arguments": [
+        "run",
+        "typecheck"
+      ],
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "name": "unit",
+      "command": "npm",
+      "arguments": [
+        "test",
+        "--",
+        "--reporter=default",
+        "--reporter=json",
+        "--outputFile=.verification/unit.json"
+      ],
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "name": "lint",
+      "command": "npm",
+      "arguments": [
+        "run",
+        "lint",
+        "--",
+        "--no-fix"
+      ],
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "name": "build",
+      "command": "npm",
+      "arguments": [
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "signal": null
+    },
+    {
+      "name": "browser",
+      "command": "npm",
+      "arguments": [
+        "run",
+        "test:e2e",
+        "--",
+        "--headed"
+      ],
+      "exitCode": 0,
+      "signal": null
+    }
+  ],
+  "success": true,
+  "sourceSha256": "2e8237abfaf2b039555031bd7862ad2c3f7b6e9b201adcc565764fd2fcc9a163",
+  "sourceBaseline": "local-working-tree",
+  "unit": {
+    "files": 47,
+    "passed": 235
+  },
+  "build": {
+    "files": 41,
+    "sha256": "742a5f3caaec9e30530994ff2f461e45bb557576d25f0d55c3008f3ac319992b"
+  },
+  "browserPort": 61210,
+  "devBrowserPort": 61211,
+  "browser": {
+    "passed": 166
+  },
+  "finishedAt": "2026-10-06T15:09:01.832Z"
+}

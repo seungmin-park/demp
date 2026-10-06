@@ -3,13 +3,17 @@ package com.inhatc.demp.repository;
 import com.inhatc.demp.domain.Answer;
 import com.inhatc.demp.domain.Member;
 import com.inhatc.demp.domain.Question;
+import com.inhatc.demp.dto.question.QuestionAnswer;
+import org.springframework.data.domain.PageRequest;
 import com.inhatc.demp.repository.question.QuestionRepository;
 import java.util.List;
+import java.util.stream.IntStream;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 @DataJpaTest
 class AnswerRepositoryTest {
@@ -20,6 +24,21 @@ class AnswerRepositoryTest {
     QuestionRepository questionRepository;
     @Autowired
     AnswerRepository answerRepository;
+    @Autowired
+    JdbcTemplate jdbcTemplate;
+
+    @Test
+    @DisplayName("새 답변 테이블은 질문과 답변 ID 순서의 커서 인덱스를 생성한다")
+    void createsQuestionAnswerCursorIndex() {
+        List<String> columns = jdbcTemplate.queryForList("""
+                SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.INDEX_COLUMNS
+                WHERE TABLE_SCHEMA = 'PUBLIC' AND TABLE_NAME = 'ANSWER'
+                  AND INDEX_NAME = 'IDX_ANSWER_QUESTION_CURSOR'
+                ORDER BY ORDINAL_POSITION
+                """, String.class);
+
+        Assertions.assertThat(columns).containsExactly("QUESTION_ID", "ANSWER_ID");
+    }
 
     @Test
     @DisplayName("질문에 연결된 답변을 조회한다")
@@ -57,6 +76,25 @@ class AnswerRepositoryTest {
     @DisplayName("존재하지 않는 질문의 답변 목록은 비어 있다")
     void returnsEmptyForMissingQuestion() {
         Assertions.assertThat(answerRepository.findByQuestion_Id(-1L)).isEmpty();
+    }
+
+    @Test
+    @DisplayName("답변 조회 창은 DB에서 21행으로 제한하고 최신 ID부터 읽는다")
+    void readsBoundedAnswerWindow() {
+        Member member = memberRepository.save(Member.builder().username("window-reader").password("unused").roles(List.of("ROLE_USER")).build());
+        Question question = Question.builder().title("질문").content("본문").build();
+        question.assignMember(member);
+        questionRepository.save(question);
+        List<Answer> saved = answerRepository.saveAll(IntStream.range(0, 22)
+                .mapToObj(i -> Answer.createFor(member, question, "답변-" + i)).toList());
+
+        var window = answerRepository.findAnswerWindow(question.getId(), null, PageRequest.of(0, 21));
+
+        Assertions.assertThat(window).hasSize(21);
+        Assertions.assertThat(window).extracting(QuestionAnswer::getAnswerId)
+                .containsExactlyElementsOf(saved.reversed().subList(0, 21).stream().map(Answer::getId).toList());
+        Assertions.assertThat(window.getFirst().getUsername()).isEqualTo("window-reader");
+        Assertions.assertThat(window.getFirst().getContent()).isEqualTo("답변-21");
     }
 
     @Test

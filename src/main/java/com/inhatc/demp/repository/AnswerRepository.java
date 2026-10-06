@@ -1,6 +1,7 @@
 package com.inhatc.demp.repository;
 
 import com.inhatc.demp.domain.Answer;
+import com.inhatc.demp.dto.question.QuestionAnswer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -13,6 +14,9 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
     @EntityGraph(attributePaths = "member")
     List<Answer> findByQuestion_Id(Long questionId);
+    @Query("select new com.inhatc.demp.dto.question.QuestionAnswer(a.id, a.member.username, a.content, a.recommend, a.dislike) "
+            + "from Answer a where a.question.id = :questionId and (:before is null or a.id < :before) order by a.id desc")
+    List<QuestionAnswer> findAnswerWindow(Long questionId, Long before, Pageable pageable);
     @EntityGraph(attributePaths = {"member", "question"})
     @Query("select q from Answer q where lower(q.question.title) like lower(concat('%', :term, '%')) escape '!' or lower(q.member.username) like lower(concat('%', :term, '%')) escape '!'")
     Page<Answer> searchForAdmin(String term, Pageable pageable);

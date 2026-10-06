@@ -1,0 +1,134 @@
+{
+  "status": "passed",
+  "steps": [
+    {
+      "label": "현재 답변 검증 질문으로 이동",
+      "operation": "goto",
+      "exit_code": 0
+    },
+    {
+      "label": "실제 답변 개수 확인",
+      "operation": "get",
+      "exit_code": 0
+    },
+    {
+      "label": "실제 답변 개수 확인",
+      "operation": "get",
+      "exit_code": 0
+    },
+    {
+      "label": "첫 페이지 관찰",
+      "operation": "eval",
+      "exit_code": 0
+    },
+    {
+      "label": "작성 중 입력",
+      "operation": "fill",
+      "exit_code": 0
+    },
+    {
+      "label": "더 보기 실제 클릭",
+      "operation": "click",
+      "exit_code": 0
+    },
+    {
+      "label": "실제 답변 개수 확인",
+      "operation": "get",
+      "exit_code": 0
+    },
+    {
+      "label": "더 보기 후 입력과 개수 관찰",
+      "operation": "eval",
+      "exit_code": 0
+    },
+    {
+      "label": "페이지 화면 기록",
+      "operation": "screenshot",
+      "exit_code": 0
+    },
+    {
+      "label": "실제 답변 요청 크기 관찰 준비",
+      "operation": "eval",
+      "exit_code": 0
+    },
+    {
+      "label": "1만 자를 넘는 합성 Markdown 입력",
+      "operation": "fill",
+      "exit_code": 0
+    },
+    {
+      "label": "단건 저장 실제 클릭",
+      "operation": "click",
+      "exit_code": 0
+    },
+    {
+      "label": "실제 답변 개수 확인",
+      "operation": "get",
+      "exit_code": 0
+    },
+    {
+      "label": "실제 답변 개수 확인",
+      "operation": "get",
+      "exit_code": 0
+    },
+    {
+      "label": "성공 입력 초기화 관찰",
+      "operation": "get",
+      "exit_code": 0
+    },
+    {
+      "label": "원문과 다른 HTML·JSON 요청 크기 관찰",
+      "operation": "eval",
+      "exit_code": 0
+    },
+    {
+      "label": "새 답변 비추천 실제 클릭",
+      "operation": "click",
+      "exit_code": 0
+    },
+    {
+      "label": "비추천 확정 대기",
+      "operation": "wait",
+      "exit_code": 0
+    },
+    {
+      "label": "실제 페이지 새로고침",
+      "operation": "reload",
+      "exit_code": 0
+    },
+    {
+      "label": "첫 20개와 비추천 복원 대기",
+      "operation": "wait",
+      "exit_code": 0
+    },
+    {
+      "label": "최종 화면 기록",
+      "operation": "screenshot",
+      "exit_code": 0
+    }
+  ],
+  "checks": [
+    "visible first page shows twenty and more",
+    "visible more preserves input and ends at twenty-six",
+    "synthetic user input exceeds ten thousand code points",
+    "visible save clears the submitted input",
+    "actual browser XHR serialized request was observed",
+    "independent HTTP read proves long Markdown saved without truncation",
+    "fresh API query confirms the browser-created answer and reaction",
+    "separate page reads retain all twenty-six original answers plus new answer"
+  ],
+  "measurements": {
+    "rawCodePoints": 13220,
+    "rawUtf8Bytes": 26446,
+    "request": {
+      "htmlCodePoints": 28828,
+      "htmlUtf8Bytes": 42054,
+      "jsonUtf8Bytes": 43319
+    },
+    "sanitizedCodePoints": 28828,
+    "sanitizedUtf8Bytes": 42054
+  },
+  "target": "http://127.0.0.1:62814/questions/1",
+  "database": "isolated in-memory H2",
+  "network_mock": false
+}

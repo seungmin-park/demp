@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import jakarta.persistence.*;
 
 @Entity
+@Table(indexes = @Index(name = "idx_answer_question_cursor", columnList = "question_id, answer_id"))
 @org.hibernate.annotations.DynamicUpdate
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -30,6 +31,13 @@ public class Answer {
     private String content;
     private int recommend;
     private int dislike;
+
+    public static Answer createFor(Member member, Question question, String content) {
+        Answer answer = Answer.builder().content(content).recommend(0).dislike(0).build();
+        answer.member = member;
+        answer.question = question;
+        return answer;
+    }
 
     //연관 관계 편의 메소드
     public void assignMember(Member member) {

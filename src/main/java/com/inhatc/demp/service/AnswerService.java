@@ -10,6 +10,7 @@ import com.inhatc.demp.repository.question.QuestionRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,23 +24,25 @@ public class AnswerService {
     private final QuestionRepository questions;
     private final MemberRepository members;
     private final ContentSanitizer sanitizer;
-    public List<QuestionAnswer> findByQuestion(Long questionId) {
-        return answers.findByQuestion_Id(questionId).stream().map(QuestionAnswer::new).collect(Collectors.toList());
-    }
-    public List<QuestionAnswer> findByQuestion(Long questionId, Long actorId) {
-        var selected = reactions.findByMember_IdAndAnswer_Question_Id(actorId, questionId).stream()
+    public AnswerPage findAnswerPage(Long questionId, Long actorId, Long before) {
+        if (!questions.existsById(questionId)) throw new ResourceNotFoundException();
+        List<QuestionAnswer> window = answers.findAnswerWindow(questionId, before, PageRequest.of(0, 21));
+        List<QuestionAnswer> content = window.stream().limit(20).toList();
+        if (content.isEmpty()) return new AnswerPage(content, null, false);
+        var selected = reactions.findByMember_IdAndAnswer_IdIn(actorId,
+                content.stream().map(QuestionAnswer::getAnswerId).toList()).stream()
                 .collect(Collectors.toMap(vote -> vote.getAnswer().getId(), ContentReaction::getReaction));
-        List<QuestionAnswer> result = findByQuestion(questionId);
-        result.forEach(answer -> answer.setMyReaction(selected.getOrDefault(answer.getAnswerId(), ReactionType.NONE)));
-        return result;
+        content.forEach(answer -> answer.setMyReaction(selected.getOrDefault(answer.getAnswerId(), ReactionType.NONE)));
+        boolean hasNext = window.size() > 20;
+        return new AnswerPage(content, hasNext ? content.getLast().getAnswerId().toString() : null, hasNext);
     }
     @Transactional
-    public List<QuestionAnswer> createAnswerAndList(Long actorId, AnswerForm form) {
+    public QuestionAnswer createAnswer(Long actorId, AnswerForm form) {
         Member member = members.findById(actorId).orElseThrow(ResourceNotFoundException::new);
         Question question = questions.findById(form.getQuestionId()).orElseThrow(ResourceNotFoundException::new);
-        Answer answer = Answer.builder().content(sanitizer.sanitize(form.getAnswerContent())).recommend(0).dislike(0).build();
-        answer.assignMember(member); answer.assignQuestion(question); answers.save(answer);
-        return findByQuestion(question.getId(), actorId);
+        Answer answer = Answer.createFor(member, question, sanitizer.sanitize(form.getAnswerContent()));
+        answers.save(answer);
+        return new QuestionAnswer(answer);
     }
     @Transactional
     public void update(Long actorId, UpdateAnswerForm form) {

@@ -8,6 +8,7 @@ import com.inhatc.demp.controller.ExController;
 import com.inhatc.demp.domain.Answer;
 import com.inhatc.demp.domain.Member;
 import com.inhatc.demp.dto.answer.AnswerForm;
+import com.inhatc.demp.dto.answer.AnswerPage;
 import com.inhatc.demp.dto.answer.UpdateAnswerForm;
 import com.inhatc.demp.dto.question.QuestionAnswer;
 import com.inhatc.demp.repository.AnswerRepository;
@@ -71,25 +72,31 @@ class AnswerRestDocsTest {
         ReflectionTestUtils.setField(answer, "id", 61L);
         answer.assignMember(member);
         List<Answer> response = List.of(answer);
-        when(answerService.findByQuestion(51L, 41L)).thenReturn(List.of(new QuestionAnswer(answer)));
+        when(answerService.findAnswerPage(51L, 41L, 70L)).thenReturn(new AnswerPage(List.of(new QuestionAnswer(answer)), null, false));
 
-        mockMvc.perform(get("/api/answer/{questionId}", 51L)
+        mockMvc.perform(get("/api/answer/{questionId}", 51L).queryParam("before", "70")
                         .header("X-AUTH-TOKEN", DOCS_TOKEN))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].answerId").value(61))
-                .andExpect(jsonPath("$[0].content").value("docs-answer"))
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(1))
+                .andExpect(jsonPath("$.content[0].answerId").isString())
+                .andExpect(jsonPath("$.content[0].answerId").value("61"))
+                .andExpect(jsonPath("$.content[0].content").value("docs-answer"))
                 .andDo(document("answer-list",
                         requestHeaders(headerWithName("X-AUTH-TOKEN").description("로그인 시 발급된 JWT")),
                         pathParameters(parameterWithName("questionId").description("답변을 조회할 질문 ID")),
+                        queryParameters(parameterWithName("before").description("이 ID 미만의 답변 조회, 생략 시 최신 20건").optional()),
                         responseFields(
-                                fieldWithPath("[].answerId").description("답변 ID"),
-                                fieldWithPath("[].username").description("답변 작성자 이름"),
-                                fieldWithPath("[].content").description("답변 본문"),
-                                fieldWithPath("[].recommend").description("추천 수"),
-                                fieldWithPath("[].myReaction").description("로그인 회원의 반응 NONE/RECOMMEND/DISLIKE"),
-                                fieldWithPath("[].dislike").description("비추천 수"))));
+                                fieldWithPath("content").description("최대 20건의 답변, ID 내림차순"),
+                                fieldWithPath("hasNext").description("다음 페이지 존재 여부"),
+                                fieldWithPath("nextCursor").type(org.springframework.restdocs.payload.JsonFieldType.VARIES).description("다음 페이지의 before 문자열, 마지막 페이지는 null"),
+                                fieldWithPath("content[].answerId").description("정밀도를 보존하는 답변 ID 문자열"),
+                                fieldWithPath("content[].username").description("답변 작성자 이름"),
+                                fieldWithPath("content[].content").description("답변 본문"),
+                                fieldWithPath("content[].recommend").description("추천 수"),
+                                fieldWithPath("content[].myReaction").description("로그인 회원의 반응 NONE/RECOMMEND/DISLIKE"),
+                                fieldWithPath("content[].dislike").description("비추천 수"))));
+        verify(answerService).findAnswerPage(51L, 41L, 70L);
     }
 
     @Test
@@ -101,16 +108,17 @@ class AnswerRestDocsTest {
         ReflectionTestUtils.setField(savedAnswer, "id", 61L);
         savedAnswer.assignMember(member);
         QuestionAnswer response = new QuestionAnswer(savedAnswer);
-        when(answerService.createAnswerAndList(eq(41L), refEq(request))).thenReturn(List.of(response));
+        when(answerService.createAnswer(eq(41L), refEq(request))).thenReturn(response);
 
         mockMvc.perform(post("/api/answer/save")
                         .header("X-AUTH-TOKEN", DOCS_TOKEN)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].answerId").value(61))
-                .andExpect(jsonPath("$[0].content").value("docs-answer"))
+                .andExpect(jsonPath("$").isMap())
+                .andExpect(jsonPath("$.answerId").isString())
+                .andExpect(jsonPath("$.answerId").value("61"))
+                .andExpect(jsonPath("$.content").value("docs-answer"))
                 .andDo(document("answer-save",
                         requestHeaders(
                                 headerWithName("X-AUTH-TOKEN").description("로그인 시 발급된 JWT"),
@@ -120,12 +128,12 @@ class AnswerRestDocsTest {
                                 fieldWithPath("questionId").description("답변을 추가할 질문 ID"),
                                 fieldWithPath("answerContent").description("답변 본문")),
                         responseFields(
-                                fieldWithPath("[].answerId").description("답변 ID"),
-                                fieldWithPath("[].username").description("답변 작성자 이름"),
-                                fieldWithPath("[].content").description("답변 본문"),
-                                fieldWithPath("[].recommend").description("추천 수"),
-                                fieldWithPath("[].myReaction").description("로그인 회원의 반응 NONE/RECOMMEND/DISLIKE"),
-                                fieldWithPath("[].dislike").description("비추천 수"))));
+                                fieldWithPath("answerId").description("정밀도를 보존하는 답변 ID 문자열"),
+                                fieldWithPath("username").description("답변 작성자 이름"),
+                                fieldWithPath("content").description("답변 본문"),
+                                fieldWithPath("recommend").description("추천 수"),
+                                fieldWithPath("myReaction").description("로그인 회원의 반응 NONE/RECOMMEND/DISLIKE"),
+                                fieldWithPath("dislike").description("비추천 수"))));
     }
 
     @Test

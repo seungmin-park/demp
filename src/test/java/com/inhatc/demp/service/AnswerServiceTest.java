@@ -30,26 +30,31 @@ class AnswerServiceTest {
         Question question = Question.builder().title("질문").content("본문").hits(0).recommend(0).dislike(0).build();
         question.assignMember(member); questions.save(question);
 
-        assertThatThrownBy(() -> service.createAnswerAndList(-1L,
+        assertThatThrownBy(() -> service.createAnswer(-1L,
                 new AnswerForm("missing", question.getId(), "답변")))
                 .isInstanceOf(ResourceNotFoundException.class);
         assertThat(answers.findAll()).isEmpty();
     }
 
     @Test
-    @DisplayName("답변 저장 결과는 같은 질문의 기존 답변과 새 답변을 반환한다")
-    void returnsAnswersAfterSave() {
+    @DisplayName("답변 저장은 새 답변 한 건만 반환하고 기존 답변은 보존한다")
+    void returnsOnlyCreatedAnswer() {
         Member member = members.save(Member.builder().username("answer-member").password("hash").roles(List.of("ROLE_USER")).build());
         Question question = Question.builder().title("질문").content("본문").hits(0).recommend(0).dislike(0).build();
         question.assignMember(member); questions.save(question);
         Answer existing = Answer.builder().content("기존").recommend(2).dislike(1).build();
         existing.assignMember(member); existing.assignQuestion(question); answers.save(existing);
 
-        List<QuestionAnswer> result = service.createAnswerAndList(member.getId(),
+        Object result = service.createAnswer(member.getId(),
                 new AnswerForm(member.getUsername(), question.getId(), "새 답변"));
 
-        assertThat(result).extracting(QuestionAnswer::getContent)
-                .containsExactlyInAnyOrder("기존", "새 답변");
+        assertThat(result).isInstanceOf(QuestionAnswer.class);
+        QuestionAnswer created = (QuestionAnswer) result;
+        assertThat(created.getContent()).isEqualTo("새 답변");
+        assertThat(created.getUsername()).isEqualTo("answer-member");
+        assertThat(created.getRecommend()).isZero();
+        assertThat(created.getDislike()).isZero();
+        assertThat(created.getMyReaction()).isEqualTo(ReactionType.NONE);
         assertThat(answers.findByQuestion_Id(question.getId())).extracting(Answer::getContent)
                 .containsExactlyInAnyOrder("기존", "새 답변");
     }
@@ -59,7 +64,7 @@ class AnswerServiceTest {
     void rejectsMissingQuestion() {
         Member member = members.save(Member.builder().username("answer-member").password("hash").roles(List.of("ROLE_USER")).build());
 
-        assertThatThrownBy(() -> service.createAnswerAndList(member.getId(),
+        assertThatThrownBy(() -> service.createAnswer(member.getId(),
                 new AnswerForm(member.getUsername(), -1L, "답변")))
                 .isInstanceOf(ResourceNotFoundException.class);
         assertThat(answers.findAll()).isEmpty();
@@ -71,9 +76,9 @@ class AnswerServiceTest {
         Question question = Question.builder().title("title").content("body").hits(0).recommend(0).dislike(0).build();
         question.assignMember(actor); questions.save(question);
 
-        List<QuestionAnswer> response = service.createAnswerAndList(actor.getId(), new AnswerForm("forged", question.getId(), "<b>safe</b><script>bad()</script>"));
+        QuestionAnswer response = service.createAnswer(actor.getId(), new AnswerForm("forged", question.getId(), "<b>safe</b><script>bad()</script>"));
 
-        assertThat(response).extracting(QuestionAnswer::getUsername).containsExactly("answer-actor");
+        assertThat(response.getUsername()).isEqualTo("answer-actor");
         assertThat(answers.findByQuestion_Id(question.getId())).extracting(Answer::getContent).containsExactly("<b>safe</b>");
     }
     @Test

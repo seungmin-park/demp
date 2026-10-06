@@ -59,8 +59,9 @@ def check_reactions(base, expected_documentation):
     question = json_response(base, '/api/question/detail/-1', token=token)
     require({key: question[key] for key in ('recommend', 'dislike', 'myReaction')}
             == {'recommend': 0, 'dislike': 0, 'myReaction': 'NONE'}, 'Cancellation was not committed')
-    answers = json_response(base, '/api/answer/-1', token=token)
-    answer = next(item for item in answers if item['answerId'] == -1)
+    answer_page = json_response(base, '/api/answer/-1', token=token)
+    answers = answer_page['content']
+    answer = next(item for item in answers if item['answerId'] == '-1')
     require({key: answer[key] for key in ('recommend', 'dislike', 'myReaction')}
             == {'recommend': 0, 'dislike': 1, 'myReaction': 'DISLIKE'}, 'Question cancellation changed answer reaction')
     status, documentation = request(base, '/docs/index.html', token=token)
