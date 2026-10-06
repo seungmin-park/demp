@@ -11,12 +11,19 @@ import com.inhatc.demp.error.ResourceNotFoundException;
 import com.inhatc.demp.repository.MemberRepository;
 import java.util.List;
 import java.nio.charset.StandardCharsets;
+import java.time.Clock;
+import java.time.Instant;
+import com.inhatc.demp.error.LoginRateLimitException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
+import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.StringUtils;
 
 @Service
@@ -26,6 +33,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final PlatformTransactionManager transactionManager;
+    private final Clock clock;
 
     @Transactional
     public MemberDto registerMember(MemberSaveForm form) {
@@ -54,17 +63,36 @@ public class MemberService {
         return memberRepository.findAll();
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public MemberInfo login(MemberLoginForm form) {
-        Member member = memberRepository.findByUsername(form.getUsername())
-                .orElseThrow(() -> new ApiException(HttpStatus.UNAUTHORIZED));
+        TransactionTemplate transaction = new TransactionTemplate(transactionManager);
+        transaction.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
+        LoginAttempt attempt = transaction.execute(status -> authenticateUnderLock(form));
+        if (attempt.retryAfterSeconds() > 0) throw new LoginRateLimitException(attempt.retryAfterSeconds());
+        if (attempt.memberInfo() == null) throw new ApiException(HttpStatus.UNAUTHORIZED);
+        return attempt.memberInfo();
+    }
+
+    private LoginAttempt authenticateUnderLock(MemberLoginForm form) {
+        Member member = memberRepository.findByUsernameForLogin(form.getUsername()).orElse(null);
+        if (member == null) return new LoginAttempt(null, 0);
+        // Read time after acquiring the row: a queued request must use its own decision time.
+        Instant now = clock.instant();
+        member.expireLoginRestriction(now);
+        long retryAfter = member.loginRetryAfterSeconds(now);
+        if (retryAfter > 0) return new LoginAttempt(null, retryAfter);
         if (form.getPassword() == null || !passwordEncoder.matches(form.getPassword(), member.getPassword())) {
-            throw new ApiException(HttpStatus.UNAUTHORIZED);
+            member.recordLoginFailure(now);
+            return new LoginAttempt(null, member.loginRetryAfterSeconds(now));
         }
+        member.resetLoginFailures();
         MemberInfo result = new MemberInfo();
         result.setUsername(member.getUsername());
         result.setJwt(jwtTokenProvider.createToken(member.getId().toString(), member.getRoles()));
-        return result;
+        return new LoginAttempt(result, 0);
     }
+
+    private record LoginAttempt(MemberInfo memberInfo, long retryAfterSeconds) {}
 
     public Member findByUsername(String username) {
         return memberRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);

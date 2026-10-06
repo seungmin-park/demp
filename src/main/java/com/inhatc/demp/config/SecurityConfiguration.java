@@ -61,6 +61,7 @@ public class SecurityConfiguration {
                 .map(String::trim).filter(origin -> !origin.isEmpty()).collect(Collectors.toList()));
         configuration.addAllowedMethod("*");
         configuration.addAllowedHeader("*");
+        configuration.addExposedHeader("Retry-After");
         configuration.setAllowCredentials(true);
         configuration.setMaxAge(3600L);
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();

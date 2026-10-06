@@ -1,0 +1,297 @@
+{
+  "backend_head": "f10d9d44ca28e093bbdaba360269239939395207",
+  "frontend_head": "7f63e0640216ba5486d9af79c454d56e47565682",
+  "uncommitted": true,
+  "backend": {
+    "tests": 344,
+    "required_suites": 57,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "packaged_docs_match": true,
+    "test_architecture_packaged": false,
+    "local_api_flow": "passed",
+    "reaction_commit_switch_cancel": "passed",
+    "unauthenticated_reaction_http": 401,
+    "served_docs_match": true,
+    "database": "isolated in-memory H2"
+  },
+  "frontend": {
+    "head": "7f63e0640216ba5486d9af79c454d56e47565682",
+    "startedAt": "2026-10-05T19:21:42.648Z",
+    "steps": [
+      {
+        "name": "contracts",
+        "command": "npm",
+        "arguments": [
+          "run",
+          "check:agent-contracts",
+          "--",
+          "--probe-violation"
+        ],
+        "exitCode": 0,
+        "signal": null
+      },
+      {
+        "name": "types",
+        "command": "npm",
+        "arguments": [
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "signal": null
+      },
+      {
+        "name": "unit",
+        "command": "npm",
+        "arguments": [
+          "test",
+          "--",
+          "--reporter=default",
+          "--reporter=json",
+          "--outputFile=.verification/unit.json"
+        ],
+        "exitCode": 0,
+        "signal": null
+      },
+      {
+        "name": "lint",
+        "command": "npm",
+        "arguments": [
+          "run",
+          "lint",
+          "--",
+          "--no-fix"
+        ],
+        "exitCode": 0,
+        "signal": null
+      },
+      {
+        "name": "build",
+        "command": "npm",
+        "arguments": [
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "signal": null
+      },
+      {
+        "name": "browser",
+        "command": "npm",
+        "arguments": [
+          "run",
+          "test:e2e",
+          "--",
+          "--headed"
+        ],
+        "exitCode": 0,
+        "signal": null
+      }
+    ],
+    "success": true,
+    "sourceSha256": "713c617dc04e3600f2d7cab457fc81fc2f916e617c7e629d3333a01896a3b6b3",
+    "sourceBaseline": "local-working-tree",
+    "unit": {
+      "files": 46,
+      "passed": 223
+    },
+    "build": {
+      "files": 41,
+      "sha256": "8b9278101ab35209b70019f5c02a4cf3cbb2920b662c0bd6e446a151b0b5222e"
+    },
+    "browserPort": 54009,
+    "devBrowserPort": 54010,
+    "browser": {
+      "passed": 162
+    },
+    "finishedAt": "2026-10-05T19:23:01.733Z"
+  },
+  "frontend_current": {
+    "sourceMatches": true,
+    "buildMatches": true,
+    "unit": {
+      "files": 46,
+      "passed": 223
+    },
+    "browser": {
+      "passed": 162
+    }
+  },
+  "mysql": {
+    "status": "passed",
+    "checks": [
+      "owned MySQL container label",
+      "MySQL loopback only",
+      "actual MySQL SQL applied: announcement-body-images.sql",
+      "actual MySQL SQL applied: announcement-compensation.sql",
+      "actual MySQL SQL applied: announcement-education.sql",
+      "actual MySQL SQL applied: announcement-publication.sql",
+      "actual MySQL SQL applied: content-reaction.sql",
+      "actual MySQL SQL applied: member-login-protection.sql",
+      "existing member identity and BCrypt unchanged by SQL",
+      "legacy-login: reset state committed",
+      "server-one: current JAR validates, pool session time_zone=+00:00",
+      "server-two: current JAR validates, pool session time_zone=+09:00",
+      "two independent JVMs share one MySQL DB",
+      "legacy member still logs in",
+      "first four distributed failures return 401",
+      "first four distributed failures return 401",
+      "first four distributed failures return 401",
+      "first four distributed failures return 401",
+      "legacy-login: failure count committed",
+      "fifth failure returns 429 and remaining seconds",
+      "legacy-login: failure count committed",
+      "other JVM cannot bypass block: expected 429, actual 429",
+      "blocked retry does not extend deadline",
+      "server-restarted: current JAR validates, pool session time_zone=+00:00",
+      "JVM restart retains DB block",
+      "expired block allows login against actual MySQL timestamp",
+      "legacy-login: reset state committed",
+      "login returns authenticated member: concurrent-login",
+      "eight concurrent HTTP failures across two JVMs serialize at five",
+      "concurrent-login: failure count committed",
+      "concurrent limit also rejects correct password",
+      "another account remains independent",
+      "mysqldump exits successfully",
+      "missing-login-column: expected startup refusal",
+      "missing-login-column: secret not logged"
+    ],
+    "production_database_verified": false,
+    "database_name": "demp_release_20261006_044006",
+    "jar_sha256": "7718eac1e35f41b216866f9ceb5599aad50787b1f5752cb7da52ea5340cda846",
+    "manual_sql_sha256": "f6ad85d4bcf9e09721530a0add6e17011cdf2425e354f9822e35e88eb2f86f91"
+  },
+  "visible": {
+    "workspace": "workspace:3",
+    "terminal": "surface:11",
+    "browser": "surface:18",
+    "assertions": [
+      {
+        "buttons": [
+          {
+            "label": "추천 1",
+            "pressed": "true"
+          },
+          {
+            "pressed": "false",
+            "label": "비추천 0"
+          },
+          {
+            "label": "추천 0",
+            "pressed": "false"
+          },
+          {
+            "pressed": "true",
+            "label": "비추천 1"
+          }
+        ],
+        "assertion": "reload retains question recommendation and answer dislike"
+      },
+      {
+        "buttons": [
+          {
+            "pressed": "false",
+            "label": "추천 0"
+          },
+          {
+            "pressed": "true",
+            "label": "비추천 1"
+          },
+          {
+            "pressed": "false",
+            "label": "추천 0"
+          },
+          {
+            "pressed": "true",
+            "label": "비추천 1"
+          }
+        ],
+        "assertion": "question switch preserves answer dislike"
+      },
+      {
+        "buttons": [
+          {
+            "label": "추천 0",
+            "pressed": "false"
+          },
+          {
+            "pressed": "false",
+            "label": "비추천 0"
+          },
+          {
+            "label": "추천 0",
+            "pressed": "false"
+          },
+          {
+            "label": "비추천 1",
+            "pressed": "true"
+          }
+        ],
+        "assertion": "reload retains question cancellation and independent answer dislike"
+      },
+      {
+        "assertion": "first wrong password shows generic failure",
+        "text": "로그인하지 못했습니다. 아이디와 비밀번호를 확인하고 다시 시도해 주세요."
+      },
+      {
+        "requests": 2,
+        "assertion": "visible login failure 2",
+        "text": "로그인하지 못했습니다. 아이디와 비밀번호를 확인하고 다시 시도해 주세요."
+      },
+      {
+        "requests": 3,
+        "text": "로그인하지 못했습니다. 아이디와 비밀번호를 확인하고 다시 시도해 주세요.",
+        "assertion": "visible login failure 3"
+      },
+      {
+        "requests": 4,
+        "text": "로그인하지 못했습니다. 아이디와 비밀번호를 확인하고 다시 시도해 주세요.",
+        "assertion": "visible login failure 4"
+      },
+      {
+        "requests": 5,
+        "text": "로그인 시도가 너무 많습니다. 15분 0초 후에 다시 시도해 주세요.",
+        "assertion": "visible login failure 5"
+      },
+      {
+        "path": "/login",
+        "assertion": "correct password remains limited and fields are preserved",
+        "text": "로그인 시도가 너무 많습니다. 15분 0초 후에 다시 시도해 주세요."
+      },
+      {
+        "remainingSeconds": 879,
+        "assertion": "page reload cannot reset server block; remaining time decreases",
+        "text": "로그인 시도가 너무 많습니다. 14분 39초 후에 다시 시도해 주세요."
+      }
+    ],
+    "browser_errors": [],
+    "console_entries": []
+  },
+  "fresh_api": {
+    "login_limit_http": 429,
+    "remaining_seconds": 879,
+    "independent_account_login_http": 200,
+    "question_requery": {
+      "recommend": 0,
+      "dislike": 0,
+      "myReaction": "NONE"
+    },
+    "answer_requery": {
+      "recommend": 0,
+      "dislike": 1,
+      "myReaction": "DISLIKE"
+    }
+  },
+  "jar_sha256": "7718eac1e35f41b216866f9ceb5599aad50787b1f5752cb7da52ea5340cda846",
+  "review": {
+    "important_timezone_issue": "actual Red expected429/actual200; DATETIME UTC encoding and final 2-timezone JVM Green",
+    "remaining_blockers": []
+  },
+  "production_database_verified": false,
+  "gcp_verified": false,
+  "github_security_findings_closed": false,
+  "backend_source_sha256": "5ce67256d5c8f267ac94f061c4ce98852214d2492dc622731e73cb8dac9b1899",
+  "backend_source_scope": "Git tracked+unignored files; excluding only this generated evidence directory"
+}

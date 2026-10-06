@@ -20,7 +20,7 @@ class LegacySchemaCompatibilityTest {
                         "spring.datasource.url=jdbc:h2:mem:legacy-schema;MODE=MySQL;DB_CLOSE_DELAY=0",
                         "spring.jpa.hibernate.ddl-auto=validate",
                         "spring.sql.init.mode=always",
-                        "spring.sql.init.schema-locations=classpath:legacy/hibernate5-schema.sql,classpath:db/manual/announcement-body-images.sql,classpath:db/manual/announcement-compensation.sql,classpath:db/manual/announcement-education.sql,classpath:db/manual/announcement-publication.sql,classpath:db/manual/content-reaction.sql")
+                        "spring.sql.init.schema-locations=classpath:legacy/hibernate5-schema.sql,classpath:db/manual/announcement-body-images.sql,classpath:db/manual/announcement-compensation.sql,classpath:db/manual/announcement-education.sql,classpath:db/manual/announcement-publication.sql,classpath:db/manual/content-reaction.sql,classpath:db/manual/member-login-protection.sql")
                 .run(context -> {
                     assertThat(context).hasNotFailed();
                     HashtagRepository tags = context.getBean(HashtagRepository.class);

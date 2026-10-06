@@ -48,10 +48,12 @@
   "com.inhatc.demp.service.EducationDiscoveryTest",
   "com.inhatc.demp.service.FileServiceTest",
   "com.inhatc.demp.service.LocalFileStorageTest",
+  "com.inhatc.demp.service.MemberLoginProtectionTest",
   "com.inhatc.demp.service.MemberServiceTest",
   "com.inhatc.demp.service.PublicationDuplicateConcurrencyTest",
   "com.inhatc.demp.service.PublicationWorkflowTest",
   "com.inhatc.demp.service.QuestionServiceTest",
+  "com.inhatc.demp.service.SharedLoginDatabaseTest",
   "com.inhatc.demp.service.admin.AdminAnnouncementConcurrencyTest",
   "com.inhatc.demp.service.admin.AdminOperationsTest"
 ]
