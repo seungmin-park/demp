@@ -1,5 +1,7 @@
 # 반응 저장의 책임 경계
 
+고용 형태는 `Announcement`가 EMP 전용 상태와 교육 전환 시 초기화를 소유한다. `AnnouncementFields`는 평면 입력, 생성/관리자 Service는 저장 트랜잭션, 상세·목록·스크롤 DTO는 반환을 맡는다. 모집 대상과 별도 nullable enum이므로 신입·경력 조합과 충돌하지 않는다. [계약·수동 SQL·검증](../plans/separate-employment-type.md)을 따른다.
+
 ```text
 Vue 표현 → useContentReaction → API → Controller → ContentReactionService → Repository/DB
                                   인증 ID       잠금·반응 상태·집계의 유일한 기록 책임

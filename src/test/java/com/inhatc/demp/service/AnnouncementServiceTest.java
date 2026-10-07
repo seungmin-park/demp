@@ -19,6 +19,10 @@ import java.util.Set;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
+import com.inhatc.demp.domain.announcement.EmploymentType;
+import com.inhatc.demp.domain.announcement.RecruitmentAudience;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -149,6 +153,43 @@ class AnnouncementServiceTest {
                 .payment(3000)
                 .languages(Set.of())
                 .build();
+    }
+
+    @ParameterizedTest
+    @DisplayName("각 고용 형태는 신입 대상과 독립적으로 커밋되고 상세·목록·관련 응답에 반환된다")
+    @EnumSource(EmploymentType.class)
+    void persistsEmploymentTypeAcrossResponses(EmploymentType employmentType) throws IOException {
+        AnnouncementCreateRequest request = request("고용 형태 공고");
+        request.setImage(null);
+        request.setPublicationStatus(com.inhatc.demp.domain.announcement.PublicationStatus.PUBLISHED);
+        request.setRecruitmentAudience(RecruitmentAudience.NEW);
+        request.setEmploymentType(employmentType);
+        announcementService.createAnnouncement(request);
+
+        Announcement saved = announcementRepository.findByTitle("고용 형태 공고").orElseThrow();
+        assertThat(saved.getRecruitmentAudience()).isEqualTo(RecruitmentAudience.NEW);
+        assertThat(saved.getEmploymentType()).isEqualTo(employmentType);
+        assertThat(announcementService.findDetailResponse(saved.getId()).orElseThrow().getEmploymentType()).isEqualTo(employmentType);
+        var listing = announcementService.findAnnouncementSlice(new AnnouncementSearchCondition(), PageRequest.of(0, 8));
+        assertThat(listing.getContent()).hasSize(1);
+        assertThat(listing.hasNext()).isFalse();
+        assertThat(listing.getContent().getFirst().getEmploymentType()).isEqualTo(employmentType);
+        var related = announcementService.findScrollResponses();
+        assertThat(related).hasSize(1);
+        assertThat(related.getFirst().getEmploymentType()).isEqualTo(employmentType);
+        verifyNoInteractions(fileService);
+    }
+
+    @Test
+    @DisplayName("고용 형태를 지정하지 않은 공고는 저장·재조회 후에도 미확인이다")
+    void preservesUnknownEmploymentType() throws IOException {
+        AnnouncementCreateRequest request = request("미확인 고용 형태");
+        request.setImage(null);
+        request.setPublicationStatus(com.inhatc.demp.domain.announcement.PublicationStatus.PUBLISHED);
+        announcementService.createAnnouncement(request);
+        Announcement saved = announcementRepository.findByTitle("미확인 고용 형태").orElseThrow();
+        assertThat(saved.getEmploymentType()).isNull();
+        assertThat(announcementService.findDetailResponse(saved.getId()).orElseThrow().getEmploymentType()).isNull();
     }
 
     private AnnouncementCreateRequest request(String title) {

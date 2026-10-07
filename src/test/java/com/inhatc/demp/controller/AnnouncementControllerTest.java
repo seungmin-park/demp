@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
@@ -109,6 +110,39 @@ class AnnouncementControllerTest {
         var captured = ArgumentCaptor.forClass(AnnouncementCreateRequest.class);
         verify(announcementService).createAnnouncement(captured.capture(), org.mockito.ArgumentMatchers.eq("user"));
         assertThat((Object) captured.getValue().getPayment()).isNull();
+    }
+
+    @ParameterizedTest
+    @DisplayName("고용 형태는 신입 모집 대상과 별개로 multipart에서 전달된다")
+    @ValueSource(strings = {"REGULAR", "CONTRACT", "CONVERSION_INTERNSHIP", "EXPERIENTIAL_INTERNSHIP"})
+    void bindsEmploymentTypeSeparatelyFromAudience(String employmentType) throws Exception {
+        mockMvc.perform(validOptionalPaymentRequest().param("recruitmentAudience", "NEW")
+                .param("employmentType", employmentType)).andExpect(status().isOk());
+        var captured = ArgumentCaptor.forClass(AnnouncementCreateRequest.class);
+        verify(announcementService).createAnnouncement(captured.capture(), org.mockito.ArgumentMatchers.eq("user"));
+        var fields = new BeanWrapperImpl(captured.getValue());
+        assertThat(fields.isReadableProperty("employmentType")).isTrue();
+        assertThat(fields.getPropertyValue("employmentType").toString()).isEqualTo(employmentType);
+        assertThat(captured.getValue().getRecruitmentAudience().name()).isEqualTo("NEW");
+    }
+
+    @Test
+    @DisplayName("고용 형태를 생략하면 정규직으로 추정하지 않고 미확인으로 전달한다")
+    void omittedEmploymentTypeRemainsUnknown() throws Exception {
+        mockMvc.perform(validOptionalPaymentRequest()).andExpect(status().isOk());
+        var captured = ArgumentCaptor.forClass(AnnouncementCreateRequest.class);
+        verify(announcementService).createAnnouncement(captured.capture(), org.mockito.ArgumentMatchers.eq("user"));
+        var fields = new BeanWrapperImpl(captured.getValue());
+        assertThat(fields.isReadableProperty("employmentType")).isTrue();
+        assertThat(fields.getPropertyValue("employmentType")).isNull();
+    }
+
+    @Test
+    @DisplayName("잘못된 고용 형태는 무시하지 않고 서비스 호출 전에 400으로 거절한다")
+    void rejectsUnknownEmploymentType() throws Exception {
+        mockMvc.perform(validOptionalPaymentRequest().param("employmentType", "INVALID"))
+                .andExpect(status().isBadRequest());
+        verifyNoInteractions(announcementService);
     }
 
     @ParameterizedTest

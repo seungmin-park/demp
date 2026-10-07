@@ -68,6 +68,7 @@ public class AnnouncementFields {
 
     private PublicationStatus publicationStatus;
     private com.inhatc.demp.domain.announcement.RecruitmentAudience recruitmentAudience;
+    private EmploymentType employmentType;
     private String cohort;
     @Min(0)
     private Integer stipendAmount;

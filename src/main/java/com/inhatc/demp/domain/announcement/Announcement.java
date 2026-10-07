@@ -44,6 +44,12 @@ public class Announcement {
     public void changePublication(PublicationStatus status) { if (status != null) publicationStatus = status; }
     @Enumerated(EnumType.STRING) @JdbcTypeCode(SqlTypes.VARCHAR)
     private RecruitmentAudience recruitmentAudience;
+    @Enumerated(EnumType.STRING) @JdbcTypeCode(SqlTypes.VARCHAR)
+    private EmploymentType employmentType;
+
+    public void changeEmploymentType(EmploymentType employmentType) {
+        this.employmentType = announcementType == AnnouncementType.EMP ? employmentType : null;
+    }
     private String cohort;
     private Integer stipendAmount;
     private String stipendNote;

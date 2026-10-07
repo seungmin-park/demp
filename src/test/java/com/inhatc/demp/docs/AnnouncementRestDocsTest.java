@@ -83,6 +83,7 @@ class AnnouncementRestDocsTest {
                         .part(new org.springframework.mock.web.MockPart("company", "docs-company".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
                         .part(new org.springframework.mock.web.MockPart("position", "BACKEND".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
                         .part(new org.springframework.mock.web.MockPart("type", "EMP".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
+                        .part(new org.springframework.mock.web.MockPart("employmentType", "CONVERSION_INTERNSHIP".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
                         .part(new org.springframework.mock.web.MockPart("minCareer", "0".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
                         .part(new org.springframework.mock.web.MockPart("maxCareer", "3".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
                         .part(new org.springframework.mock.web.MockPart("startedDate", "2026-09-01T00:00:00".getBytes(java.nio.charset.StandardCharsets.UTF_8)))
@@ -100,6 +101,7 @@ class AnnouncementRestDocsTest {
                                 partWithName("title").description("공고 제목"),
                                 partWithName("company").description("회사 또는 교육기관 이름"),
                                 partWithName("type").description("공고 유형: EMP 또는 EDU"),
+                                partWithName("employmentType").description("채용 고용 형태: REGULAR/CONTRACT/CONVERSION_INTERNSHIP/EXPERIENTIAL_INTERNSHIP, 생략 시 미확인; 교육에서는 사용하지 않음").optional(),
                                 partWithName("position").description("직무 enum"),
                                 partWithName("minCareer").description("최소 경력"),
                                 partWithName("maxCareer").description("최대 경력, 0은 상한 없음"),
@@ -156,6 +158,7 @@ class AnnouncementRestDocsTest {
                                 fieldWithPath("company.name").description("회사 또는 교육기관 이름"),
                                 fieldWithPath("title").description("공고 제목"),
                                 fieldWithPath("recruitmentAudience").optional().description("명시적 모집 대상"),
+                                fieldWithPath("employmentType").optional().description("고용 형태 (REGULAR/CONTRACT/CONVERSION_INTERNSHIP/EXPERIENTIAL_INTERNSHIP), 미확인은 null"),
                         fieldWithPath("recruitmentClosed").description("운영자 수동 마감"),
                         fieldWithPath("minCareer").description("최소 경력"),
                                 fieldWithPath("maxCareer").description("최대 경력, 0은 상한 없음"),
@@ -258,6 +261,7 @@ class AnnouncementRestDocsTest {
                                 fieldWithPath("content[].company").description("회사 또는 교육기관").optional(),
                                 fieldWithPath("content[].announcementType").description("EMP 또는 EDU").optional(),
                                 fieldWithPath("content[].recruitmentAudience").optional().description("명시적 모집 대상"),
+                                fieldWithPath("content[].employmentType").optional().description("고용 형태, 미확인은 null"),
                         fieldWithPath("content[].recruitmentClosed").description("운영자 수동 마감"),
                         fieldWithPath("content[].minCareer").description("최소 경력").optional(),
                                 fieldWithPath("content[].maxCareer").description("최대 경력, 0이면 상한 없음").optional(),
@@ -317,6 +321,7 @@ class AnnouncementRestDocsTest {
                                 fieldWithPath("[].company.name").description("회사 또는 교육기관 이름"),
                                 fieldWithPath("[].announcementType").description("EMP 채용 / EDU 교육"),
                                 fieldWithPath("[].recruitmentAudience").optional().description("명시적 모집 대상"),
+                                fieldWithPath("[].employmentType").optional().description("고용 형태, 미확인은 null"),
                         fieldWithPath("[].recruitmentClosed").description("운영자 수동 마감"),
                         fieldWithPath("[].minCareer").description("최소 경력 연차"),
                                 fieldWithPath("[].maxCareer").description("최대 경력 연차, 0이면 상한 없음"),

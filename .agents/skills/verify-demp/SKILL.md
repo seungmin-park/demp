@@ -5,6 +5,8 @@ description: Verify DEMP backend reaction persistence, versioned official docs, 
 
 # Verify DEMP
 
+For employment type changes, also follow [the storage and migration record](../../../docs/plans/separate-employment-type.md): verify all four enum values, unknown/null, independent recruitment audience, education clearing, response DTOs, legacy rows and missing-column startup refusal. Run the owned MySQL rehearsal only against isolated fixture databases; its result is not proof that production SQL was applied.
+
 Read [feature map](../../../docs/engineering/feature-map.md), [architecture](../../../docs/engineering/architecture.md), [official docs](../../../docs/engineering/official-docs.md) and the repository `AGENTS.md`. The backend worktree is this skill's Git root. The frontend is a **separate Git repository**; use its own `.agents/skills/verify-dempfrontend/SKILL.md` and report its result separately.
 
 ## Doctor

@@ -6,6 +6,7 @@
 |---|---|---|---|
 | 질문·답변 반응 | 로그인 → 질문 상세 → 추천/비추천 → 새로고침 | `ContentReactionService` + DB | 아래 흐름, `./gradlew test --tests '*ContentReaction*'` 및 실제 cmux 브라우저 |
 | 답변 단건 생성·커서 조회 | 질문 상세 → 첫 20건 → 더 보기 → 작성·저장 | `AnswerService` + `AnswerRepository`; 반응은 기존 서비스 | `AnswerReadBudgetTest`·`AnswerPaginationTest`·MVC/REST Docs + 실제 Spring/MySQL 리허설 |
+| 고용 형태 | 관리자 등록/수정 → 신입·경력과 별도 선택 → 공개 목록/상세/관련 조회 | `Announcement` EMP 상태 규칙, Service 트랜잭션, DB nullable 값 | 입력 MVC·commit 재조회·REST Docs·legacy schema·실제 MySQL, [기록](../plans/separate-employment-type.md) |
 
 ## 답변 생성·조회
 
