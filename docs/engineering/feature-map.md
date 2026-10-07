@@ -1,5 +1,7 @@
 # 기능 지도
 
+질문 조회수: 상세 진입/새로고침 → `recordViewAndGetDetail` → 원자 증가·commit → 응답/목록 재조회. 본인 조회 포함, 편집 `recordView=false`·목록·인증 실패·404 제외. 서비스 실제 commit/16건 동시 요청, MVC/REST Docs·보안 필터와 현재 cmux/Spring 사용자 흐름으로 검증한다.
+
 공용 CI 경로와 검증 책임은 [CI·보호된 전달](ci-and-delivery.md)을 따른다. `bash scripts/verify.sh`는 기존 소유권 검사, 실제 전체 테스트와 구조 검사, 필수 XML, 생성 문서·JAR·인증 HTTP 일치, 방금 만든 JAR의 Spring/H2 저장·재조회 경로를 연결한다. 프런트 실제 브라우저 경로는 별도로 검증한다.
 
 | 기능 | 사용자 경로 | 저장 소유자 | 검증 |

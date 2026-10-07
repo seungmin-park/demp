@@ -8,6 +8,10 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface QuestionRepository extends JpaRepository<Question, Long> {
+    @org.springframework.data.jpa.repository.Modifying
+    @Query("update Question q set q.hits = q.hits + 1 where q.id = :id")
+    int incrementHits(Long id);
+
     @EntityGraph(attributePaths = {"member", "questionHashtags.hashtag"})
     @Query("select q from Question q where q.id = :id")
     java.util.Optional<Question> findDetailById(Long id);

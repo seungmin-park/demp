@@ -48,6 +48,31 @@ class QuestionControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
+    @DisplayName("상세 조회는 기본적으로 조회수를 집계하는 유스케이스를 호출한다")
+    void recordsViewByDefault() throws Exception {
+        mockMvc.perform(get("/api/question/detail/51")).andExpect(status().isOk());
+        verify(questionService).recordViewAndGetDetail(51L, 41L);
+        verify(questionService, never()).findById(51L, 41L);
+    }
+
+    @Test
+    @DisplayName("편집 상세 조회는 집계하지 않는 순수 조회를 호출한다")
+    void editingReadDoesNotRecordView() throws Exception {
+        mockMvc.perform(get("/api/question/detail/51").param("recordView", "false"))
+                .andExpect(status().isOk());
+        verify(questionService).findById(51L, 41L);
+        verify(questionService, never()).recordViewAndGetDetail(51L, 41L);
+    }
+
+    @Test
+    @DisplayName("잘못된 조회수 집계 조건은 서비스 호출 전에 400으로 거절한다")
+    void rejectsInvalidRecordView() throws Exception {
+        mockMvc.perform(get("/api/question/detail/51").param("recordView", "invalid"))
+                .andExpect(status().isBadRequest());
+        verifyNoInteractions(questionService);
+    }
+
+    @Test
     @DisplayName("질문 목록은 내용과 마지막 여부 및 페이지 번호를 반환한다")
     void returnsQuestionSlice() throws Exception {
         QuestionList question = new QuestionList();
@@ -98,7 +123,7 @@ class QuestionControllerTest {
     @Test
     @DisplayName("없는 질문의 상세 조회는 공통 오류 본문과 404를 반환한다")
     void missingQuestionDetail() throws Exception {
-        when(questionService.findById(999L, 41L)).thenThrow(new com.inhatc.demp.error.ResourceNotFoundException());
+        when(questionService.recordViewAndGetDetail(999L, 41L)).thenThrow(new com.inhatc.demp.error.ResourceNotFoundException());
 
         mockMvc.perform(get("/api/question/detail/999"))
                 .andExpect(status().isNotFound())

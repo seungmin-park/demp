@@ -34,8 +34,12 @@ public class QuestionController {
     }
 
     @GetMapping("/detail/{questionId}")
-    public ResponseEntity<QuestionDetail> getQuestion(@AuthenticationPrincipal MemberPrincipal principal, @PathVariable Long questionId) {
-        return ResponseEntity.ok(questionService.findById(questionId, principal.getMemberId()));
+    public ResponseEntity<QuestionDetail> getQuestion(@AuthenticationPrincipal MemberPrincipal principal,
+            @PathVariable Long questionId, @RequestParam(defaultValue = "true") boolean recordView) {
+        QuestionDetail detail = recordView
+                ? questionService.recordViewAndGetDetail(questionId, principal.getMemberId())
+                : questionService.findById(questionId, principal.getMemberId());
+        return ResponseEntity.ok(detail);
     }
 
     @GetMapping("/hashtags")

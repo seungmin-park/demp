@@ -23,6 +23,12 @@ include::{snippets}/question-list/response-fields.adoc[]
 
 [[Question-상세]]
 === 질문 상세 조회
+성공한 상세 요청마다 조회수를 1 증가한다. 본인 조회와 새로고침을 포함하며 중복 방문자를 별도로 구분하지 않는다.
+편집 입력 복원은 `recordView=false`로 조회한다. 목록·편집 조회·인증 실패·404는 집계하지 않는다.
+
+.요청 파라미터
+include::{snippets}/question-detail/query-parameters.adoc[]
+
 .HTTP 요청
 include::{snippets}/question-detail/http-request.adoc[]
 
