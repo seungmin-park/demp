@@ -41,3 +41,6 @@ out/
 .local/
 
 .firecrawl/
+
+# Python verification bytecode is generated, not application source.
+__pycache__/

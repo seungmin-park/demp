@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
-@Profile("local")
+@Profile("local | filesystem")
 public class LocalImageConfiguration implements WebMvcConfigurer {
     @Value("${app.local.upload-dir:.local/uploads}") private String directory;
     @Override public void addResourceHandlers(ResourceHandlerRegistry registry) {

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -18,7 +19,7 @@ import java.io.InputStream;
 import java.util.UUID;
 
 @Service
-@org.springframework.context.annotation.Profile("!local")
+@Profile("!local & !filesystem")
 @RequiredArgsConstructor
 public class FileService implements FileStorage {
 
