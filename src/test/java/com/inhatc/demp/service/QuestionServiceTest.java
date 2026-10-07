@@ -47,6 +47,64 @@ class QuestionServiceTest {
     }
 
     @Test
+    @DisplayName("집계 상세 조회는 응답과 커밋 후 저장 조회수를 한 번씩 증가시킨다")
+    void recordsEachSuccessfulView() {
+        Member member = memberRepository.save(Member.builder().username("view-reader")
+                .password("unused").roles(List.of("ROLE_USER")).build());
+        Question question = saveQuestion(member, "조회수 질문", "본문", "JAVA");
+
+        QuestionDetail first = questionService.recordViewAndGetDetail(question.getId(), member.getId());
+        assertThat(first.getHits()).isEqualTo(1);
+        assertThat(questionRepository.findById(question.getId()).orElseThrow().getHits()).isEqualTo(1);
+        QuestionDetail second = questionService.recordViewAndGetDetail(question.getId(), member.getId());
+        assertThat(second.getHits()).isEqualTo(2);
+        assertThat(questionService.findById(question.getId(), member.getId()).getHits()).isEqualTo(2);
+        assertThat(questionRepository.findById(question.getId()).orElseThrow().getHits()).isEqualTo(2);
+        assertThat(second.getTitle()).isEqualTo("조회수 질문");
+        assertThat(second.getHashtags()).containsExactly("JAVA");
+    }
+
+    @Test
+    @DisplayName("동시에 상세 조회해도 모든 성공 요청의 조회수를 커밋한다")
+    void concurrentViewsAreNotLost() throws Exception {
+        Member member = memberRepository.save(Member.builder().username("concurrent-reader")
+                .password("unused").roles(List.of("ROLE_USER")).build());
+        Question question = saveQuestion(member, "동시 조회 질문", "본문", "JAVA");
+        var executor = java.util.concurrent.Executors.newFixedThreadPool(8);
+        var start = new java.util.concurrent.CountDownLatch(1);
+        try {
+            var requests = new ArrayList<java.util.concurrent.Future<Integer>>();
+            for (int i = 0; i < 16; i++) {
+                requests.add(executor.submit(() -> {
+                    start.await();
+                    return questionService.recordViewAndGetDetail(question.getId(), member.getId()).getHits();
+                }));
+            }
+            start.countDown();
+            var returnedHits = new ArrayList<Integer>();
+            for (var request : requests) returnedHits.add(request.get(15, java.util.concurrent.TimeUnit.SECONDS));
+            assertThat(returnedHits).containsExactlyInAnyOrderElementsOf(
+                    java.util.stream.IntStream.rangeClosed(1, 16).boxed().toList());
+            assertThat(questionRepository.findById(question.getId()).orElseThrow().getHits()).isEqualTo(16);
+        } finally {
+            start.countDown();
+            executor.shutdownNow();
+            assertThat(executor.awaitTermination(15, java.util.concurrent.TimeUnit.SECONDS)).isTrue();
+        }
+    }
+
+    @Test
+    @DisplayName("없는 질문의 집계 실패는 다른 질문의 조회수를 바꾸지 않는다")
+    void missingViewDoesNotChangeAnotherQuestion() {
+        Member member = memberRepository.save(Member.builder().username("missing-reader")
+                .password("unused").roles(List.of("ROLE_USER")).build());
+        Question question = saveQuestion(member, "남은 질문", "본문", "JAVA");
+        assertThatThrownBy(() -> questionService.recordViewAndGetDetail(Long.MAX_VALUE, member.getId()))
+                .isInstanceOf(com.inhatc.demp.error.ResourceNotFoundException.class);
+        assertThat(questionRepository.findById(question.getId()).orElseThrow().getHits()).isZero();
+    }
+
+    @Test
     @DisplayName("질문과 해시태그를 저장한 결과를 다시 조회한다")
     void saveQuestion() {
         Member member = memberRepository.save(Member.builder()

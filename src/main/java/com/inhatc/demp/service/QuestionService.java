@@ -71,6 +71,14 @@ public class QuestionService {
     }
 
     @Transactional
+    public QuestionDetail recordViewAndGetDetail(Long id, Long actorId) {
+        if (questionRepository.incrementHits(id) == 0) {
+            throw new ResourceNotFoundException();
+        }
+        return findById(id, actorId);
+    }
+
+    @Transactional
     public void updateQuestion(Long actorId, QuestionUpdateForm questionUpdateForm) {
         Question question = questionRepository.findById(questionUpdateForm.getQuestionId()).orElseThrow(ResourceNotFoundException::new);
         requireOwner(actorId, question);

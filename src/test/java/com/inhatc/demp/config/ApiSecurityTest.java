@@ -35,6 +35,21 @@ class ApiSecurityTest {
     @Autowired AnswerRepository answers;
     private final List<Long> memberIds = new ArrayList<>();
 
+    @Test
+    @DisplayName("인증 실패는 조회수를 바꾸지 않고 성공 상세만 집계하며 편집 조회는 제외한다")
+    void viewCountRequiresSuccessfulAuthenticatedDetail() throws Exception {
+        Member actor = member("security-view-count", List.of("ROLE_USER"));
+        Question saved = question(actor);
+        String path = "/api/question/detail/" + saved.getId();
+        mvc.perform(get(path)).andExpect(status().isUnauthorized());
+        assertThat(questions.findById(saved.getId()).orElseThrow().getHits()).isZero();
+        mvc.perform(get(path).header("X-AUTH-TOKEN", token(actor)))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.hits").value(1));
+        mvc.perform(get(path).param("recordView", "false").header("X-AUTH-TOKEN", token(actor)))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.hits").value(1));
+        assertThat(questions.findById(saved.getId()).orElseThrow().getHits()).isEqualTo(1);
+    }
+
     @AfterEach
     void cleanup() {
         answers.deleteAll(answers.findAll().stream().filter(a -> memberIds.contains(a.getMember().getId())).collect(java.util.stream.Collectors.toList()));

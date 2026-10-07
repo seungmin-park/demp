@@ -130,7 +130,7 @@ class QuestionRestDocsTest {
         Hashtag hashtag = Hashtag.builder().tagName("spring").build();
         question.addHashtag(hashtag);
         QuestionDetail response = new QuestionDetail(question);
-        when(questionService.findById(51L, 41L)).thenReturn(response);
+        when(questionService.recordViewAndGetDetail(51L, 41L)).thenReturn(response);
 
         mockMvc.perform(get("/api/question/detail/{questionId}", 51L)
                         .header("X-AUTH-TOKEN", DOCS_TOKEN))
@@ -138,9 +138,12 @@ class QuestionRestDocsTest {
                 .andExpect(jsonPath("$.id").value(51))
                 .andExpect(jsonPath("$.content").value("docs-question-content"))
                 .andExpect(jsonPath("$.hashtags[0]").value("spring"))
+                .andExpect(jsonPath("$.hits").value(7))
                 .andDo(document("question-detail",
                         requestHeaders(headerWithName("X-AUTH-TOKEN").description("로그인 시 발급된 JWT")),
                         pathParameters(parameterWithName("questionId").description("질문 ID")),
+                        queryParameters(parameterWithName("recordView").optional()
+                                .description("기본 true: 성공 상세 조회마다 1 증가. 편집 입력 복원은 false로 집계 제외")),
                         responseFields(
                                 fieldWithPath("id").description("질문 ID"),
                                 fieldWithPath("title").description("질문 제목"),

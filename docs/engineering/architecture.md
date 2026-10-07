@@ -1,5 +1,7 @@
 # 반응 저장의 책임 경계
 
+질문 조회수는 `QuestionService.recordViewAndGetDetail`이 쓰기 트랜잭션을 소유하며 `QuestionRepository.incrementHits`가 DB 원자 증가를 수행한다. 성공 응답의 hits와 커밋 후 조회 값이 일치한다. 기존 `findById`는 순수 조회로 유지한다. Controller는 기본 집계/`recordView=false` 편집 조회를 구분하고 보안 필터는 인증되지 않은 요청이 서비스에 도달하지 못하게 한다. 새로운 컬럼이나 집계용 테이블은 만들지 않는다.
+
 고용 형태는 `Announcement`가 EMP 전용 상태와 교육 전환 시 초기화를 소유한다. `AnnouncementFields`는 평면 입력, 생성/관리자 Service는 저장 트랜잭션, 상세·목록·스크롤 DTO는 반환을 맡는다. 모집 대상과 별도 nullable enum이므로 신입·경력 조합과 충돌하지 않는다. [계약·수동 SQL·검증](../plans/separate-employment-type.md)을 따른다.
 
 ```text
