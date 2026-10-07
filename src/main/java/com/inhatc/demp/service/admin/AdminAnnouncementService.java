@@ -60,6 +60,7 @@ public class AdminAnnouncementService {
                 item.revise(request.getTitle(), Company.builder().name(request.getCompany()).build(), career, period, description,
                         request.getType(), request.getPosition(), replacement);
                 item.changeRecruitment(request.getRecruitmentAudience(), request.getCohort(), request.getStipendAmount(), request.getStipendNote());
+                item.changeEmploymentType(request.getEmploymentType());
                 item.changeEducation(request.toEducationDetails());
                 item.changePublication(request.getPublicationStatus());
         item.changeRecruitmentClosed(request.getRecruitmentClosed());

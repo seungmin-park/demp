@@ -15,6 +15,7 @@ import lombok.Setter;
 public class AnnouncementResponse {
 
     private com.inhatc.demp.domain.announcement.RecruitmentAudience recruitmentAudience;
+    private com.inhatc.demp.domain.announcement.EmploymentType employmentType;
     private Long id;
     private String title;
     private Set<Language> language = new HashSet<>();
@@ -35,6 +36,7 @@ public class AnnouncementResponse {
         this.education = announcement.getEducation();
         this.publicationStatus = announcement.getPublicationStatus();
         this.recruitmentAudience = announcement.getRecruitmentAudience();
+        this.employmentType = announcement.getEmploymentType();
         this.recruitmentClosed = announcement.isRecruitmentClosed();
         this.id = announcement.getId();
         this.title = announcement.getTitle();

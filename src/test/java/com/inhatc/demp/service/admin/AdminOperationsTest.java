@@ -149,6 +149,38 @@ class AdminOperationsTest {
                         .deadLineDate(LocalDateTime.of(2026,12,31,0,0))
                         .build()).build());
     }
+
+    @Test
+    @DisplayName("관리자는 고용 형태와 모집 대상을 따로 수정하고 교육 전환 시 채용 전용 값을 비운다")
+    void updatesEmploymentTypeAndClearsOnEducation() throws Exception {
+        Announcement original = announcement();
+        AnnouncementUpdateRequest update = request();
+        update.setType(AnnouncementType.EMP);
+        update.setRecruitmentAudience(RecruitmentAudience.EXPERIENCED);
+        update.setMinCareer(2); update.setMaxCareer(5);
+        update.setEmploymentType(EmploymentType.EXPERIENTIAL_INTERNSHIP);
+        announcements.update(original.getId(), update);
+        Announcement saved = announcementRepository.findById(original.getId()).orElseThrow();
+        assertThat(saved.getEmploymentType()).isEqualTo(EmploymentType.EXPERIENTIAL_INTERNSHIP);
+        assertThat(saved.getRecruitmentAudience()).isEqualTo(RecruitmentAudience.EXPERIENCED);
+        assertThat(saved.getCareer().getMinCareer()).isEqualTo(2);
+        assertThat(saved.getCareer().getMaxCareer()).isEqualTo(5);
+
+        update.setEmploymentType(EmploymentType.CONVERSION_INTERNSHIP);
+        update.setRecruitmentAudience(RecruitmentAudience.NEW);
+        announcements.update(original.getId(), update);
+        saved = announcementRepository.findById(original.getId()).orElseThrow();
+        assertThat(saved.getEmploymentType()).isEqualTo(EmploymentType.CONVERSION_INTERNSHIP);
+        assertThat(saved.getRecruitmentAudience()).isEqualTo(RecruitmentAudience.NEW);
+        assertThat(saved.getCareer().getMinCareer()).isZero();
+        assertThat(saved.getCareer().getMaxCareer()).isZero();
+
+        update.setType(AnnouncementType.EDU);
+        announcements.update(original.getId(), update);
+        saved = announcementRepository.findById(original.getId()).orElseThrow();
+        assertThat(saved.getEmploymentType()).isNull();
+        assertThat(saved.getRecruitmentAudience()).isNull();
+    }
     private AnnouncementUpdateRequest request() {
         AnnouncementUpdateRequest request = new AnnouncementUpdateRequest();
         request.setTitle("수정 교육"); request.setCompany("DEMP 교육"); request.setType(AnnouncementType.EDU);

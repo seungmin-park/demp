@@ -14,6 +14,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class AnnouncementScroll {
     private com.inhatc.demp.domain.announcement.RecruitmentAudience recruitmentAudience;
+    private com.inhatc.demp.domain.announcement.EmploymentType employmentType;
     private Long id;
     private String title;
     private Company company;
@@ -25,6 +26,7 @@ public class AnnouncementScroll {
 
     public AnnouncementScroll(Announcement announcement, String imageUrl) {
         this.recruitmentAudience = announcement.getRecruitmentAudience();
+        this.employmentType = announcement.getEmploymentType();
         this.recruitmentClosed = announcement.isRecruitmentClosed();
         this.id = announcement.getId();
         this.title = announcement.getTitle();
