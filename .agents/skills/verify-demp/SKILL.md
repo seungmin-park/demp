@@ -11,6 +11,8 @@ Read [feature map](../../../docs/engineering/feature-map.md), [architecture](../
 
 ## Doctor
 
+백엔드 CD 변경은 `scripts/test_prepare_backend_cd.py`, `scripts/test_backend_cd_workflow.py`와 filesystem 종료 설정 검사를 포함한 공용 verify를 실행한다. workflow mapping 검사에 Ruby 표준 YAML parser가 필요하다. 기본 비활성 workflow를 테스트 통과만으로 운영 활성화했다고 기록하지 않는다. 배포 저장소의 실제 두 JVM/MySQL/Nginx 결과와 VM 적용은 별도 근거로 확인한다.
+
 ```sh
 git status --short
 git rev-parse HEAD

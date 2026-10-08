@@ -43,3 +43,25 @@ ArchUnit 1.5.1은 test scope다. DEMP의 concrete Service 협력은 허용하며
 로컬은 [현재 cmux 표시 규칙](../../AGENTS.md)을 따르고 연결이 없으면 실제 범위를 먼저 알린다. 원격 CI에는 로컬 화면 표시 규칙을 강제하지 않는다. [이번 계획과 실행 기록](../plans/ci-and-protected-delivery.md).
 
 공식 근거: [ArchUnit](https://www.archunit.org/userguide/html/000_Index.html), [GitHub 보호 브랜치 API](https://docs.github.com/en/rest/branches/branch-protection#update-branch-protection), [native auto-merge](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-auto-merge-for-pull-requests-in-your-repository).
+
+## 백엔드 CD 연결과 활성화 경계
+
+`.github/workflows/demp-backend-cd.yml`은 기본 비활성이다. `DEMP_BACKEND_CD_ENABLED=true`가 등록된 경우에만 현재 main의 성공한 **push CI**를 배포 후보로 사용한다. 수동 CD도 CI 실행 ID를 입력받아 같은 조건을 확인한다. PR CI와 수동 CI는 운영 후보로 수락하지 않는다. 이 문서와 workflow의 존재는 운영 활성화나 배포 성공의 증거가 아니다.
+
+```mermaid
+flowchart LR
+    A[main 머지] --> B[DEMP CI 성공]
+    B --> C[run·attempt·SHA·ZIP 해시 검증]
+    C --> D[전송 직전 현재 main 재확인]
+    D --> E[백엔드 전용 WIF·IAP·제한 SSH]
+    E --> F[VM의 후보 시작·검사·Nginx 전환]
+    F --> G[기존 요청 종료·이전 JVM 정리]
+```
+
+CD에서는 JAR를 다시 빌드하지 않는다. CI의 `deployment-demp-RUN-ATTEMPT` ZIP을 그대로 전송하며 VM도 별도로 검사한다. `production` environment는 배포 기록용이다. 실제 GitHub 보호 설정을 확인하기 전 수동 승인 절차가 있다고 가정하지 않는다. 배포는 직렬 실행하고 진행 중인 전환을 새 push로 취소하지 않는다.
+
+백엔드 전용 변수는 `DEMP_BACKEND_WIF_PROVIDER`, `DEMP_BACKEND_CD_SERVICE_ACCOUNT`, `DEMP_BACKEND_CD_ENABLED`다. 전용 secret은 `DEMP_BACKEND_CD_SSH_PRIVATE_KEY`이며 프론트 개인 키와 구분한다. 프로젝트·zone·instance와 검증된 SSH host 공개 키는 기존 공통 변수를 사용한다. 개인 키와 환경 비밀값을 로그·문서에 기록하지 않는다.
+
+VM 결과가 0이면 전환과 기존 요청/프로세스 정리가 완료된 것이다. 2는 `cleanup-incomplete`로 정리가 남아 있으며 자동 성공으로 표시하지 않는다. 1 또는 SSH 오류는 실패다. main 머지, CI 성공, CD 대기, VM 전환, stable은 각각 별도 상태이며 실제 VM의 status·JAR·라우트·지표를 확인해야 운영 반영을 판단할 수 있다. 코드 rollback은 DB와 업로드 데이터를 과거로 되돌리지 않는다. 구·신 schema가 호환되는 알려진 릴리스만 선택해야 한다.
+
+전체 검증은 기존 `bash scripts/verify.sh`를 유지한다. Python workflow 검사는 Ruby 표준 YAML parser로 실제 mapping을 해석하고, 전송 metadata·오래된 main 거부·완료와 정리 미완료 구분을 확인한다. 실제 Linux의 두 JVM/MySQL/Nginx 전환은 별도 배포 저장소의 격리 검증과 운영 적용 기록으로 확인한다.
