@@ -1,0 +1,9 @@
+
+> dempfrontend@0.1.0 typecheck
+> vue-tsc --noEmit
+
+src/views/admin/AdminAnnouncementEditor.vue(14,10): error TS2379: Argument of type '{ key: string; modelValue: ("C" | "JAVA" | "KOTLIN" | "JAVASCRIPT" | "TYPESCRIPT" | "PYTHON" | "GO" | "CPP" | "CSHARP" | "RUST" | "SWIFT" | "DART" | "PHP" | "RUBY" | "SQL" | "HTML" | "CSS" | ... 48 more ... | "GITHUB_ACTIONS")[]; disabled: boolean; error: string | undefined; }' is not assignable to parameter of type '{ readonly modelValue: ("C" | "JAVA" | "KOTLIN" | "JAVASCRIPT" | "TYPESCRIPT" | "PYTHON" | "GO" | "CPP" | "CSHARP" | "RUST" | "SWIFT" | "DART" | "PHP" | "RUBY" | "SQL" | "HTML" | "CSS" | "React" | ... 47 more ... | "GITHUB_ACTIONS")[]; ... 195 more ...; readonly "onUpdate:modelValue"?: (value: ("C" | ... 64 more ......' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+  Type '{ key: string; modelValue: ("C" | "JAVA" | "KOTLIN" | "JAVASCRIPT" | "TYPESCRIPT" | "PYTHON" | "GO" | "CPP" | "CSHARP" | "RUST" | "SWIFT" | "DART" | "PHP" | "RUBY" | "SQL" | "HTML" | "CSS" | ... 48 more ... | "GITHUB_ACTIONS")[]; disabled: boolean; error: string | undefined; }' is not assignable to type '{ readonly modelValue: ("C" | "JAVA" | "KOTLIN" | "JAVASCRIPT" | "TYPESCRIPT" | "PYTHON" | "GO" | "CPP" | "CSHARP" | "RUST" | "SWIFT" | "DART" | "PHP" | "RUBY" | "SQL" | "HTML" | "CSS" | "React" | ... 47 more ... | "GITHUB_ACTIONS")[]; ... 195 more ...; readonly "onUpdate:modelValue"?: (value: ("C" | ... 64 more ......' with 'exactOptionalPropertyTypes: true'. Consider adding 'undefined' to the types of the target's properties.
+    Types of property 'error' are incompatible.
+      Type 'string | undefined' is not assignable to type 'string'.
+        Type 'undefined' is not assignable to type 'string'.

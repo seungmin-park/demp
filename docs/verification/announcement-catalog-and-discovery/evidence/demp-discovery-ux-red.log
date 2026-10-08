@@ -1,0 +1,737 @@
+
+> dempfrontend@0.1.0 test
+> vitest run tests/unit/AdminOperations.spec.js tests/unit/RecruitmentDateTimeField.spec.js
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.2 [39m[90m/Users/seungmin/Desktop/repo/archive/demp/.worktrees/announcement-catalog-and-discovery/frontend[39m
+
+ [31m❯[39m tests/unit/RecruitmentDateTimeField.spec.js [2m([22m[2m4 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[32m 45[2mms[22m[39m
+   [32m✓[39m 화면 아래 공간이 부족한 달력은 입력 위로 열리고 날짜 선택 시 시·분을 보존한다[32m 27[2mms[22m[39m
+   [32m✓[39m 여유가 있는 달력은 아래로 열리고 열린 상태의 화면 높이 변경에 위치를 다시 결정한다[32m 6[2mms[22m[39m
+[31m   [31m×[31m 위·아래 모두 좁으면 더 넓은 아래 공간으로 달력 높이를 제한한다[39m[32m 6[2mms[22m[39m
+[31m   [31m×[31m 위·아래 모두 좁고 위가 넓으면 위쪽 실제 공간으로 높이를 제한한다[39m[32m 5[2mms[22m[39m
+ [31m❯[39m tests/unit/AdminOperations.spec.js [2m([22m[2m25 tests[22m[2m | [22m[31m3 failed[39m[2m)[22m[33m 764[2mms[22m[39m
+   [32m✓[39m 현황은 서버 집계를 표시하고 실패 뒤 재시도한다[32m 44[2mms[22m[39m
+   [32m✓[39m 공고 삭제는 확인 뒤에만 요청하고 취소하면 원본 목록을 유지한다[32m 11[2mms[22m[39m
+   [32m✓[39m 기존 HTML 질문을 Markdown으로 불러와 안전한 HTML로 저장하며 중복 제출을 막는다[32m 28[2mms[22m[39m
+   [32m✓[39m 공고 수정은 기존 HTML과 필드를 복원하고 파일을 선택하지 않으면 image를 보내지 않는다[32m 80[2mms[22m[39m
+   [32m✓[39m 관리자 저장의 400 오류는 입력값 안내를 표시하고 작성 내용을 보존한다[32m 7[2mms[22m[39m
+[31m   [31m×[31m 검색으로 숨겨진 선택도 요약에서 한 번 눌러 해제하고 남은 값만 저장한다[39m[32m 44[2mms[22m[39m
+[31m   [31m×[31m 검색 결과가 없어도 검색을 바로 초기화하고 기존 선택을 유지한다[39m[32m 29[2mms[22m[39m
+[31m   [31m×[31m 저장 중에는 선택 요약에서도 해제를 막아 제출한 값을 보존한다[39m[32m 34[2mms[22m[39m
+   [32m✓[39m 확장된 스택과 직무를 수정 폼에서 복원하고 선택·저장해 기존 값과 함께 보존한다[32m 36[2mms[22m[39m
+   [32m✓[39m 공고 폼은 기본·모집·내용·출처·게시를 읽는 순서대로 구분한다[32m 15[2mms[22m[39m
+   [32m✓[39m 앱 달력은 기존 선택 날짜로 열리고 월 이동·날짜 선택 시 기존 시·분을 보존한다[32m 37[2mms[22m[39m
+   [32m✓[39m 달력의 방향키는 날짜를 이동하고 Escape는 값을 바꾸지 않고 여는 버튼에 초점을 돌린다[32m 31[2mms[22m[39m
+   [32m✓[39m 달력은 윤년 2월 29일을 선택하고 저장 중에는 날짜 입력과 달력 열기를 막는다[32m 36[2mms[22m[39m
+   [32m✓[39m 고용 형태 REGULAR를 모집 대상과 따로 복원하고 저장한다[32m 30[2mms[22m[39m
+   [32m✓[39m 고용 형태 CONTRACT를 모집 대상과 따로 복원하고 저장한다[32m 27[2mms[22m[39m
+   [32m✓[39m 고용 형태 CONVERSION_INTERNSHIP를 모집 대상과 따로 복원하고 저장한다[32m 32[2mms[22m[39m
+   [32m✓[39m 고용 형태 EXPERIENTIAL_INTERNSHIP를 모집 대상과 따로 복원하고 저장한다[32m 27[2mms[22m[39m
+   [32m✓[39m 기존 공고의 고용 형태는 미확인으로 복원하며 명시한 형태도 다시 비울 수 있다[32m 26[2mms[22m[39m
+   [32m✓[39m 고용 형태 저장 실패에는 선택과 입력을 보존하고 교육 전환 시 채용 값과 필드를 비운다[32m 35[2mms[22m[39m
+   [32m✓[39m 공고 multipart는 채용 고용 형태만 보내며 교육 값과 미확인을 임의 추정하지 않는다[32m 0[2mms[22m[39m
+   [32m✓[39m 기술 스택은 선택 칩 전체를 눌러 선택·해제하고 같은 값으로 저장한다[32m 35[2mms[22m[39m
+   [32m✓[39m 저장 중 기술 스택 칩은 비활성이고 선택과 중복 요청을 바꾸지 않는다[32m 38[2mms[22m[39m
+   [32m✓[39m 변경 이력은 원래 순서와 모든 표시 값을 보존하고 날짜·작성자·상태와 제목을 분리한다[32m 22[2mms[22m[39m
+   [32m✓[39m 기존 초를 입력 화면에서는 숨기고 날짜를 바꾸지 않은 저장에서는 보존한다[32m 27[2mms[22m[39m
+   [32m✓[39m 시각을 직접 바꾸면 입력한 분 단위를 저장하고 다른 날짜의 초는 보존한다[32m 32[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 5 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/unit/AdminOperations.spec.js[2m > [22m검색으로 숨겨진 선택도 요약에서 한 번 눌러 해제하고 남은 값만 저장한다
+[31m[1mError[22m[39m: Unable to get [aria-label="선택한 기술 스택"] within: <!--v-if-->
+<div data-v-3591b8ac="" class="admin-section-heading">
+  <div data-v-3591b8ac="">
+    <h2 data-v-3591b8ac="">공고 내용·수정</h2>
+    <p data-v-3591b8ac="">채용 공고와 교육·부트캠프를 관리하세요.</p>
+  </div><a data-v-3591b8ac="" class="button button-secondary">목록</a>
+</div>
+<form data-v-3591b8ac="" class="write-form announcement-admin-form">
+  <fieldset data-v-3591b8ac="" class="announcement-form-section">
+    <legend data-v-3591b8ac="">기본 정보</legend>
+    <p data-v-3591b8ac="" class="section-help">목록에서 보이는 제목과 회사·교육기관, 공고 종류를 입력하세요.</p>
+    <div data-v-3591b8ac="" class="form-grid">
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-title">제목</label><input data-v-3591b8ac="" id="admin-title" type="text" required="" aria-invalid="false">
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-company">회사·교육기관</label><input data-v-3591b8ac="" id="admin-company" type="text" required="" aria-invalid="false">
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-type">공고 종류</label><select data-v-3591b8ac="" id="admin-type" required="">
+          <option data-v-3591b8ac="" value="EMP">채용</option>
+          <option data-v-3591b8ac="" value="EDU">교육·부트캠프</option>
+        </select></div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-position">분야</label><select data-v-3591b8ac="" id="admin-position" required="">
+          <option data-v-3591b8ac="" value="">분야 선택</option>
+          <option data-v-3591b8ac="" value="BACKEND">백엔드</option>
+          <option data-v-3591b8ac="" value="FRONTEND">프론트엔드</option>
+          <option data-v-3591b8ac="" value="FULLSTACK">풀스택</option>
+          <option data-v-3591b8ac="" value="ANDROID">안드로이드</option>
+          <option data-v-3591b8ac="" value="IOS">iOS</option>
+          <option data-v-3591b8ac="" value="MACHINE_LEARNING">머신러닝</option>
+          <option data-v-3591b8ac="" value="AI">인공지능</option>
+          <option data-v-3591b8ac="" value="DATA_ENGINEER">데이터 엔지니어</option>
+          <option data-v-3591b8ac="" value="MOBILE_GAME">모바일 게임</option>
+          <option data-v-3591b8ac="" value="GAME_CLIENT">게임 클라이언트</option>
+          <option data-v-3591b8ac="" value="GAME_SERVER">게임 서버</option>
+          <option data-v-3591b8ac="" value="SYSTEM_NETWORK">시스템·네트워크</option>
+          <option data-v-3591b8ac="" value="SYSTEM_SOFTWARE">시스템 소프트웨어</option>
+          <option data-v-3591b8ac="" value="DEVOPS">데브옵스</option>
+          <option data-v-3591b8ac="" value="INTERNET_SECURITY">정보보안</option>
+          <option data-v-3591b8ac="" value="EMBEDDED_SOFTWARE">임베디드</option>
+          <option data-v-3591b8ac="" value="ROBOTIC_MIDDLEWARE">로봇 미들웨어</option>
+          <option data-v-3591b8ac="" value="QA">QA</option>
+          <option data-v-3591b8ac="" value="IOT">사물인터넷</option>
+          <option data-v-3591b8ac="" value="APPLICATION_PROGRAM">응용 프로그램</option>
+          <option data-v-3591b8ac="" value="BLOCK_CHAIN">블록체인</option>
+          <option data-v-3591b8ac="" value="DATA_SCIENTIST">데이터 사이언티스트</option>
+          <option data-v-3591b8ac="" value="DATA_ANALYST">데이터 분석가</option>
+          <option data-v-3591b8ac="" value="DATABASE_ADMIN">DBA</option>
+          <option data-v-3591b8ac="" value="CLOUD_ENGINEER">클라우드 엔지니어</option>
+          <option data-v-3591b8ac="" value="PLATFORM_ENGINEER">플랫폼 엔지니어</option>
+          <option data-v-3591b8ac="" value="SRE">SRE</option>
+          <option data-v-3591b8ac="" value="MLOPS">MLOps</option>
+          <option data-v-3591b8ac="" value="WEB_PUBLISHER">웹 퍼블리셔</option>
+          <option data-v-3591b8ac="" value="GAME_ENGINE">게임 엔진</option>
+          <option data-v-3591b8ac="" value="AI_RESEARCH">AI 연구</option>
+        </select>
+        <!--v-if-->
+      </div>
+    </div>
+    <fieldset data-v-3591b8ac="" class="field">
+      <legend data-v-3591b8ac="">기술 스택 <span data-v-3591b8ac="" class="technology-selection-count">3개 선택</span></legend><input data-v-3591b8ac="" aria-label="관리자 기술 스택 검색" type="search" placeholder="기술 이름으로 찾기">
+      <div data-v-3591b8ac="" class="technology-groups">
+        <fieldset data-v-3591b8ac="" class="technology-group">
+          <legend data-v-3591b8ac="">서버 프레임워크</legend>
+          <div data-v-3591b8ac="" class="technology-options"><label data-v-3591b8ac="" class="technology-choice"><input data-v-3591b8ac="" type="checkbox" value="SPRING"><span data-v-3591b8ac="">Spring</span></label><label data-v-3591b8ac="" class="technology-choice"><input data-v-3591b8ac="" type="checkbox" value="SPRING_BOOT"><span data-v-3591b8ac="">Spring Boot</span></label></div>
+        </fieldset>
+      </div>
+      <!--v-if-->
+      <!--v-if-->
+    </fieldset>
+  </fieldset>
+  <fieldset data-v-3591b8ac="" class="announcement-form-section">
+    <legend data-v-3591b8ac="">모집 조건·일정</legend>
+    <p data-v-3591b8ac="" class="section-help">모집 대상과 고용 형태는 별개입니다. 일정은 날짜와 시·분까지 입력하세요.</p>
+    <div data-v-3591b8ac="" class="form-grid">
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-audience">모집 대상</label><select data-v-3591b8ac="" id="admin-audience" aria-label="모집 대상">
+          <option data-v-3591b8ac="">미확인 (기존 경력 범위 사용)</option>
+          <option data-v-3591b8ac="" value="NEW">신입</option>
+          <option data-v-3591b8ac="" value="EXPERIENCED">경력</option>
+          <option data-v-3591b8ac="" value="ANY">경력 무관</option>
+          <option data-v-3591b8ac="" value="MIXED">신입·경력</option>
+        </select></div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-employment">고용 형태</label><select data-v-3591b8ac="" id="admin-employment" aria-label="고용 형태">
+          <option data-v-3591b8ac="">미확인</option>
+          <option data-v-3591b8ac="" value="REGULAR">정규직</option>
+          <option data-v-3591b8ac="" value="CONTRACT">계약직</option>
+          <option data-v-3591b8ac="" value="CONVERSION_INTERNSHIP">전환형 인턴</option>
+          <option data-v-3591b8ac="" value="EXPERIENTIAL_INTERNSHIP">체험형 인턴</option>
+        </select></div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-minCareer">최소 경력 (년)</label><input data-v-3591b8ac="" id="admin-minCareer" type="number" min="0" step="1" required="">
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-maxCareer">최대 경력 (년, 무관은 0)</label><input data-v-3591b8ac="" id="admin-maxCareer" type="number" min="0" step="1" required="">
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field">
+        <div data-v-060c96e1="" data-v-3591b8ac="" class="recruitment-datetime"><label data-v-060c96e1="" for="admin-startedDate">모집 시작</label>
+          <div data-v-060c96e1="" class="datetime-input-row"><input data-v-060c96e1="" id="admin-startedDate" type="datetime-local" step="60" required="" value="2026-10-07T17:56"><button data-v-060c96e1="" type="button" class="calendar-trigger" aria-label="모집 시작 달력 열기" aria-expanded="false" aria-controls="admin-startedDate-calendar"><span data-v-060c96e1="" aria-hidden="true">달력</span></button></div>
+          <!--v-if-->
+        </div>
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field">
+        <div data-v-060c96e1="" data-v-3591b8ac="" class="recruitment-datetime"><label data-v-060c96e1="" for="admin-deadLineDate">모집 마감</label>
+          <div data-v-060c96e1="" class="datetime-input-row"><input data-v-060c96e1="" id="admin-deadLineDate" type="datetime-local" step="60" required="" value="2026-10-31T18:30"><button data-v-060c96e1="" type="button" class="calendar-trigger" aria-label="모집 마감 달력 열기" aria-expanded="false" aria-controls="admin-deadLineDate-calendar"><span data-v-060c96e1="" aria-hidden="true">달력</span></button></div>
+          <!--v-if-->
+        </div>
+        <!--v-if-->
+      </div>
+    </div>
+    <fieldset data-v-3591b8ac="" class="compensation-fields field">
+      <legend>연봉 (선택)</legend><label for="admin-payment-salary-status">연봉 공개 여부</label><select id="admin-payment-salary-status" value="UNDISCLOSED">
+        <option value="UNDISCLOSED">미공개</option>
+        <option value="NEGOTIABLE">협의</option>
+        <option value="DISCLOSED">금액 공개</option>
+      </select>
+      <!--v-if-->
+      <p class="field-hint">원문에서 확인한 세전 연봉을 만원 단위로 입력하세요. 비공개·협의는 금액을 저장하지 않습니다.</p>
+    </fieldset>
+    <!--v-if-->
+    <!--v-if-->
+  </fieldset>
+  <fieldset data-v-3591b8ac="" class="announcement-form-section">
+    <legend data-v-3591b8ac="">공고 내용</legend>
+    <p data-v-3591b8ac="" class="section-help">지원자가 확인할 상세 내용과 선택 이미지를 정리하세요.</p>
+    <div data-v-3591b8ac="" class="field">
+      <section data-v-3591b8ac="" class="announcement-editor" aria-labelledby="admin-content-label">
+        <div class="body-editor-heading">
+          <div><label id="admin-content-label" for="admin-content">상세 내용</label>
+            <p>원문에서 확인한 핵심 내용을 정리해 주세요.</p>
+          </div>
+          <div class="body-editor-tabs" role="group" aria-label="본문 보기"><button type="button" aria-pressed="true">작성</button><button type="button" aria-pressed="false">미리보기</button></div>
+        </div>
+        <div>
+          <div class="body-toolbar" role="group" aria-label="본문 서식"><button type="button" aria-pressed="false">제목</button><button type="button" aria-pressed="false"><b>굵게</b></button><button type="button" aria-pressed="false">목록</button><button type="button">링크</button><button type="button">이미지 추가</button><button type="button" disabled="">되돌리기</button><button type="button" data-test="body-template">채용 항목 추가</button></div>
+          <!--v-if-->
+          <div>
+            <div contenteditable="true" role="textbox" id="admin-content" aria-multiline="true" aria-labelledby="admin-content-label" translate="no" class="tiptap ProseMirror body-editor-content" tabindex="0">
+              <p>지원 안내</p>
+            </div>
+          </div><input id="admin-content-images" class="body-image-input" type="file" multiple="" accept="image/jpeg,image/png" aria-label="본문 이미지 파일">
+          <p class="body-editor-help">텍스트를 붙여넣으면 서식을 정돈합니다. 이미지는 붙여넣기·드래그 또는 파일 선택으로 추가하세요. JPEG·PNG, 각 5MB, 최대 10개. 대표 이미지 포함 합계 9MB 이하.</p>
+        </div>
+        <!--v-if-->
+        <!--v-if-->
+      </section>
+      <!--v-if-->
+    </div>
+    <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-image">공고 이미지 (선택)</label>
+      <!--v-if--><input data-v-3591b8ac="" id="admin-image" type="file" accept="image/jpeg,image/png">
+      <p data-v-3591b8ac="" class="field-hint">선택하지 않으면 기존 이미지를 유지합니다.</p>
+      <!--v-if-->
+    </div>
+  </fieldset>
+  <fieldset data-v-3591b8ac="" class="announcement-form-section">
+    <legend data-v-3591b8ac="">출처·지원</legend>
+    <p data-v-3591b8ac="" class="section-help">원문 주소와 지원 주소를 확인하세요. 지원 주소를 비우면 원문으로 연결됩니다.</p>
+    <div data-v-3591b8ac="" class="form-grid">
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-accessUrl">원문 공고 URL</label><input data-v-3591b8ac="" id="admin-accessUrl" type="url" required="" aria-invalid="false">
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-apply-url">지원 URL (선택)</label><input data-v-3591b8ac="" id="admin-apply-url" aria-label="지원 URL (선택)" type="url">
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-source">출처 이름</label><input data-v-3591b8ac="" id="admin-source" aria-label="출처 이름" maxlength="255" placeholder="예: 회사 채용 홈페이지"></div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-source-id">원문 식별값 (선택)</label><input data-v-3591b8ac="" id="admin-source-id" maxlength="255" placeholder="원문 사이트의 공고 번호"></div>
+    </div>
+    <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac=""><input data-v-3591b8ac="" type="checkbox"> 원문 내용을 직접 확인했습니다</label>
+      <p data-v-3591b8ac="" class="field-hint">저장할 때 확인 시각을 기록합니다. 원문 주소를 바꾸면 다시 확인하세요.</p>
+    </div>
+  </fieldset>
+  <fieldset data-v-3591b8ac="" class="announcement-form-section">
+    <legend data-v-3591b8ac="">게시 설정</legend>
+    <p data-v-3591b8ac="" class="section-help">입력을 마친 뒤 공개 여부와 모집 종료 여부를 확인하세요.</p>
+    <div data-v-3591b8ac="" class="form-grid">
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-publication">게시 상태</label><select data-v-3591b8ac="" id="admin-publication" aria-label="게시 상태">
+          <option data-v-3591b8ac="" value="DRAFT">초안</option>
+          <option data-v-3591b8ac="" value="REVIEW">검토 중</option>
+          <option data-v-3591b8ac="" value="PUBLISHED">공개</option>
+          <option data-v-3591b8ac="" value="HIDDEN">비공개</option>
+        </select>
+        <p data-v-3591b8ac="" class="field-hint">공개 상태만 서비스에 표시됩니다. 모집 마감과 게시 상태는 별개입니다.</p>
+      </div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac=""><input data-v-3591b8ac="" type="checkbox"> 모집 종료 (수동 마감)</label>
+        <p data-v-3591b8ac="" class="field-hint">공개 상태는 유지하고 모집 중 검색에서 제외합니다.</p>
+      </div>
+    </div>
+  </fieldset>
+  <!--v-if-->
+  <div data-v-3591b8ac="" class="form-actions"><a data-v-3591b8ac="" class="button button-secondary">취소</a><button data-v-3591b8ac="" type="submit" class="button button-primary">변경 저장</button></div>
+</form>
+<section data-v-3591b8ac="" class="publication-history" aria-labelledby="publication-history-title">
+  <header data-v-3591b8ac="" class="publication-history-heading">
+    <h3 data-v-3591b8ac="" id="publication-history-title">변경 이력</h3><button data-v-3591b8ac="" type="button" class="button button-secondary">이력 보기</button>
+  </header>
+  <!--v-if-->
+  <!--v-if-->
+  <!--v-if-->
+</section>
+[90m [2m❯[22m VueWrapper.get node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:[2m7333:15[22m[39m
+[36m [2m❯[22m tests/unit/AdminOperations.spec.js:[2m83:18[22m[39m
+    [90m 81|[39m   await wrapper.get('[aria-label="관리자 기술 스택 검색"]').setValue('Spring');
+    [90m 82|[39m   expect(wrapper.find('input[value=JAVA]').exists()).toBe(false);
+    [90m 83|[39m   expect(wrapper.get('[aria-label="선택한 기술 스택"]').text()).toContain('Ja…
+    [90m   |[39m                  [31m^[39m
+    [90m 84|[39m   await wrapper.get('button[aria-label="Java 선택 해제"]').trigger('click'…
+    [90m 85|[39m   expect(wrapper.get('[aria-label="선택한 기술 스택"]').text()).not.toContain…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/AdminOperations.spec.js[2m > [22m검색 결과가 없어도 검색을 바로 초기화하고 기존 선택을 유지한다
+[31m[1mError[22m[39m: Unable to get [aria-label="선택한 기술 스택"] within: <!--v-if-->
+<div data-v-3591b8ac="" class="admin-section-heading">
+  <div data-v-3591b8ac="">
+    <h2 data-v-3591b8ac="">공고 내용·수정</h2>
+    <p data-v-3591b8ac="">채용 공고와 교육·부트캠프를 관리하세요.</p>
+  </div><a data-v-3591b8ac="" class="button button-secondary">목록</a>
+</div>
+<form data-v-3591b8ac="" class="write-form announcement-admin-form">
+  <fieldset data-v-3591b8ac="" class="announcement-form-section">
+    <legend data-v-3591b8ac="">기본 정보</legend>
+    <p data-v-3591b8ac="" class="section-help">목록에서 보이는 제목과 회사·교육기관, 공고 종류를 입력하세요.</p>
+    <div data-v-3591b8ac="" class="form-grid">
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-title">제목</label><input data-v-3591b8ac="" id="admin-title" type="text" required="" aria-invalid="false">
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-company">회사·교육기관</label><input data-v-3591b8ac="" id="admin-company" type="text" required="" aria-invalid="false">
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-type">공고 종류</label><select data-v-3591b8ac="" id="admin-type" required="">
+          <option data-v-3591b8ac="" value="EMP">채용</option>
+          <option data-v-3591b8ac="" value="EDU">교육·부트캠프</option>
+        </select></div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-position">분야</label><select data-v-3591b8ac="" id="admin-position" required="">
+          <option data-v-3591b8ac="" value="">분야 선택</option>
+          <option data-v-3591b8ac="" value="BACKEND">백엔드</option>
+          <option data-v-3591b8ac="" value="FRONTEND">프론트엔드</option>
+          <option data-v-3591b8ac="" value="FULLSTACK">풀스택</option>
+          <option data-v-3591b8ac="" value="ANDROID">안드로이드</option>
+          <option data-v-3591b8ac="" value="IOS">iOS</option>
+          <option data-v-3591b8ac="" value="MACHINE_LEARNING">머신러닝</option>
+          <option data-v-3591b8ac="" value="AI">인공지능</option>
+          <option data-v-3591b8ac="" value="DATA_ENGINEER">데이터 엔지니어</option>
+          <option data-v-3591b8ac="" value="MOBILE_GAME">모바일 게임</option>
+          <option data-v-3591b8ac="" value="GAME_CLIENT">게임 클라이언트</option>
+          <option data-v-3591b8ac="" value="GAME_SERVER">게임 서버</option>
+          <option data-v-3591b8ac="" value="SYSTEM_NETWORK">시스템·네트워크</option>
+          <option data-v-3591b8ac="" value="SYSTEM_SOFTWARE">시스템 소프트웨어</option>
+          <option data-v-3591b8ac="" value="DEVOPS">데브옵스</option>
+          <option data-v-3591b8ac="" value="INTERNET_SECURITY">정보보안</option>
+          <option data-v-3591b8ac="" value="EMBEDDED_SOFTWARE">임베디드</option>
+          <option data-v-3591b8ac="" value="ROBOTIC_MIDDLEWARE">로봇 미들웨어</option>
+          <option data-v-3591b8ac="" value="QA">QA</option>
+          <option data-v-3591b8ac="" value="IOT">사물인터넷</option>
+          <option data-v-3591b8ac="" value="APPLICATION_PROGRAM">응용 프로그램</option>
+          <option data-v-3591b8ac="" value="BLOCK_CHAIN">블록체인</option>
+          <option data-v-3591b8ac="" value="DATA_SCIENTIST">데이터 사이언티스트</option>
+          <option data-v-3591b8ac="" value="DATA_ANALYST">데이터 분석가</option>
+          <option data-v-3591b8ac="" value="DATABASE_ADMIN">DBA</option>
+          <option data-v-3591b8ac="" value="CLOUD_ENGINEER">클라우드 엔지니어</option>
+          <option data-v-3591b8ac="" value="PLATFORM_ENGINEER">플랫폼 엔지니어</option>
+          <option data-v-3591b8ac="" value="SRE">SRE</option>
+          <option data-v-3591b8ac="" value="MLOPS">MLOps</option>
+          <option data-v-3591b8ac="" value="WEB_PUBLISHER">웹 퍼블리셔</option>
+          <option data-v-3591b8ac="" value="GAME_ENGINE">게임 엔진</option>
+          <option data-v-3591b8ac="" value="AI_RESEARCH">AI 연구</option>
+        </select>
+        <!--v-if-->
+      </div>
+    </div>
+    <fieldset data-v-3591b8ac="" class="field">
+      <legend data-v-3591b8ac="">기술 스택 <span data-v-3591b8ac="" class="technology-selection-count">1개 선택</span></legend><input data-v-3591b8ac="" aria-label="관리자 기술 스택 검색" type="search" placeholder="기술 이름으로 찾기">
+      <div data-v-3591b8ac="" class="technology-groups"></div>
+      <p data-v-3591b8ac="" role="status" class="field-hint">일치하는 기술이 없습니다. 검색어를 바꿔 주세요.</p>
+      <!--v-if-->
+    </fieldset>
+  </fieldset>
+  <fieldset data-v-3591b8ac="" class="announcement-form-section">
+    <legend data-v-3591b8ac="">모집 조건·일정</legend>
+    <p data-v-3591b8ac="" class="section-help">모집 대상과 고용 형태는 별개입니다. 일정은 날짜와 시·분까지 입력하세요.</p>
+    <div data-v-3591b8ac="" class="form-grid">
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-audience">모집 대상</label><select data-v-3591b8ac="" id="admin-audience" aria-label="모집 대상">
+          <option data-v-3591b8ac="">미확인 (기존 경력 범위 사용)</option>
+          <option data-v-3591b8ac="" value="NEW">신입</option>
+          <option data-v-3591b8ac="" value="EXPERIENCED">경력</option>
+          <option data-v-3591b8ac="" value="ANY">경력 무관</option>
+          <option data-v-3591b8ac="" value="MIXED">신입·경력</option>
+        </select></div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-employment">고용 형태</label><select data-v-3591b8ac="" id="admin-employment" aria-label="고용 형태">
+          <option data-v-3591b8ac="">미확인</option>
+          <option data-v-3591b8ac="" value="REGULAR">정규직</option>
+          <option data-v-3591b8ac="" value="CONTRACT">계약직</option>
+          <option data-v-3591b8ac="" value="CONVERSION_INTERNSHIP">전환형 인턴</option>
+          <option data-v-3591b8ac="" value="EXPERIENTIAL_INTERNSHIP">체험형 인턴</option>
+        </select></div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-minCareer">최소 경력 (년)</label><input data-v-3591b8ac="" id="admin-minCareer" type="number" min="0" step="1" required="">
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-maxCareer">최대 경력 (년, 무관은 0)</label><input data-v-3591b8ac="" id="admin-maxCareer" type="number" min="0" step="1" required="">
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field">
+        <div data-v-060c96e1="" data-v-3591b8ac="" class="recruitment-datetime"><label data-v-060c96e1="" for="admin-startedDate">모집 시작</label>
+          <div data-v-060c96e1="" class="datetime-input-row"><input data-v-060c96e1="" id="admin-startedDate" type="datetime-local" step="60" required="" value="2026-10-07T17:56"><button data-v-060c96e1="" type="button" class="calendar-trigger" aria-label="모집 시작 달력 열기" aria-expanded="false" aria-controls="admin-startedDate-calendar"><span data-v-060c96e1="" aria-hidden="true">달력</span></button></div>
+          <!--v-if-->
+        </div>
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field">
+        <div data-v-060c96e1="" data-v-3591b8ac="" class="recruitment-datetime"><label data-v-060c96e1="" for="admin-deadLineDate">모집 마감</label>
+          <div data-v-060c96e1="" class="datetime-input-row"><input data-v-060c96e1="" id="admin-deadLineDate" type="datetime-local" step="60" required="" value="2026-10-31T18:30"><button data-v-060c96e1="" type="button" class="calendar-trigger" aria-label="모집 마감 달력 열기" aria-expanded="false" aria-controls="admin-deadLineDate-calendar"><span data-v-060c96e1="" aria-hidden="true">달력</span></button></div>
+          <!--v-if-->
+        </div>
+        <!--v-if-->
+      </div>
+    </div>
+    <fieldset data-v-3591b8ac="" class="compensation-fields field">
+      <legend>연봉 (선택)</legend><label for="admin-payment-salary-status">연봉 공개 여부</label><select id="admin-payment-salary-status" value="UNDISCLOSED">
+        <option value="UNDISCLOSED">미공개</option>
+        <option value="NEGOTIABLE">협의</option>
+        <option value="DISCLOSED">금액 공개</option>
+      </select>
+      <!--v-if-->
+      <p class="field-hint">원문에서 확인한 세전 연봉을 만원 단위로 입력하세요. 비공개·협의는 금액을 저장하지 않습니다.</p>
+    </fieldset>
+    <!--v-if-->
+    <!--v-if-->
+  </fieldset>
+  <fieldset data-v-3591b8ac="" class="announcement-form-section">
+    <legend data-v-3591b8ac="">공고 내용</legend>
+    <p data-v-3591b8ac="" class="section-help">지원자가 확인할 상세 내용과 선택 이미지를 정리하세요.</p>
+    <div data-v-3591b8ac="" class="field">
+      <section data-v-3591b8ac="" class="announcement-editor" aria-labelledby="admin-content-label">
+        <div class="body-editor-heading">
+          <div><label id="admin-content-label" for="admin-content">상세 내용</label>
+            <p>원문에서 확인한 핵심 내용을 정리해 주세요.</p>
+          </div>
+          <div class="body-editor-tabs" role="group" aria-label="본문 보기"><button type="button" aria-pressed="true">작성</button><button type="button" aria-pressed="false">미리보기</button></div>
+        </div>
+        <div>
+          <div class="body-toolbar" role="group" aria-label="본문 서식"><button type="button" aria-pressed="false">제목</button><button type="button" aria-pressed="false"><b>굵게</b></button><button type="button" aria-pressed="false">목록</button><button type="button">링크</button><button type="button">이미지 추가</button><button type="button" disabled="">되돌리기</button><button type="button" data-test="body-template">채용 항목 추가</button></div>
+          <!--v-if-->
+          <div>
+            <div contenteditable="true" role="textbox" id="admin-content" aria-multiline="true" aria-labelledby="admin-content-label" translate="no" class="tiptap ProseMirror body-editor-content" tabindex="0">
+              <p>지원 안내</p>
+            </div>
+          </div><input id="admin-content-images" class="body-image-input" type="file" multiple="" accept="image/jpeg,image/png" aria-label="본문 이미지 파일">
+          <p class="body-editor-help">텍스트를 붙여넣으면 서식을 정돈합니다. 이미지는 붙여넣기·드래그 또는 파일 선택으로 추가하세요. JPEG·PNG, 각 5MB, 최대 10개. 대표 이미지 포함 합계 9MB 이하.</p>
+        </div>
+        <!--v-if-->
+        <!--v-if-->
+      </section>
+      <!--v-if-->
+    </div>
+    <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-image">공고 이미지 (선택)</label>
+      <!--v-if--><input data-v-3591b8ac="" id="admin-image" type="file" accept="image/jpeg,image/png">
+      <p data-v-3591b8ac="" class="field-hint">선택하지 않으면 기존 이미지를 유지합니다.</p>
+      <!--v-if-->
+    </div>
+  </fieldset>
+  <fieldset data-v-3591b8ac="" class="announcement-form-section">
+    <legend data-v-3591b8ac="">출처·지원</legend>
+    <p data-v-3591b8ac="" class="section-help">원문 주소와 지원 주소를 확인하세요. 지원 주소를 비우면 원문으로 연결됩니다.</p>
+    <div data-v-3591b8ac="" class="form-grid">
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-accessUrl">원문 공고 URL</label><input data-v-3591b8ac="" id="admin-accessUrl" type="url" required="" aria-invalid="false">
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-apply-url">지원 URL (선택)</label><input data-v-3591b8ac="" id="admin-apply-url" aria-label="지원 URL (선택)" type="url">
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-source">출처 이름</label><input data-v-3591b8ac="" id="admin-source" aria-label="출처 이름" maxlength="255" placeholder="예: 회사 채용 홈페이지"></div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-source-id">원문 식별값 (선택)</label><input data-v-3591b8ac="" id="admin-source-id" maxlength="255" placeholder="원문 사이트의 공고 번호"></div>
+    </div>
+    <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac=""><input data-v-3591b8ac="" type="checkbox"> 원문 내용을 직접 확인했습니다</label>
+      <p data-v-3591b8ac="" class="field-hint">저장할 때 확인 시각을 기록합니다. 원문 주소를 바꾸면 다시 확인하세요.</p>
+    </div>
+  </fieldset>
+  <fieldset data-v-3591b8ac="" class="announcement-form-section">
+    <legend data-v-3591b8ac="">게시 설정</legend>
+    <p data-v-3591b8ac="" class="section-help">입력을 마친 뒤 공개 여부와 모집 종료 여부를 확인하세요.</p>
+    <div data-v-3591b8ac="" class="form-grid">
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-publication">게시 상태</label><select data-v-3591b8ac="" id="admin-publication" aria-label="게시 상태">
+          <option data-v-3591b8ac="" value="DRAFT">초안</option>
+          <option data-v-3591b8ac="" value="REVIEW">검토 중</option>
+          <option data-v-3591b8ac="" value="PUBLISHED">공개</option>
+          <option data-v-3591b8ac="" value="HIDDEN">비공개</option>
+        </select>
+        <p data-v-3591b8ac="" class="field-hint">공개 상태만 서비스에 표시됩니다. 모집 마감과 게시 상태는 별개입니다.</p>
+      </div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac=""><input data-v-3591b8ac="" type="checkbox"> 모집 종료 (수동 마감)</label>
+        <p data-v-3591b8ac="" class="field-hint">공개 상태는 유지하고 모집 중 검색에서 제외합니다.</p>
+      </div>
+    </div>
+  </fieldset>
+  <!--v-if-->
+  <div data-v-3591b8ac="" class="form-actions"><a data-v-3591b8ac="" class="button button-secondary">취소</a><button data-v-3591b8ac="" type="submit" class="button button-primary">변경 저장</button></div>
+</form>
+<section data-v-3591b8ac="" class="publication-history" aria-labelledby="publication-history-title">
+  <header data-v-3591b8ac="" class="publication-history-heading">
+    <h3 data-v-3591b8ac="" id="publication-history-title">변경 이력</h3><button data-v-3591b8ac="" type="button" class="button button-secondary">이력 보기</button>
+  </header>
+  <!--v-if-->
+  <!--v-if-->
+  <!--v-if-->
+</section>
+[90m [2m❯[22m VueWrapper.get node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:[2m7333:15[22m[39m
+[36m [2m❯[22m tests/unit/AdminOperations.spec.js:[2m101:18[22m[39m
+    [90m 99|[39m   await wrapper.get('[aria-label="관리자 기술 스택 검색"]').setValue('없는 기술');
+    [90m100|[39m   expect(wrapper.get('[role="status"]').text()).toContain('일치하는 기술이 없습…
+    [90m101|[39m   expect(wrapper.get('[aria-label="선택한 기술 스택"]').text()).toContain('Ja…
+    [90m   |[39m                  [31m^[39m
+    [90m102|[39m   await wrapper.get('button[aria-label="기술 검색어 지우기"]').trigger('click'…
+    [90m103|[39m   expect(wrapper.get('[aria-label="관리자 기술 스택 검색"]').element.value).toB…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/AdminOperations.spec.js[2m > [22m저장 중에는 선택 요약에서도 해제를 막아 제출한 값을 보존한다
+[31m[1mError[22m[39m: Unable to get button[aria-label="Java 선택 해제"] within: <!--v-if-->
+<div data-v-3591b8ac="" class="admin-section-heading">
+  <div data-v-3591b8ac="">
+    <h2 data-v-3591b8ac="">공고 내용·수정</h2>
+    <p data-v-3591b8ac="">채용 공고와 교육·부트캠프를 관리하세요.</p>
+  </div><a data-v-3591b8ac="" class="button button-secondary">목록</a>
+</div>
+<form data-v-3591b8ac="" class="write-form announcement-admin-form">
+  <fieldset data-v-3591b8ac="" class="announcement-form-section">
+    <legend data-v-3591b8ac="">기본 정보</legend>
+    <p data-v-3591b8ac="" class="section-help">목록에서 보이는 제목과 회사·교육기관, 공고 종류를 입력하세요.</p>
+    <div data-v-3591b8ac="" class="form-grid">
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-title">제목</label><input data-v-3591b8ac="" id="admin-title" type="text" required="" aria-invalid="false" disabled="">
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-company">회사·교육기관</label><input data-v-3591b8ac="" id="admin-company" type="text" required="" aria-invalid="false" disabled="">
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-type">공고 종류</label><select data-v-3591b8ac="" id="admin-type" required="" disabled="">
+          <option data-v-3591b8ac="" value="EMP">채용</option>
+          <option data-v-3591b8ac="" value="EDU">교육·부트캠프</option>
+        </select></div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-position">분야</label><select data-v-3591b8ac="" id="admin-position" required="" disabled="">
+          <option data-v-3591b8ac="" value="">분야 선택</option>
+          <option data-v-3591b8ac="" value="BACKEND">백엔드</option>
+          <option data-v-3591b8ac="" value="FRONTEND">프론트엔드</option>
+          <option data-v-3591b8ac="" value="FULLSTACK">풀스택</option>
+          <option data-v-3591b8ac="" value="ANDROID">안드로이드</option>
+          <option data-v-3591b8ac="" value="IOS">iOS</option>
+          <option data-v-3591b8ac="" value="MACHINE_LEARNING">머신러닝</option>
+          <option data-v-3591b8ac="" value="AI">인공지능</option>
+          <option data-v-3591b8ac="" value="DATA_ENGINEER">데이터 엔지니어</option>
+          <option data-v-3591b8ac="" value="MOBILE_GAME">모바일 게임</option>
+          <option data-v-3591b8ac="" value="GAME_CLIENT">게임 클라이언트</option>
+          <option data-v-3591b8ac="" value="GAME_SERVER">게임 서버</option>
+          <option data-v-3591b8ac="" value="SYSTEM_NETWORK">시스템·네트워크</option>
+          <option data-v-3591b8ac="" value="SYSTEM_SOFTWARE">시스템 소프트웨어</option>
+          <option data-v-3591b8ac="" value="DEVOPS">데브옵스</option>
+          <option data-v-3591b8ac="" value="INTERNET_SECURITY">정보보안</option>
+          <option data-v-3591b8ac="" value="EMBEDDED_SOFTWARE">임베디드</option>
+          <option data-v-3591b8ac="" value="ROBOTIC_MIDDLEWARE">로봇 미들웨어</option>
+          <option data-v-3591b8ac="" value="QA">QA</option>
+          <option data-v-3591b8ac="" value="IOT">사물인터넷</option>
+          <option data-v-3591b8ac="" value="APPLICATION_PROGRAM">응용 프로그램</option>
+          <option data-v-3591b8ac="" value="BLOCK_CHAIN">블록체인</option>
+          <option data-v-3591b8ac="" value="DATA_SCIENTIST">데이터 사이언티스트</option>
+          <option data-v-3591b8ac="" value="DATA_ANALYST">데이터 분석가</option>
+          <option data-v-3591b8ac="" value="DATABASE_ADMIN">DBA</option>
+          <option data-v-3591b8ac="" value="CLOUD_ENGINEER">클라우드 엔지니어</option>
+          <option data-v-3591b8ac="" value="PLATFORM_ENGINEER">플랫폼 엔지니어</option>
+          <option data-v-3591b8ac="" value="SRE">SRE</option>
+          <option data-v-3591b8ac="" value="MLOPS">MLOps</option>
+          <option data-v-3591b8ac="" value="WEB_PUBLISHER">웹 퍼블리셔</option>
+          <option data-v-3591b8ac="" value="GAME_ENGINE">게임 엔진</option>
+          <option data-v-3591b8ac="" value="AI_RESEARCH">AI 연구</option>
+        </select>
+        <!--v-if-->
+      </div>
+    </div>
+    <fieldset data-v-3591b8ac="" class="field">
+      <legend data-v-3591b8ac="">기술 스택 <span data-v-3591b8ac="" class="technology-selection-count">1개 선택</span></legend><input data-v-3591b8ac="" aria-label="관리자 기술 스택 검색" type="search" placeholder="기술 이름으로 찾기" disabled="">
+      <div data-v-3591b8ac="" class="technology-groups">
+        <fieldset data-v-3591b8ac="" class="technology-group">
+          <legend data-v-3591b8ac="">언어</legend>
+          <div data-v-3591b8ac="" class="technology-options"><label data-v-3591b8ac="" class="technology-choice is-selected is-disabled"><input data-v-3591b8ac="" type="checkbox" value="JAVA" disabled=""><span data-v-3591b8ac="">Java</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="KOTLIN" disabled=""><span data-v-3591b8ac="">Kotlin</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="JAVASCRIPT" disabled=""><span data-v-3591b8ac="">JavaScript</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="TYPESCRIPT" disabled=""><span data-v-3591b8ac="">TypeScript</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="PYTHON" disabled=""><span data-v-3591b8ac="">Python</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="GO" disabled=""><span data-v-3591b8ac="">Go</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="C" disabled=""><span data-v-3591b8ac="">C</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="CPP" disabled=""><span data-v-3591b8ac="">C++</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="CSHARP" disabled=""><span data-v-3591b8ac="">C#</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="RUST" disabled=""><span data-v-3591b8ac="">Rust</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="SWIFT" disabled=""><span data-v-3591b8ac="">Swift</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="DART" disabled=""><span data-v-3591b8ac="">Dart</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="PHP" disabled=""><span data-v-3591b8ac="">PHP</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="RUBY" disabled=""><span data-v-3591b8ac="">Ruby</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="SQL" disabled=""><span data-v-3591b8ac="">SQL</span></label></div>
+        </fieldset>
+        <fieldset data-v-3591b8ac="" class="technology-group">
+          <legend data-v-3591b8ac="">웹 UI</legend>
+          <div data-v-3591b8ac="" class="technology-options"><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="HTML" disabled=""><span data-v-3591b8ac="">HTML</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="CSS" disabled=""><span data-v-3591b8ac="">CSS</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="React" disabled=""><span data-v-3591b8ac="">React</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="VUE" disabled=""><span data-v-3591b8ac="">Vue.js</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="ANGULAR" disabled=""><span data-v-3591b8ac="">Angular</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="NEXT_JS" disabled=""><span data-v-3591b8ac="">Next.js</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="NUXT_JS" disabled=""><span data-v-3591b8ac="">Nuxt.js</span></label></div>
+        </fieldset>
+        <fieldset data-v-3591b8ac="" class="technology-group">
+          <legend data-v-3591b8ac="">서버 프레임워크</legend>
+          <div data-v-3591b8ac="" class="technology-options"><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="SPRING" disabled=""><span data-v-3591b8ac="">Spring</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="SPRING_BOOT" disabled=""><span data-v-3591b8ac="">Spring Boot</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="JPA" disabled=""><span data-v-3591b8ac="">JPA</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="NODE_JS" disabled=""><span data-v-3591b8ac="">Node.js</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="NEST_JS" disabled=""><span data-v-3591b8ac="">NestJS</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="EXPRESS" disabled=""><span data-v-3591b8ac="">Express</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="DJANGO" disabled=""><span data-v-3591b8ac="">Django</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="FASTAPI" disabled=""><span data-v-3591b8ac="">FastAPI</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="DOTNET" disabled=""><span data-v-3591b8ac="">.NET</span></label></div>
+        </fieldset>
+        <fieldset data-v-3591b8ac="" class="technology-group">
+          <legend data-v-3591b8ac="">모바일·게임</legend>
+          <div data-v-3591b8ac="" class="technology-options"><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="REACT_NATIVE" disabled=""><span data-v-3591b8ac="">React Native</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="FLUTTER" disabled=""><span data-v-3591b8ac="">Flutter</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="UNITY" disabled=""><span data-v-3591b8ac="">Unity</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="UNREAL_ENGINE" disabled=""><span data-v-3591b8ac="">Unreal Engine</span></label></div>
+        </fieldset>
+        <fieldset data-v-3591b8ac="" class="technology-group">
+          <legend data-v-3591b8ac="">데이터 저장·메시징</legend>
+          <div data-v-3591b8ac="" class="technology-options"><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="MYSQL" disabled=""><span data-v-3591b8ac="">MySQL</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="MARIADB" disabled=""><span data-v-3591b8ac="">MariaDB</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="POSTGRESQL" disabled=""><span data-v-3591b8ac="">PostgreSQL</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="ORACLE" disabled=""><span data-v-3591b8ac="">Oracle</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="SQL_SERVER" disabled=""><span data-v-3591b8ac="">SQL Server</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="MONGODB" disabled=""><span data-v-3591b8ac="">MongoDB</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="REDIS" disabled=""><span data-v-3591b8ac="">Redis</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="ELASTICSEARCH" disabled=""><span data-v-3591b8ac="">Elasticsearch</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="KAFKA" disabled=""><span data-v-3591b8ac="">Kafka</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="RABBITMQ" disabled=""><span data-v-3591b8ac="">RabbitMQ</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="BIGQUERY" disabled=""><span data-v-3591b8ac="">BigQuery</span></label></div>
+        </fieldset>
+        <fieldset data-v-3591b8ac="" class="technology-group">
+          <legend data-v-3591b8ac="">클라우드·운영</legend>
+          <div data-v-3591b8ac="" class="technology-options"><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="AWS" disabled=""><span data-v-3591b8ac="">AWS</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="GCP" disabled=""><span data-v-3591b8ac="">Google Cloud</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="AZURE" disabled=""><span data-v-3591b8ac="">Azure</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="LINUX" disabled=""><span data-v-3591b8ac="">Linux</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="DOCKER" disabled=""><span data-v-3591b8ac="">Docker</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="KUBERNETES" disabled=""><span data-v-3591b8ac="">Kubernetes</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="TERRAFORM" disabled=""><span data-v-3591b8ac="">Terraform</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="ANSIBLE" disabled=""><span data-v-3591b8ac="">Ansible</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="PROMETHEUS" disabled=""><span data-v-3591b8ac="">Prometheus</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="GRAFANA" disabled=""><span data-v-3591b8ac="">Grafana</span></label></div>
+        </fieldset>
+        <fieldset data-v-3591b8ac="" class="technology-group">
+          <legend data-v-3591b8ac="">데이터·AI</legend>
+          <div data-v-3591b8ac="" class="technology-options"><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="PYTORCH" disabled=""><span data-v-3591b8ac="">PyTorch</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="TENSORFLOW" disabled=""><span data-v-3591b8ac="">TensorFlow</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="PANDAS" disabled=""><span data-v-3591b8ac="">Pandas</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="SPARK" disabled=""><span data-v-3591b8ac="">Spark</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="AIRFLOW" disabled=""><span data-v-3591b8ac="">Airflow</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="LANGCHAIN" disabled=""><span data-v-3591b8ac="">LangChain</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="LLM" disabled=""><span data-v-3591b8ac="">LLM</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="RAG" disabled=""><span data-v-3591b8ac="">RAG</span></label></div>
+        </fieldset>
+        <fieldset data-v-3591b8ac="" class="technology-group">
+          <legend data-v-3591b8ac="">개발 도구</legend>
+          <div data-v-3591b8ac="" class="technology-options"><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="GIT" disabled=""><span data-v-3591b8ac="">Git</span></label><label data-v-3591b8ac="" class="technology-choice is-disabled"><input data-v-3591b8ac="" type="checkbox" value="GITHUB_ACTIONS" disabled=""><span data-v-3591b8ac="">GitHub Actions</span></label></div>
+        </fieldset>
+      </div>
+      <!--v-if-->
+      <!--v-if-->
+    </fieldset>
+  </fieldset>
+  <fieldset data-v-3591b8ac="" class="announcement-form-section">
+    <legend data-v-3591b8ac="">모집 조건·일정</legend>
+    <p data-v-3591b8ac="" class="section-help">모집 대상과 고용 형태는 별개입니다. 일정은 날짜와 시·분까지 입력하세요.</p>
+    <div data-v-3591b8ac="" class="form-grid">
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-audience">모집 대상</label><select data-v-3591b8ac="" id="admin-audience" aria-label="모집 대상" disabled="">
+          <option data-v-3591b8ac="">미확인 (기존 경력 범위 사용)</option>
+          <option data-v-3591b8ac="" value="NEW">신입</option>
+          <option data-v-3591b8ac="" value="EXPERIENCED">경력</option>
+          <option data-v-3591b8ac="" value="ANY">경력 무관</option>
+          <option data-v-3591b8ac="" value="MIXED">신입·경력</option>
+        </select></div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-employment">고용 형태</label><select data-v-3591b8ac="" id="admin-employment" aria-label="고용 형태" disabled="">
+          <option data-v-3591b8ac="">미확인</option>
+          <option data-v-3591b8ac="" value="REGULAR">정규직</option>
+          <option data-v-3591b8ac="" value="CONTRACT">계약직</option>
+          <option data-v-3591b8ac="" value="CONVERSION_INTERNSHIP">전환형 인턴</option>
+          <option data-v-3591b8ac="" value="EXPERIENTIAL_INTERNSHIP">체험형 인턴</option>
+        </select></div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-minCareer">최소 경력 (년)</label><input data-v-3591b8ac="" id="admin-minCareer" type="number" min="0" step="1" required="" disabled="">
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-maxCareer">최대 경력 (년, 무관은 0)</label><input data-v-3591b8ac="" id="admin-maxCareer" type="number" min="0" step="1" required="" disabled="">
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field">
+        <div data-v-060c96e1="" data-v-3591b8ac="" class="recruitment-datetime"><label data-v-060c96e1="" for="admin-startedDate">모집 시작</label>
+          <div data-v-060c96e1="" class="datetime-input-row"><input data-v-060c96e1="" id="admin-startedDate" type="datetime-local" step="60" required="" value="2026-10-07T17:56" disabled=""><button data-v-060c96e1="" type="button" class="calendar-trigger" aria-label="모집 시작 달력 열기" aria-expanded="false" aria-controls="admin-startedDate-calendar" disabled=""><span data-v-060c96e1="" aria-hidden="true">달력</span></button></div>
+          <!--v-if-->
+        </div>
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field">
+        <div data-v-060c96e1="" data-v-3591b8ac="" class="recruitment-datetime"><label data-v-060c96e1="" for="admin-deadLineDate">모집 마감</label>
+          <div data-v-060c96e1="" class="datetime-input-row"><input data-v-060c96e1="" id="admin-deadLineDate" type="datetime-local" step="60" required="" value="2026-10-31T18:30" disabled=""><button data-v-060c96e1="" type="button" class="calendar-trigger" aria-label="모집 마감 달력 열기" aria-expanded="false" aria-controls="admin-deadLineDate-calendar" disabled=""><span data-v-060c96e1="" aria-hidden="true">달력</span></button></div>
+          <!--v-if-->
+        </div>
+        <!--v-if-->
+      </div>
+    </div>
+    <fieldset data-v-3591b8ac="" class="compensation-fields field">
+      <legend>연봉 (선택)</legend><label for="admin-payment-salary-status">연봉 공개 여부</label><select id="admin-payment-salary-status" value="UNDISCLOSED" disabled="">
+        <option value="UNDISCLOSED">미공개</option>
+        <option value="NEGOTIABLE">협의</option>
+        <option value="DISCLOSED">금액 공개</option>
+      </select>
+      <!--v-if-->
+      <p class="field-hint">원문에서 확인한 세전 연봉을 만원 단위로 입력하세요. 비공개·협의는 금액을 저장하지 않습니다.</p>
+    </fieldset>
+    <!--v-if-->
+    <!--v-if-->
+  </fieldset>
+  <fieldset data-v-3591b8ac="" class="announcement-form-section">
+    <legend data-v-3591b8ac="">공고 내용</legend>
+    <p data-v-3591b8ac="" class="section-help">지원자가 확인할 상세 내용과 선택 이미지를 정리하세요.</p>
+    <div data-v-3591b8ac="" class="field">
+      <section data-v-3591b8ac="" class="announcement-editor" aria-labelledby="admin-content-label">
+        <div class="body-editor-heading">
+          <div><label id="admin-content-label" for="admin-content">상세 내용</label>
+            <p>원문에서 확인한 핵심 내용을 정리해 주세요.</p>
+          </div>
+          <div class="body-editor-tabs" role="group" aria-label="본문 보기"><button type="button" aria-pressed="true">작성</button><button type="button" aria-pressed="false">미리보기</button></div>
+        </div>
+        <div>
+          <div class="body-toolbar" role="group" aria-label="본문 서식"><button type="button" aria-pressed="false" disabled="">제목</button><button type="button" aria-pressed="false" disabled=""><b>굵게</b></button><button type="button" aria-pressed="false" disabled="">목록</button><button type="button" disabled="">링크</button><button type="button" disabled="">이미지 추가</button><button type="button" disabled="">되돌리기</button><button type="button" data-test="body-template" disabled="">채용 항목 추가</button></div>
+          <!--v-if-->
+          <div>
+            <div contenteditable="false" role="textbox" id="admin-content" aria-multiline="true" aria-labelledby="admin-content-label" translate="no" class="tiptap ProseMirror body-editor-content">
+              <p>지원 안내</p>
+            </div>
+          </div><input id="admin-content-images" class="body-image-input" type="file" multiple="" accept="image/jpeg,image/png" aria-label="본문 이미지 파일" disabled="">
+          <p class="body-editor-help">텍스트를 붙여넣으면 서식을 정돈합니다. 이미지는 붙여넣기·드래그 또는 파일 선택으로 추가하세요. JPEG·PNG, 각 5MB, 최대 10개. 대표 이미지 포함 합계 9MB 이하.</p>
+        </div>
+        <!--v-if-->
+        <!--v-if-->
+      </section>
+      <!--v-if-->
+    </div>
+    <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-image">공고 이미지 (선택)</label>
+      <!--v-if--><input data-v-3591b8ac="" id="admin-image" type="file" accept="image/jpeg,image/png" disabled="">
+      <p data-v-3591b8ac="" class="field-hint">선택하지 않으면 기존 이미지를 유지합니다.</p>
+      <!--v-if-->
+    </div>
+  </fieldset>
+  <fieldset data-v-3591b8ac="" class="announcement-form-section">
+    <legend data-v-3591b8ac="">출처·지원</legend>
+    <p data-v-3591b8ac="" class="section-help">원문 주소와 지원 주소를 확인하세요. 지원 주소를 비우면 원문으로 연결됩니다.</p>
+    <div data-v-3591b8ac="" class="form-grid">
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-accessUrl">원문 공고 URL</label><input data-v-3591b8ac="" id="admin-accessUrl" type="url" required="" aria-invalid="false" disabled="">
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-apply-url">지원 URL (선택)</label><input data-v-3591b8ac="" id="admin-apply-url" aria-label="지원 URL (선택)" type="url" disabled="">
+        <!--v-if-->
+      </div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-source">출처 이름</label><input data-v-3591b8ac="" id="admin-source" aria-label="출처 이름" maxlength="255" placeholder="예: 회사 채용 홈페이지" disabled=""></div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-source-id">원문 식별값 (선택)</label><input data-v-3591b8ac="" id="admin-source-id" maxlength="255" placeholder="원문 사이트의 공고 번호" disabled=""></div>
+    </div>
+    <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac=""><input data-v-3591b8ac="" type="checkbox" disabled=""> 원문 내용을 직접 확인했습니다</label>
+      <p data-v-3591b8ac="" class="field-hint">저장할 때 확인 시각을 기록합니다. 원문 주소를 바꾸면 다시 확인하세요.</p>
+    </div>
+  </fieldset>
+  <fieldset data-v-3591b8ac="" class="announcement-form-section">
+    <legend data-v-3591b8ac="">게시 설정</legend>
+    <p data-v-3591b8ac="" class="section-help">입력을 마친 뒤 공개 여부와 모집 종료 여부를 확인하세요.</p>
+    <div data-v-3591b8ac="" class="form-grid">
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac="" for="admin-publication">게시 상태</label><select data-v-3591b8ac="" id="admin-publication" aria-label="게시 상태" disabled="">
+          <option data-v-3591b8ac="" value="DRAFT">초안</option>
+          <option data-v-3591b8ac="" value="REVIEW">검토 중</option>
+          <option data-v-3591b8ac="" value="PUBLISHED">공개</option>
+          <option data-v-3591b8ac="" value="HIDDEN">비공개</option>
+        </select>
+        <p data-v-3591b8ac="" class="field-hint">공개 상태만 서비스에 표시됩니다. 모집 마감과 게시 상태는 별개입니다.</p>
+      </div>
+      <div data-v-3591b8ac="" class="field"><label data-v-3591b8ac=""><input data-v-3591b8ac="" type="checkbox" disabled=""> 모집 종료 (수동 마감)</label>
+        <p data-v-3591b8ac="" class="field-hint">공개 상태는 유지하고 모집 중 검색에서 제외합니다.</p>
+      </div>
+    </div>
+  </fieldset>
+  <!--v-if-->
+  <div data-v-3591b8ac="" class="form-actions"><a data-v-3591b8ac="" class="button button-secondary">취소</a><button data-v-3591b8ac="" type="submit" class="button button-primary" disabled="">저장 중…</button></div>
+</form>
+<section data-v-3591b8ac="" class="publication-history" aria-labelledby="publication-history-title">
+  <header data-v-3591b8ac="" class="publication-history-heading">
+    <h3 data-v-3591b8ac="" id="publication-history-title">변경 이력</h3><button data-v-3591b8ac="" type="button" class="button button-secondary">이력 보기</button>
+  </header>
+  <!--v-if-->
+  <!--v-if-->
+  <!--v-if-->
+</section>
+[90m [2m❯[22m VueWrapper.get node_modules/@vue/test-utils/dist/vue-test-utils.cjs.js:[2m7333:15[22m[39m
+[36m [2m❯[22m tests/unit/AdminOperations.spec.js:[2m113:26[22m[39m
+    [90m111|[39m   const wrapper = mount(AdminAnnouncementEditor, options({ id: '7' }))…
+    [90m112|[39m   await wrapper.get('form').trigger('submit');
+    [90m113|[39m   const remove = wrapper.get('button[aria-label="Java 선택 해제"]');
+    [90m   |[39m                          [31m^[39m
+    [90m114|[39m   expect(remove.element.disabled).toBe(true);
+    [90m115|[39m   await remove.trigger('click');
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/RecruitmentDateTimeField.spec.js[2m > [22m위·아래 모두 좁으면 더 넓은 아래 공간으로 달력 높이를 제한한다
+[31m[1mAssertionError[22m: expected '' to be '204px' // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- 204px[39m
+
+[36m [2m❯[22m tests/unit/RecruitmentDateTimeField.spec.js:[2m40:42[22m[39m
+    [90m 38|[39m   const dialog = wrapper.get('[role=dialog]');
+    [90m 39|[39m   expect(dialog.attributes('data-placement')).toBe('below');
+    [90m 40|[39m   expect(dialog.element.style.maxHeight).toBe('204px');
+    [90m   |[39m                                          [31m^[39m
+    [90m 41|[39m });
+    [90m 42|[39m
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/unit/RecruitmentDateTimeField.spec.js[2m > [22m위·아래 모두 좁고 위가 넓으면 위쪽 실제 공간으로 높이를 제한한다
+[31m[1mAssertionError[22m: expected 'below' to be 'above' // Object.is equality[39m
+
+Expected: [32m"above"[39m
+Received: [31m"below"[39m
+
+[36m [2m❯[22m tests/unit/RecruitmentDateTimeField.spec.js:[2m46:47[22m[39m
+    [90m 44|[39m   const wrapper = await openAt(260, 500);
+    [90m 45|[39m   const dialog = wrapper.get('[role=dialog]');
+    [90m 46|[39m   expect(dialog.attributes('data-placement')).toBe('above');
+    [90m   |[39m                                               [31m^[39m
+    [90m 47|[39m   expect(dialog.element.style.maxHeight).toBe('244px');
+    [90m 48|[39m   await dialog.get('[data-day="20"]').trigger('click');
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m2 failed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[31m5 failed[39m[22m[2m | [22m[1m[32m24 passed[39m[22m[90m (29)[39m
+[2m   Start at [22m 20:37:20
+[2m   Duration [22m 1.83s[2m (environment 43%, tests 33%, transform 16%, import 5%, setup 2%)[22m
+

@@ -22,7 +22,7 @@ flowchart LR
 - `verify_ci.py`는 보고서 없음·0개·빈 suite·실패·오류·skip·필수 suite 누락, 미해결 문서·내부 테스트 키 노출, JAR 문서 불일치·구조 예제 포함을 거부한다.
 - `verify_runtime.py`는 방금 만든 JAR의 기존 local API 흐름과 반응 저장·중복·전환·취소·별도 HTTP 재조회·인증 거부·문서 제공을 확인한다. 자신이 시작한 서버만 종료한다.
 
-[필수 suite 목록](required-test-suites.json)은 업무/기반 53개와 구조 2개다. 실행 시 목록을 재생성하지 않고 실제 XML와 비교한다. 신규 suite는 허용하고 총 테스트 건수는 고정하지 않는다. 삭제·이름 변경은 대체 검증과 기능 지도를 함께 리뷰한다. suite 내부 assertion 삭제나 목록 자체의 의도적인 축소는 이 검사로 판단하지 못한다.
+[필수 suite 목록](required-test-suites.json)은 업무/기반 59개와 구조 2개다. 실행 시 목록을 재생성하지 않고 실제 XML와 비교한다. 신규 suite는 허용하고 총 테스트 건수는 고정하지 않는다. 삭제·이름 변경은 대체 검증과 기능 지도를 함께 리뷰한다. suite 내부 assertion 삭제나 목록 자체의 의도적인 축소는 이 검사로 판단하지 못한다.
 
 ArchUnit 1.5.1은 test scope다. DEMP의 concrete Service 협력은 허용하며 PlugPass의 Default/인터페이스 관례를 도입하지 않는다. 기존 외부 I/O 대체와 동시성 실험 spy도 일괄 금지하지 않는다. JaCoCo·coverage 비율은 도입하지 않는다. 불변식의 정확성·실패 후 상태는 동작 테스트가, 규칙의 적절한 소유 객체·이름·공개 계약은 리뷰가 맡는다. meta-annotation·간접 의존·reflection·source 규약 전체는 구조 검사 범위가 아니다.
 

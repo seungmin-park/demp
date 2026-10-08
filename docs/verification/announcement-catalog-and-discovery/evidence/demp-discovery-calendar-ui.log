@@ -1,0 +1,46 @@
+BROWSER viewport 1440 exit 0
+BROWSER goto http://127.0.0.1:51019/admin/announcements/1 exit 0
+BROWSER wait --selector exit 0
+BROWSER fill #admin-deadLineDate exit 0
+BROWSER eval JSON.stringify(document.querySelector("#admin-deadLineDate").closest(".recruitment-datetime").getBoundingClientRect().top) exit 0
+BROWSER scroll --dy exit 0
+BROWSER click [aria-label="모집 마감 달력 열기"] exit 0
+BROWSER wait --selector exit 0
+BROWSER eval JSON.stringify((()=>{const e=document.querySelector("#admin-deadLineDate-calendar"),r=e.getBoundingClientRect();return {placement:e.dataset.placement,top:r.top,bottom:r.bottom,left:r.left,right:r.right,height:innerHeight}})()) exit 0
+PASS 아래 여유가 있으면 화면 안에서 아래로 열림 {'placement': 'below', 'top': 635.796875, 'bottom': 985.796875, 'left': 725.5, 'right': 1035.5, 'height': 1000}
+BROWSER viewport 1440 exit 0
+BROWSER wait --function exit 0
+BROWSER eval JSON.stringify((()=>{const e=document.querySelector("#admin-deadLineDate-calendar"),r=e.getBoundingClientRect();return {placement:e.dataset.placement,top:r.top,bottom:r.bottom,left:r.left,right:r.right,height:innerHeight}})()) exit 0
+PASS 열린 달력: 화면 높이가 줄면 위로 열려 전체 경계 유지 {'placement': 'above', 'top': 191.796875, 'bottom': 541.796875, 'left': 725.5, 'right': 1035.5, 'height': 800}
+BROWSER screenshot --out exit 0
+BROWSER press ArrowRight exit 0
+BROWSER eval JSON.stringify(document.activeElement.getAttribute("aria-label")) exit 0
+PASS 위로 열린 달력의 키보드 날짜 이동 2030년 11월 2일
+BROWSER press Escape exit 0
+BROWSER eval JSON.stringify(!document.querySelector("#admin-deadLineDate-calendar") && document.activeElement.getAttribute("aria-label")==="모집 마감 달력 열기") exit 0
+PASS Esc 닫기와 입력 버튼 초점 복원 True
+BROWSER click [aria-label="모집 마감 달력 열기"] exit 0
+BROWSER click #admin-deadLineDate-calendar [data-day="20"] exit 0
+BROWSER eval JSON.stringify(document.querySelector("#admin-deadLineDate").value) exit 0
+PASS 위 배치에서 날짜 선택 후 시·분 유지 2030-11-20T18:30
+BROWSER viewport 1440 exit 0
+BROWSER eval JSON.stringify(document.querySelector("#admin-deadLineDate").closest(".recruitment-datetime").getBoundingClientRect().top) exit 0
+BROWSER scroll --dy exit 0
+BROWSER click [aria-label="모집 마감 달력 열기"] exit 0
+BROWSER eval JSON.stringify((()=>{const e=document.querySelector("#admin-deadLineDate-calendar"),r=e.getBoundingClientRect();return {placement:e.dataset.placement,top:r.top,bottom:r.bottom,left:r.left,right:r.right,height:innerHeight}})()) exit 0
+BROWSER eval JSON.stringify((()=>{const e=document.querySelector("#admin-deadLineDate-calendar");return {client:e.clientHeight,scroll:e.scrollHeight}})()) exit 0
+PASS 위·아래 모두 좁은 500px 창: 전체 경계 안에서 날짜 접근 {'placement': 'below', 'top': 285.796875, 'bottom': 492, 'left': 725.5, 'right': 1035.5, 'height': 500}
+BROWSER screenshot --out exit 0
+BROWSER press End exit 0
+BROWSER eval JSON.stringify(document.activeElement.getAttribute("aria-label")) exit 0
+PASS 제한된 높이에서도 키보드로 마지막 날짜에 접근 {'client': 204, 'scroll': 348}
+BROWSER press Escape exit 0
+BROWSER viewport 320 exit 0
+BROWSER click [aria-label="모집 마감 달력 열기"] exit 0
+BROWSER eval JSON.stringify(({position:getComputedStyle(document.querySelector("#admin-deadLineDate-calendar")).position,scroll:document.documentElement.scrollWidth})) exit 0
+PASS 모바일 달력은 입력 아래 본문 안에 표시 {'position': 'relative', 'scroll': 320}
+BROWSER screenshot --out exit 0
+BROWSER press Escape exit 0
+BROWSER goto http://127.0.0.1:51019/?orderBy=DEADLINE exit 0
+BROWSER wait --selector exit 0
+CALENDAR_UI_RESULT PASS

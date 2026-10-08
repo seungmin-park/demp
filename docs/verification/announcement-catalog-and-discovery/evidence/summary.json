@@ -1,0 +1,73 @@
+{
+  "date": "2026-10-08",
+  "frontend": {
+    "suites": 53,
+    "tests": 320,
+    "test": 0,
+    "typecheck": 0,
+    "agent_contracts": 0,
+    "lint": 0,
+    "build": 0,
+    "playwright_discovered_cases": 206,
+    "playwright_executed_locally": false
+  },
+  "backend": {
+    "tests": 417,
+    "required_suites": 61,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "packaged_docs_match": true,
+    "test_architecture_packaged": false,
+    "local_api_flow": "passed",
+    "reaction_commit_switch_cancel": "passed",
+    "unauthenticated_reaction_http": 401,
+    "served_docs_match": true,
+    "database": "isolated in-memory H2"
+  },
+  "mysql": {
+    "status": "passed",
+    "checks": 158,
+    "production_database_verified": false
+  },
+  "visible_cmux": [
+    {
+      "name": "visible-ui",
+      "status": "FAIL",
+      "assertions": 11,
+      "passed_assertions": 11
+    },
+    {
+      "name": "visible-resume",
+      "status": "PASS",
+      "assertions": 18,
+      "passed_assertions": 18
+    },
+    {
+      "name": "pagination-ui",
+      "status": "PASS",
+      "assertions": 3,
+      "passed_assertions": 3
+    },
+    {
+      "name": "feedback-ui",
+      "status": "PASS",
+      "assertions": 17,
+      "passed_assertions": 17
+    },
+    {
+      "name": "technology-ui",
+      "status": "PASS",
+      "assertions": 15,
+      "passed_assertions": 15
+    },
+    {
+      "name": "calendar-ui",
+      "status": "PASS",
+      "assertions": 8,
+      "passed_assertions": 8
+    }
+  ],
+  "working_changes_committed": false,
+  "new_features_production_deployed": false
+}

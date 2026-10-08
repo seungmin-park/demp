@@ -139,7 +139,7 @@ class AnnouncementRestDocsTest {
                 .announcementType(AnnouncementType.EMP)
                 .jobPosition(JobPosition.BACKEND)
                 .build();
-        when(announcementService.findDetailResponse(71L)).thenReturn(Optional.of(
+        when(announcementService.recordViewAndGetDetail(71L)).thenReturn(Optional.of(
                 AnnouncementDetailResponse.from(announcement,
                         "https://inhatc-demp.s3.ap-northeast-2.amazonaws.com/docs-saved-image.png")));
 
@@ -153,9 +153,11 @@ class AnnouncementRestDocsTest {
                 .andDo(document("announcement-detail",
                         requestHeaders(headerWithName("X-AUTH-TOKEN").description("로그인 시 발급된 JWT")),
                         pathParameters(parameterWithName("AnnouncementId").description("조회할 공고 ID")),
+                        queryParameters(parameterWithName("recordView").optional().description("기본 true: 성공 방문마다 집계. false: 편집용 순수 상세")),
                         responseFields(
                                 fieldWithPath("image").description("공고 이미지 URL"),
                                 fieldWithPath("company.name").description("회사 또는 교육기관 이름"),
+                                fieldWithPath("hits").description("공개 상세 성공마다 1씩 증가하는 누적 조회수"),
                                 fieldWithPath("title").description("공고 제목"),
                                 fieldWithPath("recruitmentAudience").optional().description("명시적 모집 대상"),
                                 fieldWithPath("employmentType").optional().description("고용 형태 (REGULAR/CONTRACT/CONVERSION_INTERNSHIP/EXPERIENTIAL_INTERNSHIP), 미확인은 null"),
@@ -251,9 +253,11 @@ class AnnouncementRestDocsTest {
                                 parameterWithName("title").description("제목·회사명 검색어, 대소문자 무시"),
                                 parameterWithName("page").description("0부터 시작하는 페이지 번호"),
                                 parameterWithName("size").description("페이지 크기"),
-                                parameterWithName("sort").description("호환용 수신값. 실제 조회는 ID 내림차순 고정")),
+                                parameterWithName("orderBy").optional().description("LATEST 기본 최신 / DEADLINE 유효 마감 임박 우선 / VIEWS 누적 조회순. 동률 ID 내림차순"),
+                                parameterWithName("sort").description("Pageable 호환 메타데이터. 실제 순서는 orderBy가 결정")),
                         responseFields(
                                 fieldWithPath("content[].id").description("공고 ID"),
+                                fieldWithPath("content[].hits").description("공개 상세 방문 누적 조회수"),
                                 fieldWithPath("content[].title").description("공고 제목"),
                                 fieldWithPath("content[].language").description("기술 언어 목록"),
                                 fieldWithPath("content[].position").description("직무"),
@@ -332,7 +336,7 @@ class AnnouncementRestDocsTest {
     @DisplayName("없는 공고의 404 응답을 문서화한다")
     void documentsMissingAnnouncementDetail() throws Exception {
         Long announcementId = 999L;
-        when(announcementService.findDetailResponse(announcementId)).thenReturn(Optional.empty());
+        when(announcementService.recordViewAndGetDetail(announcementId)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/api/announce/detail/{AnnouncementId}", announcementId)
                         .header("X-AUTH-TOKEN", DOCS_TOKEN))

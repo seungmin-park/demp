@@ -54,6 +54,63 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ContextConfiguration(classes = {AnnouncementController.class, ExController.class, SecurityConfiguration.class})
 @org.springframework.security.test.context.support.WithMockUser(roles = {"ADMIN", "USER"})
 class AnnouncementControllerTest {
+    @Test
+    @DisplayName("로그인하지 않은 상세 요청은 401이며 조회수 서비스에 도달하지 않는다")
+    @org.springframework.security.test.context.support.WithAnonymousUser
+    void anonymousDetailDoesNotRecordView() throws Exception {
+        mockMvc.perform(get("/api/announce/detail/71")).andExpect(status().isUnauthorized());
+        verifyNoInteractions(announcementService);
+    }
+
+    @ParameterizedTest
+    @DisplayName("공고 정렬 조건은 최신·마감·조회 순을 명시적으로 바인딩한다")
+    @ValueSource(strings = {"LATEST", "DEADLINE", "VIEWS"})
+    void bindsAnnouncementOrder(String order) throws Exception {
+        when(announcementService.findAnnouncementSlice(any(), any())).thenReturn(new SliceImpl<>(List.of()));
+        mockMvc.perform(get("/api/announce").param("orderBy", order)).andExpect(status().isOk());
+        var captured = ArgumentCaptor.forClass(AnnouncementSearchCondition.class);
+        verify(announcementService).findAnnouncementSlice(captured.capture(), any());
+        var fields = new BeanWrapperImpl(captured.getValue());
+        assertThat(fields.isReadableProperty("orderBy")).as("공고 정렬 검색 계약").isTrue();
+        assertThat(fields.getPropertyValue("orderBy").toString()).isEqualTo(order);
+    }
+
+    @Test
+    @DisplayName("지원하지 않는 공고 정렬 조건은 서비스 호출 없이 400으로 거절한다")
+    void rejectsUnknownAnnouncementOrder() throws Exception {
+        mockMvc.perform(get("/api/announce").param("orderBy", "UNKNOWN")).andExpect(status().isBadRequest());
+        verifyNoInteractions(announcementService);
+    }
+
+    @Test
+    @DisplayName("공개 상세는 기본 집계 경로로 호출하고 편집용 false는 순수 조회한다")
+    void separatesRecordedAndPureDetail() throws Exception {
+        when(announcementService.recordViewAndGetDetail(71L)).thenReturn(Optional.of(AnnouncementDetailResponse.builder().title("집계 상세").build()));
+        when(announcementService.findDetailResponse(71L)).thenReturn(Optional.of(AnnouncementDetailResponse.builder().title("순수 상세").build()));
+        mockMvc.perform(get("/api/announce/detail/71")).andExpect(status().isOk()).andExpect(jsonPath("$.title").value("집계 상세"));
+        mockMvc.perform(get("/api/announce/detail/71").param("recordView", "false")).andExpect(status().isOk()).andExpect(jsonPath("$.title").value("순수 상세"));
+        verify(announcementService).recordViewAndGetDetail(71L); verify(announcementService).findDetailResponse(71L);
+    }
+
+    @Test
+    @DisplayName("잘못된 집계 조건은 서비스 호출 없이 400으로 거절한다")
+    void rejectsInvalidViewCondition() throws Exception {
+        mockMvc.perform(get("/api/announce/detail/71").param("recordView", "invalid")).andExpect(status().isBadRequest());
+        verifyNoInteractions(announcementService);
+    }
+
+    @Test
+    @DisplayName("확장 직무와 기술은 기존 React 값과 함께 검색 조건에 바인딩된다")
+    void bindsExpandedCatalogInSearch() throws Exception {
+        when(announcementService.findAnnouncementSlice(any(), any())).thenReturn(new SliceImpl<>(List.of()));
+        mockMvc.perform(get("/api/announce").param("positions", "BACKEND,SRE,PLATFORM_ENGINEER")
+                .param("languages", "React,KOTLIN,SPRING_BOOT,KUBERNETES,RAG"))
+                .andExpect(status().isOk());
+        var captured = ArgumentCaptor.forClass(AnnouncementSearchCondition.class);
+        verify(announcementService).findAnnouncementSlice(captured.capture(), any());
+        assertThat(captured.getValue().getPositions()).extracting(Enum::name).containsExactly("BACKEND", "SRE", "PLATFORM_ENGINEER");
+        assertThat(captured.getValue().getLanguages()).extracting(Enum::name).containsExactly("React", "KOTLIN", "SPRING_BOOT", "KUBERNETES", "RAG");
+    }
 
     @MockitoBean
     private AnnouncementService announcementService;
@@ -261,7 +318,7 @@ class AnnouncementControllerTest {
                         .build())
                 .image(UploadFile.builder().uploadFileName("company.png").saveFileName("saved-company.png").build())
                 .build();
-        when(announcementService.findDetailResponse(71L)).thenReturn(Optional.of(
+        when(announcementService.recordViewAndGetDetail(71L)).thenReturn(Optional.of(
                 AnnouncementDetailResponse.from(announcement, "https://example.test/saved-company.png")));
 
         mockMvc.perform(get("/api/announce/detail/71"))
@@ -312,7 +369,7 @@ class AnnouncementControllerTest {
     @Test
     @DisplayName("없는 공고를 상세 조회하면 404를 반환한다")
     void returnsNotFoundWhenAnnouncementDoesNotExist() throws Exception {
-        when(announcementService.findDetailResponse(999L)).thenReturn(Optional.empty());
+        when(announcementService.recordViewAndGetDetail(999L)).thenReturn(Optional.empty());
 
         mockMvc.perform(get("/api/announce/detail/999"))
                 .andExpect(status().isNotFound());

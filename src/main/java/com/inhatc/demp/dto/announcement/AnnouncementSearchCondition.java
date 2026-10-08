@@ -15,6 +15,8 @@ import lombok.Setter;
 @Setter
 public class AnnouncementSearchCondition {
 
+    private AnnouncementOrder orderBy = AnnouncementOrder.LATEST;
+
     private DeliveryMode deliveryMode;
     private EducationRegion region;
     private Commitment commitment;

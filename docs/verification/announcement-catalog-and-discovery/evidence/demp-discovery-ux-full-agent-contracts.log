@@ -1,0 +1,5 @@
+
+> dempfrontend@0.1.0 check:agent-contracts
+> node scripts/check-agent-contracts.mjs
+
+PASS: official docs match package/tool versions and components delegate reaction writes

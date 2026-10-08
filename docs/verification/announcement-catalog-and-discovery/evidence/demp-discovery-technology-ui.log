@@ -1,0 +1,81 @@
+BROWSER viewport 1440 exit 0
+BROWSER goto http://127.0.0.1:51019/admin/announcements/1 exit 0
+BROWSER wait --selector exit 0
+BROWSER eval JSON.stringify(document.querySelectorAll(".technology-group").length) exit 0
+BROWSER eval JSON.stringify(document.querySelectorAll(".technology-choice").length) exit 0
+PASS 8개 분야·66개 항목을 접는 단계 없이 모두 표시 66
+BROWSER viewport 320 exit 0
+BROWSER eval JSON.stringify((()=>{const e=document.querySelector(".technology-groups");return {overflow:getComputedStyle(e).overflowY,scrollHeight:e.scrollHeight,clientHeight:e.clientHeight,width:document.documentElement.scrollWidth,columns:getComputedStyle(e).gridTemplateColumns,minimum:Math.min(...Array.from(document.querySelectorAll(".technology-choice,.selected-technologies button")).map(c=>c.getBoundingClientRect().height))}})()) exit 0
+PASS 320px: 내부 스크롤·가로 넘침 없음, 선택 영역 44px {'overflow': 'visible', 'scrollHeight': 2698, 'clientHeight': 2698, 'width': 320, 'columns': '254px', 'minimum': 44}
+BROWSER eval JSON.stringify(document.querySelector(".technology-selector").getBoundingClientRect().top) exit 0
+BROWSER scroll --dy exit 0
+BROWSER screenshot --out exit 0
+BROWSER viewport 390 exit 0
+BROWSER eval JSON.stringify((()=>{const e=document.querySelector(".technology-groups");return {overflow:getComputedStyle(e).overflowY,scrollHeight:e.scrollHeight,clientHeight:e.clientHeight,width:document.documentElement.scrollWidth,columns:getComputedStyle(e).gridTemplateColumns,minimum:Math.min(...Array.from(document.querySelectorAll(".technology-choice,.selected-technologies button")).map(c=>c.getBoundingClientRect().height))}})()) exit 0
+PASS 390px: 내부 스크롤·가로 넘침 없음, 선택 영역 44px {'overflow': 'visible', 'scrollHeight': 2282, 'clientHeight': 2282, 'width': 373, 'columns': '307px', 'minimum': 44}
+BROWSER viewport 640 exit 0
+BROWSER eval JSON.stringify((()=>{const e=document.querySelector(".technology-groups");return {overflow:getComputedStyle(e).overflowY,scrollHeight:e.scrollHeight,clientHeight:e.clientHeight,width:document.documentElement.scrollWidth,columns:getComputedStyle(e).gridTemplateColumns,minimum:Math.min(...Array.from(document.querySelectorAll(".technology-choice,.selected-technologies button")).map(c=>c.getBoundingClientRect().height))}})()) exit 0
+PASS 640px: 내부 스크롤·가로 넘침 없음, 선택 영역 44px {'overflow': 'visible', 'scrollHeight': 1534, 'clientHeight': 1534, 'width': 623, 'columns': '537px', 'minimum': 44}
+BROWSER viewport 768 exit 0
+BROWSER eval JSON.stringify((()=>{const e=document.querySelector(".technology-groups");return {overflow:getComputedStyle(e).overflowY,scrollHeight:e.scrollHeight,clientHeight:e.clientHeight,width:document.documentElement.scrollWidth,columns:getComputedStyle(e).gridTemplateColumns,minimum:Math.min(...Array.from(document.querySelectorAll(".technology-choice,.selected-technologies button")).map(c=>c.getBoundingClientRect().height))}})()) exit 0
+PASS 768px: 내부 스크롤·가로 넘침 없음, 선택 영역 44px {'overflow': 'visible', 'scrollHeight': 1482, 'clientHeight': 1482, 'width': 751, 'columns': '665px', 'minimum': 44}
+BROWSER viewport 1024 exit 0
+BROWSER eval JSON.stringify((()=>{const e=document.querySelector(".technology-groups");return {overflow:getComputedStyle(e).overflowY,scrollHeight:e.scrollHeight,clientHeight:e.clientHeight,width:document.documentElement.scrollWidth,columns:getComputedStyle(e).gridTemplateColumns,minimum:Math.min(...Array.from(document.querySelectorAll(".technology-choice,.selected-technologies button")).map(c=>c.getBoundingClientRect().height))}})()) exit 0
+PASS 1024px: 내부 스크롤·가로 넘침 없음, 선택 영역 44px {'overflow': 'visible', 'scrollHeight': 1064, 'clientHeight': 1064, 'width': 1007, 'columns': '424.5px 424.5px', 'minimum': 44}
+BROWSER viewport 1440 exit 0
+BROWSER eval JSON.stringify((()=>{const e=document.querySelector(".technology-groups");return {overflow:getComputedStyle(e).overflowY,scrollHeight:e.scrollHeight,clientHeight:e.clientHeight,width:document.documentElement.scrollWidth,columns:getComputedStyle(e).gridTemplateColumns,minimum:Math.min(...Array.from(document.querySelectorAll(".technology-choice,.selected-technologies button")).map(c=>c.getBoundingClientRect().height))}})()) exit 0
+PASS 1440px: 내부 스크롤·가로 넘침 없음, 선택 영역 44px {'overflow': 'visible', 'scrollHeight': 1012, 'clientHeight': 1012, 'width': 1423, 'columns': '493px 493px', 'minimum': 44}
+BROWSER eval JSON.stringify(document.querySelector(".technology-selector").getBoundingClientRect().top) exit 0
+BROWSER scroll --dy exit 0
+BROWSER screenshot --out exit 0
+BROWSER check .technology-choice input[value=RUST] exit 0
+BROWSER fill [aria-label="관리자 기술 스택 검색"] exit 0
+BROWSER eval JSON.stringify(document.querySelector(".technology-summary").textContent.includes("Java") && document.querySelector(".technology-summary").textContent.includes("Rust") && !document.querySelector(".technology-choice input[value=JAVA]")) exit 0
+PASS 검색 중에도 기존 선택과 새 선택 요약 보존 True
+BROWSER click [aria-label="Java 선택 해제"] exit 0
+BROWSER eval JSON.stringify(!document.querySelector(".technology-summary").textContent.includes("Java")) exit 0
+PASS 숨겨진 기술을 요약에서 한 번 눌러 해제 True
+BROWSER click [aria-label="기술 검색어 지우기"] exit 0
+BROWSER eval JSON.stringify(document.querySelectorAll(".technology-group").length===8 && !document.querySelector(".technology-choice input[value=JAVA]").checked && document.querySelector(".technology-choice input[value=RUST]").checked && document.activeElement.getAttribute("aria-label")==="관리자 기술 스택 검색") exit 0
+PASS 검색 초기화 후 전체 분류·선택과 검색 초점 복원 True
+BROWSER keydown Alt exit 0
+BROWSER press Tab exit 0
+BROWSER keyup Alt exit 0
+BROWSER eval JSON.stringify(document.activeElement.matches(".selected-technologies button")) exit 0
+PASS macOS Option+Tab으로 선택 요약 해제 버튼에 바로 접근 True
+BROWSER click .announcement-admin-form button[type=submit] exit 0
+BROWSER wait --selector exit 0
+PASS 실제 UI 저장 commit 후 정확한 기술 집합·조회수 보존 {'language': ['KOTLIN', 'KUBERNETES', 'SPRING_BOOT', 'RAG', 'RUST', 'React'], 'hits': 3}
+BROWSER goto http://127.0.0.1:51019/admin/announcements/1 exit 0
+BROWSER wait --selector exit 0
+BROWSER check .technology-choice input[value=JAVA] exit 0
+BROWSER click [aria-label="Rust 선택 해제"] exit 0
+BROWSER click .announcement-admin-form button[type=submit] exit 0
+BROWSER wait --selector exit 0
+PASS 재편집 복원과 두 번째 실제 저장: 기술 집합·조회수 일치 {'language': ['KOTLIN', 'KUBERNETES', 'SPRING_BOOT', 'JAVA', 'RAG', 'React'], 'hits': 3}
+BROWSER goto http://127.0.0.1:51019/admin/announcements/1 exit 0
+BROWSER wait --selector exit 0
+BROWSER eval JSON.stringify(document.querySelectorAll(".selected-technologies button").length) exit 0
+BROWSER click .selected-technologies button exit 0
+BROWSER eval JSON.stringify(document.querySelectorAll(".selected-technologies button").length) exit 0
+BROWSER click .selected-technologies button exit 0
+BROWSER eval JSON.stringify(document.querySelectorAll(".selected-technologies button").length) exit 0
+BROWSER click .selected-technologies button exit 0
+BROWSER eval JSON.stringify(document.querySelectorAll(".selected-technologies button").length) exit 0
+BROWSER click .selected-technologies button exit 0
+BROWSER eval JSON.stringify(document.querySelectorAll(".selected-technologies button").length) exit 0
+BROWSER click .selected-technologies button exit 0
+BROWSER eval JSON.stringify(document.querySelectorAll(".selected-technologies button").length) exit 0
+BROWSER click .selected-technologies button exit 0
+BROWSER eval JSON.stringify(document.querySelectorAll(".selected-technologies button").length) exit 0
+BROWSER click .announcement-admin-form button[type=submit] exit 0
+BROWSER wait --selector exit 0
+BROWSER eval JSON.stringify((()=>{const e=document.querySelector("#admin-technology-error"),s=document.querySelector(".technology-search input");return {message:e.textContent,focus:document.activeElement===s,invalid:s.getAttribute("aria-invalid"),top:e.getBoundingClientRect().top,bottom:e.getBoundingClientRect().bottom,height:innerHeight}})()) exit 0
+PASS 필수 선택 누락: 화면 안의 오류·고칠 위치 초점·저장 값 보존 {'message': '기술 스택을 하나 이상 선택해 주세요.', 'focus': True, 'invalid': 'true', 'top': 689.703125, 'bottom': 711.796875, 'height': 1300}
+BROWSER screenshot --out exit 0
+BROWSER check .technology-choice input[value=KOTLIN] exit 0
+BROWSER eval JSON.stringify(!document.querySelector("#admin-technology-error") && document.querySelector(".technology-summary").textContent.includes("Kotlin")) exit 0
+PASS 고친 직후 오류 제거·선택 요약 반영 True
+BROWSER goto http://127.0.0.1:51019/admin/announcements/1 exit 0
+BROWSER wait --selector exit 0
+TECHNOLOGY_UI_RESULT PASS assertions 15

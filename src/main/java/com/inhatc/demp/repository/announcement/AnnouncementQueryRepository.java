@@ -9,9 +9,12 @@ import com.inhatc.demp.domain.announcement.AnnouncementType;
 import com.inhatc.demp.domain.announcement.JobPosition;
 import com.inhatc.demp.domain.announcement.Language;
 import com.inhatc.demp.dto.announcement.AnnouncementSearchCondition;
+import com.inhatc.demp.dto.announcement.AnnouncementOrder;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
 import java.time.Clock;
@@ -52,6 +55,7 @@ public class AnnouncementQueryRepository {
                         educationMatches(announcementSearchCondition),
                         paymentGoe(announcementSearchCondition.getPayment()),
                         titleContain(announcementSearchCondition.getTitle()))
+                .orderBy(announcementOrder(announcementSearchCondition.getOrderBy()))
                 .fetch();
     }
 
@@ -77,7 +81,7 @@ public class AnnouncementQueryRepository {
                         minCareerLoe(announcementSearchCondition.getCareer()),
                         maxCareerGoe(announcementSearchCondition.getCareer()),
                         titleContain(announcementSearchCondition.getTitle()))
-                .orderBy(announcement.id.desc())
+                .orderBy(announcementOrder(announcementSearchCondition.getOrderBy()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize() + 1)
                 .fetch();
@@ -111,7 +115,7 @@ public class AnnouncementQueryRepository {
                         educationMatches(announcementSearchCondition),
                         paymentGoe(announcementSearchCondition.getPayment()),
                         titleContain(announcementSearchCondition.getTitle()))
-                .orderBy(announcement.id.desc())
+                .orderBy(announcementOrder(announcementSearchCondition.getOrderBy()))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -132,6 +136,19 @@ public class AnnouncementQueryRepository {
 
     private BooleanExpression typeEq(AnnouncementType announcementType) {
         return announcementType != null ? announcement.announcementType.eq(announcementType) : null;
+    }
+
+    private OrderSpecifier<?>[] announcementOrder(AnnouncementOrder order) {
+        if (order == AnnouncementOrder.VIEWS) return new OrderSpecifier<?>[]{announcement.hits.desc(), announcement.id.desc()};
+        if (order == AnnouncementOrder.DEADLINE) {
+            var availableDeadline = announcement.recruitmentClosed.isFalse()
+                    .and(announcement.recruitPeriod.deadLineDate.goe(LocalDateTime.now(recruitmentClock)));
+            var priority = new CaseBuilder().when(availableDeadline).then(0).otherwise(1);
+            var deadline = new CaseBuilder().when(availableDeadline).then(announcement.recruitPeriod.deadLineDate)
+                    .otherwise((LocalDateTime) null);
+            return new OrderSpecifier<?>[]{priority.asc(), deadline.asc().nullsLast(), announcement.id.desc()};
+        }
+        return new OrderSpecifier<?>[]{announcement.id.desc()};
     }
 
     private BooleanExpression positionIn(List<JobPosition> positions) {

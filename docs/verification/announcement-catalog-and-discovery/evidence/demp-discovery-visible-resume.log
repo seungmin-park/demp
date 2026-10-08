@@ -1,0 +1,80 @@
+BROWSER eval JSON.stringify(document.querySelector(".job-detail .job-view-count").textContent.trim()) exit 0
+PASS 공개 상세 1회: 화면·독립 조회 일치 1
+BROWSER reload exit 0
+BROWSER wait --function exit 0
+PASS 새로고침 2회: 저장된 조회수 일치 2
+BROWSER goto http://127.0.0.1:51019/admin/announcements/1 exit 0
+BROWSER wait --selector exit 0
+BROWSER eval JSON.stringify(({position:document.querySelector("#admin-position").value,languages:Array.from(document.querySelectorAll(".technology-choice input:checked")).map(e=>e.value)})) exit 0
+PASS 편집에서 확장 직무·스택 복원 {'position': 'SRE', 'languages': ['JAVA', 'KOTLIN', 'React', 'SPRING_BOOT', 'KUBERNETES']}
+BROWSER select #admin-position exit 0
+BROWSER check .technology-choice input[value=RAG] exit 0
+BROWSER click .announcement-admin-form button[type=submit] exit 0
+BROWSER wait --selector exit 0
+PASS 관리자 변경 commit 후 조회수 보존 {'hits': 2, 'position': 'AI_RESEARCH', 'language': ['KOTLIN', 'KUBERNETES', 'SPRING_BOOT', 'JAVA', 'RAG', 'React']}
+BROWSER goto http://127.0.0.1:51019/?positions=AI_RESEARCH&languages=RAG,CPP&orderBy=VIEWS exit 0
+BROWSER wait --selector exit 0
+BROWSER eval JSON.stringify(Array.from(document.querySelectorAll(".notice-title")).map(e=>e.textContent.trim())) exit 0
+BROWSER eval JSON.stringify(document.querySelector(".announcement-order select").value) exit 0
+BROWSER eval JSON.stringify(Array.from(document.querySelectorAll(".notice-title")).map(e=>e.textContent.trim())) exit 0
+PASS 신규 직무 AND 기술 OR의 실제 UI 검색 ['실제 확장 기술 검증 공고']
+BROWSER reload exit 0
+BROWSER wait --selector exit 0
+BROWSER eval JSON.stringify(Array.from(document.querySelectorAll(".notice-title")).map(e=>e.textContent.trim())) exit 0
+BROWSER eval JSON.stringify(Array.from(document.querySelectorAll(".notice-title")).map(e=>e.textContent.trim())) exit 0
+PASS 새로고침 후 URL 필터·정렬 복원 ['실제 확장 기술 검증 공고']
+BROWSER viewport 390 exit 0
+BROWSER goto http://127.0.0.1:51019/ exit 0
+BROWSER wait --function exit 0
+BROWSER wait --function exit 0
+BROWSER eval JSON.stringify(Array.from(document.querySelectorAll(".notice-title")).map(e=>e.textContent.trim())) exit 0
+BROWSER eval JSON.stringify(Array.from(document.querySelectorAll(".notice-title")).map(e=>e.textContent.trim())) exit 0
+PASS LATEST 실제 DB 순서와 UI 첫 페이지 일치 ['정렬 검증 9', '정렬 검증 8', '정렬 검증 7', '정렬 검증 6', '정렬 검증 5', '정렬 검증 4', '정렬 검증 3', '정렬 검증 2']
+BROWSER select [aria-label="공고 정렬"] exit 0
+BROWSER wait --function exit 0
+BROWSER wait --function exit 0
+BROWSER eval JSON.stringify(Array.from(document.querySelectorAll(".notice-title")).map(e=>e.textContent.trim())) exit 0
+BROWSER eval JSON.stringify(Array.from(document.querySelectorAll(".notice-title")).map(e=>e.textContent.trim())) exit 0
+PASS DEADLINE 실제 DB 순서와 UI 첫 페이지 일치 ['정렬 검증 6', '정렬 검증 3', '정렬 검증 0', '정렬 검증 7', '정렬 검증 4', '정렬 검증 1', '정렬 검증 5', '정렬 검증 2']
+BROWSER select [aria-label="공고 정렬"] exit 0
+BROWSER wait --function exit 0
+BROWSER wait --function exit 0
+BROWSER eval JSON.stringify(Array.from(document.querySelectorAll(".notice-title")).map(e=>e.textContent.trim())) exit 0
+BROWSER eval JSON.stringify(Array.from(document.querySelectorAll(".notice-title")).map(e=>e.textContent.trim())) exit 0
+PASS VIEWS 실제 DB 순서와 UI 첫 페이지 일치 ['실제 확장 기술 검증 공고', '정렬 검증 9', '정렬 검증 8', '정렬 검증 7', '정렬 검증 6', '정렬 검증 5', '정렬 검증 4', '정렬 검증 3']
+BROWSER click [data-test=load-more] exit 0
+BROWSER wait --function exit 0
+BROWSER eval JSON.stringify(Array.from(document.querySelectorAll(".notice-title")).map(e=>e.textContent.trim())) exit 0
+BROWSER eval JSON.stringify(Array.from(document.querySelectorAll(".notice-title")).map(e=>e.textContent.trim())) exit 0
+PASS 조회순 더보기: 전체 순서·중복 없음 ['실제 확장 기술 검증 공고', '정렬 검증 9', '정렬 검증 8', '정렬 검증 7', '정렬 검증 6', '정렬 검증 5', '정렬 검증 4', '정렬 검증 3', '정렬 검증 2', '정렬 검증 1', '정렬 검증 0', '로컬 개발자 모집 예제']
+BROWSER reload exit 0
+BROWSER wait --selector exit 0
+BROWSER eval JSON.stringify(document.querySelector(".announcement-order select").value) exit 0
+BROWSER eval JSON.stringify(location.search) exit 0
+PASS 새로고침 후 조회순 유지 ?orderBy=VIEWS
+BROWSER back exit 0
+BROWSER wait --function exit 0
+BROWSER eval JSON.stringify(document.querySelector(".announcement-order select").value) exit 0
+BROWSER eval JSON.stringify(location.search) exit 0
+PASS 뒤로 가기 마감순 복원 ?orderBy=DEADLINE
+BROWSER viewport 320 exit 0
+BROWSER eval JSON.stringify(({scroll:document.documentElement.scrollWidth,height:document.querySelector(".announcement-order select").getBoundingClientRect().height})) exit 0
+PASS 320px 정렬·목록 화면 경계 {'scroll': 320, 'height': 44}
+BROWSER screenshot --out exit 0
+BROWSER viewport 390 exit 0
+BROWSER eval JSON.stringify(({scroll:document.documentElement.scrollWidth,height:document.querySelector(".announcement-order select").getBoundingClientRect().height})) exit 0
+PASS 390px 정렬·목록 화면 경계 {'scroll': 373, 'height': 44}
+BROWSER viewport 640 exit 0
+BROWSER eval JSON.stringify(({scroll:document.documentElement.scrollWidth,height:document.querySelector(".announcement-order select").getBoundingClientRect().height})) exit 0
+PASS 640px 정렬·목록 화면 경계 {'scroll': 623, 'height': 44}
+BROWSER viewport 768 exit 0
+BROWSER eval JSON.stringify(({scroll:document.documentElement.scrollWidth,height:document.querySelector(".announcement-order select").getBoundingClientRect().height})) exit 0
+PASS 768px 정렬·목록 화면 경계 {'scroll': 751, 'height': 44}
+BROWSER viewport 1024 exit 0
+BROWSER eval JSON.stringify(({scroll:document.documentElement.scrollWidth,height:document.querySelector(".announcement-order select").getBoundingClientRect().height})) exit 0
+PASS 1024px 정렬·목록 화면 경계 {'scroll': 1007, 'height': 44}
+BROWSER viewport 1440 exit 0
+BROWSER eval JSON.stringify(({scroll:document.documentElement.scrollWidth,height:document.querySelector(".announcement-order select").getBoundingClientRect().height})) exit 0
+PASS 1440px 정렬·목록 화면 경계 {'scroll': 1423, 'height': 44}
+BROWSER screenshot --out exit 0
+VISIBLE_UI_RESULT PASS assertions 18

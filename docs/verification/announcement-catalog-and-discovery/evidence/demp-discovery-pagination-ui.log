@@ -1,0 +1,14 @@
+BROWSER goto http://127.0.0.1:51019/question?orderBy=createdDate exit 0
+BROWSER wait --selector exit 0
+BROWSER click [data-test=next-page] exit 0
+BROWSER wait --function exit 0
+BROWSER eval JSON.stringify(({page:document.querySelector('.question-pages [aria-current=page]').textContent,count:document.querySelectorAll('.question-list').length,nextDisabled:document.querySelector('[data-test=next-page]').disabled,previousDisabled:document.querySelector('[data-test=previous-page]').disabled})) exit 0
+PASS 실제 둘째 페이지·마지막 버튼 상태 {'page': '2 페이지', 'count': 2, 'nextDisabled': True, 'previousDisabled': False}
+BROWSER click [data-test=previous-page] exit 0
+BROWSER wait --function exit 0
+BROWSER eval JSON.stringify(document.querySelectorAll('.question-list').length) exit 0
+PASS 첫 페이지 복귀 20
+BROWSER errors list exit 0
+BROWSER console list exit 0
+PASS 현재 실제 사용자 흐름의 브라우저 오류·경고 없음 {'errors': 'No browser errors', 'console': 'No console entries'}
+VISIBLE_UI_RESULT PASS assertions 3
