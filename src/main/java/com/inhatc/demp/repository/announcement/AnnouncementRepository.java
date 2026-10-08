@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AnnouncementRepository extends JpaRepository<Announcement, Long> {
+    @org.springframework.data.jpa.repository.Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Query("update Announcement a set a.hits = a.hits + 1 where a.id = :id and a.publicationStatus = com.inhatc.demp.domain.announcement.PublicationStatus.PUBLISHED")
+    int recordPublishedView(@Param("id") long id);
 
     List<Announcement> findByAnnouncementType(AnnouncementType annotatedArrayType);
 

@@ -1,0 +1,15 @@
+BROWSER viewport 1440 exit 0
+BROWSER goto http://127.0.0.1:51019/admin/announcements/1 exit 0
+BROWSER wait --selector exit 0
+BROWSER fill #admin-deadLineDate exit 0
+BROWSER eval JSON.stringify(document.querySelector("#admin-deadLineDate").closest(".recruitment-datetime").getBoundingClientRect().top) exit 0
+BROWSER scroll --dy exit 1
+Traceback (most recent call last):
+  File "/private/tmp/demp-discovery-calendar-ui.py", line 25, in <module>
+    browser('scroll','--dy',str(top-550))
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/private/tmp/demp-discovery-calendar-ui.py", line 12, in browser
+    if result.returncode: raise AssertionError(result.stderr.strip() or result.stdout.strip())
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Error: --dy must be an integer
+CALENDAR_UI_RESULT FAIL

@@ -21,11 +21,41 @@ import static org.mockito.Mockito.*;
 @SpringBootTest
 class AdminAnnouncementConcurrencyTest {
     @Autowired AdminAnnouncementService service;
+    @Autowired com.inhatc.demp.service.AnnouncementService views;
     @MockitoSpyBean AnnouncementRepository repository;
     @MockitoBean FileService files;
 
     @AfterEach
     void cleanup() { repository.deleteAll(); }
+
+    @Test
+    @DisplayName("관리자 수정과 상세 방문이 겹쳐도 커밋한 조회수가 덮어써지지 않는다")
+    void adminUpdatePreservesConcurrentViews() throws Exception {
+        var item = repository.save(Announcement.builder().title("조회수 보존")
+                .company(Company.builder().name("DEMP").build()).career(Career.builder().minCareer(0).maxCareer(0).build())
+                .description(Description.builder().content("본문").accessUrl("https://example.test").languages(Set.of(Language.JAVA)).build())
+                .recruitPeriod(RecruitPeriod.builder().startedDate(LocalDateTime.of(2026,1,1,0,0)).deadLineDate(LocalDateTime.of(2026,12,31,0,0)).build())
+                .announcementType(AnnouncementType.EMP).jobPosition(JobPosition.BACKEND).build());
+        views.recordViewAndGetDetail(item.getId());
+        var editing = new CountDownLatch(1); var release = new CountDownLatch(1); var viewing = new CountDownLatch(1);
+        var delegate = mockingDetails(repository).getMockCreationSettings().getDefaultAnswer();
+        doAnswer(invocation -> {
+            editing.countDown(); assertThat(release.await(10, TimeUnit.SECONDS)).isTrue();
+            return delegate.answer(invocation);
+        }).when(repository).saveAndFlush(org.mockito.ArgumentMatchers.any(Announcement.class));
+        var executor = Executors.newFixedThreadPool(2);
+        try {
+            var edit = executor.submit(() -> service.update(item.getId(), request()));
+            assertThat(editing.await(5, TimeUnit.SECONDS)).isTrue();
+            var visit = executor.submit(() -> { viewing.countDown(); return views.recordViewAndGetDetail(item.getId()).orElseThrow(); });
+            assertThat(viewing.await(5, TimeUnit.SECONDS)).isTrue();
+            assertThatExceptionOfType(TimeoutException.class).isThrownBy(() -> visit.get(1, TimeUnit.SECONDS));
+            release.countDown(); edit.get(5, TimeUnit.SECONDS);
+            assertThat(visit.get(5, TimeUnit.SECONDS).getHits()).isEqualTo(2);
+            var saved = repository.findById(item.getId()).orElseThrow();
+            assertThat(saved.getTitle()).isEqualTo("동시 수정 결과"); assertThat(saved.getHits()).isEqualTo(2);
+        } finally { release.countDown(); executor.shutdownNow(); assertThat(executor.awaitTermination(5, TimeUnit.SECONDS)).isTrue(); }
+    }
 
     @ParameterizedTest
     @DisplayName("이미지 없는 수정과 교체 또는 삭제가 겹쳐도 삭제한 이미지 참조가 되살아나지 않는다")

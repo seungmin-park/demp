@@ -18,6 +18,7 @@ public class AnnouncementResponse {
     private com.inhatc.demp.domain.announcement.EmploymentType employmentType;
     private Long id;
     private String title;
+    private long hits;
     private Set<Language> language = new HashSet<>();
     private JobPosition position;
     private boolean recruitmentClosed;
@@ -40,6 +41,7 @@ public class AnnouncementResponse {
         this.recruitmentClosed = announcement.isRecruitmentClosed();
         this.id = announcement.getId();
         this.title = announcement.getTitle();
+        this.hits = announcement.getHits();
         this.language = new HashSet<>(announcement.getDescription().getLanguages());
         this.position = announcement.getJobPosition();
         this.image = imageUrl;

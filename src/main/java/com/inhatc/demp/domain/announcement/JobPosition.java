@@ -21,7 +21,10 @@ public enum JobPosition {
     QA("QA"),
     IOT("사물 인터넷"),
     APPLICATION_PROGRAM("애플리케이션 프로그램"),
-    BLOCK_CHAIN("블록 체인");
+    BLOCK_CHAIN("블록 체인"),
+    DATA_SCIENTIST("데이터 사이언티스트"), DATA_ANALYST("데이터 분석가"), DATABASE_ADMIN("DBA"),
+    CLOUD_ENGINEER("클라우드 엔지니어"), PLATFORM_ENGINEER("플랫폼 엔지니어"), SRE("SRE"), MLOPS("MLOps"),
+    WEB_PUBLISHER("웹 퍼블리셔"), GAME_ENGINE("게임 엔진"), AI_RESEARCH("AI 연구");
 
     private String text;
 

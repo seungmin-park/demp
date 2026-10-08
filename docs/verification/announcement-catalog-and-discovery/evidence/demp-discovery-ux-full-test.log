@@ -1,0 +1,95 @@
+
+> dempfrontend@0.1.0 test
+> vitest run
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.2 [39m[90m/Users/seungmin/Desktop/repo/archive/demp/.worktrees/announcement-catalog-and-discovery/frontend[39m
+
+ [32m✓[39m tests/unit/TypeSafetyLint.spec.js [2m([22m[2m4 tests[22m[2m)[22m[33m 952[2mms[22m[39m
+   [33m[2m✓[22m[39m 앱 소스의 명시적 any 타입 검사 우회를 거절한다[33m 919[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementWrite.spec.js [2m([22m[2m4 tests[22m[2m)[22m[33m 423[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementFilterPanels.spec.js [2m([22m[2m15 tests[22m[2m)[22m[33m 541[2mms[22m[39m
+ [32m✓[39m tests/unit/QuestionAnswer.spec.js [2m([22m[2m9 tests[22m[2m)[22m[33m 533[2mms[22m[39m
+ [32m✓[39m tests/unit/PlaywrightExecution.spec.js [2m([22m[2m5 tests[22m[2m)[22m[32m 282[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementFilters.spec.js [2m([22m[2m12 tests[22m[2m)[22m[33m 467[2mms[22m[39m
+ [32m✓[39m tests/unit/QuestionWrite.spec.js [2m([22m[2m10 tests[22m[2m)[22m[33m 424[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementRichEditor.spec.js [2m([22m[2m4 tests[22m[2m)[22m[33m 483[2mms[22m[39m
+ [32m✓[39m tests/unit/AdminOperations.spec.js [2m([22m[2m27 tests[22m[2m)[22m[33m 1778[2mms[22m[39m
+ [32m✓[39m tests/unit/EducationFields.spec.js [2m([22m[2m4 tests[22m[2m)[22m[32m 288[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementAudience.spec.js [2m([22m[2m15 tests[22m[2m)[22m[32m 267[2mms[22m[39m
+ [32m✓[39m tests/unit/MarkdownEditor.spec.js [2m([22m[2m5 tests[22m[2m)[22m[32m 218[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementPresentation.spec.js [2m([22m[2m10 tests[22m[2m)[22m[32m 164[2mms[22m[39m
+ [32m✓[39m tests/unit/DetailStates.spec.js [2m([22m[2m10 tests[22m[2m)[22m[32m 143[2mms[22m[39m
+ [32m✓[39m tests/unit/AgentContracts.spec.js [2m([22m[2m14 tests[22m[2m)[22m[33m 4307[2mms[22m[39m
+   [33m[2m✓[22m[39m components/Rogue.vue의 반응 쓰기 지름길은 거절한다: <script setup lang='ts'>import { setReaction } from '@/api/reactions';</script>[33m 378[2mms[22m[39m
+   [33m[2m✓[22m[39m components/Rogue.vue의 반응 쓰기 지름길은 거절한다: <script setup lang='ts'>import * as reactions from '@/api/reactions';</script>[33m 367[2mms[22m[39m
+   [33m[2m✓[22m[39m components/Rogue.vue의 반응 쓰기 지름길은 거절한다: <script src='../api/reactions.ts'></script>[33m 316[2mms[22m[39m
+   [33m[2m✓[22m[39m other.ts의 반응 쓰기 지름길은 거절한다: export { setReaction as write } from './api/reactions';[33m 318[2mms[22m[39m
+   [33m[2m✓[22m[39m components/Rogue.vue의 책임 역참조는 거절한다: <script setup>import { apiClient } from '../api/client';</script>[33m 314[2mms[22m[39m
+   [33m[2m✓[22m[39m components/Good.vue의 정상 협력·타입·문자열은 허용한다: <script setup lang='ts'>import type { ReactionTarget } from '@/api/reactions';</script>[33m 305[2mms[22m[39m
+   [33m[2m✓[22m[39m composables/useContentReaction.ts의 정상 협력·타입·문자열은 허용한다: import { setReaction } from '@/api/reactions';[33m 315[2mms[22m[39m
+   [33m[2m✓[22m[39m views/Good.vue의 정상 협력·타입·문자열은 허용한다: <script setup>import { getQuestion } from '@/api/questions';</script>[33m 311[2mms[22m[39m
+ [32m✓[39m tests/unit/router.spec.js [2m([22m[2m4 tests[22m[2m)[22m[32m 138[2mms[22m[39m
+ [32m✓[39m tests/unit/QuestionDetail.spec.js [2m([22m[2m6 tests[22m[2m)[22m[32m 105[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementEmptyStates.spec.js [2m([22m[2m11 tests[22m[2m)[22m[32m 140[2mms[22m[39m
+ [32m✓[39m tests/unit/localImageProxy.spec.js [2m([22m[2m1 test[22m[2m)[22m[32m 126[2mms[22m[39m
+ [32m✓[39m tests/unit/PageErrors.spec.js [2m([22m[2m5 tests[22m[2m)[22m[32m 168[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementList.spec.js [2m([22m[2m8 tests[22m[2m)[22m[32m 119[2mms[22m[39m
+ [32m✓[39m tests/unit/QuestionStates.spec.js [2m([22m[2m5 tests[22m[2m)[22m[32m 128[2mms[22m[39m
+ [32m✓[39m tests/unit/apiClient.spec.js [2m([22m[2m3 tests[22m[2m)[22m[32m 114[2mms[22m[39m
+ [32m✓[39m tests/unit/AppAdminAccess.spec.js [2m([22m[2m4 tests[22m[2m)[22m[32m 40[2mms[22m[39m
+ [32m✓[39m tests/unit/HtmlRendering.spec.js [2m([22m[2m3 tests[22m[2m)[22m[32m 97[2mms[22m[39m
+ [32m✓[39m tests/unit/AccountForm.spec.js [2m([22m[2m3 tests[22m[2m)[22m[32m 105[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementReports.spec.js [2m([22m[2m4 tests[22m[2m)[22m[32m 81[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementReportForm.spec.js [2m([22m[2m5 tests[22m[2m)[22m[32m 95[2mms[22m[39m
+ [32m✓[39m tests/unit/QuestionList.spec.js [2m([22m[2m6 tests[22m[2m)[22m[32m 90[2mms[22m[39m
+ [32m✓[39m tests/unit/LoginForm.spec.js [2m([22m[2m3 tests[22m[2m)[22m[32m 146[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementDetail.spec.js [2m([22m[2m2 tests[22m[2m)[22m[32m 152[2mms[22m[39m
+ [32m✓[39m tests/unit/useQuestionAnswers.spec.js [2m([22m[2m5 tests[22m[2m)[22m[32m 92[2mms[22m[39m
+ [32m✓[39m tests/unit/AdminAccess.spec.js [2m([22m[2m3 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m tests/unit/Hashtags.spec.js [2m([22m[2m4 tests[22m[2m)[22m[32m 37[2mms[22m[39m
+ [32m✓[39m tests/unit/markdown.spec.js [2m([22m[2m3 tests[22m[2m)[22m[32m 83[2mms[22m[39m
+ [32m✓[39m tests/unit/SafeHtml.spec.js [2m([22m[2m16 tests[22m[2m)[22m[32m 79[2mms[22m[39m
+ [32m✓[39m tests/unit/RecruitmentDateTimeField.spec.js [2m([22m[2m4 tests[22m[2m)[22m[32m 142[2mms[22m[39m
+ [32m✓[39m tests/unit/CompensationFields.spec.js [2m([22m[2m2 tests[22m[2m)[22m[32m 56[2mms[22m[39m
+ [32m✓[39m tests/unit/CiVerification.spec.js [2m([22m[2m23 tests[22m[2m)[22m[32m 25[2mms[22m[39m
+ [32m✓[39m tests/unit/QuestionSearch.spec.js [2m([22m[2m1 test[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementBodyEditor.spec.js [2m([22m[2m2 tests[22m[2m)[22m[32m 35[2mms[22m[39m
+ [32m✓[39m tests/unit/test-environment.spec.js [2m([22m[2m1 test[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m tests/unit/ContentReactionControl.spec.js [2m([22m[2m2 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m tests/unit/ContentPresentation.spec.js [2m([22m[2m1 test[22m[2m)[22m[32m 58[2mms[22m[39m
+ [32m✓[39m tests/unit/QuestionMenu.spec.js [2m([22m[2m1 test[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m tests/unit/server.spec.js [2m([22m[2m1 test[22m[2m)[22m[32m 18[2mms[22m[39m
+ [32m✓[39m tests/unit/VueWarningGate.spec.js [2m([22m[2m2 tests[22m[2m)[22m[32m 28[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementScroll.spec.js [2m([22m[2m1 test[22m[2m)[22m[32m 23[2mms[22m[39m
+ [32m✓[39m tests/unit/authPersistence.spec.js [2m([22m[2m5 tests[22m[2m)[22m[32m 27[2mms[22m[39m
+ [32m✓[39m tests/unit/AnnouncementViewApi.spec.js [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/PublicationErrors.spec.js [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/questionApi.spec.js [2m([22m[2m1 test[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/VerificationSource.spec.js [2m([22m[2m18 tests[22m[2m)[22m[33m 15572[2mms[22m[39m
+   [33m[2m✓[22m[39m 변경 없는 Git 입력과 실제 단계 보고서는 검증을 통과한다[33m 2565[2mms[22m[39m
+   [33m[2m✓[22m[39m 미커밋 입력과 기존 ignored 환경 파일의 로컬 검증은 작업 트리 기준으로 기록한다[33m 2576[2mms[22m[39m
+   [33m[2m✓[22m[39m 시작 전에 있던 ignored 환경 파일도 단계 중 바뀌면 거절한다[33m 1478[2mms[22m[39m
+   [33m[2m✓[22m[39m 검증 중 index.html 입력 변경은 성공 증거 생성을 거부한다[33m 1405[2mms[22m[39m
+   [33m[2m✓[22m[39m 검증 중 public/asset.txt 입력 변경은 성공 증거 생성을 거부한다[33m 946[2mms[22m[39m
+   [33m[2m✓[22m[39m 검증 중 server.cjs 입력 변경은 성공 증거 생성을 거부한다[33m 636[2mms[22m[39m
+   [33m[2m✓[22m[39m 검증 중 .env.production.local 입력 변경은 성공 증거 생성을 거부한다[33m 630[2mms[22m[39m
+   [33m[2m✓[22m[39m 입력 변조 뒤에는 후속 빌드 명령을 실행하지 않는다[33m 645[2mms[22m[39m
+   [33m[2m✓[22m[39m CI의 변경 없는 설치 전 기준은 전체 단계의 성공을 허용한다[33m 1550[2mms[22m[39m
+   [33m[2m✓[22m[39m 설치 중 바뀐 입력은 verifier 시작 시 새 기준으로 받아들이지 않는다[33m 316[2mms[22m[39m
+   [33m[2m✓[22m[39m 체크아웃 밖에 복사한 CI 검사기도 설치 전 입력과 설치 후 변조를 검증한다[33m 316[2mms[22m[39m
+   [33m[2m✓[22m[39m 실제 CI 설치 단계는 외부 검사기 교체로 숨긴 입력 변조를 거절한다[33m 530[2mms[22m[39m
+   [33m[2m✓[22m[39m 실제 CI 설치 단계는 Git index 플래그와 기준 파일 교체로 숨긴 입력 변조를 거절한다[33m 471[2mms[22m[39m
+   [33m[2m✓[22m[39m 실제 CI 설치 단계는 Git 자산 replacement ref로 숨긴 입력 변조를 거절한다[33m 427[2mms[22m[39m
+   [33m[2m✓[22m[39m 실제 CI 설치 단계는 Git 검사기 replacement ref로 숨긴 입력 변조를 거절한다[33m 461[2mms[22m[39m
+   [33m[2m✓[22m[39m 실제 CI shell은 Git 검사 코드 조회 실패를 정상 실행으로 취급하지 않는다[33m 350[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m53 passed[39m[22m[90m (53)[39m
+[2m      Tests [22m [1m[32m320 passed[39m[22m[90m (320)[39m
+[2m   Start at [22m 20:42:46
+[2m   Duration [22m 15.79s[2m (tests 47%, environment 38%, transform 6%, import 5%, setup 4%)[22m
+
+[2mEnvironment [22m [33mjsdom was created 53 times[39m[2m · 24.16s total, 38% of tracked time[22m
+[2m            [22m [2mcreate it once per worker with [22m[33mpool: 'vmThreads'[39m[2m (keeps per-file isolation) or [22m[33misolate: false[39m[2m (shares it across files)[22m
+[2m            [22m [2mlearn more: https://vitest.dev/guide/improving-performance#test-environments[22m
+

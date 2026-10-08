@@ -1,0 +1,624 @@
+{
+  "workspace": "workspace:1000020005",
+  "surface": "surface:1000020019",
+  "frontend": "http://127.0.0.1:51019",
+  "backend": "http://127.0.0.1:18084",
+  "actions": [
+    {
+      "arguments": [
+        "goto",
+        "http://127.0.0.1:51019/detail/1"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--selector",
+        ".announcement-report summary",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "click",
+        ".announcement-report summary"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "click",
+        "[data-test=report-form] button[type=submit]"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--selector",
+        "#announcement-report-error",
+        "--timeout-ms",
+        "3000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(({error:document.querySelector('#announcement-report-error').textContent,invalid:document.querySelector('#announcement-report').getAttribute('aria-invalid'),focus:document.activeElement.id,nativeValidation:!document.querySelector('[data-test=report-form]').noValidate}))"
+      ],
+      "exit": 0,
+      "output": "{\"error\":\"오류 내용을 입력해 주세요.\",\"invalid\":\"true\",\"focus\":\"announcement-report\",\"nativeValidation\":false}"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "320",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify((()=>{const form=document.querySelector('[data-test=report-form]'),input=form.querySelector('textarea').getBoundingClientRect(),footer=form.querySelector('.feedback-input-footer').getBoundingClientRect(),actions=form.querySelector('.feedback-actions').getBoundingClientRect();return {document:document.documentElement.scrollWidth,height:input.height,left:input.left,right:input.right,gap:actions.top-footer.bottom,button:form.querySelector('button').getBoundingClientRect().height}})())"
+      ],
+      "exit": 0,
+      "output": "{\"document\":320,\"height\":128,\"left\":54,\"right\":266,\"gap\":16,\"button\":44}"
+    },
+    {
+      "arguments": [
+        "screenshot",
+        "--out",
+        "/private/tmp/demp-discovery-report-320.png"
+      ],
+      "exit": 0,
+      "output": "OK /private/tmp/demp-discovery-report-320.png"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "390",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify((()=>{const form=document.querySelector('[data-test=report-form]'),input=form.querySelector('textarea').getBoundingClientRect(),footer=form.querySelector('.feedback-input-footer').getBoundingClientRect(),actions=form.querySelector('.feedback-actions').getBoundingClientRect();return {document:document.documentElement.scrollWidth,height:input.height,left:input.left,right:input.right,gap:actions.top-footer.bottom,button:form.querySelector('button').getBoundingClientRect().height}})())"
+      ],
+      "exit": 0,
+      "output": "{\"document\":373,\"height\":128,\"left\":54,\"right\":319,\"gap\":16,\"button\":44}"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "640",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify((()=>{const form=document.querySelector('[data-test=report-form]'),input=form.querySelector('textarea').getBoundingClientRect(),footer=form.querySelector('.feedback-input-footer').getBoundingClientRect(),actions=form.querySelector('.feedback-actions').getBoundingClientRect();return {document:document.documentElement.scrollWidth,height:input.height,left:input.left,right:input.right,gap:actions.top-footer.bottom,button:form.querySelector('button').getBoundingClientRect().height}})())"
+      ],
+      "exit": 0,
+      "output": "{\"document\":623,\"height\":128,\"left\":66,\"right\":557,\"gap\":16,\"button\":44}"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "768",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify((()=>{const form=document.querySelector('[data-test=report-form]'),input=form.querySelector('textarea').getBoundingClientRect(),footer=form.querySelector('.feedback-input-footer').getBoundingClientRect(),actions=form.querySelector('.feedback-actions').getBoundingClientRect();return {document:document.documentElement.scrollWidth,height:input.height,left:input.left,right:input.right,gap:actions.top-footer.bottom,button:form.querySelector('button').getBoundingClientRect().height}})())"
+      ],
+      "exit": 0,
+      "output": "{\"document\":751,\"height\":128,\"left\":66,\"right\":685,\"gap\":16,\"button\":44}"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "1024",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify((()=>{const form=document.querySelector('[data-test=report-form]'),input=form.querySelector('textarea').getBoundingClientRect(),footer=form.querySelector('.feedback-input-footer').getBoundingClientRect(),actions=form.querySelector('.feedback-actions').getBoundingClientRect();return {document:document.documentElement.scrollWidth,height:input.height,left:input.left,right:input.right,gap:actions.top-footer.bottom,button:form.querySelector('button').getBoundingClientRect().height}})())"
+      ],
+      "exit": 0,
+      "output": "{\"document\":1007,\"height\":128,\"left\":378,\"right\":921,\"gap\":16,\"button\":44}"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "1440",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify((()=>{const form=document.querySelector('[data-test=report-form]'),input=form.querySelector('textarea').getBoundingClientRect(),footer=form.querySelector('.feedback-input-footer').getBoundingClientRect(),actions=form.querySelector('.feedback-actions').getBoundingClientRect();return {document:document.documentElement.scrollWidth,height:input.height,left:input.left,right:input.right,gap:actions.top-footer.bottom,button:form.querySelector('button').getBoundingClientRect().height}})())"
+      ],
+      "exit": 0,
+      "output": "{\"document\":1423,\"height\":128,\"left\":517.5,\"right\":1197.5,\"gap\":16,\"button\":44}"
+    },
+    {
+      "arguments": [
+        "screenshot",
+        "--out",
+        "/private/tmp/demp-discovery-report-1440.png"
+      ],
+      "exit": 0,
+      "output": "OK /private/tmp/demp-discovery-report-1440.png"
+    },
+    {
+      "arguments": [
+        "fill",
+        "#announcement-report",
+        "실제 제보 검증: 모집 마감일을 원문에서 확인해 주세요."
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "click",
+        "[data-test=report-form] button[type=submit]"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--selector",
+        "[data-test=report-form] [role=status]",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(document.querySelector('#announcement-report').value)"
+      ],
+      "exit": 0,
+      "output": "\"\""
+    },
+    {
+      "arguments": [
+        "goto",
+        "http://127.0.0.1:51019/admin/announcement-reports"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--selector",
+        "#resolution-1",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "click",
+        ".report-review-card:has(#resolution-1) button[type=submit]"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--selector",
+        "#resolution-1-error",
+        "--timeout-ms",
+        "3000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(({focus:document.activeElement.id,error:document.querySelector('#resolution-1-error').textContent,invalid:document.querySelector('#resolution-1').getAttribute('aria-invalid'),nativeValidation:!document.querySelector('#resolution-1').closest('form').noValidate}))"
+      ],
+      "exit": 0,
+      "output": "{\"focus\":\"resolution-1\",\"error\":\"처리 내용을 입력해 주세요.\",\"invalid\":\"true\",\"nativeValidation\":false}"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "320",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify((()=>{const form=document.querySelector('#resolution-1').closest('form'),input=form.querySelector('textarea').getBoundingClientRect(),footer=form.querySelector('.feedback-input-footer').getBoundingClientRect(),actions=form.querySelector('.feedback-actions').getBoundingClientRect();return {document:document.documentElement.scrollWidth,height:input.height,left:input.left,right:input.right,gap:actions.top-footer.bottom,button:form.querySelector('button').getBoundingClientRect().height,align:getComputedStyle(form.closest('article')).textAlign}})())"
+      ],
+      "exit": 0,
+      "output": "{\"document\":320,\"height\":128,\"left\":36,\"right\":284,\"gap\":16,\"button\":44,\"align\":\"left\"}"
+    },
+    {
+      "arguments": [
+        "screenshot",
+        "--out",
+        "/private/tmp/demp-discovery-resolution-320.png"
+      ],
+      "exit": 0,
+      "output": "OK /private/tmp/demp-discovery-resolution-320.png"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "390",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify((()=>{const form=document.querySelector('#resolution-1').closest('form'),input=form.querySelector('textarea').getBoundingClientRect(),footer=form.querySelector('.feedback-input-footer').getBoundingClientRect(),actions=form.querySelector('.feedback-actions').getBoundingClientRect();return {document:document.documentElement.scrollWidth,height:input.height,left:input.left,right:input.right,gap:actions.top-footer.bottom,button:form.querySelector('button').getBoundingClientRect().height,align:getComputedStyle(form.closest('article')).textAlign}})())"
+      ],
+      "exit": 0,
+      "output": "{\"document\":373,\"height\":128,\"left\":36,\"right\":337,\"gap\":16,\"button\":44,\"align\":\"left\"}"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "640",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify((()=>{const form=document.querySelector('#resolution-1').closest('form'),input=form.querySelector('textarea').getBoundingClientRect(),footer=form.querySelector('.feedback-input-footer').getBoundingClientRect(),actions=form.querySelector('.feedback-actions').getBoundingClientRect();return {document:document.documentElement.scrollWidth,height:input.height,left:input.left,right:input.right,gap:actions.top-footer.bottom,button:form.querySelector('button').getBoundingClientRect().height,align:getComputedStyle(form.closest('article')).textAlign}})())"
+      ],
+      "exit": 0,
+      "output": "{\"document\":623,\"height\":128,\"left\":44,\"right\":579,\"gap\":16,\"button\":44,\"align\":\"left\"}"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "768",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify((()=>{const form=document.querySelector('#resolution-1').closest('form'),input=form.querySelector('textarea').getBoundingClientRect(),footer=form.querySelector('.feedback-input-footer').getBoundingClientRect(),actions=form.querySelector('.feedback-actions').getBoundingClientRect();return {document:document.documentElement.scrollWidth,height:input.height,left:input.left,right:input.right,gap:actions.top-footer.bottom,button:form.querySelector('button').getBoundingClientRect().height,align:getComputedStyle(form.closest('article')).textAlign}})())"
+      ],
+      "exit": 0,
+      "output": "{\"document\":751,\"height\":128,\"left\":44,\"right\":707,\"gap\":16,\"button\":44,\"align\":\"left\"}"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "1024",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify((()=>{const form=document.querySelector('#resolution-1').closest('form'),input=form.querySelector('textarea').getBoundingClientRect(),footer=form.querySelector('.feedback-input-footer').getBoundingClientRect(),actions=form.querySelector('.feedback-actions').getBoundingClientRect();return {document:document.documentElement.scrollWidth,height:input.height,left:input.left,right:input.right,gap:actions.top-footer.bottom,button:form.querySelector('button').getBoundingClientRect().height,align:getComputedStyle(form.closest('article')).textAlign}})())"
+      ],
+      "exit": 0,
+      "output": "{\"document\":1007,\"height\":128,\"left\":58,\"right\":949,\"gap\":16,\"button\":44,\"align\":\"left\"}"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "1440",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify((()=>{const form=document.querySelector('#resolution-1').closest('form'),input=form.querySelector('textarea').getBoundingClientRect(),footer=form.querySelector('.feedback-input-footer').getBoundingClientRect(),actions=form.querySelector('.feedback-actions').getBoundingClientRect();return {document:document.documentElement.scrollWidth,height:input.height,left:input.left,right:input.right,gap:actions.top-footer.bottom,button:form.querySelector('button').getBoundingClientRect().height,align:getComputedStyle(form.closest('article')).textAlign}})())"
+      ],
+      "exit": 0,
+      "output": "{\"document\":1423,\"height\":128,\"left\":197.5,\"right\":1225.5,\"gap\":16,\"button\":44,\"align\":\"left\"}"
+    },
+    {
+      "arguments": [
+        "screenshot",
+        "--out",
+        "/private/tmp/demp-discovery-resolution-1440.png"
+      ],
+      "exit": 0,
+      "output": "OK /private/tmp/demp-discovery-resolution-1440.png"
+    },
+    {
+      "arguments": [
+        "fill",
+        "#resolution-1",
+        "원문 확인 후 마감일을 수정했습니다. 로컬 검증용 처리 기록입니다."
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "click",
+        ".report-review-card:has(#resolution-1) button[type=submit]"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--function",
+        "!document.querySelector(\"#resolution-1\")",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "check",
+        ".admin-section-heading input[type=checkbox]"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--text",
+        "원문 확인 후 마감일을 수정했습니다. 로컬 검증용 처리 기록입니다.",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "빈 제보: 앱 오류·입력 초점·기본 말풍선 비활성",
+      "pass": true,
+      "observed": {
+        "error": "오류 내용을 입력해 주세요.",
+        "invalid": "true",
+        "focus": "announcement-report",
+        "nativeValidation": false
+      }
+    },
+    {
+      "name": "320px 제보 입력·버튼 간격·화면 경계",
+      "pass": true,
+      "observed": {
+        "document": 320,
+        "height": 128,
+        "left": 54,
+        "right": 266,
+        "gap": 16,
+        "button": 44
+      }
+    },
+    {
+      "name": "390px 제보 입력·버튼 간격·화면 경계",
+      "pass": true,
+      "observed": {
+        "document": 373,
+        "height": 128,
+        "left": 54,
+        "right": 319,
+        "gap": 16,
+        "button": 44
+      }
+    },
+    {
+      "name": "640px 제보 입력·버튼 간격·화면 경계",
+      "pass": true,
+      "observed": {
+        "document": 623,
+        "height": 128,
+        "left": 66,
+        "right": 557,
+        "gap": 16,
+        "button": 44
+      }
+    },
+    {
+      "name": "768px 제보 입력·버튼 간격·화면 경계",
+      "pass": true,
+      "observed": {
+        "document": 751,
+        "height": 128,
+        "left": 66,
+        "right": 685,
+        "gap": 16,
+        "button": 44
+      }
+    },
+    {
+      "name": "1024px 제보 입력·버튼 간격·화면 경계",
+      "pass": true,
+      "observed": {
+        "document": 1007,
+        "height": 128,
+        "left": 378,
+        "right": 921,
+        "gap": 16,
+        "button": 44
+      }
+    },
+    {
+      "name": "1440px 제보 입력·버튼 간격·화면 경계",
+      "pass": true,
+      "observed": {
+        "document": 1423,
+        "height": 128,
+        "left": 517.5,
+        "right": 1197.5,
+        "gap": 16,
+        "button": 44
+      }
+    },
+    {
+      "name": "실제 제보 접수 후 내용 비우기",
+      "pass": true,
+      "observed": ""
+    },
+    {
+      "name": "별도 조회에서 제보 commit 확인",
+      "pass": true,
+      "observed": {
+        "matches": 1
+      }
+    },
+    {
+      "name": "빈 처리 내용: 해당 제보 오류·입력 초점·기본 말풍선 비활성",
+      "pass": true,
+      "observed": {
+        "focus": "resolution-1",
+        "error": "처리 내용을 입력해 주세요.",
+        "invalid": "true",
+        "nativeValidation": false
+      }
+    },
+    {
+      "name": "320px 관리자 처리: 왼쪽 정렬·입력·버튼 간격·화면 경계",
+      "pass": true,
+      "observed": {
+        "document": 320,
+        "height": 128,
+        "left": 36,
+        "right": 284,
+        "gap": 16,
+        "button": 44,
+        "align": "left"
+      }
+    },
+    {
+      "name": "390px 관리자 처리: 왼쪽 정렬·입력·버튼 간격·화면 경계",
+      "pass": true,
+      "observed": {
+        "document": 373,
+        "height": 128,
+        "left": 36,
+        "right": 337,
+        "gap": 16,
+        "button": 44,
+        "align": "left"
+      }
+    },
+    {
+      "name": "640px 관리자 처리: 왼쪽 정렬·입력·버튼 간격·화면 경계",
+      "pass": true,
+      "observed": {
+        "document": 623,
+        "height": 128,
+        "left": 44,
+        "right": 579,
+        "gap": 16,
+        "button": 44,
+        "align": "left"
+      }
+    },
+    {
+      "name": "768px 관리자 처리: 왼쪽 정렬·입력·버튼 간격·화면 경계",
+      "pass": true,
+      "observed": {
+        "document": 751,
+        "height": 128,
+        "left": 44,
+        "right": 707,
+        "gap": 16,
+        "button": 44,
+        "align": "left"
+      }
+    },
+    {
+      "name": "1024px 관리자 처리: 왼쪽 정렬·입력·버튼 간격·화면 경계",
+      "pass": true,
+      "observed": {
+        "document": 1007,
+        "height": 128,
+        "left": 58,
+        "right": 949,
+        "gap": 16,
+        "button": 44,
+        "align": "left"
+      }
+    },
+    {
+      "name": "1440px 관리자 처리: 왼쪽 정렬·입력·버튼 간격·화면 경계",
+      "pass": true,
+      "observed": {
+        "document": 1423,
+        "height": 128,
+        "left": 197.5,
+        "right": 1225.5,
+        "gap": 16,
+        "button": 44,
+        "align": "left"
+      }
+    },
+    {
+      "name": "실제 처리 저장·목록 재조회·commit 확인",
+      "pass": true,
+      "observed": {
+        "note": "원문 확인 후 마감일을 수정했습니다. 로컬 검증용 처리 기록입니다.",
+        "resolvedAt": "2026-10-08T20:24:50.014954"
+      }
+    }
+  ],
+  "status": "PASS"
+}

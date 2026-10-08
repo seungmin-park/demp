@@ -1,0 +1,123 @@
+{
+  "workspace": "workspace:1000020005",
+  "surface": "surface:1000020019",
+  "frontend": "http://127.0.0.1:51019",
+  "backend": "http://127.0.0.1:18084",
+  "actions": [
+    {
+      "arguments": [
+        "goto",
+        "http://127.0.0.1:51019/question?orderBy=createdDate"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--selector",
+        "[data-test=next-page]",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "click",
+        "[data-test=next-page]"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--function",
+        "document.querySelector(\".question-pages [aria-current=page]\")?.textContent === \"2 페이지\"",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(({page:document.querySelector('.question-pages [aria-current=page]').textContent,count:document.querySelectorAll('.question-list').length,nextDisabled:document.querySelector('[data-test=next-page]').disabled,previousDisabled:document.querySelector('[data-test=previous-page]').disabled}))"
+      ],
+      "exit": 0,
+      "output": "{\"page\":\"2 페이지\",\"count\":2,\"nextDisabled\":true,\"previousDisabled\":false}"
+    },
+    {
+      "arguments": [
+        "click",
+        "[data-test=previous-page]"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--function",
+        "document.querySelector(\".question-pages [aria-current=page]\")?.textContent === \"1 페이지\"",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(document.querySelectorAll('.question-list').length)"
+      ],
+      "exit": 0,
+      "output": "20"
+    },
+    {
+      "arguments": [
+        "errors",
+        "list"
+      ],
+      "exit": 0,
+      "output": "No browser errors"
+    },
+    {
+      "arguments": [
+        "console",
+        "list"
+      ],
+      "exit": 0,
+      "output": "No console entries"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "실제 둘째 페이지·마지막 버튼 상태",
+      "pass": true,
+      "observed": {
+        "page": "2 페이지",
+        "count": 2,
+        "nextDisabled": true,
+        "previousDisabled": false
+      }
+    },
+    {
+      "name": "첫 페이지 복귀",
+      "pass": true,
+      "observed": 20
+    },
+    {
+      "name": "현재 실제 사용자 흐름의 브라우저 오류·경고 없음",
+      "pass": true,
+      "observed": {
+        "errors": "No browser errors",
+        "console": "No console entries"
+      }
+    }
+  ],
+  "status": "PASS"
+}

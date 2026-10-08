@@ -21,6 +21,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.CsvSource;
 import com.inhatc.demp.domain.announcement.EmploymentType;
 import com.inhatc.demp.domain.announcement.RecruitmentAudience;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,8 @@ class AnnouncementServiceTest {
     private AnnouncementService announcementService;
     @Autowired
     private AnnouncementRepository announcementRepository;
+    @Autowired
+    private org.springframework.jdbc.core.JdbcTemplate jdbc;
     @MockitoBean
     private FileService fileService;
 
@@ -190,6 +193,31 @@ class AnnouncementServiceTest {
         Announcement saved = announcementRepository.findByTitle("미확인 고용 형태").orElseThrow();
         assertThat(saved.getEmploymentType()).isNull();
         assertThat(announcementService.findDetailResponse(saved.getId()).orElseThrow().getEmploymentType()).isNull();
+    }
+
+    @ParameterizedTest
+    @DisplayName("새 직무와 기술 조합은 커밋 후 상세·검색에서 기존 문자열과 함께 보존된다")
+    @CsvSource({"SRE,KOTLIN|SPRING_BOOT|KUBERNETES|React", "AI_RESEARCH,PYTHON|PYTORCH|RAG", "GAME_ENGINE,CPP|CSHARP|UNITY"})
+    void persistsExpandedCatalog(String position, String technologies) throws IOException {
+        assertThat(JobPosition.values()).extracting(Enum::name).contains(position);
+        var values = java.util.Arrays.stream(technologies.split("\\|")).map(Language::valueOf).collect(java.util.stream.Collectors.toSet());
+        AnnouncementCreateRequest request = request("확장 스택 " + position);
+        request.setImage(null); request.setPublicationStatus(com.inhatc.demp.domain.announcement.PublicationStatus.PUBLISHED);
+        request.setPosition(JobPosition.valueOf(position)); request.setLanguage(values);
+        announcementService.createAnnouncement(request);
+
+        var saved = announcementRepository.findByTitle(request.getTitle()).orElseThrow();
+        assertThat(saved.getJobPosition().name()).isEqualTo(position);
+        assertThat(jdbc.queryForList("SELECT languages FROM language WHERE announcement_id = ?", String.class, saved.getId()))
+                .containsExactlyInAnyOrderElementsOf(values.stream().map(Enum::name).toList());
+        var detail = announcementService.findDetailResponse(saved.getId()).orElseThrow();
+        assertThat(detail.getPosition().name()).isEqualTo(position);
+        assertThat(detail.getLanguage()).containsExactlyInAnyOrderElementsOf(values);
+        var condition = new AnnouncementSearchCondition(); condition.setPositions(java.util.List.of(JobPosition.valueOf(position))); condition.setLanguages(java.util.List.of(values.iterator().next()));
+        var page = announcementService.findAnnouncementSlice(condition, PageRequest.of(0, 8));
+        assertThat(page.getContent()).extracting(item -> item.getId()).containsExactly(saved.getId());
+        assertThat(page.hasNext()).isFalse();
+        assertThat(page.getContent().getFirst().getLanguage()).containsExactlyInAnyOrderElementsOf(values);
     }
 
     private AnnouncementCreateRequest request(String title) {

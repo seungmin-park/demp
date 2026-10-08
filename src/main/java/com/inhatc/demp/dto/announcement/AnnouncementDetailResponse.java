@@ -32,6 +32,7 @@ public class AnnouncementDetailResponse {
     private com.inhatc.demp.domain.announcement.EducationDetails education;
     private Company company;
     private String title;
+    private long hits;
     private int minCareer;
     private int maxCareer;
     private LocalDateTime startedDate;
@@ -56,6 +57,7 @@ public class AnnouncementDetailResponse {
                 .applicationUrl(announcement.getApplicationUrl()).sourceVerifiedAt(announcement.getSourceVerifiedAt())
                 .education(announcement.getEducation())
                 .title(announcement.getTitle())
+                .hits(announcement.getHits())
                 .company(announcement.getCompany())
                 .announcementType(announcement.getAnnouncementType())
                 .image(imageUrl)

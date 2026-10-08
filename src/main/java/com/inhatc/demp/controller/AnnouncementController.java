@@ -32,8 +32,9 @@ public class AnnouncementController {
     }
 
     @GetMapping("/detail/{AnnouncementId}")
-    public ResponseEntity<AnnouncementDetailResponse> getAnnouncementDetail(@PathVariable("AnnouncementId") Long announcementId) {
-        Optional<AnnouncementDetailResponse> response = announcementService.findDetailResponse(announcementId);
+    public ResponseEntity<AnnouncementDetailResponse> getAnnouncementDetail(@PathVariable("AnnouncementId") Long announcementId,
+            @RequestParam(defaultValue = "true") boolean recordView) {
+        Optional<AnnouncementDetailResponse> response = recordView ? announcementService.recordViewAndGetDetail(announcementId) : announcementService.findDetailResponse(announcementId);
         if (response.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }

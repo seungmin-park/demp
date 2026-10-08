@@ -1,0 +1,76 @@
+
+> dempfrontend@0.1.0 test
+> vitest run tests/unit/AdminOperations.spec.js tests/unit/RecruitmentDateTimeField.spec.js
+
+
+[1m[30m[46m RUN [49m[39m[22m [36mv5.0.2 [39m[90m/Users/seungmin/Desktop/repo/archive/demp/.worktrees/announcement-catalog-and-discovery/frontend[39m
+
+ [32m✓[39m tests/unit/RecruitmentDateTimeField.spec.js [2m([22m[2m4 tests[22m[2m)[22m[32m 46[2mms[22m[39m
+ [31m❯[39m tests/unit/AdminOperations.spec.js [2m([22m[2m27 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 832[2mms[22m[39m
+   [32m✓[39m 현황은 서버 집계를 표시하고 실패 뒤 재시도한다[32m 29[2mms[22m[39m
+   [32m✓[39m 공고 삭제는 확인 뒤에만 요청하고 취소하면 원본 목록을 유지한다[32m 11[2mms[22m[39m
+   [32m✓[39m 기존 HTML 질문을 Markdown으로 불러와 안전한 HTML로 저장하며 중복 제출을 막는다[32m 28[2mms[22m[39m
+   [32m✓[39m 공고 수정은 기존 HTML과 필드를 복원하고 파일을 선택하지 않으면 image를 보내지 않는다[32m 78[2mms[22m[39m
+   [32m✓[39m 관리자 저장의 400 오류는 입력값 안내를 표시하고 작성 내용을 보존한다[32m 7[2mms[22m[39m
+   [32m✓[39m 검색으로 숨겨진 선택도 요약에서 한 번 눌러 해제하고 남은 값만 저장한다[32m 47[2mms[22m[39m
+   [32m✓[39m 검색 결과가 없어도 검색을 바로 초기화하고 기존 선택을 유지한다[32m 30[2mms[22m[39m
+   [32m✓[39m 저장 중에는 선택 요약에서도 해제를 막아 제출한 값을 보존한다[32m 35[2mms[22m[39m
+[31m   [31m×[31m 기술을 모두 해제한 저장은 요청하지 않고 고칠 곳으로 초점을 옮기며 선택 즉시 오류를 지운다[39m[32m 49[2mms[22m[39m
+   [32m✓[39m 저장 서버 오류에서도 검색·선택·본문을 보존하고 같은 화면에서 동일한 값으로 재시도한다[32m 38[2mms[22m[39m
+   [32m✓[39m 확장된 스택과 직무를 수정 폼에서 복원하고 선택·저장해 기존 값과 함께 보존한다[32m 33[2mms[22m[39m
+   [32m✓[39m 공고 폼은 기본·모집·내용·출처·게시를 읽는 순서대로 구분한다[32m 12[2mms[22m[39m
+   [32m✓[39m 앱 달력은 기존 선택 날짜로 열리고 월 이동·날짜 선택 시 기존 시·분을 보존한다[32m 32[2mms[22m[39m
+   [32m✓[39m 달력의 방향키는 날짜를 이동하고 Escape는 값을 바꾸지 않고 여는 버튼에 초점을 돌린다[32m 34[2mms[22m[39m
+   [32m✓[39m 달력은 윤년 2월 29일을 선택하고 저장 중에는 날짜 입력과 달력 열기를 막는다[32m 31[2mms[22m[39m
+   [32m✓[39m 고용 형태 REGULAR를 모집 대상과 따로 복원하고 저장한다[32m 32[2mms[22m[39m
+   [32m✓[39m 고용 형태 CONTRACT를 모집 대상과 따로 복원하고 저장한다[32m 28[2mms[22m[39m
+   [32m✓[39m 고용 형태 CONVERSION_INTERNSHIP를 모집 대상과 따로 복원하고 저장한다[32m 27[2mms[22m[39m
+   [32m✓[39m 고용 형태 EXPERIENTIAL_INTERNSHIP를 모집 대상과 따로 복원하고 저장한다[32m 33[2mms[22m[39m
+   [32m✓[39m 기존 공고의 고용 형태는 미확인으로 복원하며 명시한 형태도 다시 비울 수 있다[32m 29[2mms[22m[39m
+   [32m✓[39m 고용 형태 저장 실패에는 선택과 입력을 보존하고 교육 전환 시 채용 값과 필드를 비운다[32m 35[2mms[22m[39m
+   [32m✓[39m 공고 multipart는 채용 고용 형태만 보내며 교육 값과 미확인을 임의 추정하지 않는다[32m 0[2mms[22m[39m
+   [32m✓[39m 기술 스택은 선택 칩 전체를 눌러 선택·해제하고 같은 값으로 저장한다[32m 35[2mms[22m[39m
+   [32m✓[39m 저장 중 기술 스택 칩은 비활성이고 선택과 중복 요청을 바꾸지 않는다[32m 34[2mms[22m[39m
+   [32m✓[39m 변경 이력은 원래 순서와 모든 표시 값을 보존하고 날짜·작성자·상태와 제목을 분리한다[32m 23[2mms[22m[39m
+   [32m✓[39m 기존 초를 입력 화면에서는 숨기고 날짜를 바꾸지 않은 저장에서는 보존한다[32m 28[2mms[22m[39m
+   [32m✓[39m 시각을 직접 바꾸면 입력한 분 단위를 저장하고 다른 날짜의 초는 보존한다[32m 32[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/unit/AdminOperations.spec.js[2m > [22m기술을 모두 해제한 저장은 요청하지 않고 고칠 곳으로 초점을 옮기며 선택 즉시 오류를 지운다
+[31m[1mAssertionError[22m: expected <button data-v-3591b8ac …(2)></button> to be <input data-v-47193efe …(4)></input> // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- <input[39m
+[32m-   aria-describedby="technology-selection-help"[39m
+[32m-   aria-label="관리자 기술 스택 검색"[39m
+[32m-   data-v-47193efe=""[39m
+[32m-   placeholder="기술 이름으로 찾기"[39m
+[32m-   type="search"[39m
+[32m- />[39m
+[31m+ <button[39m
+[31m+   class="button button-primary"[39m
+[31m+   data-v-3591b8ac=""[39m
+[31m+   type="submit"[39m
+[31m+ >[39m
+[31m+   변경 저장[39m
+[31m+ </button>[39m
+
+[36m [2m❯[22m tests/unit/AdminOperations.spec.js:[2m130:34[22m[39m
+    [90m128|[39m   const search = wrapper.get('[aria-label="관리자 기술 스택 검색"]');
+    [90m129|[39m   expect(axios.patch).not.toHaveBeenCalled();
+    [90m130|[39m   expect(document.activeElement).toBe(search.element);
+    [90m   |[39m                                  [31m^[39m
+    [90m131|[39m   expect(search.attributes('aria-invalid')).toBe('true');
+    [90m132|[39m   expect(wrapper.get('#admin-technology-error').text()).toContain('하나 …
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m30 passed[39m[22m[90m (31)[39m
+[2m   Start at [22m 20:41:43
+[2m   Duration [22m 1.87s[2m (environment 40%, tests 36%, transform 17%, import 5%, setup 3%)[22m
+

@@ -134,6 +134,12 @@ public class AnnouncementService {
                 announcement, imageUrl.forImage(announcement.getImage())));
     }
 
+    @Transactional
+    public Optional<AnnouncementDetailResponse> recordViewAndGetDetail(Long id) {
+        if (announcementRepository.recordPublishedView(id) == 0) return Optional.empty();
+        return findDetailResponse(id);
+    }
+
     public Optional<AnnouncementDetailResponse> findAdminDetailResponse(Long id) {
         return announcementRepository.findById(id).map(item -> AnnouncementDetailResponse.from(item, imageUrl.forImage(item.getImage())));
     }

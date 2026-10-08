@@ -35,6 +35,9 @@ public class Announcement {
     @SequenceGenerator(name = "announcement_legacy_id", sequenceName = "hibernate_sequence", allocationSize = 1)
     private Long id;
     private String title;
+    @jakarta.persistence.Column(nullable = false)
+    @org.hibernate.annotations.ColumnDefault("0")
+    private long hits;
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.VARCHAR)
     @org.hibernate.annotations.ColumnDefault("'PUBLISHED'")

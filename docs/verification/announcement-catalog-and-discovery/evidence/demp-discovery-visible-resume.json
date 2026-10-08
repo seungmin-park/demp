@@ -1,0 +1,721 @@
+{
+  "workspace": "workspace:1000020005",
+  "surface": "surface:1000020019",
+  "frontend": "http://127.0.0.1:51019",
+  "backend": "http://127.0.0.1:18084",
+  "actions": [
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(document.querySelector(\".job-detail .job-view-count\").textContent.trim())"
+      ],
+      "exit": 0,
+      "output": "\"조회 1\""
+    },
+    {
+      "arguments": [
+        "reload"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--function",
+        "document.querySelector(\".job-detail .job-view-count\")?.textContent.trim()===\"조회 2\"",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "goto",
+        "http://127.0.0.1:51019/admin/announcements/1"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--selector",
+        "#admin-title",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(({position:document.querySelector(\"#admin-position\").value,languages:Array.from(document.querySelectorAll(\".technology-choice input:checked\")).map(e=>e.value)}))"
+      ],
+      "exit": 0,
+      "output": "{\"position\":\"SRE\",\"languages\":[\"JAVA\",\"KOTLIN\",\"React\",\"SPRING_BOOT\",\"KUBERNETES\"]}"
+    },
+    {
+      "arguments": [
+        "select",
+        "#admin-position",
+        "AI_RESEARCH"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "check",
+        ".technology-choice input[value=RAG]"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "click",
+        ".announcement-admin-form button[type=submit]"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--selector",
+        ".admin-row-title",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "goto",
+        "http://127.0.0.1:51019/?positions=AI_RESEARCH&languages=RAG,CPP&orderBy=VIEWS"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--selector",
+        ".notice-title",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(Array.from(document.querySelectorAll(\".notice-title\")).map(e=>e.textContent.trim()))"
+      ],
+      "exit": 0,
+      "output": "[\"실제 확장 기술 검증 공고\"]"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(document.querySelector(\".announcement-order select\").value)"
+      ],
+      "exit": 0,
+      "output": "\"VIEWS\""
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(Array.from(document.querySelectorAll(\".notice-title\")).map(e=>e.textContent.trim()))"
+      ],
+      "exit": 0,
+      "output": "[\"실제 확장 기술 검증 공고\"]"
+    },
+    {
+      "arguments": [
+        "reload"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--selector",
+        ".notice-title",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(Array.from(document.querySelectorAll(\".notice-title\")).map(e=>e.textContent.trim()))"
+      ],
+      "exit": 0,
+      "output": "[\"실제 확장 기술 검증 공고\"]"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(Array.from(document.querySelectorAll(\".notice-title\")).map(e=>e.textContent.trim()))"
+      ],
+      "exit": 0,
+      "output": "[\"실제 확장 기술 검증 공고\"]"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "390",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "goto",
+        "http://127.0.0.1:51019/"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--function",
+        "document.querySelector(\".notice-title\")?.textContent.trim()===\"\\uc815\\ub82c \\uac80\\uc99d 9\"",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--function",
+        "document.querySelectorAll(\".notice-title\").length>=8",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(Array.from(document.querySelectorAll(\".notice-title\")).map(e=>e.textContent.trim()))"
+      ],
+      "exit": 0,
+      "output": "[\"정렬 검증 9\",\"정렬 검증 8\",\"정렬 검증 7\",\"정렬 검증 6\",\"정렬 검증 5\",\"정렬 검증 4\",\"정렬 검증 3\",\"정렬 검증 2\"]"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(Array.from(document.querySelectorAll(\".notice-title\")).map(e=>e.textContent.trim()))"
+      ],
+      "exit": 0,
+      "output": "[\"정렬 검증 9\",\"정렬 검증 8\",\"정렬 검증 7\",\"정렬 검증 6\",\"정렬 검증 5\",\"정렬 검증 4\",\"정렬 검증 3\",\"정렬 검증 2\"]"
+    },
+    {
+      "arguments": [
+        "select",
+        "[aria-label=\"공고 정렬\"]",
+        "DEADLINE"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--function",
+        "document.querySelector(\".notice-title\")?.textContent.trim()===\"\\uc815\\ub82c \\uac80\\uc99d 6\"",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--function",
+        "document.querySelectorAll(\".notice-title\").length>=8",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(Array.from(document.querySelectorAll(\".notice-title\")).map(e=>e.textContent.trim()))"
+      ],
+      "exit": 0,
+      "output": "[\"정렬 검증 6\",\"정렬 검증 3\",\"정렬 검증 0\",\"정렬 검증 7\",\"정렬 검증 4\",\"정렬 검증 1\",\"정렬 검증 5\",\"정렬 검증 2\"]"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(Array.from(document.querySelectorAll(\".notice-title\")).map(e=>e.textContent.trim()))"
+      ],
+      "exit": 0,
+      "output": "[\"정렬 검증 6\",\"정렬 검증 3\",\"정렬 검증 0\",\"정렬 검증 7\",\"정렬 검증 4\",\"정렬 검증 1\",\"정렬 검증 5\",\"정렬 검증 2\"]"
+    },
+    {
+      "arguments": [
+        "select",
+        "[aria-label=\"공고 정렬\"]",
+        "VIEWS"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--function",
+        "document.querySelector(\".notice-title\")?.textContent.trim()===\"\\uc2e4\\uc81c \\ud655\\uc7a5 \\uae30\\uc220 \\uac80\\uc99d \\uacf5\\uace0\"",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--function",
+        "document.querySelectorAll(\".notice-title\").length>=8",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(Array.from(document.querySelectorAll(\".notice-title\")).map(e=>e.textContent.trim()))"
+      ],
+      "exit": 0,
+      "output": "[\"실제 확장 기술 검증 공고\",\"정렬 검증 9\",\"정렬 검증 8\",\"정렬 검증 7\",\"정렬 검증 6\",\"정렬 검증 5\",\"정렬 검증 4\",\"정렬 검증 3\"]"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(Array.from(document.querySelectorAll(\".notice-title\")).map(e=>e.textContent.trim()))"
+      ],
+      "exit": 0,
+      "output": "[\"실제 확장 기술 검증 공고\",\"정렬 검증 9\",\"정렬 검증 8\",\"정렬 검증 7\",\"정렬 검증 6\",\"정렬 검증 5\",\"정렬 검증 4\",\"정렬 검증 3\"]"
+    },
+    {
+      "arguments": [
+        "click",
+        "[data-test=load-more]"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--function",
+        "document.querySelectorAll(\".notice-title\").length===12",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(Array.from(document.querySelectorAll(\".notice-title\")).map(e=>e.textContent.trim()))"
+      ],
+      "exit": 0,
+      "output": "[\"실제 확장 기술 검증 공고\",\"정렬 검증 9\",\"정렬 검증 8\",\"정렬 검증 7\",\"정렬 검증 6\",\"정렬 검증 5\",\"정렬 검증 4\",\"정렬 검증 3\",\"정렬 검증 2\",\"정렬 검증 1\",\"정렬 검증 0\",\"로컬 개발자 모집 예제\"]"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(Array.from(document.querySelectorAll(\".notice-title\")).map(e=>e.textContent.trim()))"
+      ],
+      "exit": 0,
+      "output": "[\"실제 확장 기술 검증 공고\",\"정렬 검증 9\",\"정렬 검증 8\",\"정렬 검증 7\",\"정렬 검증 6\",\"정렬 검증 5\",\"정렬 검증 4\",\"정렬 검증 3\",\"정렬 검증 2\",\"정렬 검증 1\",\"정렬 검증 0\",\"로컬 개발자 모집 예제\"]"
+    },
+    {
+      "arguments": [
+        "reload"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--selector",
+        ".notice-title",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(document.querySelector(\".announcement-order select\").value)"
+      ],
+      "exit": 0,
+      "output": "\"VIEWS\""
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(location.search)"
+      ],
+      "exit": 0,
+      "output": "\"?orderBy=VIEWS\""
+    },
+    {
+      "arguments": [
+        "back"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--function",
+        "document.querySelector(\".announcement-order select\")?.value===\"DEADLINE\"",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(document.querySelector(\".announcement-order select\").value)"
+      ],
+      "exit": 0,
+      "output": "\"DEADLINE\""
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(location.search)"
+      ],
+      "exit": 0,
+      "output": "\"?orderBy=DEADLINE\""
+    },
+    {
+      "arguments": [
+        "viewport",
+        "320",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(({scroll:document.documentElement.scrollWidth,height:document.querySelector(\".announcement-order select\").getBoundingClientRect().height}))"
+      ],
+      "exit": 0,
+      "output": "{\"scroll\":320,\"height\":44}"
+    },
+    {
+      "arguments": [
+        "screenshot",
+        "--out",
+        "/private/tmp/demp-discovery-list-320.png"
+      ],
+      "exit": 0,
+      "output": "OK /private/tmp/demp-discovery-list-320.png"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "390",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(({scroll:document.documentElement.scrollWidth,height:document.querySelector(\".announcement-order select\").getBoundingClientRect().height}))"
+      ],
+      "exit": 0,
+      "output": "{\"scroll\":373,\"height\":44}"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "640",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(({scroll:document.documentElement.scrollWidth,height:document.querySelector(\".announcement-order select\").getBoundingClientRect().height}))"
+      ],
+      "exit": 0,
+      "output": "{\"scroll\":623,\"height\":44}"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "768",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(({scroll:document.documentElement.scrollWidth,height:document.querySelector(\".announcement-order select\").getBoundingClientRect().height}))"
+      ],
+      "exit": 0,
+      "output": "{\"scroll\":751,\"height\":44}"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "1024",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(({scroll:document.documentElement.scrollWidth,height:document.querySelector(\".announcement-order select\").getBoundingClientRect().height}))"
+      ],
+      "exit": 0,
+      "output": "{\"scroll\":1007,\"height\":44}"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "1440",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(({scroll:document.documentElement.scrollWidth,height:document.querySelector(\".announcement-order select\").getBoundingClientRect().height}))"
+      ],
+      "exit": 0,
+      "output": "{\"scroll\":1423,\"height\":44}"
+    },
+    {
+      "arguments": [
+        "screenshot",
+        "--out",
+        "/private/tmp/demp-discovery-list-1440.png"
+      ],
+      "exit": 0,
+      "output": "OK /private/tmp/demp-discovery-list-1440.png"
+    }
+  ],
+  "assertions": [
+    {
+      "name": "공개 상세 1회: 화면·독립 조회 일치",
+      "pass": true,
+      "observed": 1
+    },
+    {
+      "name": "새로고침 2회: 저장된 조회수 일치",
+      "pass": true,
+      "observed": 2
+    },
+    {
+      "name": "편집에서 확장 직무·스택 복원",
+      "pass": true,
+      "observed": {
+        "position": "SRE",
+        "languages": [
+          "JAVA",
+          "KOTLIN",
+          "React",
+          "SPRING_BOOT",
+          "KUBERNETES"
+        ]
+      }
+    },
+    {
+      "name": "관리자 변경 commit 후 조회수 보존",
+      "pass": true,
+      "observed": {
+        "hits": 2,
+        "position": "AI_RESEARCH",
+        "language": [
+          "KOTLIN",
+          "KUBERNETES",
+          "SPRING_BOOT",
+          "JAVA",
+          "RAG",
+          "React"
+        ]
+      }
+    },
+    {
+      "name": "신규 직무 AND 기술 OR의 실제 UI 검색",
+      "pass": true,
+      "observed": [
+        "실제 확장 기술 검증 공고"
+      ]
+    },
+    {
+      "name": "새로고침 후 URL 필터·정렬 복원",
+      "pass": true,
+      "observed": [
+        "실제 확장 기술 검증 공고"
+      ]
+    },
+    {
+      "name": "LATEST 실제 DB 순서와 UI 첫 페이지 일치",
+      "pass": true,
+      "observed": [
+        "정렬 검증 9",
+        "정렬 검증 8",
+        "정렬 검증 7",
+        "정렬 검증 6",
+        "정렬 검증 5",
+        "정렬 검증 4",
+        "정렬 검증 3",
+        "정렬 검증 2"
+      ]
+    },
+    {
+      "name": "DEADLINE 실제 DB 순서와 UI 첫 페이지 일치",
+      "pass": true,
+      "observed": [
+        "정렬 검증 6",
+        "정렬 검증 3",
+        "정렬 검증 0",
+        "정렬 검증 7",
+        "정렬 검증 4",
+        "정렬 검증 1",
+        "정렬 검증 5",
+        "정렬 검증 2"
+      ]
+    },
+    {
+      "name": "VIEWS 실제 DB 순서와 UI 첫 페이지 일치",
+      "pass": true,
+      "observed": [
+        "실제 확장 기술 검증 공고",
+        "정렬 검증 9",
+        "정렬 검증 8",
+        "정렬 검증 7",
+        "정렬 검증 6",
+        "정렬 검증 5",
+        "정렬 검증 4",
+        "정렬 검증 3"
+      ]
+    },
+    {
+      "name": "조회순 더보기: 전체 순서·중복 없음",
+      "pass": true,
+      "observed": [
+        "실제 확장 기술 검증 공고",
+        "정렬 검증 9",
+        "정렬 검증 8",
+        "정렬 검증 7",
+        "정렬 검증 6",
+        "정렬 검증 5",
+        "정렬 검증 4",
+        "정렬 검증 3",
+        "정렬 검증 2",
+        "정렬 검증 1",
+        "정렬 검증 0",
+        "로컬 개발자 모집 예제"
+      ]
+    },
+    {
+      "name": "새로고침 후 조회순 유지",
+      "pass": true,
+      "observed": "?orderBy=VIEWS"
+    },
+    {
+      "name": "뒤로 가기 마감순 복원",
+      "pass": true,
+      "observed": "?orderBy=DEADLINE"
+    },
+    {
+      "name": "320px 정렬·목록 화면 경계",
+      "pass": true,
+      "observed": {
+        "scroll": 320,
+        "height": 44
+      }
+    },
+    {
+      "name": "390px 정렬·목록 화면 경계",
+      "pass": true,
+      "observed": {
+        "scroll": 373,
+        "height": 44
+      }
+    },
+    {
+      "name": "640px 정렬·목록 화면 경계",
+      "pass": true,
+      "observed": {
+        "scroll": 623,
+        "height": 44
+      }
+    },
+    {
+      "name": "768px 정렬·목록 화면 경계",
+      "pass": true,
+      "observed": {
+        "scroll": 751,
+        "height": 44
+      }
+    },
+    {
+      "name": "1024px 정렬·목록 화면 경계",
+      "pass": true,
+      "observed": {
+        "scroll": 1007,
+        "height": 44
+      }
+    },
+    {
+      "name": "1440px 정렬·목록 화면 경계",
+      "pass": true,
+      "observed": {
+        "scroll": 1423,
+        "height": 44
+      }
+    }
+  ],
+  "status": "PASS"
+}

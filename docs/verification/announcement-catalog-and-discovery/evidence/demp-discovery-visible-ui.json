@@ -1,0 +1,610 @@
+{
+  "workspace": "workspace:1000020005",
+  "surface": "surface:1000020019",
+  "frontend": "http://127.0.0.1:51019",
+  "backend": "http://127.0.0.1:18084",
+  "actions": [
+    {
+      "arguments": [
+        "goto",
+        "http://127.0.0.1:51019/login"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--selector",
+        "#username",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "fill",
+        "#username",
+        "local-admin"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "fill",
+        "#password",
+        "password"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "click",
+        ".auth-actions button[type=submit]"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--text",
+        "로그아웃",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "goto",
+        "http://127.0.0.1:51019/admin/announcements/new"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--selector",
+        "#admin-title",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(Array.from(document.querySelectorAll(\".announcement-admin-form > fieldset > legend\")).map(e=>e.textContent.trim()))"
+      ],
+      "exit": 0,
+      "output": "[\"기본 정보\",\"모집 조건·일정\",\"공고 내용\",\"출처·지원\",\"게시 설정\"]"
+    },
+    {
+      "arguments": [
+        "fill",
+        "#admin-title",
+        "실제 확장 기술 검증 공고"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "fill",
+        "#admin-company",
+        "DEMP 로컬 검증"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "select",
+        "#admin-position",
+        "SRE"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "select",
+        "#admin-publication",
+        "PUBLISHED"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "fill",
+        "#admin-accessUrl",
+        "https://example.test/discovery-visible"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "fill",
+        "#admin-startedDate",
+        "2026-10-10T09:15"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "fill",
+        "#admin-deadLineDate",
+        "2030-11-01T18:30"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "fill",
+        "#admin-content",
+        "Kotlin · Spring Boot · Kubernetes 지원 안내"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "check",
+        ".technology-choice input[value=JAVA]"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "fill",
+        "[aria-label=\"관리자 기술 스택 검색\"]",
+        "Kotlin"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "check",
+        ".technology-choice input[value=KOTLIN]"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "fill",
+        "[aria-label=\"관리자 기술 스택 검색\"]",
+        "Spring Boot"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "check",
+        ".technology-choice input[value=SPRING_BOOT]"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "fill",
+        "[aria-label=\"관리자 기술 스택 검색\"]",
+        "Kubernetes"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "check",
+        ".technology-choice input[value=KUBERNETES]"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "fill",
+        "[aria-label=\"관리자 기술 스택 검색\"]",
+        "React"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "check",
+        ".technology-choice input[value=React]"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "fill",
+        "[aria-label=\"관리자 기술 스택 검색\"]",
+        ""
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(Array.from(document.querySelectorAll(\".technology-choice input:checked\")).map(e=>e.value))"
+      ],
+      "exit": 0,
+      "output": "[\"JAVA\",\"KOTLIN\",\"React\",\"SPRING_BOOT\",\"KUBERNETES\"]"
+    },
+    {
+      "arguments": [
+        "click",
+        "[aria-label=\"모집 마감 달력 열기\"]"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--selector",
+        "#admin-deadLineDate-calendar",
+        "--timeout-ms",
+        "3000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "320",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify((()=>{const calendar=document.querySelector(\"#admin-deadLineDate-calendar\").getBoundingClientRect();return {scroll:document.documentElement.scrollWidth,left:calendar.left,right:calendar.right,choices:document.querySelectorAll(\".technology-choice\").length,select:document.querySelector(\"#admin-position\").getBoundingClientRect().height}})())"
+      ],
+      "exit": 0,
+      "output": "{\"scroll\":320,\"left\":33,\"right\":287,\"choices\":66,\"select\":44}"
+    },
+    {
+      "arguments": [
+        "screenshot",
+        "--out",
+        "/private/tmp/demp-discovery-editor-320.png"
+      ],
+      "exit": 0,
+      "output": "OK /private/tmp/demp-discovery-editor-320.png"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "390",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify((()=>{const calendar=document.querySelector(\"#admin-deadLineDate-calendar\").getBoundingClientRect();return {scroll:document.documentElement.scrollWidth,left:calendar.left,right:calendar.right,choices:document.querySelectorAll(\".technology-choice\").length,select:document.querySelector(\"#admin-position\").getBoundingClientRect().height}})())"
+      ],
+      "exit": 0,
+      "output": "{\"scroll\":373,\"left\":33,\"right\":340,\"choices\":66,\"select\":44}"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "640",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify((()=>{const calendar=document.querySelector(\"#admin-deadLineDate-calendar\").getBoundingClientRect();return {scroll:document.documentElement.scrollWidth,left:calendar.left,right:calendar.right,choices:document.querySelectorAll(\".technology-choice\").length,select:document.querySelector(\"#admin-position\").getBoundingClientRect().height}})())"
+      ],
+      "exit": 0,
+      "output": "{\"scroll\":623,\"left\":320.5,\"right\":580,\"choices\":66,\"select\":44}"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "768",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify((()=>{const calendar=document.querySelector(\"#admin-deadLineDate-calendar\").getBoundingClientRect();return {scroll:document.documentElement.scrollWidth,left:calendar.left,right:calendar.right,choices:document.querySelectorAll(\".technology-choice\").length,select:document.querySelector(\"#admin-position\").getBoundingClientRect().height}})())"
+      ],
+      "exit": 0,
+      "output": "{\"scroll\":751,\"left\":384.5,\"right\":694.5,\"choices\":66,\"select\":44}"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "1024",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify((()=>{const calendar=document.querySelector(\"#admin-deadLineDate-calendar\").getBoundingClientRect();return {scroll:document.documentElement.scrollWidth,left:calendar.left,right:calendar.right,choices:document.querySelectorAll(\".technology-choice\").length,select:document.querySelector(\"#admin-position\").getBoundingClientRect().height}})())"
+      ],
+      "exit": 0,
+      "output": "{\"scroll\":1007,\"left\":517.5,\"right\":827.5,\"choices\":66,\"select\":44}"
+    },
+    {
+      "arguments": [
+        "viewport",
+        "1440",
+        "1000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify((()=>{const calendar=document.querySelector(\"#admin-deadLineDate-calendar\").getBoundingClientRect();return {scroll:document.documentElement.scrollWidth,left:calendar.left,right:calendar.right,choices:document.querySelectorAll(\".technology-choice\").length,select:document.querySelector(\"#admin-position\").getBoundingClientRect().height}})())"
+      ],
+      "exit": 0,
+      "output": "{\"scroll\":1423,\"left\":725.5,\"right\":1035.5,\"choices\":66,\"select\":44}"
+    },
+    {
+      "arguments": [
+        "screenshot",
+        "--out",
+        "/private/tmp/demp-discovery-editor-1440.png"
+      ],
+      "exit": 0,
+      "output": "OK /private/tmp/demp-discovery-editor-1440.png"
+    },
+    {
+      "arguments": [
+        "click",
+        "#admin-deadLineDate-calendar [data-day=\"20\"]"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(document.querySelector(\"#admin-deadLineDate\").value)"
+      ],
+      "exit": 0,
+      "output": "\"2030-11-20T18:30\""
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(document.querySelector(\"#admin-deadLineDate\").value)"
+      ],
+      "exit": 0,
+      "output": "\"2030-11-20T18:30\""
+    },
+    {
+      "arguments": [
+        "click",
+        ".announcement-admin-form button[type=submit]"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--url-contains",
+        "/admin/announcements",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--selector",
+        ".admin-row-title",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "goto",
+        "http://127.0.0.1:51019/detail/1"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "wait",
+        "--selector",
+        ".job-detail [aria-label=\"공고 조회수\"]",
+        "--timeout-ms",
+        "5000"
+      ],
+      "exit": 0,
+      "output": "OK"
+    },
+    {
+      "arguments": [
+        "eval",
+        "JSON.stringify(document.querySelector(\".job-detail [aria-label=\"공고 조회수\"]\").textContent.trim())"
+      ],
+      "exit": 1,
+      "output": ""
+    }
+  ],
+  "assertions": [
+    {
+      "name": "관리자 등록 폼 다섯 구성 그룹",
+      "pass": true,
+      "observed": [
+        "기본 정보",
+        "모집 조건·일정",
+        "공고 내용",
+        "출처·지원",
+        "게시 설정"
+      ]
+    },
+    {
+      "name": "검색으로 숨긴 기존 선택과 새 기술 선택 유지",
+      "pass": true,
+      "observed": [
+        "JAVA",
+        "KOTLIN",
+        "React",
+        "SPRING_BOOT",
+        "KUBERNETES"
+      ]
+    },
+    {
+      "name": "320px 확장 항목·폼·달력 화면 경계",
+      "pass": true,
+      "observed": {
+        "scroll": 320,
+        "left": 33,
+        "right": 287,
+        "choices": 66,
+        "select": 44
+      }
+    },
+    {
+      "name": "390px 확장 항목·폼·달력 화면 경계",
+      "pass": true,
+      "observed": {
+        "scroll": 373,
+        "left": 33,
+        "right": 340,
+        "choices": 66,
+        "select": 44
+      }
+    },
+    {
+      "name": "640px 확장 항목·폼·달력 화면 경계",
+      "pass": true,
+      "observed": {
+        "scroll": 623,
+        "left": 320.5,
+        "right": 580,
+        "choices": 66,
+        "select": 44
+      }
+    },
+    {
+      "name": "768px 확장 항목·폼·달력 화면 경계",
+      "pass": true,
+      "observed": {
+        "scroll": 751,
+        "left": 384.5,
+        "right": 694.5,
+        "choices": 66,
+        "select": 44
+      }
+    },
+    {
+      "name": "1024px 확장 항목·폼·달력 화면 경계",
+      "pass": true,
+      "observed": {
+        "scroll": 1007,
+        "left": 517.5,
+        "right": 827.5,
+        "choices": 66,
+        "select": 44
+      }
+    },
+    {
+      "name": "1440px 확장 항목·폼·달력 화면 경계",
+      "pass": true,
+      "observed": {
+        "scroll": 1423,
+        "left": 725.5,
+        "right": 1035.5,
+        "choices": 66,
+        "select": 44
+      }
+    },
+    {
+      "name": "달력 선택이 시·분 유지",
+      "pass": true,
+      "observed": "2030-11-20T18:30"
+    },
+    {
+      "name": "UI 등록 후 독립 API의 커밋 확인",
+      "pass": true,
+      "observed": [
+        {
+          "announcementType": "EMP",
+          "company": "DEMP 로컬 검증",
+          "deadLineDate": "2030-11-20T18:30:00",
+          "education": null,
+          "employmentType": null,
+          "hits": 0,
+          "id": 1,
+          "image": "",
+          "language": [
+            "KOTLIN",
+            "KUBERNETES",
+            "SPRING_BOOT",
+            "JAVA",
+            "React"
+          ],
+          "maxCareer": 0,
+          "minCareer": 0,
+          "payment": null,
+          "position": "SRE",
+          "publicationStatus": "PUBLISHED",
+          "recruitmentAudience": null,
+          "recruitmentClosed": false,
+          "startedDate": "2026-10-10T09:15:00",
+          "title": "실제 확장 기술 검증 공고"
+        }
+      ]
+    },
+    {
+      "name": "등록·관리자·목록 조회는 집계 안 함",
+      "pass": true,
+      "observed": 0
+    }
+  ],
+  "status": "FAIL",
+  "failure": "Error: js_error: SyntaxError: Unexpected identifier '공고'. Expected ')' to end an argument list."
+}
