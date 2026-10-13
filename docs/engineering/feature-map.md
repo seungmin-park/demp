@@ -33,3 +33,11 @@
 ## 계정별 로그인 제한
 
 `/login` → 기존 계정의 15분 내 실패 5회 → 429·Retry-After → 입력 보존·대기 안내. 최종 제한 상태는 Member DB, 인증/commit은 MemberService, 표시 상태는 LoginForm이 소유한다. 정상 로그인·시간 경계·DB 재조회·동시 요청·두 독립 컨텍스트·HTTP/CORS·단위/개발·배포 브라우저와 실제 Spring 화면을 함께 검증한다.
+
+## 공고 등록·모집 상태
+
+관리자 등록/수정 → `AdminOperationsController` HTTP validation → `AnnouncementService`/`AdminAnnouncementService` 트랜잭션 → `Announcement` 공개 불변식·`RecruitPeriod` 날짜 순서 → DB 저장 → 독립 HTTP 재조회. `AnnouncementSourceKey`와 DB UNIQUE는 URL/원문 식별 중복을 막는다. `Description`은 급여 단위, `RecruitmentRole`은 직무 조건을 소유한다.
+
+모집 상태는 DB 상태 전환이 아니라 `AnnouncementQueryRepository`의 한국 시각 Clock 조회 판정이다. 화면 시간 갱신과 목록 재조회는 프런트 책임이다. 미확인 초안, 불완전 공개 거절, 중복 409 후 보존, 월급의 연봉 검색 제외를 `AnnouncementDraftRecoveryTest`·Repository/MVC/REST Docs와 **공용 verify의 실제 HTTP/H2** `scripts/verify_announcement_contract.py`가 검증한다. 상세/목록 응답 계약과 권한·헤더·삭제 후 404도 여기서 검사한다. required-suite 삭제와 응답 필드 삭제/null 드리프트는 각각 XML 검사와 계약 validator probe가 거절한다.
+
+실제 cmux 등록·시간 경과는 [검증 스킬](../../.agents/skills/verify-demp/SKILL.md)의 공고 경로를 따르며, [작업 기록](../plans/real-posting-registration.md)에 코드·API·화면 검증 범위를 구분한다.

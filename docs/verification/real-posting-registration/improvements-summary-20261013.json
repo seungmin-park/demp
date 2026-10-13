@@ -1,0 +1,245 @@
+{
+  "date": "2026-10-13",
+  "timezone": "Asia/Seoul",
+  "scope": "local uncommitted worktrees; no production changes",
+  "registration": {
+    "cases": 13,
+    "saved": 13,
+    "reloaded": 13,
+    "publicDrafts": 0,
+    "aliasRejected": true,
+    "secondsPreserved": true,
+    "publishRejected": true
+  },
+  "temporal": {
+    "id": 14,
+    "allTransitions": true,
+    "automaticListEntry": true,
+    "automaticListExit": true,
+    "storedDatesUnchanged": true,
+    "manualClosedFlagRemainsFalse": true,
+    "observations": [
+      {
+        "wallTime": "2026-10-13T15:33:22.680559+09:00",
+        "label": "모집 예정",
+        "action": "원문 확인",
+        "searches": {
+          "UPCOMING": [
+            14
+          ],
+          "OPEN": [],
+          "CLOSED": []
+        }
+      },
+      {
+        "wallTime": "2026-10-13T15:33:40.835133+09:00",
+        "label": "모집 중",
+        "action": "지원하기",
+        "searches": {
+          "UPCOMING": [],
+          "OPEN": [
+            14
+          ],
+          "CLOSED": []
+        }
+      },
+      {
+        "wallTime": "2026-10-13T15:34:06.749280+09:00",
+        "label": "모집 마감",
+        "action": "원문 확인",
+        "searches": {
+          "UPCOMING": [],
+          "OPEN": [],
+          "CLOSED": [
+            14
+          ]
+        }
+      }
+    ]
+  },
+  "manualClose": {
+    "earlyCloseOverridesPeriod": true,
+    "undoRecomputesPeriod": true
+  },
+  "visibleFacts": {
+    "monthlyPay": true,
+    "workPeriod": true,
+    "conversionCondition": true,
+    "requiredAndPreferredSeparate": true,
+    "referenceLink": true
+  },
+  "layout": [
+    {
+      "width": 320,
+      "scrollWidth": 320,
+      "period": "MONTH",
+      "payment": "230",
+      "workPeriod": "2026년 10월~2027년 2월, 약 5개월",
+      "role": "Python·PyTorch",
+      "selectHeights": [
+        44,
+        44,
+        44,
+        44,
+        46,
+        46,
+        46,
+        44
+      ]
+    },
+    {
+      "width": 390,
+      "scrollWidth": 373,
+      "period": "MONTH",
+      "payment": "230",
+      "workPeriod": "2026년 10월~2027년 2월, 약 5개월",
+      "role": "Python·PyTorch",
+      "selectHeights": [
+        44,
+        44,
+        44,
+        44,
+        46,
+        46,
+        46,
+        44
+      ]
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1423,
+      "period": "MONTH",
+      "payment": "230",
+      "workPeriod": "2026년 10월~2027년 2월, 약 5개월",
+      "role": "Python·PyTorch",
+      "selectHeights": [
+        44,
+        44,
+        44,
+        44,
+        46,
+        46,
+        46,
+        44
+      ]
+    },
+    {
+      "width": 320,
+      "scrollWidth": 320
+    },
+    {
+      "width": 390,
+      "scrollWidth": 373
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1423
+    }
+  ],
+  "backend": {
+    "tests": 428,
+    "required_suites": 61,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "packaged_docs_match": true,
+    "test_architecture_packaged": false,
+    "local_api_flow": "passed",
+    "reaction_commit_switch_cancel": "passed",
+    "unauthenticated_reaction_http": 401,
+    "served_docs_match": true,
+    "database": "isolated in-memory H2"
+  },
+  "frontend": {
+    "head": "d9a71aae0f174a348973f4360833c61026a7e5f7",
+    "startedAt": "2026-10-13T06:38:55.677Z",
+    "steps": [
+      {
+        "name": "contracts",
+        "command": "npm",
+        "arguments": [
+          "run",
+          "check:agent-contracts",
+          "--",
+          "--probe-violation"
+        ],
+        "exitCode": 0,
+        "signal": null
+      },
+      {
+        "name": "types",
+        "command": "npm",
+        "arguments": [
+          "run",
+          "typecheck"
+        ],
+        "exitCode": 0,
+        "signal": null
+      },
+      {
+        "name": "unit",
+        "command": "npm",
+        "arguments": [
+          "test",
+          "--",
+          "--reporter=default",
+          "--reporter=json",
+          "--outputFile=.verification/unit.json"
+        ],
+        "exitCode": 0,
+        "signal": null
+      },
+      {
+        "name": "lint",
+        "command": "npm",
+        "arguments": [
+          "run",
+          "lint",
+          "--",
+          "--no-fix"
+        ],
+        "exitCode": 0,
+        "signal": null
+      },
+      {
+        "name": "build",
+        "command": "npm",
+        "arguments": [
+          "run",
+          "build"
+        ],
+        "exitCode": 0,
+        "signal": null
+      },
+      {
+        "name": "browser",
+        "command": "npm",
+        "arguments": [
+          "run",
+          "test:e2e",
+          "--",
+          "--headed"
+        ],
+        "exitCode": 0,
+        "signal": null
+      }
+    ],
+    "success": true,
+    "sourceSha256": "8592d57e6e0a770c908c7b3ac5680faa2468a59dbc728ec6c766b8b961445766",
+    "sourceBaseline": "local-working-tree",
+    "unit": {
+      "files": 53,
+      "passed": 328
+    },
+    "build": {
+      "files": 44,
+      "sha256": "325f796e79b29299027d20726e23782b414675da3a3fd4fa2ccf4868453c8f7c"
+    },
+    "browserPort": 61696,
+    "devBrowserPort": 61697,
+    "browser": {
+      "passed": 212
+    },
+    "finishedAt": "2026-10-13T06:40:55.206Z"
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "checkedAt": "2026-10-12T19:42:04.024637+09:00",
+  "scope": "audit_only_no_product_changes",
+  "counts": {
+    "savedConditionalDrafts": 3,
+    "formBlocked": 5,
+    "sourceUnconfirmed": 5
+  },
+  "baselineInputPreserved": 13,
+  "backend": {
+    "tests": 417,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "suites": 63
+  },
+  "frontend": {
+    "files": 53,
+    "tests": 320
+  },
+  "cases": [
+    {
+      "case": "01-sk",
+      "originalUrl": "https://www.skcareers.com/Recruit/Detail/R261841",
+      "status": "saved_conditional_draft",
+      "localDraftId": 2,
+      "publicationReady": false
+    },
+    {
+      "case": "02-hanati",
+      "originalUrl": "https://hanati.recruiter.co.kr/app/jobnotice/view?jobnoticeSn=264146&systemKindCode=MRS2",
+      "status": "source_unconfirmed"
+    },
+    {
+      "case": "03-nexon",
+      "originalUrl": "https://nexon-tutorial.com/",
+      "status": "saved_conditional_draft",
+      "localDraftId": 3,
+      "publicationReady": false
+    },
+    {
+      "case": "04-kt",
+      "originalUrl": "https://recruit.kt.com/careers/263897",
+      "status": "form_blocked",
+      "blocker": "technology_required"
+    },
+    {
+      "case": "05-woori",
+      "originalUrl": "https://jrs.jobkorea.co.kr/wooribank",
+      "status": "form_blocked",
+      "blocker": "technology_required"
+    },
+    {
+      "case": "06-kb",
+      "originalUrl": "https://kbstar.careerlink.kr/",
+      "status": "form_blocked",
+      "blocker": "technology_required",
+      "selectedDetailUrl": "https://kbstar.careerlink.kr/jobs/RC20260828033775"
+    },
+    {
+      "case": "07-daou",
+      "originalUrl": "https://recruit.daou.co.kr/recruit",
+      "status": "source_unconfirmed"
+    },
+    {
+      "case": "08-lg-1002085",
+      "originalUrl": "https://careers.lg.com/apply/detail?id=1002085",
+      "status": "source_unconfirmed"
+    },
+    {
+      "case": "09-ibk",
+      "originalUrl": "https://ibk.incruit.com/index_main_2025.asp",
+      "status": "form_blocked",
+      "blocker": "technology_required",
+      "selectedDetailUrl": "https://ibk.incruit.com/hire/viewhire.asp?projectid=128"
+    },
+    {
+      "case": "10-lg-1002127",
+      "originalUrl": "https://careers.lg.com/apply/detail?id=1002127",
+      "status": "source_unconfirmed"
+    },
+    {
+      "case": "11-shinsegae",
+      "originalUrl": "https://sifuture-ship.careerlink.kr/",
+      "status": "source_unconfirmed",
+      "confirmedCompany": null,
+      "initialPlaceholderCompanyWasUnverified": true
+    },
+    {
+      "case": "12-daangn",
+      "originalUrl": "https://careers.daangn.com/jobs/role/8007747003/",
+      "status": "form_blocked",
+      "blocker": "start_date_required"
+    },
+    {
+      "case": "13-suresoft",
+      "originalUrl": "https://careers.suresofttech.com/job_posting/wVNIw92d",
+      "status": "saved_conditional_draft",
+      "localDraftId": 1,
+      "publicationReady": false
+    }
+  ]
+}
