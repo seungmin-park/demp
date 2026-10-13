@@ -41,3 +41,9 @@
 모집 상태는 DB 상태 전환이 아니라 `AnnouncementQueryRepository`의 한국 시각 Clock 조회 판정이다. 화면 시간 갱신과 목록 재조회는 프런트 책임이다. 미확인 초안, 불완전 공개 거절, 중복 409 후 보존, 월급의 연봉 검색 제외를 `AnnouncementDraftRecoveryTest`·Repository/MVC/REST Docs와 **공용 verify의 실제 HTTP/H2** `scripts/verify_announcement_contract.py`가 검증한다. 상세/목록 응답 계약과 권한·헤더·삭제 후 404도 여기서 검사한다. required-suite 삭제와 응답 필드 삭제/null 드리프트는 각각 XML 검사와 계약 validator probe가 거절한다.
 
 실제 cmux 등록·시간 경과는 [검증 스킬](../../.agents/skills/verify-demp/SKILL.md)의 공고 경로를 따르며, [작업 기록](../plans/real-posting-registration.md)에 코드·API·화면 검증 범위를 구분한다.
+
+## 내 계정 관리
+
+`GET/PATCH /api/member/me`와 `PUT /api/member/me/password`는 인증 principal의 ID만 사용한다. `MemberAccountService`가 트랜잭션과 현재 비밀번호 확인·공유 실패 제한을 조정하고 `Member`가 닉네임/비밀번호 버전을 소유한다. JWT 필터는 저장된 credentialVersion과 토큰 버전이 다르면 401로 거절한다. 기존 버전 없는 JWT는 0으로 해석하여 기존 회원을 보존한다.
+
+`MemberAccountServiceTest`는 실제 commit/재조회·실패 보존·잠금·토큰 무효화를, `MemberAccountRestDocsTest`는 MVC/문서를, 공용 verify의 `member-contract.json`은 실제 HTTP 계약을 검증한다. 운영은 `db/manual/member-self-service.sql`의 nullable nickname/default-zero credential_version이 먼저 필요하다.

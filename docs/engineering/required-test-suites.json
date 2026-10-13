@@ -60,5 +60,7 @@
   "com.inhatc.demp.service.admin.AdminOperationsTest",
   "com.inhatc.demp.service.AnswerReadBudgetTest",
   "com.inhatc.demp.service.AnswerPaginationTest",
-  "com.inhatc.demp.repository.AnnouncementOrderingTest"
+  "com.inhatc.demp.repository.AnnouncementOrderingTest",
+  "com.inhatc.demp.service.MemberAccountServiceTest",
+  "com.inhatc.demp.docs.MemberAccountRestDocsTest"
 ]

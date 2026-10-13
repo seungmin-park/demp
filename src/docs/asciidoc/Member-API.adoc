@@ -66,3 +66,27 @@ include::{snippets}/member-valid-username/http-response.adoc[]
 
 .응답 본문
 include::{snippets}/member-valid-username/response-body.adoc[]
+
+== 내 회원 정보
+
+인증된 회원 본인만 조회·변경한다. 대상 ID나 역할을 요청에서 받지 않는다.
+
+include::{snippets}/member-profile/http-request.adoc[]
+include::{snippets}/member-profile/http-response.adoc[]
+include::{snippets}/member-profile/response-fields.adoc[]
+
+=== 닉네임 변경
+
+아이디는 고정이다. 닉네임은 앞뒤 공백 제거 후 1~30자이며 미설정 값은 null이다.
+
+include::{snippets}/member-nickname/http-request.adoc[]
+include::{snippets}/member-nickname/http-response.adoc[]
+
+=== 비밀번호 변경
+
+현재 비밀번호 확인 후 변경한다. 성공 시 204이며 이전 로그인 토큰은 모두 무효화된다.
+현재 비밀번호 오류는 400이며 기존 비밀번호는 보존한다. 5회 실패하면 로그인과 공유하는 15분 잠금 및 429/Retry-After를 적용한다.
+
+include::{snippets}/member-password/http-request.adoc[]
+include::{snippets}/member-password/request-fields.adoc[]
+include::{snippets}/member-password/http-response.adoc[]

@@ -11,6 +11,7 @@ import urllib.request
 import uuid
 from verify_ci import require
 from verify_announcement_contract import run as check_announcement_contract
+from verify_member_contract import run as check_member_contract
 
 
 def request(base, path, method='GET', payload=None, form=None, token=None):
@@ -103,7 +104,9 @@ def run(jar, expected_documentation, evidence):
             check_reactions(base, expected_documentation)
             contract = check_announcement_contract(base, signing_secret)
             (evidence / 'announcement-contract.json').write_text(json.dumps(contract, ensure_ascii=False, indent=2) + '\n')
-            return {'local_api_flow': 'passed', 'reaction_commit_switch_cancel': 'passed',
+            member_contract = check_member_contract(base)
+            (evidence / 'member-contract.json').write_text(json.dumps(member_contract, ensure_ascii=False, indent=2) + '\n')
+            return {'member_http_contract': member_contract['status'], 'member_http_requests': member_contract['requests'], 'local_api_flow': 'passed', 'reaction_commit_switch_cancel': 'passed',
                     'announcement_http_contract': contract['status'], 'announcement_http_requests': contract['requests'],
                     'unauthenticated_reaction_http': 401, 'served_docs_match': True, 'database': 'isolated in-memory H2'}
         finally:
