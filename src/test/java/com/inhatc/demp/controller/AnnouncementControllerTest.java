@@ -237,6 +237,19 @@ class AnnouncementControllerTest {
         verifyNoInteractions(announcementService);
     }
 
+    @Test
+    @DisplayName("미확인 초안은 HTTP로 접수하되 같은 불완전 입력의 공개 요청은 거절한다")
+    void validatesDraftAndPublicationSeparately() throws Exception {
+        mockMvc.perform(multipart("/api/announce/add")
+                .param("title", "확인 중").param("company", "DEMP").param("type", "EMP")
+                .param("content", "확인한 본문").param("accessUrl", "https://example.com/job")
+                .param("publicationStatus", "DRAFT")).andExpect(status().isOk());
+        mockMvc.perform(multipart("/api/announce/add")
+                .param("title", "확인 중").param("company", "DEMP").param("type", "EMP")
+                .param("content", "확인한 본문").param("accessUrl", "https://example.com/job")
+                .param("publicationStatus", "PUBLISHED")).andExpect(status().isBadRequest());
+    }
+
     private org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder validOptionalPaymentRequest() {
         return validOptionalPaymentRequest("EMP");
     }

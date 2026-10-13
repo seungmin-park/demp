@@ -19,10 +19,7 @@ public class RecruitPeriod {
 
     @Builder
     private RecruitPeriod(LocalDateTime startedDate, LocalDateTime deadLineDate) {
-        if (startedDate == null || deadLineDate == null) {
-            throw new IllegalArgumentException("공고 기간은 필수입니다.");
-        }
-        if (deadLineDate.isBefore(startedDate)) {
+        if (startedDate != null && deadLineDate != null && deadLineDate.isBefore(startedDate)) {
             throw new IllegalArgumentException("마감일은 시작일보다 빠를 수 없습니다.");
         }
         this.startedDate = startedDate;

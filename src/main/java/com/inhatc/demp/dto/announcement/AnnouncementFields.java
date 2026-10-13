@@ -87,16 +87,13 @@ public class AnnouncementFields {
     private String title;
     @NotBlank
     private String company;
-    @NotNull
     private JobPosition position;
     @Min(0)
     private int minCareer;
     @Min(0)
     private int maxCareer;
-    @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime startedDate;
-    @NotNull
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime deadLineDate;
     @NotBlank
@@ -130,10 +127,15 @@ public class AnnouncementFields {
                 .salaryMax(type == AnnouncementType.EMP ? salaryMax : null)
                 .build();
     }
-    @NotEmpty
     private Set<Language> language = new LinkedHashSet<>();
     @NotNull
     private AnnouncementType type;
+
+    @AssertTrue(message = "공개·검토 요청에는 분야, 기술, 모집 시작과 마감이 필요합니다.")
+    public boolean isPublicationComplete() {
+        return publicationStatus == PublicationStatus.DRAFT || publicationStatus == PublicationStatus.HIDDEN || position != null && language != null && !language.isEmpty()
+                && startedDate != null && deadLineDate != null;
+    }
 
     @AssertTrue(message = "본문 내용을 입력해 주세요.")
     public boolean isContentTextPresent() {
