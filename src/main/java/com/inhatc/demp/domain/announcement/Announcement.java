@@ -23,7 +23,9 @@ import lombok.ToString;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
-@jakarta.persistence.Table(uniqueConstraints = @jakarta.persistence.UniqueConstraint(name = "uk_announcement_source", columnNames = "duplicate_key"))
+@jakarta.persistence.Table(uniqueConstraints = {
+        @jakarta.persistence.UniqueConstraint(name = "uk_announcement_source", columnNames = "duplicate_key"),
+        @jakarta.persistence.UniqueConstraint(name = "uk_announcement_source_identity", columnNames = "source_identity_key")})
 @Getter
 @ToString
 @EntityListeners(AuditingEntityListener.class)
@@ -78,6 +80,8 @@ public class Announcement {
     public void changeRecruitmentClosed(Boolean closed) { if (closed != null) recruitmentClosed = closed; }
     private String sourceName;
     private String sourceIdentifier;
+    @jakarta.persistence.Column(length = 64)
+    private String sourceIdentityKey;
     @jakarta.persistence.Column(length = 2048)
     private String applicationUrl;
     private java.time.LocalDateTime sourceVerifiedAt;
@@ -90,6 +94,7 @@ public class Announcement {
                                   boolean verified, String actor, java.time.LocalDateTime now) {
         this.sourceName = sourceName;
         this.sourceIdentifier = sourceIdentifier;
+        this.sourceIdentityKey = AnnouncementSourceKey.forIdentifier(sourceIdentifier, company.getName(), cohort);
         this.applicationUrl = applicationUrl == null || applicationUrl.isBlank() ? null : applicationUrl;
         this.sourceVerifiedAt = verified ? now : null;
         publicationHistory.add(PublicationRevision.builder()

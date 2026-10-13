@@ -47,6 +47,9 @@ public class AnnouncementFields {
         return type == AnnouncementType.EDU || recruitmentAudience == RecruitmentAudience.NEW || recruitmentAudience == RecruitmentAudience.ANY
                 ? Career.builder().minCareer(0).maxCareer(0).build() : Career.builder().minCareer(minCareer).maxCareer(maxCareer).build();
     }
+    public String sourceIdentityKey() {
+        return AnnouncementSourceKey.forIdentifier(sourceIdentifier, company, type == AnnouncementType.EDU ? cohort : null);
+    }
     public String sourceKey() {
         String key = AnnouncementSourceKey.of(accessUrl, company, type == AnnouncementType.EDU ? cohort : null);
         if (key == null) throw new com.inhatc.demp.error.ApiException(org.springframework.http.HttpStatus.BAD_REQUEST);
