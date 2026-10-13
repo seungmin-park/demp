@@ -60,6 +60,8 @@ public class AdminAnnouncementService {
                 item.revise(request.getTitle(), Company.builder().name(request.getCompany()).build(), career, period, description,
                         request.getType(), request.getPosition(), replacement);
                 item.changeRecruitment(request.getRecruitmentAudience(), request.getCohort(), request.getStipendAmount(), request.getStipendNote());
+                item.changeRecruitmentFacts(request.getWorkPeriod(), request.getConversionNote(),
+                        request.getRoles().stream().map(com.inhatc.demp.dto.announcement.RecruitmentRoleInput::toRole).toList(), request.getReferenceUrls());
                 item.changeEmploymentType(request.getEmploymentType());
                 item.changeEducation(request.toEducationDetails());
                 item.changePublication(request.getPublicationStatus());

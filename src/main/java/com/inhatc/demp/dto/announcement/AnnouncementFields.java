@@ -73,6 +73,14 @@ public class AnnouncementFields {
     private com.inhatc.demp.domain.announcement.RecruitmentAudience recruitmentAudience;
     private EmploymentType employmentType;
     private String cohort;
+    private SalaryPeriod salaryPeriod;
+    @jakarta.validation.constraints.Size(max = 1000) private String workPeriod;
+    @jakarta.validation.constraints.Size(max = 1000) private String conversionNote;
+    @jakarta.validation.Valid @jakarta.validation.constraints.Size(max = 30)
+    private List<RecruitmentRoleInput> roles = new ArrayList<>();
+    @jakarta.validation.constraints.Size(max = 20)
+    private List<@NotBlank @URL @jakarta.validation.constraints.Pattern(regexp = "(?i)^https?://.*")
+            @jakarta.validation.constraints.Size(max = 2048) String> referenceUrls = new ArrayList<>();
     @Min(0)
     private Integer stipendAmount;
     private String stipendNote;
@@ -128,6 +136,7 @@ public class AnnouncementFields {
                 .languages(language)
                 .salaryStatus(type == AnnouncementType.EMP ? salaryStatus : null)
                 .salaryMax(type == AnnouncementType.EMP ? salaryMax : null)
+                .salaryPeriod(type == AnnouncementType.EMP ? salaryPeriod : null)
                 .build();
     }
     private Set<Language> language = new LinkedHashSet<>();

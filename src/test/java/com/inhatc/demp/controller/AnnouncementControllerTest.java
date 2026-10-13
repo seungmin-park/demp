@@ -250,6 +250,17 @@ class AnnouncementControllerTest {
                 .param("publicationStatus", "PUBLISHED")).andExpect(status().isBadRequest());
     }
 
+    @Test
+    @DisplayName("보조 출처의 실행 스킴과 이름 없는 세부 직무는 HTTP에서 거절한다")
+    void rejectsInvalidRecruitmentFacts() throws Exception {
+        mockMvc.perform(validOptionalPaymentRequest().param("referenceUrls[0]", "javascript:alert(1)"))
+                .andExpect(status().isBadRequest());
+        mockMvc.perform(validOptionalPaymentRequest().param("roles[0].title", " "))
+                .andExpect(status().isBadRequest());
+        mockMvc.perform(validOptionalPaymentRequest().param("salaryPeriod", "WEEK"))
+                .andExpect(status().isBadRequest());
+    }
+
     private org.springframework.test.web.servlet.request.MockMultipartHttpServletRequestBuilder validOptionalPaymentRequest() {
         return validOptionalPaymentRequest("EMP");
     }

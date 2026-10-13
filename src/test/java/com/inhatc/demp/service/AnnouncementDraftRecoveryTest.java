@@ -63,7 +63,31 @@ class AnnouncementDraftRecoveryTest {
         assertThat(repository.count()).isEqualTo(2);
     }
 
-
+    @Test
+    @DisplayName("월급 근무기간 전환조건 직무별 요건과 보조 출처를 실제 저장 후 구별해 재조회한다")
+    void preservesRecruitmentFacts() throws Exception {
+        var request = draft();
+        var values = new org.springframework.beans.MutablePropertyValues();
+        values.add("salaryPeriod", "MONTH").add("payment", "230").add("salaryStatus", "DISCLOSED");
+        values.add("workPeriod", "2026년 10월~2027년 2월, 약 5개월").add("conversionNote", "계약 연장 및 정규직 전환 불가");
+        values.add("roles[0].title", "AI-OCR").add("roles[0].position", "AI").add("roles[0].requiredSkills", "Python 또는 PyTorch")
+                .add("roles[0].preferredSkills", "문서 인식 경험").add("roles[0].usedTechnologies", "팀 사용 기술 확인 중");
+        values.add("roles[1].title", "플랫폼 개발").add("roles[1].position", "FULLSTACK").add("roles[1].location", "서울");
+        values.add("referenceUrls[0]", "https://linkareer.com/activity/345218");
+        var binder = new org.springframework.validation.DataBinder(request); binder.bind(values);
+        assertThat(binder.getBindingResult().getAllErrors()).isEmpty();
+        service.createAnnouncement(request);
+        var id = repository.findByTitle(request.getTitle()).orElseThrow().getId();
+        var json = objectMapper.valueToTree(service.findAdminDetailResponse(id).orElseThrow());
+        assertThat(json.path("salaryPeriod").asText()).isEqualTo("MONTH");
+        assertThat(json.path("payment").asInt()).isEqualTo(230);
+        assertThat(json.path("workPeriod").asText()).isEqualTo("2026년 10월~2027년 2월, 약 5개월");
+        assertThat(json.path("conversionNote").asText()).isEqualTo("계약 연장 및 정규직 전환 불가");
+        assertThat(json.path("roles").size()).isEqualTo(2);
+        assertThat(json.path("roles").get(0).path("requiredSkills").asText()).isEqualTo("Python 또는 PyTorch");
+        assertThat(json.path("roles").get(1).path("location").asText()).isEqualTo("서울");
+        assertThat(json.path("referenceUrls").get(0).asText()).isEqualTo("https://linkareer.com/activity/345218");
+    }
 
     @Test
     @DisplayName("새 식별 키가 없는 기존 공고도 원문 식별값으로 대체 출처 중복을 거절한다")
