@@ -43,13 +43,37 @@ class AnnouncementDraftRecoveryTest {
     }
 
 
+    @Test
+    @DisplayName("원문 식별값이 같은 공고는 대체 게시처 URL을 사용해도 중복 저장되지 않는다")
+    void rejectsSourceAlias() throws Exception {
+        var first = draft(); first.setSourceIdentifier("264146");
+        service.createAnnouncement(first);
+        var alias = draft(); alias.setSourceIdentifier("264146"); alias.setAccessUrl("https://linkareer.com/activity/345218");
+        assertThatThrownBy(() -> service.createAnnouncement(alias))
+                .isInstanceOf(com.inhatc.demp.error.ApiException.class);
+        assertThat(repository.count()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("같은 원문 식별값을 가진 다른 기업은 별도 공고로 저장한다")
+    void scopesIdentifierToCompany() throws Exception {
+        var first = draft(); first.setSourceIdentifier("264146"); service.createAnnouncement(first);
+        var other = draft(); other.setCompany("다른 회사"); other.setSourceIdentifier("264146");
+        other.setAccessUrl("https://another.example/jobs/264146"); service.createAnnouncement(other);
+        assertThat(repository.count()).isEqualTo(2);
+    }
 
 
 
-
-
-
-
+    @Test
+    @DisplayName("새 식별 키가 없는 기존 공고도 원문 식별값으로 대체 출처 중복을 거절한다")
+    void checksLegacyIdentifiers() throws Exception {
+        var request = draft(); request.setSourceIdentifier("264146"); service.createAnnouncement(request);
+        jdbc.update("update announcement set source_identity_key = null");
+        var alias = draft(); alias.setSourceIdentifier("264146"); alias.setAccessUrl("https://mirror.example.com/345218");
+        assertThatThrownBy(() -> service.createAnnouncement(alias)).isInstanceOf(com.inhatc.demp.error.ApiException.class);
+        assertThat(repository.count()).isEqualTo(1);
+    }
 
     private AnnouncementCreateRequest draft() {
         var request = new AnnouncementCreateRequest(); request.setTitle("복원 중 공고");

@@ -32,5 +32,12 @@ public final class AnnouncementSourceKey {
         catch (NoSuchAlgorithmException e) { throw new IllegalStateException(e); }
         } catch (IllegalArgumentException | java.net.MalformedURLException invalidLegacyUrl) { return null; }
     }
+    /** A publisher's original identifier stays stable when a mirror URL changes. */
+    public static String forIdentifier(String identifier, String institution, String cohort) {
+        if (identifier == null || identifier.isBlank() || institution == null || institution.isBlank()) return null;
+        String value = text(institution) + "\n" + text(cohort) + "\n" + text(identifier);
+        try { return HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8))); }
+        catch (NoSuchAlgorithmException e) { throw new IllegalStateException(e); }
+    }
     private static String text(String value) { return Normalizer.normalize(value == null ? "" : value.trim(), Normalizer.Form.NFKC).toLowerCase(Locale.ROOT); }
 }

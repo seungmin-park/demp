@@ -63,7 +63,7 @@ public class AnnouncementService {
                 .startedDate(announcementCreateRequest.getStartedDate())
                 .deadLineDate(announcementCreateRequest.getDeadLineDate())
                 .build();
-        if (announcementRepository.sourceExists(announcementCreateRequest.sourceKey(), -1)) {
+        if (announcementRepository.postingExists(announcementCreateRequest.sourceKey(), announcementCreateRequest.sourceIdentityKey(), -1)) {
             throw new ApiException(HttpStatus.CONFLICT);
         }
         UploadFile image = announcementCreateRequest.getImage() == null || announcementCreateRequest.getImage().isEmpty()
@@ -97,7 +97,7 @@ public class AnnouncementService {
         } catch (IOException | RuntimeException originalFailure) {
             bodyImages.compensate(uploaded, originalFailure);
             compensate(image, originalFailure);
-            if (originalFailure instanceof org.springframework.dao.DataIntegrityViolationException && announcementRepository.sourceExists(announcementCreateRequest.sourceKey(), -1)) throw new ApiException(HttpStatus.CONFLICT);
+            if (originalFailure instanceof org.springframework.dao.DataIntegrityViolationException && announcementRepository.postingExists(announcementCreateRequest.sourceKey(), announcementCreateRequest.sourceIdentityKey(), -1)) throw new ApiException(HttpStatus.CONFLICT);
             throw originalFailure;
         }
     }

@@ -36,7 +36,7 @@ public class AdminAnnouncementService {
 
     public AdminMutationResult update(long id, AnnouncementUpdateRequest request, String actor) throws IOException {
         if (!repository.existsById(id)) throw new ApiException(HttpStatus.NOT_FOUND);
-        if (repository.sourceExists(request.sourceKey(), id)) throw new ApiException(HttpStatus.CONFLICT);
+        if (repository.postingExists(request.sourceKey(), request.sourceIdentityKey(), id)) throw new ApiException(HttpStatus.CONFLICT);
         Career career = request.toCareer();
         RecruitPeriod period = RecruitPeriod.builder()
                 .startedDate(request.getStartedDate())
@@ -75,7 +75,7 @@ public class AdminAnnouncementService {
                 try { files.delete(replacement.getSaveFileName()); }
                 catch (RuntimeException cleanup) { failure.addSuppressed(cleanup); log.error("관리자 수정 보상 실패 key={}", replacement.getSaveFileName(), cleanup); }
             }
-            if (failure instanceof org.springframework.dao.DataIntegrityViolationException && repository.sourceExists(request.sourceKey(), id)) throw new ApiException(HttpStatus.CONFLICT);
+            if (failure instanceof org.springframework.dao.DataIntegrityViolationException && repository.postingExists(request.sourceKey(), request.sourceIdentityKey(), id)) throw new ApiException(HttpStatus.CONFLICT);
             throw failure;
         }
         return cleanup(oldKeys);

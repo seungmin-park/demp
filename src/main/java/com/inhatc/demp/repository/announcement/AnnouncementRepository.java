@@ -27,6 +27,19 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, Long
                         com.inhatc.demp.domain.announcement.AnnouncementSourceKey.of(item.getDescription().getAccessUrl(), item.getCompany().getName(), item.getCohort())));
     }
 
+    Optional<Announcement> findBySourceIdentityKey(String key);
+    List<Announcement> findBySourceIdentityKeyIsNull();
+    default boolean sourceIdentityExists(String key, long exceptId) {
+        if (key == null) return false;
+        if (findBySourceIdentityKey(key).filter(item -> item.getId() != exceptId).isPresent()) return true;
+        return findBySourceIdentityKeyIsNull().stream().filter(item -> item.getId() != exceptId && item.getCompany() != null)
+                .anyMatch(item -> key.equals(com.inhatc.demp.domain.announcement.AnnouncementSourceKey.forIdentifier(
+                        item.getSourceIdentifier(), item.getCompany().getName(), item.getCohort())));
+    }
+    default boolean postingExists(String urlKey, String identityKey, long exceptId) {
+        return sourceExists(urlKey, exceptId) || sourceIdentityExists(identityKey, exceptId);
+    }
+
     long countByAnnouncementType(AnnouncementType type);
 
     Optional<Announcement> findByTitle(String title);
