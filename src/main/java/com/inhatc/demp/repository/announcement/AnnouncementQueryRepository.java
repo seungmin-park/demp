@@ -152,7 +152,7 @@ public class AnnouncementQueryRepository {
     }
 
     private BooleanExpression positionIn(List<JobPosition> positions) {
-        return positions.isEmpty() ? null : announcement.jobPosition.in(positions);
+        return positions.isEmpty() ? null : announcement.jobPosition.in(positions).or(announcement.roles.any().position.in(positions));
     }
 
     private BooleanExpression languageIn(Language language) {
@@ -203,7 +203,9 @@ public class AnnouncementQueryRepository {
     }
 
     private BooleanExpression paymentGoe(int payment) {
-        return payment <= 0 ? null : announcement.description.payment.goe(payment);
+        return payment <= 0 ? null : announcement.description.payment.goe(payment)
+                .and(announcement.description.salaryPeriod.isNull()
+                        .or(announcement.description.salaryPeriod.eq(com.inhatc.demp.domain.announcement.SalaryPeriod.YEAR)));
     }
 
     private BooleanExpression minCareerLoe(int career) {

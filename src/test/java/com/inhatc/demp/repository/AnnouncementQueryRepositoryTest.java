@@ -385,6 +385,36 @@ class AnnouncementQueryRepositoryTest {
         assertThat(result.hasNext()).isFalse();
     }
 
+
+
+
+    @Test
+    @DisplayName("세부 직무 분야로 검색해도 하나의 모집 공고를 중복 없이 찾는다")
+    void findsAdditionalRoles() {
+        var item = saveAnnouncement("여러 직무", AnnouncementType.EMP, JobPosition.BACKEND, Set.of(Language.JAVA), 0);
+        item.changeRecruitmentFacts(null, null, List.of(
+                new com.inhatc.demp.domain.announcement.RecruitmentRole("클라이언트", JobPosition.GAME_CLIENT, "제주", null, null, null, null),
+                new com.inhatc.demp.domain.announcement.RecruitmentRole("엔진", JobPosition.GAME_CLIENT, "서울", null, null, null, null)), List.of());
+        announcementRepository.save(item);
+        var condition = new AnnouncementSearchCondition(); condition.setPositions(List.of(JobPosition.GAME_CLIENT));
+        var result = announcementQueryRepository.findAnnouncementSlice(condition, PageRequest.of(0, 10));
+        assertThat(result.getContent()).extracting(Announcement::getTitle).containsExactly("여러 직무");
+        assertThat(result.hasNext()).isFalse();
+    }
+
+    @Test
+    @DisplayName("연봉 하한 검색에서 월급을 연봉 숫자로 비교하지 않는다")
+    void annualFilterExcludesMonthlyAmounts() {
+        var monthly = saveAnnouncement("월급", AnnouncementType.EMP, JobPosition.BACKEND, Set.of(Language.JAVA), 230);
+        monthly.changeDescription(Description.builder().content("본문").accessUrl("https://example.com")
+                .languages(Set.of(Language.JAVA)).payment(230).salaryPeriod(com.inhatc.demp.domain.announcement.SalaryPeriod.MONTH).build());
+        announcementRepository.save(monthly);
+        saveAnnouncement("연봉", AnnouncementType.EMP, JobPosition.BACKEND, Set.of(Language.JAVA), 3000);
+        var condition = new AnnouncementSearchCondition(); condition.setPayment(200);
+        var result = announcementQueryRepository.findAnnouncementSlice(condition, PageRequest.of(0, 10));
+        assertThat(result.getContent()).extracting(Announcement::getTitle).containsExactly("연봉");
+    }
+
     static Stream<Arguments> recruitmentCases() {
         return Stream.of(Arguments.of(com.inhatc.demp.dto.announcement.RecruitmentStatus.OPEN, List.of("ending", "starting")),
                 Arguments.of(com.inhatc.demp.dto.announcement.RecruitmentStatus.CLOSED, List.of("closed")),

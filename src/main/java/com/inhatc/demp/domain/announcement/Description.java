@@ -31,6 +31,9 @@ public class Description {
     @JdbcTypeCode(SqlTypes.VARCHAR)
     private SalaryStatus salaryStatus;
     private Integer salaryMax;
+    @Enumerated(EnumType.STRING) @JdbcTypeCode(SqlTypes.VARCHAR)
+    private SalaryPeriod salaryPeriod;
+    public SalaryPeriod getSalaryPeriod() { return salaryPeriod == null ? SalaryPeriod.YEAR : salaryPeriod; }
 
     @Enumerated(EnumType.STRING)
     @JdbcTypeCode(SqlTypes.VARCHAR)
@@ -40,13 +43,14 @@ public class Description {
 
     @Builder
     private Description(String content, String accessUrl, Integer payment, Set<Language> languages,
-                       SalaryStatus salaryStatus, Integer salaryMax) {
+                       SalaryStatus salaryStatus, Integer salaryMax, SalaryPeriod salaryPeriod) {
         boolean hidden = salaryStatus == SalaryStatus.UNDISCLOSED || salaryStatus == SalaryStatus.NEGOTIABLE;
         if (hidden) { payment = null; salaryMax = null; }
         if (payment != null && payment < 0 || salaryMax != null && (payment == null || salaryMax < payment))
             throw new IllegalArgumentException("금액 범위를 확인해 주세요.");
         if (salaryStatus == SalaryStatus.DISCLOSED && (payment == null || payment <= 0))
             throw new IllegalArgumentException("공개 연봉을 입력해 주세요.");
+        this.salaryPeriod = salaryPeriod;
         this.salaryStatus = salaryStatus;
         this.salaryMax = hidden ? null : salaryMax;
         this.content = content;
@@ -66,6 +70,7 @@ public class Description {
                 .languages(languages)
                 .salaryStatus(salaryStatus)
                 .salaryMax(salaryMax)
+                .salaryPeriod(salaryPeriod)
                 .build();
     }
 }

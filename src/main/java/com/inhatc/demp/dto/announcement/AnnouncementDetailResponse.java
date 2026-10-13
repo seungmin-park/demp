@@ -42,6 +42,11 @@ public class AnnouncementDetailResponse {
     private Integer payment;
     private com.inhatc.demp.domain.announcement.SalaryStatus salaryStatus;
     private Integer salaryMax;
+    private com.inhatc.demp.domain.announcement.SalaryPeriod salaryPeriod;
+    private String workPeriod;
+    private String conversionNote;
+    private java.util.List<com.inhatc.demp.domain.announcement.RecruitmentRole> roles;
+    private java.util.List<String> referenceUrls;
     private Set<Language> language;
     private JobPosition position;
     private AnnouncementType announcementType;
@@ -71,6 +76,9 @@ public class AnnouncementDetailResponse {
                 .payment(announcement.getDescription().getPayment())
                 .salaryStatus(announcement.getDescription().getSalaryStatus())
                 .salaryMax(announcement.getDescription().getSalaryMax())
+                .salaryPeriod(announcement.getDescription().getSalaryPeriod())
+                .workPeriod(announcement.getWorkPeriod()).conversionNote(announcement.getConversionNote())
+                .roles(java.util.List.copyOf(announcement.getRoles())).referenceUrls(java.util.List.copyOf(announcement.getReferenceUrls()))
                 .language(new LinkedHashSet<>(announcement.getDescription().getLanguages()))
                 .build();
     }

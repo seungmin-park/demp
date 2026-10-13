@@ -30,6 +30,7 @@ public class AnnouncementResponse {
     private Integer minCareer;
     private Integer maxCareer;
     private Integer payment;
+    private com.inhatc.demp.domain.announcement.SalaryPeriod salaryPeriod;
     private LocalDateTime startedDate;
     private LocalDateTime deadLineDate;
 
@@ -50,6 +51,7 @@ public class AnnouncementResponse {
         this.minCareer = announcement.getCareer() == null ? null : announcement.getCareer().getMinCareer();
         this.maxCareer = announcement.getCareer() == null ? null : announcement.getCareer().getMaxCareer();
         this.payment = announcement.getDescription().getPayment();
+        this.salaryPeriod = announcement.getDescription().getSalaryPeriod();
         this.startedDate = announcement.getRecruitPeriod() == null ? null : announcement.getRecruitPeriod().getStartedDate();
         this.deadLineDate = announcement.getRecruitPeriod() == null ? null : announcement.getRecruitPeriod().getDeadLineDate();
     }

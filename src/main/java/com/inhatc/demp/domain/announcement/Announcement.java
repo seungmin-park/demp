@@ -63,6 +63,25 @@ public class Announcement {
         this.employmentType = announcementType == AnnouncementType.EMP ? employmentType : null;
     }
     private String cohort;
+    @jakarta.persistence.Column(length = 1000) private String workPeriod;
+    @jakarta.persistence.Column(length = 1000) private String conversionNote;
+    @ElementCollection
+    @CollectionTable(name = "announcement_role", joinColumns = @JoinColumn(name = "announcement_id"))
+    @jakarta.persistence.OrderColumn(name = "role_order")
+    private List<RecruitmentRole> roles = new ArrayList<>();
+    @ElementCollection
+    @CollectionTable(name = "announcement_reference", joinColumns = @JoinColumn(name = "announcement_id"))
+    @jakarta.persistence.OrderColumn(name = "reference_order")
+    @jakarta.persistence.Column(name = "url", length = 2048)
+    private List<String> referenceUrls = new ArrayList<>();
+
+    public void changeRecruitmentFacts(String workPeriod, String conversionNote, List<RecruitmentRole> roles, List<String> references) {
+        this.workPeriod = announcementType == AnnouncementType.EMP ? workPeriod : null;
+        this.conversionNote = announcementType == AnnouncementType.EMP ? conversionNote : null;
+        this.roles.clear();
+        if (announcementType == AnnouncementType.EMP) this.roles.addAll(roles);
+        this.referenceUrls.clear(); this.referenceUrls.addAll(references);
+    }
     private Integer stipendAmount;
     private String stipendNote;
     @jakarta.persistence.Column(length = 64)

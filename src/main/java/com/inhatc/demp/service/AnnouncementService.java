@@ -86,6 +86,8 @@ public class AnnouncementService {
                 .build();
         announcement.replaceBodyImages(body.images());
         announcement.changeRecruitment(announcementCreateRequest.getRecruitmentAudience(), announcementCreateRequest.getCohort(), announcementCreateRequest.getStipendAmount(), announcementCreateRequest.getStipendNote());
+        announcement.changeRecruitmentFacts(announcementCreateRequest.getWorkPeriod(), announcementCreateRequest.getConversionNote(),
+                announcementCreateRequest.getRoles().stream().map(com.inhatc.demp.dto.announcement.RecruitmentRoleInput::toRole).toList(), announcementCreateRequest.getReferenceUrls());
         announcement.changeEmploymentType(announcementCreateRequest.getEmploymentType());
         announcement.changeEducation(announcementCreateRequest.toEducationDetails());
         announcement.changePublication(announcementCreateRequest.getPublicationStatus() == null ? com.inhatc.demp.domain.announcement.PublicationStatus.DRAFT : announcementCreateRequest.getPublicationStatus());
