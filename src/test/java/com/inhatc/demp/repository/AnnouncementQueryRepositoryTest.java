@@ -386,7 +386,35 @@ class AnnouncementQueryRepositoryTest {
     }
 
 
-
+    @Test
+    @DisplayName("같은 공고를 수정하지 않아도 시간이 흐르면 예정 모집 중 마감 검색으로 이동한다")
+    void transitionsWithoutUpdatingStoredAnnouncement() {
+        var zone = java.time.ZoneId.of("Asia/Seoul");
+        var start = LocalDateTime.of(2030, 11, 1, 9, 0, 2);
+        var end = start.plusSeconds(2);
+        saveAtPeriod("transition", start, end);
+        org.mockito.Mockito.when(clock.getZone()).thenReturn(zone);
+        var instants = List.of(start.minusNanos(1), start, end, end.plusNanos(1));
+        var expected = List.of(com.inhatc.demp.dto.announcement.RecruitmentStatus.UPCOMING,
+                com.inhatc.demp.dto.announcement.RecruitmentStatus.OPEN,
+                com.inhatc.demp.dto.announcement.RecruitmentStatus.OPEN,
+                com.inhatc.demp.dto.announcement.RecruitmentStatus.CLOSED);
+        for (int index = 0; index < instants.size(); index++) {
+            org.mockito.Mockito.when(clock.instant()).thenReturn(instants.get(index).atZone(zone).toInstant());
+            for (var status : com.inhatc.demp.dto.announcement.RecruitmentStatus.values()) {
+                var condition = new AnnouncementSearchCondition(); condition.setRecruitmentStatus(status);
+                var result = announcementQueryRepository.findAnnouncementSlice(condition, PageRequest.of(0, 10));
+                assertThat(result.getContent()).extracting(Announcement::getTitle)
+                        .containsExactlyElementsOf(status == expected.get(index) ? List.of("transition") : List.of());
+                assertThat(result.hasNext()).isFalse();
+            }
+        }
+        assertThat(announcementRepository.findAll()).singleElement().satisfies(item -> {
+            assertThat(item.isRecruitmentClosed()).isFalse();
+            assertThat(item.getRecruitPeriod().getStartedDate()).isEqualTo(start);
+            assertThat(item.getRecruitPeriod().getDeadLineDate()).isEqualTo(end);
+        });
+    }
 
     @Test
     @DisplayName("세부 직무 분야로 검색해도 하나의 모집 공고를 중복 없이 찾는다")

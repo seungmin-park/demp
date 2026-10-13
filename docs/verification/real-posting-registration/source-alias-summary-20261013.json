@@ -1,0 +1,29 @@
+{
+  "sameUrlSaved": false,
+  "sameUrlErrors": [
+    "같은 원문·기관·기수의 공고가 있습니다. 기존 공고를 확인하고 수정해 주세요."
+  ],
+  "alternativeUrlSaved": true,
+  "records": [
+    {
+      "auditId": 6,
+      "title": "2026년 하반기 체험형인턴 모집 - AI-OCR",
+      "company": {
+        "name": "하나금융융합기술원"
+      },
+      "sourceIdentifier": "264146",
+      "accessUrl": "https://linkareer.com/activity/345218",
+      "publicationStatus": "DRAFT"
+    },
+    {
+      "auditId": 2,
+      "title": "2026년 하반기 체험형인턴 모집 - AI-OCR",
+      "company": {
+        "name": "하나금융융합기술원"
+      },
+      "sourceIdentifier": "264146",
+      "accessUrl": "https://hanati.recruiter.co.kr/app/jobnotice/view?jobnoticeSn=264146&systemKindCode=MRS2",
+      "publicationStatus": "DRAFT"
+    }
+  ]
+}

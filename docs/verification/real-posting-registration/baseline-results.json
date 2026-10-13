@@ -1,0 +1,296 @@
+[
+  {
+    "case": "01-sk",
+    "url": "http://127.0.0.1:5059/admin/announcements/new",
+    "title": "2026 Junior Talent 채용 - Tech 직군",
+    "company": "SK텔레콤",
+    "source": "https://www.skcareers.com/Recruit/Detail/R261841",
+    "content": "SW 개발과 AI Model을 함께 모집합니다. 화면 상단은 9월 11일~17일 13시, 본문은 8월 24일~30일 16시 59분 59초로 일정이 다릅니다. SW와 AI 중 대표 분야만 선택할 수 있어 별도 확인이 필요합니다.",
+    "invalid": [
+      {
+        "id": "admin-startedDate",
+        "message": "이 필드를 채우십시오."
+      },
+      {
+        "id": "admin-deadLineDate",
+        "message": "이 필드를 채우십시오."
+      }
+    ],
+    "errors": [],
+    "sourceResolvedUrl": "https://www.skcareers.com/Recruit/Detail/R261841",
+    "inputPreserved": true,
+    "saved": false
+  },
+  {
+    "case": "02-hanati",
+    "url": "http://127.0.0.1:5059/admin/announcements/new",
+    "title": "하나금융TI 원문 264146 확인 대기",
+    "company": "하나금융TI",
+    "source": "https://hanati.recruiter.co.kr/app/jobnotice/view?jobnoticeSn=264146&systemKindCode=MRS2",
+    "content": "요청한 원문 번호 264146은 채용 목록으로 이동합니다. 목록의 다른 번호 266022 공고를 원래 공고로 대체하지 않았습니다. 제목·직무·모집 기간은 추가 확인이 필요합니다.",
+    "invalid": [
+      {
+        "id": "admin-position",
+        "message": "목록에서 항목을 선택하십시오."
+      },
+      {
+        "id": "admin-startedDate",
+        "message": "이 필드를 채우십시오."
+      },
+      {
+        "id": "admin-deadLineDate",
+        "message": "이 필드를 채우십시오."
+      }
+    ],
+    "errors": [],
+    "sourceResolvedUrl": "https://hanati.recruiter.co.kr/app/jobnotice/list",
+    "inputPreserved": true,
+    "saved": false
+  },
+  {
+    "case": "03-nexon",
+    "url": "http://127.0.0.1:5059/admin/announcements/new",
+    "title": "2026 넥토리얼 게임 프로그래머 채용형 인턴십",
+    "company": "넥슨컴퍼니",
+    "source": "https://nexon-tutorial.com/",
+    "content": "게임 클라이언트·서버·엔진을 단일 공고로 모집합니다. C++ 또는 C# 개발 역량과 컴퓨터공학 기초가 필요합니다. 채용형 인턴십은 6개월이며 평가에 따라 정규직 전환합니다. 모집 시작일은 8월 25일이며 시작 시각은 명시되지 않았습니다.",
+    "invalid": [
+      {
+        "id": "admin-startedDate",
+        "message": "이 필드를 채우십시오."
+      }
+    ],
+    "errors": [],
+    "sourceResolvedUrl": "https://nexon-tutorial.com/",
+    "inputPreserved": true,
+    "saved": false
+  },
+  {
+    "case": "04-kt",
+    "url": "http://127.0.0.1:5059/admin/announcements/new",
+    "title": "2026년 KT 대졸신입 채용",
+    "company": "KT",
+    "source": "https://recruit.kt.com/careers/263897",
+    "content": "NW 인프라운용, B2B 컨설팅·세일즈, B2C 마케팅·세일즈 공고입니다. 모집 기간은 8월 25일 10시부터 9월 7일 16시까지입니다. 상세 자격요건은 긴 이미지 본문에 있습니다. Cloud·Data 등 일반 기술 분야를 특정 제품 스택으로 추측하지 않았습니다.",
+    "invalid": [
+      {
+        "id": "admin-position",
+        "message": "목록에서 항목을 선택하십시오."
+      }
+    ],
+    "errors": [],
+    "sourceResolvedUrl": "https://recruit.kt.com/careers/263897",
+    "inputPreserved": true,
+    "saved": false
+  },
+  {
+    "case": "05-woori",
+    "url": "http://127.0.0.1:5059/admin/announcements/new",
+    "title": "2026년 하반기 신입행원 TECH 부문",
+    "company": "우리은행",
+    "source": "https://jrs.jobkorea.co.kr/wooribank",
+    "content": "TECH 탭에는 IT개발과 정보보호가 있습니다. 업무 시스템·모바일 App·Web 서비스 개발과 보안 업무를 구분해야 합니다. SQL은 코딩테스트 과목으로 확인했으며 업무 필수 스택으로 확정하지 않았습니다. 모집 시작일은 8월 27일이고 시작 시각은 미기재입니다.",
+    "invalid": [
+      {
+        "id": "admin-startedDate",
+        "message": "이 필드를 채우십시오."
+      }
+    ],
+    "errors": [],
+    "sourceResolvedUrl": "https://jrs.jobkorea.co.kr/wooribank",
+    "inputPreserved": true,
+    "saved": false
+  },
+  {
+    "case": "06-kb",
+    "url": "http://127.0.0.1:5059/admin/announcements/new",
+    "title": "2026년 하반기 신입행원(L1) IT 부문 채용",
+    "company": "KB국민은행",
+    "source": "https://kbstar.careerlink.kr/jobs/RC20260828033775",
+    "content": "홈에서 채용공고를 클릭하면 7개 공고가 나타납니다. IT 부문 상세는 RC20260828033775이며 AI·플랫폼개발 부문과 다른 공고입니다. 모집 시작일은 8월 31일이며 시작 시각은 미기재입니다. 상세 요건은 이미지 본문을 확인해야 합니다.",
+    "invalid": [
+      {
+        "id": "admin-position",
+        "message": "목록에서 항목을 선택하십시오."
+      },
+      {
+        "id": "admin-startedDate",
+        "message": "이 필드를 채우십시오."
+      }
+    ],
+    "errors": [],
+    "sourceResolvedUrl": "https://kbstar.careerlink.kr/jobs/RC20260828033775",
+    "inputPreserved": true,
+    "saved": false
+  },
+  {
+    "case": "07-daou",
+    "url": "http://127.0.0.1:5059/admin/announcements/new",
+    "title": "다우기술 채용 목록 확인 대기",
+    "company": "다우기술",
+    "source": "https://recruit.daou.co.kr/recruit",
+    "content": "제공한 주소는 개별 공고가 아닌 채용 목록입니다. 현재 실제 브라우저에도 총 0개로 표시됩니다. 특정 제목·기간·직무를 추측하여 등록하지 않았습니다.",
+    "invalid": [
+      {
+        "id": "admin-position",
+        "message": "목록에서 항목을 선택하십시오."
+      },
+      {
+        "id": "admin-startedDate",
+        "message": "이 필드를 채우십시오."
+      },
+      {
+        "id": "admin-deadLineDate",
+        "message": "이 필드를 채우십시오."
+      }
+    ],
+    "errors": [],
+    "sourceResolvedUrl": "https://recruit.daou.co.kr/recruit",
+    "inputPreserved": true,
+    "saved": false
+  },
+  {
+    "case": "08-lg-1002085",
+    "url": "http://127.0.0.1:5059/admin/announcements/new",
+    "title": "LG Careers 원문 1002085 확인 대기",
+    "company": "LG",
+    "source": "https://careers.lg.com/apply/detail?id=1002085",
+    "content": "제공한 id=1002085 상세는 존재하지 않거나 조회 기간이 지난 공고라는 안내를 표시합니다. 현재 목록의 다른 공고를 이 번호의 제목이나 내용으로 사용하지 않았습니다.",
+    "invalid": [
+      {
+        "id": "admin-position",
+        "message": "목록에서 항목을 선택하십시오."
+      },
+      {
+        "id": "admin-startedDate",
+        "message": "이 필드를 채우십시오."
+      },
+      {
+        "id": "admin-deadLineDate",
+        "message": "이 필드를 채우십시오."
+      }
+    ],
+    "errors": [],
+    "sourceResolvedUrl": "https://careers.lg.com/apply/detail?id=1002085",
+    "inputPreserved": true,
+    "saved": false
+  },
+  {
+    "case": "09-ibk",
+    "url": "http://127.0.0.1:5059/admin/announcements/new",
+    "title": "2026년 하반기 신입행원 채용",
+    "company": "IBK기업은행",
+    "source": "https://ibk.incruit.com/hire/viewhire.asp?projectid=128",
+    "content": "제공한 메인은 신입행원, 수시채용, 계약직 등을 함께 안내합니다. 신입행원 상세 링크 projectid=128을 선택하여 확인합니다. 메인만으로 직무와 기술 및 정확한 모집 시각을 확정하지 않았습니다.",
+    "invalid": [
+      {
+        "id": "admin-position",
+        "message": "목록에서 항목을 선택하십시오."
+      },
+      {
+        "id": "admin-startedDate",
+        "message": "이 필드를 채우십시오."
+      },
+      {
+        "id": "admin-deadLineDate",
+        "message": "이 필드를 채우십시오."
+      }
+    ],
+    "errors": [],
+    "sourceResolvedUrl": "https://ibk.incruit.com/hire/viewhire.asp?projectid=128",
+    "inputPreserved": true,
+    "saved": false
+  },
+  {
+    "case": "10-lg-1002127",
+    "url": "http://127.0.0.1:5059/admin/announcements/new",
+    "title": "LG Careers 원문 1002127 확인 대기",
+    "company": "LG",
+    "source": "https://careers.lg.com/apply/detail?id=1002127",
+    "content": "제공한 id=1002127 상세는 존재하지 않거나 조회 기간이 지난 공고라는 안내를 표시합니다. id=1002085와는 별개의 원문 번호로 기록하고 다른 공고로 대체하지 않았습니다.",
+    "invalid": [
+      {
+        "id": "admin-position",
+        "message": "목록에서 항목을 선택하십시오."
+      },
+      {
+        "id": "admin-startedDate",
+        "message": "이 필드를 채우십시오."
+      },
+      {
+        "id": "admin-deadLineDate",
+        "message": "이 필드를 채우십시오."
+      }
+    ],
+    "errors": [],
+    "sourceResolvedUrl": "https://careers.lg.com/apply/detail?id=1002127",
+    "inputPreserved": true,
+    "saved": false
+  },
+  {
+    "case": "11-shinsegae",
+    "url": "http://127.0.0.1:5059/admin/announcements/new",
+    "title": "신세계 Future Ship 원문 확인 대기",
+    "company": "신세계아이앤씨",
+    "source": "https://sifuture-ship.careerlink.kr/",
+    "content": "sifuture-ship.careerlink.kr 주소를 직접 확인합니다. 자동 추출에는 요청한 모집 내용 대신 다른 회사명만 나타났습니다. 교육과 채용 중 성격 및 실제 과정명·모집 일정이 확인될 때까지 추측하지 않습니다.",
+    "invalid": [
+      {
+        "id": "admin-position",
+        "message": "목록에서 항목을 선택하십시오."
+      },
+      {
+        "id": "admin-startedDate",
+        "message": "이 필드를 채우십시오."
+      },
+      {
+        "id": "admin-deadLineDate",
+        "message": "이 필드를 채우십시오."
+      }
+    ],
+    "errors": [],
+    "sourceResolvedUrl": "https://sifuture-ship.careerlink.kr/",
+    "inputPreserved": true,
+    "saved": false
+  },
+  {
+    "case": "12-daangn",
+    "url": "http://127.0.0.1:5059/admin/announcements/new",
+    "title": "Software Engineer, Backend (전환형 인턴) - 커뮤니티",
+    "company": "당근",
+    "source": "https://careers.daangn.com/jobs/role/8007747003/",
+    "content": "커뮤니티 아파트팀의 백엔드 전환형 인턴입니다. Kotlin·Java·Spring 경험과 서비스를 책임진 경험을 확인합니다. 서류 마감은 10월 18일 23시 59분이며 조기 마감될 수 있습니다. 모집 시작일은 원문에서 확인되지 않았습니다.",
+    "invalid": [
+      {
+        "id": "admin-startedDate",
+        "message": "이 필드를 채우십시오."
+      }
+    ],
+    "errors": [],
+    "sourceResolvedUrl": "https://careers.daangn.com/jobs/role/8007747003/",
+    "inputPreserved": true,
+    "saved": false
+  },
+  {
+    "case": "13-suresoft",
+    "url": "http://127.0.0.1:5059/admin/announcements/new",
+    "title": "[2027 신입 공채] 연구소 SW개발 - 풀스택 개발",
+    "company": "슈어소프트테크",
+    "source": "https://careers.suresofttech.com/job_posting/wVNIw92d",
+    "content": "연구소 SW개발 이미지 표의 풀스택 개발 행을 선택합니다. React·TypeScript·Spring Boot·Python 개발과 DB·REST API, Docker·Kubernetes 경험을 확인합니다. 클라우드·PostgreSQL·LLM·RAG 등은 우대사항입니다. 기간은 10월 1일~20일로 일자만 있으며 시각은 확인되지 않았습니다.",
+    "invalid": [
+      {
+        "id": "admin-startedDate",
+        "message": "이 필드를 채우십시오."
+      },
+      {
+        "id": "admin-deadLineDate",
+        "message": "이 필드를 채우십시오."
+      }
+    ],
+    "errors": [],
+    "sourceResolvedUrl": "https://careers.suresofttech.com/job_posting/wVNIw92d",
+    "inputPreserved": true,
+    "saved": false
+  }
+]

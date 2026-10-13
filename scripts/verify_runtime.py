@@ -10,6 +10,7 @@ import urllib.parse
 import urllib.request
 import uuid
 from verify_ci import require
+from verify_announcement_contract import run as check_announcement_contract
 
 
 def request(base, path, method='GET', payload=None, form=None, token=None):
@@ -71,11 +72,15 @@ def check_reactions(base, expected_documentation):
 def run(jar, expected_documentation, evidence):
     root = Path(__file__).resolve().parents[1]
     java = str(Path(os.environ['JAVA_HOME']) / 'bin/java') if os.environ.get('JAVA_HOME') else 'java'
-    environment = dict(os.environ, AWS_EC2_METADATA_DISABLED='true')
+    signing_secret = uuid.uuid4().hex + uuid.uuid4().hex
+    environment = dict(os.environ, AWS_EC2_METADATA_DISABLED='true', SPRING_JWT_SECRET=signing_secret)
+    admin_seed = evidence / 'announcement-contract-admin.sql'
+    admin_seed.write_text("INSERT INTO member_roles (member_member_id, roles) VALUES (-1, 'ROLE_ADMIN');\n")
     server_log = evidence / 'server.log'
     command = [java, '-jar', str(jar), '--spring.profiles.active=local', '--server.port=0', '--server.address=127.0.0.1',
                '--spring.datasource.url=jdbc:h2:mem:ci-' + uuid.uuid4().hex + ';MODE=MySQL;DB_CLOSE_DELAY=-1',
-               '--spring.jpa.hibernate.ddl-auto=create-drop', '--file.dir=' + str(evidence / 'uploads')]
+               '--spring.jpa.hibernate.ddl-auto=create-drop', '--file.dir=' + str(evidence / 'uploads'),
+               '--spring.sql.init.data-locations=classpath:local/data.sql,' + admin_seed.resolve().as_uri()]
     with server_log.open('w') as log:
         process = subprocess.Popen(command, cwd=root, env=environment, stdout=log, stderr=subprocess.STDOUT)
         try:
@@ -96,7 +101,10 @@ def run(jar, expected_documentation, evidence):
             flow_log.write_text(flow.stdout + flow.stderr)
             require(flow.returncode == 0, 'Local API flow failed; see ' + str(flow_log))
             check_reactions(base, expected_documentation)
+            contract = check_announcement_contract(base, signing_secret)
+            (evidence / 'announcement-contract.json').write_text(json.dumps(contract, ensure_ascii=False, indent=2) + '\n')
             return {'local_api_flow': 'passed', 'reaction_commit_switch_cancel': 'passed',
+                    'announcement_http_contract': contract['status'], 'announcement_http_requests': contract['requests'],
                     'unauthenticated_reaction_http': 401, 'served_docs_match': True, 'database': 'isolated in-memory H2'}
         finally:
             process.terminate()

@@ -36,6 +36,7 @@
   "com.inhatc.demp.repository.QuestionRepositoryTest",
   "com.inhatc.demp.service.AnnouncementBodyImagesTest",
   "com.inhatc.demp.service.AnnouncementCompensationTest",
+  "com.inhatc.demp.service.AnnouncementDraftRecoveryTest",
   "com.inhatc.demp.service.AnnouncementImageUrlTest",
   "com.inhatc.demp.service.AnnouncementReportServiceTest",
   "com.inhatc.demp.service.AnnouncementServiceTest",
