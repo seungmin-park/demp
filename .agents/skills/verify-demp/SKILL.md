@@ -56,3 +56,7 @@ In a browser surface in the **same caller workspace**, log in with local-only `l
 ## Member self service
 
 Inspect `build/verification/member-contract.json` from the existing full verify: real register/login, own profile schema, nickname update/requery, attempted ID/role injection ignored, invalid update preservation, current password failure, byte limit, successful change and old-token rejection/new login. The isolated process owns and destroys all member fixtures. MemberAccountServiceTest verifies committed failure counts and shared lockout. In the caller cmux browser save/reload nickname, fail then correct current password, change password and sign in again. Never put passwords in draft storage; nickname drafts are per login ID. Review credentialVersion against the current DB principal, not token role claims. Apply additive SQL with backup/restore rehearsal before merge-triggered production CD.
+
+## Technology CHECK compatibility
+
+When adding or importing technologies, inspect the actual MySQL language CHECK; Hibernate validate does not prove its allowed values. Keep `announcement-technologies-check.sql` aligned with Language via the required TechnologyCheckMigrationTest. A new empty Hibernate schema rehearsal cannot establish compatibility with a populated production CHECK. Rehearse the exact SQL on a restored owned DB: legacy CPP rejection, every current value accepted in a rolled-back transaction, unknown value still rejected, original row values unchanged. Never drop tags to bypass the constraint or drop the check without replacing it.

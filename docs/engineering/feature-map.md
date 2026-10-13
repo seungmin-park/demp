@@ -47,3 +47,7 @@
 `GET/PATCH /api/member/me`와 `PUT /api/member/me/password`는 인증 principal의 ID만 사용한다. `MemberAccountService`가 트랜잭션과 현재 비밀번호 확인·공유 실패 제한을 조정하고 `Member`가 닉네임/비밀번호 버전을 소유한다. JWT 필터는 저장된 credentialVersion과 토큰 버전이 다르면 401로 거절한다. 기존 버전 없는 JWT는 0으로 해석하여 기존 회원을 보존한다.
 
 `MemberAccountServiceTest`는 실제 commit/재조회·실패 보존·잠금·토큰 무효화를, `MemberAccountRestDocsTest`는 MVC/문서를, 공용 verify의 `member-contract.json`은 실제 HTTP 계약을 검증한다. 운영은 `db/manual/member-self-service.sql`의 nullable nickname/default-zero credential_version이 먼저 필요하다.
+
+## 운영 기술 목록 제약 호환
+
+기술 값은 Language enum이 소유한다. MySQL에 예전 6개만 허용하는 language_chk_1 CHECK가 있으면 새 기술 저장이 500으로 실패한다. `db/manual/announcement-technologies-check.sql`은 현재 enum의 허용 집합으로 CHECK를 교체하며 기존 값·FK·중복 제약을 유지한다. `TechnologyCheckMigrationTest`는 SQL에 enum 누락/추가가 생기면 CI에서 거절한다. 실제 MySQL 문법 및 CHECK 동작은 운영 백업의 별도 복원 DB에서 기존 CPP 거절→전체 66개 허용/미지 값 거절로 확인했다. 정적 집합 검사는 실제 MySQL 실행을 대체하지 않는다.
