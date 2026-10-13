@@ -23,6 +23,25 @@ public class Member {
     @Column(nullable = false, unique = true)
     private String username;
     private String password;
+    @Column(length = 30)
+    private String nickname;
+    @Column(nullable = false)
+    @org.hibernate.annotations.ColumnDefault("0")
+    private long credentialVersion;
+
+    public void changeNickname(String nickname) {
+        if (nickname == null || nickname.strip().isEmpty() || nickname.strip().length() > 30) {
+            throw new InvalidNicknameException();
+        }
+        this.nickname = nickname.strip();
+    }
+
+    public void changePassword(String encodedPassword) {
+        this.password = encodedPassword;
+        credentialVersion++;
+        resetLoginFailures();
+    }
+
 
     private static final int MAX_LOGIN_FAILURES = 5;
     private static final Duration LOGIN_FAILURE_WINDOW = Duration.ofMinutes(15);

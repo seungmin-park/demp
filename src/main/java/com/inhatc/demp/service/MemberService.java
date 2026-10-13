@@ -88,7 +88,7 @@ public class MemberService {
         member.resetLoginFailures();
         MemberInfo result = new MemberInfo();
         result.setUsername(member.getUsername());
-        result.setJwt(jwtTokenProvider.createToken(member.getId().toString(), member.getRoles()));
+        result.setJwt(jwtTokenProvider.createToken(member.getId().toString(), member.getRoles(), member.getCredentialVersion()));
         return new LoginAttempt(result, 0);
     }
 

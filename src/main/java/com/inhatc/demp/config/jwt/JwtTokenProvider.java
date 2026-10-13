@@ -41,11 +41,16 @@ public class JwtTokenProvider {
     // Jwt 토큰 생성
     public String createToken(String userPk, List<String> roles) {
 
+        return createToken(userPk, roles, 0);
+    }
+
+    public String createToken(String userPk, List<String> roles, long credentialVersion) {
         Date now = new Date();
 
         return Jwts.builder()
                 .subject(userPk)
                 .claim("roles", roles)
+                .claim("credentialVersion", credentialVersion)
                 .issuedAt(now)
                 .expiration(new Date(now.getTime() + TOKEN_VALID_MILLISECONDS))
                 .signWith(signingKey, Jwts.SIG.HS256)
@@ -55,6 +60,13 @@ public class JwtTokenProvider {
     // Jwt 토큰으로 인증 정보 조회
     public Authentication getAuthentication(String token) {
         UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
+        Number version = Jwts.parser().verifyWith(signingKey).build().parseSignedClaims(token)
+                .getPayload().get("credentialVersion", Number.class);
+        long tokenVersion = version == null ? 0 : version.longValue();
+        if (!(userDetails instanceof com.inhatc.demp.config.security.MemberPrincipal member)
+                || tokenVersion != member.getCredentialVersion()) {
+            throw new org.springframework.security.authentication.BadCredentialsException("Credentials changed");
+        }
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 

@@ -13,6 +13,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     Optional<Member> findByUsername(String username);
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
+    @Query("select member from Member member where member.id = :id")
+    Optional<Member> findByIdForAccountUpdate(@Param("id") Long id);
+
+    @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select member from Member member where member.username = :username")
     Optional<Member> findByUsernameForLogin(@Param("username") String username);
 }

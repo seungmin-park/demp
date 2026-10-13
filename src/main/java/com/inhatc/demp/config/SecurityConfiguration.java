@@ -43,6 +43,7 @@ public class SecurityConfiguration {
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
                         .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/announce/add").hasRole("ADMIN")
                         .requestMatchers("/api/announce", "/api/question", "/api/question/hashtags").permitAll()
+                        .requestMatchers("/api/member/me", "/api/member/me/**").authenticated()
                         .requestMatchers("/api/member/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .anyRequest().hasRole("USER"))
                 .exceptionHandling(errors -> errors
