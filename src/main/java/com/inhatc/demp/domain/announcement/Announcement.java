@@ -44,7 +44,14 @@ public class Announcement {
     private PublicationStatus publicationStatus = PublicationStatus.PUBLISHED;
 
     public boolean isPublished() { return publicationStatus == PublicationStatus.PUBLISHED; }
-    public void changePublication(PublicationStatus status) { if (status != null) publicationStatus = status; }
+    public void changePublication(PublicationStatus status) {
+        PublicationStatus target = status == null ? publicationStatus : status;
+        if ((target == PublicationStatus.PUBLISHED || target == PublicationStatus.REVIEW) && (jobPosition == null || description == null || description.getLanguages().isEmpty()
+                || recruitPeriod == null || recruitPeriod.getStartedDate() == null || recruitPeriod.getDeadLineDate() == null)) {
+            throw new IncompletePublicationException();
+        }
+        publicationStatus = target;
+    }
     @Enumerated(EnumType.STRING) @JdbcTypeCode(SqlTypes.VARCHAR)
     private RecruitmentAudience recruitmentAudience;
     @Enumerated(EnumType.STRING) @JdbcTypeCode(SqlTypes.VARCHAR)

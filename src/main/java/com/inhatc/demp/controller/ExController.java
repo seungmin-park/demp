@@ -28,7 +28,7 @@ public class ExController {
     public ResponseEntity<ErrorResult> business(ApiException ex, HttpServletRequest request) {
         return error(ex.getStatus(), request);
     }
-    @ExceptionHandler({BindException.class, HttpMessageNotReadableException.class,
+    @ExceptionHandler({com.inhatc.demp.domain.announcement.IncompletePublicationException.class, BindException.class, HttpMessageNotReadableException.class,
             MissingServletRequestParameterException.class, MethodArgumentTypeMismatchException.class})
     public ResponseEntity<ErrorResult> invalid(Exception ex, HttpServletRequest request) {
         return error(HttpStatus.BAD_REQUEST, request);
