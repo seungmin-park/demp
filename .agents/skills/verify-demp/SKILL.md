@@ -60,3 +60,10 @@ Inspect `build/verification/member-contract.json` from the existing full verify:
 ## Technology CHECK compatibility
 
 When adding or importing technologies, inspect the actual MySQL language CHECK; Hibernate validate does not prove its allowed values. Keep `announcement-technologies-check.sql` aligned with Language via the required TechnologyCheckMigrationTest. A new empty Hibernate schema rehearsal cannot establish compatibility with a populated production CHECK. Rehearse the exact SQL on a restored owned DB: legacy CPP rejection, every current value accepted in a rolled-back transaction, unknown value still rejected, original row values unchanged. Never drop tags to bypass the constraint or drop the check without replacing it.
+
+
+## Saved announcements and deadline modes
+
+Run the existing full verifier. In the caller cmux workspace, save from a filtered list while anonymous, follow registration/login and confirm the original query returns and the selected announcement is saved once. Reload, enter `/saved`, open detail, remove and reload. Confirm failed lookup/save/remove can retry without losing confirmed state; old account/page responses cannot overwrite the new context. A target beyond the first loaded page must still resume saving.
+
+Check an owned synthetic UNTIL_FILLED and ALWAYS_OPEN posting: null deadline, explicit label, OPEN after confirmed start; manual close overrides. FIXED requires exact date/time; UNKNOWN is not interpreted as ongoing and cannot be newly published. Verify migration SQL on an isolated schema; do not modify production. Backend and frontend fixture tests are separate from actual Spring persistence/browser evidence.

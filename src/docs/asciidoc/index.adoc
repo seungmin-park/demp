@@ -35,6 +35,25 @@ include::{snippets}/answer-reaction/http-request.adoc[]
 include::{snippets}/answer-reaction/http-response.adoc[]
 
 
-== 모집 마감 방식
+== 관심 공고
 
-FIXED는 정확한 마감 일시가 필수입니다. UNTIL_FILLED는 채용 시 마감, ALWAYS_OPEN은 상시 모집이며 가상 날짜를 만들지 않습니다. UNKNOWN은 미확인으로 새 공개 요청을 거절합니다. 수동 종료는 마감 방식보다 우선합니다.
+인증된 회원 자신의 공고만 저장·해제·조회합니다. 종료 공고는 유지하고 삭제·비공개 공고는 내용 없이 이용 불가로 반환합니다.
+
+=== 저장·해제
+include::{snippets}/announcement-bookmark-save/http-request.adoc[]
+include::{snippets}/announcement-bookmark-save/request-fields.adoc[]
+include::{snippets}/announcement-bookmark-save/http-response.adoc[]
+include::{snippets}/announcement-bookmark-save/response-fields.adoc[]
+
+=== 상태 일괄 조회
+include::{snippets}/announcement-bookmark-status/http-request.adoc[]
+include::{snippets}/announcement-bookmark-status/http-response.adoc[]
+include::{snippets}/announcement-bookmark-status/response-fields.adoc[]
+
+=== 내 목록
+include::{snippets}/announcement-bookmark-list/http-request.adoc[]
+include::{snippets}/announcement-bookmark-list/http-response.adoc[]
+include::{snippets}/announcement-bookmark-list/response-fields.adoc[]
+
+마감 방식은 FIXED(정확한 마감 일시 필수), UNTIL_FILLED(채용 시 마감), ALWAYS_OPEN(상시 모집), UNKNOWN(미확인)입니다.
+채용 시 마감·상시는 가상 날짜 없이 수동 종료를 반영합니다. UNKNOWN은 초안에 보존하며 공개 요청은 거절합니다.

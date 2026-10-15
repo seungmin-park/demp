@@ -1,0 +1,8 @@
+{
+  "backendBase": "73ee647",
+  "frontendBase": "3cd16e26fb3464b0865a7c98b02a729e9558ec4c",
+  "jarSha256": "6737197a133fa07656642147ad04cbe688f7948a46649fa8e8656e7f388b839f",
+  "frontendSourceSha256": "00b19753905eeb008c133a1ac100bb141a5e7c55e56fabd5b8037e17b1206c8b",
+  "frontendBuildSha256": "b1c65b87865dc486153766d1b582545f0485d15eb132ed033cf015a1b3561455",
+  "committed": false
+}

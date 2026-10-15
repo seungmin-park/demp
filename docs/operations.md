@@ -78,3 +78,8 @@ Spring Boot 4.1.1, Jakarta API, Spring Security 7, Hibernate 7/Jackson 3, OpenFe
 값은 배포 환경의 비밀 관리 경계에서 주입하며 저장소·README에 실제 키를 쓰지 않는다. S3 IAM 권한·버킷 공개 정책/배포 CDN은 실제 환경에서 검증해야 한다. 이번 작업은 운영 S3에 접속하거나 정책을 변경하지 않았다.
 
 대표 이미지와 본문 이미지의 저장·삭제는 FileStorage 경계가 담당한다. local만 `.local/uploads`(또는 `APP_LOCAL_UPLOAD_DIR`)를 사용하며 운영은 S3다. [게시·이미지 정책](plans/curated-publication-policy.md)과 [관리자 계정 준비](verification/admin-console/account-setup.md)를 함께 확인한다.
+
+
+## 관심 공고·수시 모집 마감 방식 배포 전 준비
+
+새 JAR 전 백업한 별도 검증 DB에서 `db/manual/announcement-deadline-mode.sql`, `db/manual/announcement-bookmarks.sql`을 적용·검증한다. 운영 자동 스키마 생성은 사용하지 않는다. 기존 deadline_mode NULL은 날짜가 있으면 FIXED, 없으면 UNKNOWN이며 상시로 추정하지 않는다. 공개 입력의 마감 방식과 화면을 양쪽 함께 전달한다. 운영 SQL·배포는 현재 구현 작업에서 실행하지 않는다.

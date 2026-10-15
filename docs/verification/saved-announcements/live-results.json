@@ -1,0 +1,13 @@
+{
+  "status": "passed",
+  "headless": true,
+  "database": "owned in-memory Spring/H2",
+  "checks": [
+    "anonymous save -> real login -> filtered list -> saved state survives reload and fresh HTTP",
+    "saved list shows persisted newest-first entries and explicit deadline modes at 390px",
+    "until-filled posting has no invented deadline and manual close persists while bookmark remains",
+    "hidden posting exposes no summary and can be removed from saved list",
+    "mobile layout contains controls and no Vue warnings"
+  ],
+  "warnings": []
+}
