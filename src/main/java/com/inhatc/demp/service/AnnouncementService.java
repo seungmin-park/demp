@@ -62,6 +62,7 @@ public class AnnouncementService {
         RecruitPeriod recruitPeriod = RecruitPeriod.builder()
                 .startedDate(announcementCreateRequest.getStartedDate())
                 .deadLineDate(announcementCreateRequest.getDeadLineDate())
+                .deadlineMode(announcementCreateRequest.getDeadlineMode())
                 .build();
         if (announcementRepository.postingExists(announcementCreateRequest.sourceKey(), announcementCreateRequest.sourceIdentityKey(), -1)) {
             throw new ApiException(HttpStatus.CONFLICT);

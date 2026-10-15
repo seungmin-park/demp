@@ -41,6 +41,7 @@ public class AdminAnnouncementService {
         RecruitPeriod period = RecruitPeriod.builder()
                 .startedDate(request.getStartedDate())
                 .deadLineDate(request.getDeadLineDate())
+                .deadlineMode(request.getDeadlineMode())
                 .build();
         UploadFile replacement = request.getImage() == null || request.getImage().isEmpty() ? null : files.save(request.getImage());
         List<UploadFile> uploaded = List.of();

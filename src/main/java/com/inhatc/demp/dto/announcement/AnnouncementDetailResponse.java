@@ -37,6 +37,7 @@ public class AnnouncementDetailResponse {
     private int maxCareer;
     private LocalDateTime startedDate;
     private LocalDateTime deadLineDate;
+    private com.inhatc.demp.domain.announcement.DeadlineMode deadlineMode;
     private String content;
     private String accessUrl;
     private Integer payment;
@@ -70,6 +71,7 @@ public class AnnouncementDetailResponse {
                 .minCareer(announcement.getCareer().getMinCareer())
                 .maxCareer(announcement.getCareer().getMaxCareer())
                 .startedDate(announcement.getRecruitPeriod() == null ? null : announcement.getRecruitPeriod().getStartedDate())
+                .deadlineMode(announcement.getRecruitPeriod() == null ? com.inhatc.demp.domain.announcement.DeadlineMode.UNKNOWN : announcement.getRecruitPeriod().getDeadlineMode())
                 .deadLineDate(announcement.getRecruitPeriod() == null ? null : announcement.getRecruitPeriod().getDeadLineDate())
                 .content(announcement.getDescription().getContent())
                 .accessUrl(announcement.getDescription().getAccessUrl())

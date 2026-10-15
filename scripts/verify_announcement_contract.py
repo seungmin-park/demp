@@ -22,7 +22,7 @@ DETAIL = {
                      'startedDate', 'deadLineDate', 'position', 'workPeriod', 'conversionNote'), (str, NULL)),
     **dict.fromkeys(('stipendAmount', 'payment', 'salaryMax'), (int, NULL)),
     **dict.fromkeys(('image', 'publicationStatus', 'title', 'content', 'accessUrl',
-                     'salaryStatus', 'salaryPeriod', 'announcementType'), (str,)),
+                     'salaryStatus', 'salaryPeriod', 'deadlineMode', 'announcementType'), (str,)),
     **dict.fromkeys(('hits', 'minCareer', 'maxCareer'), (int,)),
     'recruitmentClosed': (bool,), 'company': (dict,), 'education': (dict, NULL),
     'roles': (list,), 'referenceUrls': (list,), 'language': (list,),
@@ -30,7 +30,7 @@ DETAIL = {
 SUMMARY = {key: DETAIL[key] for key in (
     'recruitmentAudience', 'employmentType', 'title', 'hits', 'language', 'position',
     'recruitmentClosed', 'image', 'publicationStatus', 'education', 'announcementType',
-    'minCareer', 'maxCareer', 'payment', 'salaryPeriod', 'startedDate', 'deadLineDate')}
+    'minCareer', 'maxCareer', 'payment', 'salaryPeriod', 'deadlineMode', 'startedDate', 'deadLineDate')}
 SUMMARY.update(id=(int,), company=(str, NULL))
 ROLE = dict.fromkeys(('title', 'position', 'location', 'qualifications', 'requiredSkills',
                      'preferredSkills', 'usedTechnologies'), (str, NULL))
@@ -48,6 +48,7 @@ def shape(value, contract, label):
 
 def detail_contract(value):
     shape(value, DETAIL, 'detail')
+    assert value['deadlineMode'] in ('FIXED', 'UNTIL_FILLED', 'ALWAYS_OPEN', 'UNKNOWN')
     shape(value['company'], {'name': (str,)}, 'company')
     for role in value['roles']:
         shape(role, ROLE, 'role')

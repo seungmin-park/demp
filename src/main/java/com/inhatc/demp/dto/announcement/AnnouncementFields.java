@@ -107,6 +107,7 @@ public class AnnouncementFields {
     private LocalDateTime startedDate;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
     private LocalDateTime deadLineDate;
+    private DeadlineMode deadlineMode;
     @NotBlank
     private String content;
     @NotBlank
@@ -143,10 +144,11 @@ public class AnnouncementFields {
     @NotNull
     private AnnouncementType type;
 
-    @AssertTrue(message = "공개·검토 요청에는 분야, 모집 시작과 마감이 필요합니다.")
+    @AssertTrue(message = "공개·검토 요청에는 분야, 모집 시작과 확인된 마감 방식이 필요합니다. 일시 지정은 정확한 마감 일시가 필수입니다.")
     public boolean isPublicationComplete() {
         return publicationStatus == PublicationStatus.DRAFT || publicationStatus == PublicationStatus.HIDDEN || position != null
-                && startedDate != null && deadLineDate != null;
+                && startedDate != null && (DeadlineMode.resolve(deadlineMode, deadLineDate).hasNoFixedDeadline()
+                    || DeadlineMode.resolve(deadlineMode, deadLineDate) == DeadlineMode.FIXED && deadLineDate != null);
     }
 
     @AssertTrue(message = "본문 내용을 입력해 주세요.")
@@ -157,6 +159,11 @@ public class AnnouncementFields {
     @AssertTrue(message = "최소 경력은 최대 경력보다 클 수 없습니다.")
     public boolean isCareerRangeValid() {
         return maxCareer == 0 || minCareer <= maxCareer;
+    }
+
+    @AssertTrue(message = "마감 방식과 마감 일시가 일치해야 합니다.")
+    public boolean isDeadlineModeValid() {
+        return deadLineDate == null || DeadlineMode.resolve(deadlineMode, deadLineDate) == DeadlineMode.FIXED;
     }
 
     @AssertTrue(message = "마감일은 시작일보다 빠를 수 없습니다.")

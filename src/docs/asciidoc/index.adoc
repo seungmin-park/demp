@@ -33,3 +33,8 @@ include::{snippets}/question-reaction/response-fields.adoc[]
 === 답변
 include::{snippets}/answer-reaction/http-request.adoc[]
 include::{snippets}/answer-reaction/http-response.adoc[]
+
+
+== 모집 마감 방식
+
+FIXED는 정확한 마감 일시가 필수입니다. UNTIL_FILLED는 채용 시 마감, ALWAYS_OPEN은 상시 모집이며 가상 날짜를 만들지 않습니다. UNKNOWN은 미확인으로 새 공개 요청을 거절합니다. 수동 종료는 마감 방식보다 우선합니다.
