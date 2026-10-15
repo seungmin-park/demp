@@ -48,7 +48,7 @@ public class Announcement {
     public boolean isPublished() { return publicationStatus == PublicationStatus.PUBLISHED; }
     public void changePublication(PublicationStatus status) {
         PublicationStatus target = status == null ? publicationStatus : status;
-        if ((target == PublicationStatus.PUBLISHED || target == PublicationStatus.REVIEW) && (jobPosition == null || description == null || description.getLanguages().isEmpty()
+        if ((target == PublicationStatus.PUBLISHED || target == PublicationStatus.REVIEW) && (jobPosition == null || description == null
                 || recruitPeriod == null || recruitPeriod.getStartedDate() == null || recruitPeriod.getDeadLineDate() == null)) {
             throw new IncompletePublicationException();
         }

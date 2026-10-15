@@ -20,6 +20,20 @@ class PublicationWorkflowTest {
     @AfterEach void cleanup() { repository.deleteAll(); }
 
     @Test
+    @DisplayName("기술 미기재 공고도 공개 저장하고 빈 기술을 재조회한다")
+    void publishesWithoutTechnologies() throws Exception {
+        var request = new AnnouncementCreateRequest(); fill(request);
+        request.setLanguage(Set.of()); request.setPublicationStatus(PublicationStatus.PUBLISHED);
+        try (var validatorFactory = jakarta.validation.Validation.buildDefaultValidatorFactory()) {
+            assertThat(validatorFactory.getValidator().validate(request)).isEmpty();
+        }
+        service.createAnnouncement(request);
+        long id = repository.findByTitle(request.getTitle()).orElseThrow().getId();
+        assertThat(service.findDetailResponse(id)).isPresent();
+        assertThat(service.findAdminDetailResponse(id).orElseThrow().getLanguage()).isEmpty();
+    }
+
+    @Test
     @DisplayName("운영 목록은 게시 상태로 필터링하며 공개 목록에는 초안이 노출되지 않는다")
     void adminFiltersPublicationBeforePagination() throws Exception {
         for (var status : PublicationStatus.values()) {

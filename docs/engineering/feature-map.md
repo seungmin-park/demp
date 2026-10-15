@@ -53,3 +53,5 @@
 기술 값은 Language enum이 소유한다. MySQL에 예전 6개만 허용하는 language_chk_1 CHECK가 있으면 새 기술 저장이 500으로 실패한다. `db/manual/announcement-technologies-check.sql`은 현재 enum의 허용 집합으로 CHECK를 교체하며 기존 값·FK·중복 제약을 유지한다. `TechnologyCheckMigrationTest`는 SQL에 enum 누락/추가가 생기면 CI에서 거절한다. 실제 MySQL 문법 및 CHECK 동작은 운영 백업의 별도 복원 DB에서 기존 CPP 거절→전체 66개 허용/미지 값 거절로 확인했다. 정적 집합 검사는 실제 MySQL 실행을 대체하지 않는다.
 
 - 2026-10-15: [운영 목록의 게시 상태 필터](../plans/admin-announcement-status.md). 화면의 상태 선택은 URL과 API로 전달하고 저장소에서 페이지 분할 전에 필터링한다. 공개 조회의 PUBLISHED 경계는 유지한다. 검색은 첫 페이지로 돌아가며 새로고침 조건을 복원한다.
+
+- 2026-10-15: [기술 미기재 공고 저장](../plans/optional-announcement-technologies.md). 공고에 기술이 없으면 빈 선택을 유지한다. 프런트 검증·DTO·도메인의 기술 필수 조건만 제거한다. 분야·본문·출처·모집 일정 조건과 권한 검증은 유지한다. 공채 분류나 추정 기술을 추가하지 않는다.

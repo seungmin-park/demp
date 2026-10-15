@@ -143,9 +143,9 @@ public class AnnouncementFields {
     @NotNull
     private AnnouncementType type;
 
-    @AssertTrue(message = "공개·검토 요청에는 분야, 기술, 모집 시작과 마감이 필요합니다.")
+    @AssertTrue(message = "공개·검토 요청에는 분야, 모집 시작과 마감이 필요합니다.")
     public boolean isPublicationComplete() {
-        return publicationStatus == PublicationStatus.DRAFT || publicationStatus == PublicationStatus.HIDDEN || position != null && language != null && !language.isEmpty()
+        return publicationStatus == PublicationStatus.DRAFT || publicationStatus == PublicationStatus.HIDDEN || position != null
                 && startedDate != null && deadLineDate != null;
     }
 
