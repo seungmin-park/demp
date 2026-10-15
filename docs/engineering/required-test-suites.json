@@ -63,5 +63,6 @@
   "com.inhatc.demp.repository.AnnouncementOrderingTest",
   "com.inhatc.demp.service.MemberAccountServiceTest",
   "com.inhatc.demp.docs.MemberAccountRestDocsTest",
-  "com.inhatc.demp.config.TechnologyCheckMigrationTest"
+  "com.inhatc.demp.config.TechnologyCheckMigrationTest",
+  "com.inhatc.demp.service.RecruitmentDeadlineServiceTest"
 ]

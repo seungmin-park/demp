@@ -5,6 +5,7 @@ import static org.springframework.util.StringUtils.hasText;
 
 import com.inhatc.demp.domain.announcement.Announcement;
 import com.inhatc.demp.domain.announcement.RecruitmentAudience;
+import com.inhatc.demp.domain.announcement.DeadlineMode;
 import com.inhatc.demp.domain.announcement.AnnouncementType;
 import com.inhatc.demp.domain.announcement.JobPosition;
 import com.inhatc.demp.domain.announcement.Language;
@@ -170,10 +171,15 @@ public class AnnouncementQueryRepository {
         LocalDateTime now = LocalDateTime.now(recruitmentClock);
         return switch (status) {
             case OPEN -> announcement.recruitmentClosed.isFalse().and(announcement.recruitPeriod.startedDate.loe(now))
-                    .and(announcement.recruitPeriod.deadLineDate.goe(now));
+                    .and(announcement.recruitPeriod.deadlineMode.in(DeadlineMode.UNTIL_FILLED, DeadlineMode.ALWAYS_OPEN)
+                            .or(announcement.recruitPeriod.deadLineDate.goe(now).and(legacyOrFixedDeadline())));
             case UPCOMING -> announcement.recruitmentClosed.isFalse().and(announcement.recruitPeriod.startedDate.gt(now));
             case CLOSED -> announcement.recruitmentClosed.isTrue().or(announcement.recruitPeriod.deadLineDate.lt(now));
         };
+    }
+
+    private BooleanExpression legacyOrFixedDeadline() {
+        return announcement.recruitPeriod.deadlineMode.isNull().or(announcement.recruitPeriod.deadlineMode.eq(DeadlineMode.FIXED));
     }
 
     private BooleanBuilder educationMatches(AnnouncementSearchCondition filter) {

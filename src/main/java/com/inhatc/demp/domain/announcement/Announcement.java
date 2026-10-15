@@ -49,7 +49,7 @@ public class Announcement {
     public void changePublication(PublicationStatus status) {
         PublicationStatus target = status == null ? publicationStatus : status;
         if ((target == PublicationStatus.PUBLISHED || target == PublicationStatus.REVIEW) && (jobPosition == null || description == null
-                || recruitPeriod == null || recruitPeriod.getStartedDate() == null || recruitPeriod.getDeadLineDate() == null)) {
+                || recruitPeriod == null || recruitPeriod.getStartedDate() == null || !recruitPeriod.hasConfirmedDeadline())) {
             throw new IncompletePublicationException();
         }
         publicationStatus = target;

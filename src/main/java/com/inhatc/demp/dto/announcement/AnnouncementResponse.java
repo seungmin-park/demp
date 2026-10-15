@@ -33,6 +33,7 @@ public class AnnouncementResponse {
     private com.inhatc.demp.domain.announcement.SalaryPeriod salaryPeriod;
     private LocalDateTime startedDate;
     private LocalDateTime deadLineDate;
+    private com.inhatc.demp.domain.announcement.DeadlineMode deadlineMode;
 
     public AnnouncementResponse(Announcement announcement, String imageUrl) {
         this.education = announcement.getEducation();
@@ -53,6 +54,7 @@ public class AnnouncementResponse {
         this.payment = announcement.getDescription().getPayment();
         this.salaryPeriod = announcement.getDescription().getSalaryPeriod();
         this.startedDate = announcement.getRecruitPeriod() == null ? null : announcement.getRecruitPeriod().getStartedDate();
+        this.deadlineMode = announcement.getRecruitPeriod() == null ? com.inhatc.demp.domain.announcement.DeadlineMode.UNKNOWN : announcement.getRecruitPeriod().getDeadlineMode();
         this.deadLineDate = announcement.getRecruitPeriod() == null ? null : announcement.getRecruitPeriod().getDeadLineDate();
     }
 }

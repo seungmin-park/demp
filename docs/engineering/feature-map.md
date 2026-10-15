@@ -57,3 +57,8 @@
 - 2026-10-15: [기술 미기재 공고 저장](../plans/optional-announcement-technologies.md). 공고에 기술이 없으면 빈 선택을 유지한다. 프런트 검증·DTO·도메인의 기술 필수 조건만 제거한다. 분야·본문·출처·모집 일정 조건과 권한 검증은 유지한다. 공채 분류나 추정 기술을 추가하지 않는다.
 
 - [마감 임박순 기본 정렬](../plans/deadline-first-announcements.md): 공개 HTTP 정렬 기본은 DEADLINE, 운영 검색 기본은 LATEST를 유지한다.
+
+
+## 수시 모집 마감 방식
+
+RecruitPeriod/DeadlineMode는 FIXED/UNTIL_FILLED/ALWAYS_OPEN/UNKNOWN을 구분한다. 일시 지정만 정확한 마감 일시를 요구하고 비지정 방식은 가상 날짜 없이 수동 종료를 반영한다. 기존 NULL의 날짜 유무를 보존하며 새 미확인 공개는 거절한다. RecruitmentDeadlineServiceTest, 기존 전체 검증 및 frontend RecruitmentDeadlineMode/recruitment-deadline-modes E2E로 검증한다.
