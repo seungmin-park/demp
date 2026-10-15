@@ -40,6 +40,9 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, Long
         return sourceExists(urlKey, exceptId) || sourceIdentityExists(identityKey, exceptId);
     }
 
+    @Query("select distinct a from Announcement a left join fetch a.description.languages where a.id in :ids and a.publicationStatus = com.inhatc.demp.domain.announcement.PublicationStatus.PUBLISHED")
+    List<Announcement> findPublishedForBookmarks(@Param("ids") java.util.Collection<Long> ids);
+
     long countByAnnouncementType(AnnouncementType type);
 
     Optional<Announcement> findByTitle(String title);

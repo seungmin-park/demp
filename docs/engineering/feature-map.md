@@ -59,6 +59,10 @@
 - [마감 임박순 기본 정렬](../plans/deadline-first-announcements.md): 공개 HTTP 정렬 기본은 DEADLINE, 운영 검색 기본은 LATEST를 유지한다.
 
 
-## 수시 모집 마감 방식
+## 관심 공고와 마감 방식
 
-RecruitPeriod/DeadlineMode는 FIXED/UNTIL_FILLED/ALWAYS_OPEN/UNKNOWN을 구분한다. 일시 지정만 정확한 마감 일시를 요구하고 비지정 방식은 가상 날짜 없이 수동 종료를 반영한다. 기존 NULL의 날짜 유무를 보존하며 새 미확인 공개는 거절한다. RecruitmentDeadlineServiceTest, 기존 전체 검증 및 frontend RecruitmentDeadlineMode/recruitment-deadline-modes E2E로 검증한다.
+목록/상세 저장 → 미로그인 시 원래 검색·선택과 함께 로그인/가입 복귀 → 회원별 저장 API → 내 관심 공고 `/saved` → 재조회·해제. 모집 종료 공고는 유지하고 비공개/삭제는 내용 없는 이용 불가 항목으로 표시한다. 일시 지정 마감은 정확한 시각, 채용 시 마감/상시 모집은 명시적 방식과 수동 종료, 미확인은 별도 상태다. 가상 마감 시각을 만들지 않는다.
+
+소유자: AnnouncementBookmarkService의 인증 ID·트랜잭션, AnnouncementBookmark/UNIQUE의 회원별 저장, RecruitPeriod/DeadlineMode의 마감 규칙. 프런트 useAnnouncementBookmarks는 저장 상태·연타·응답 경쟁·인증 복귀, useSavedAnnouncements는 내 목록·페이지·해제 복구, API 모듈은 HTTP, Vue는 표현을 맡는다.
+
+검증: BookmarkHttpFlowTest의 실제 Spring/H2 HTTP·commit 재조회·동시성·회원 격리·비공개/삭제; RecruitmentDeadlineServiceTest의 validation·저장·모집 필터; AnnouncementBookmarkRestDocsTest의 MVC·인증·문서. 프런트 SavedAnnouncementsFeature/SavedAnnouncementList/useAnnouncementBookmarks/RecruitmentDeadlineMode 단위 및 saved-announcements.spec.js 개발/배포 fixture 브라우저. 실제 cmux 경로는 별도로 기록하며 테스트 파일 존재만으로 통과를 주장하지 않는다.

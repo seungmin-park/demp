@@ -1,0 +1,18 @@
+{
+  "tests": 458,
+  "required_suites": 68,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "packaged_docs_match": true,
+  "test_architecture_packaged": false,
+  "member_http_contract": "passed",
+  "member_http_requests": 23,
+  "local_api_flow": "passed",
+  "reaction_commit_switch_cancel": "passed",
+  "announcement_http_contract": "passed",
+  "announcement_http_requests": 55,
+  "unauthenticated_reaction_http": 401,
+  "served_docs_match": true,
+  "database": "isolated in-memory H2"
+}

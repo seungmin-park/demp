@@ -12,6 +12,12 @@ Vue 표현 → useContentReaction → API → Controller → ContentReactionServ
 `ContentReactionController`는 인증 주체와 HTTP 필드를 변환한다. 다른 회원 ID를 요청 본문에서 읽지 않는다. `ContentReactionService`만 `ContentReactionRepository`의 쓰기를 사용하며 같은 트랜잭션에서 반응 행·집계를 갱신한다. 질문/답변 조회 서비스는 이 저장소를 읽어 `myReaction`을 조립할 수 있다. `scripts/check_agent_contracts.py`는 다른 Java 클래스의 직접 `save/delete` 사용을 거절한다. 이 좁은 정적 검사는 리플렉션·간접 위임을 판별하지 않으므로 기능 테스트와 코드 리뷰가 계속 필요하다. 프런트 표현 컴포넌트는 `setReaction`을 직접 호출하지 않고 composable을 거친다.
 
 
-## 수시 모집 마감 방식
+## 관심 공고 소유권
 
-RecruitPeriod/DeadlineMode는 FIXED/UNTIL_FILLED/ALWAYS_OPEN/UNKNOWN을 구분한다. 일시 지정만 정확한 마감 일시를 요구하고 비지정 방식은 가상 날짜 없이 수동 종료를 반영한다. 기존 NULL의 날짜 유무를 보존하며 새 미확인 공개는 거절한다. RecruitmentDeadlineServiceTest, 기존 전체 검증 및 frontend RecruitmentDeadlineMode/recruitment-deadline-modes E2E로 검증한다.
+```text
+BookmarkButton → useAnnouncementBookmarks → api/bookmarks → AnnouncementBookmarkController
+SavedAnnouncements → useSavedAnnouncements ────────────────┘          ↓
+AnnouncementBookmarkService → AnnouncementBookmarkRepository / MemberRepository / AnnouncementRepository
+```
+
+회원 ID는 principal만 사용한다. 동일 회원 저장은 회원 행 잠금과 UNIQUE로 직렬화한다. 공고 삭제 후 이용 불가 항목을 보존하므로 공고 ID에는 FK를 두지 않으며 내용은 공개 조회 시점에만 조립한다. 회원 FK는 회원 삭제 시 cascade한다. RecruitPeriod는 마감 방식과 일시의 모순을 거절하고 공개 검증은 확인된 마감 방식을 요구한다. 모집 상태 조회와 화면은 시작 전·수동 종료 우선 규칙을 공유한다.
