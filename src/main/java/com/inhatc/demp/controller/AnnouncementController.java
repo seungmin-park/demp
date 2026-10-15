@@ -22,7 +22,9 @@ public class AnnouncementController {
     private final AnnouncementService announcementService;
 
     @GetMapping("")
-    public Slice<AnnouncementResponse> listAnnouncements(@ModelAttribute AnnouncementSearchCondition announcementSearchCondition, Pageable pageable) {
+    public Slice<AnnouncementResponse> listAnnouncements(@ModelAttribute AnnouncementSearchCondition announcementSearchCondition,
+            @RequestParam(defaultValue = "DEADLINE") AnnouncementOrder orderBy, Pageable pageable) {
+        announcementSearchCondition.setOrderBy(orderBy);
         return announcementService.findAnnouncementSlice(announcementSearchCondition, pageable);
     }
 

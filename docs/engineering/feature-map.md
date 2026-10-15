@@ -55,3 +55,5 @@
 - 2026-10-15: [운영 목록의 게시 상태 필터](../plans/admin-announcement-status.md). 화면의 상태 선택은 URL과 API로 전달하고 저장소에서 페이지 분할 전에 필터링한다. 공개 조회의 PUBLISHED 경계는 유지한다. 검색은 첫 페이지로 돌아가며 새로고침 조건을 복원한다.
 
 - 2026-10-15: [기술 미기재 공고 저장](../plans/optional-announcement-technologies.md). 공고에 기술이 없으면 빈 선택을 유지한다. 프런트 검증·DTO·도메인의 기술 필수 조건만 제거한다. 분야·본문·출처·모집 일정 조건과 권한 검증은 유지한다. 공채 분류나 추정 기술을 추가하지 않는다.
+
+- [마감 임박순 기본 정렬](../plans/deadline-first-announcements.md): 공개 HTTP 정렬 기본은 DEADLINE, 운영 검색 기본은 LATEST를 유지한다.

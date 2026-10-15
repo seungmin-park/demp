@@ -55,6 +55,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @org.springframework.security.test.context.support.WithMockUser(roles = {"ADMIN", "USER"})
 class AnnouncementControllerTest {
     @Test
+    @DisplayName("공개 공고는 정렬 생략 시 마감 임박순을 서비스에 전달한다")
+    void defaultsPublicAnnouncementsToDeadlineOrder() throws Exception {
+        when(announcementService.findAnnouncementSlice(any(), any())).thenReturn(new SliceImpl<>(List.of()));
+        mockMvc.perform(get("/api/announce")).andExpect(status().isOk());
+        var captured = ArgumentCaptor.forClass(AnnouncementSearchCondition.class);
+        verify(announcementService).findAnnouncementSlice(captured.capture(), any());
+        assertThat(captured.getValue().getOrderBy()).isEqualTo(com.inhatc.demp.dto.announcement.AnnouncementOrder.DEADLINE);
+        assertThat(new AnnouncementSearchCondition().getOrderBy()).isEqualTo(com.inhatc.demp.dto.announcement.AnnouncementOrder.LATEST);
+    }
+
+    @Test
     @DisplayName("로그인하지 않은 상세 요청은 401이며 조회수 서비스에 도달하지 않는다")
     @org.springframework.security.test.context.support.WithAnonymousUser
     void anonymousDetailDoesNotRecordView() throws Exception {

@@ -194,6 +194,7 @@ class AnnouncementRestDocsTest {
     @DisplayName("공고 검색과 페이지 응답을 문서화한다")
     void documentsAnnouncementList() throws Exception {
         AnnouncementSearchCondition request = new AnnouncementSearchCondition();
+        request.setOrderBy(com.inhatc.demp.dto.announcement.AnnouncementOrder.DEADLINE);
         request.setAnnouncementType(AnnouncementType.EMP);
         request.setPositions(List.of(JobPosition.BACKEND));
         request.setLanguage(Language.JAVA);
@@ -258,7 +259,7 @@ class AnnouncementRestDocsTest {
                                 parameterWithName("title").description("제목·회사명 검색어, 대소문자 무시"),
                                 parameterWithName("page").description("0부터 시작하는 페이지 번호"),
                                 parameterWithName("size").description("페이지 크기"),
-                                parameterWithName("orderBy").optional().description("LATEST 기본 최신 / DEADLINE 유효 마감 임박 우선 / VIEWS 누적 조회순. 동률 ID 내림차순"),
+                                parameterWithName("orderBy").optional().description("DEADLINE 기본 유효 마감 임박 우선 / LATEST 최신 / VIEWS 누적 조회순. 동률 ID 내림차순"),
                                 parameterWithName("sort").description("Pageable 호환 메타데이터. 실제 순서는 orderBy가 결정")),
                         responseFields(
                                 fieldWithPath("content[].id").description("공고 ID"),
