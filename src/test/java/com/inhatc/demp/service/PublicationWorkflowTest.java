@@ -20,6 +20,30 @@ class PublicationWorkflowTest {
     @AfterEach void cleanup() { repository.deleteAll(); }
 
     @Test
+    @DisplayName("운영 목록은 게시 상태로 필터링하며 공개 목록에는 초안이 노출되지 않는다")
+    void adminFiltersPublicationBeforePagination() throws Exception {
+        for (var status : PublicationStatus.values()) {
+            var request = new AnnouncementCreateRequest(); fill(request);
+            request.setTitle(status.name()); request.setAccessUrl("https://example.com/" + status);
+            request.setPublicationStatus(status); service.createAnnouncement(request);
+        }
+        var condition = new AnnouncementSearchCondition();
+        var binding = new org.springframework.beans.BeanWrapperImpl(condition);
+        assertThat(binding.isWritableProperty("publicationStatus")).isTrue();
+        for (var status : PublicationStatus.values()) {
+            binding.setPropertyValue("publicationStatus", status);
+            var slice = service.findAdminAnnouncementSlice(condition, PageRequest.of(0, 1));
+            assertThat(slice.getContent()).extracting(com.inhatc.demp.dto.announcement.AnnouncementResponse::getPublicationStatus).containsExactly(status);
+            assertThat(slice.hasNext()).isFalse();
+        }
+        binding.setPropertyValue("publicationStatus", PublicationStatus.DRAFT);
+        assertThat(service.findAnnouncementSlice(condition, PageRequest.of(0, 8)).getContent())
+                .extracting(com.inhatc.demp.dto.announcement.AnnouncementResponse::getPublicationStatus).containsExactly(PublicationStatus.PUBLISHED);
+        binding.setPropertyValue("publicationStatus", null);
+        assertThat(service.findAdminAnnouncementSlice(condition, PageRequest.of(0, 8)).getContent()).hasSize(4);
+    }
+
+    @Test
     @DisplayName("새 공고는 초안으로 저장되고 공개 목록 상세 관련 공고에서 모두 제외된다")
     void draftsArePrivate() throws Exception {
         var request = new AnnouncementCreateRequest(); fill(request); service.createAnnouncement(request);
