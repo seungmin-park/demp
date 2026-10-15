@@ -15,6 +15,8 @@ import lombok.Setter;
 @Setter
 public class AnnouncementSearchCondition {
 
+    private PublicationStatus publicationStatus;
+
     private AnnouncementOrder orderBy = AnnouncementOrder.LATEST;
 
     private DeliveryMode deliveryMode;

@@ -69,7 +69,8 @@ public class AnnouncementQueryRepository {
 
     private Slice<Announcement> findSlice(AnnouncementSearchCondition announcementSearchCondition, Pageable pageable, boolean publicOnly) {
         List<Long> ids = jpaQueryFactory.select(announcement.id).from(announcement)
-                .where(publicOnly ? announcement.publicationStatus.eq(com.inhatc.demp.domain.announcement.PublicationStatus.PUBLISHED) : null,
+                .where(publicOnly ? announcement.publicationStatus.eq(com.inhatc.demp.domain.announcement.PublicationStatus.PUBLISHED)
+                        : announcementSearchCondition.getPublicationStatus() == null ? null : announcement.publicationStatus.eq(announcementSearchCondition.getPublicationStatus()),
                         typeEq(announcementSearchCondition.getAnnouncementType()),
                         positionIn(announcementSearchCondition.getPositions()),
                         languageIn(announcementSearchCondition.getLanguage()),
