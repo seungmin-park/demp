@@ -405,7 +405,10 @@ class AnnouncementQueryRepositoryTest {
                 var condition = new AnnouncementSearchCondition(); condition.setRecruitmentStatus(status);
                 var result = announcementQueryRepository.findAnnouncementSlice(condition, PageRequest.of(0, 10));
                 assertThat(result.getContent()).extracting(Announcement::getTitle)
-                        .containsExactlyElementsOf(status == expected.get(index) ? List.of("transition") : List.of());
+                        .containsExactlyElementsOf(status == expected.get(index) ||
+                                (status == com.inhatc.demp.dto.announcement.RecruitmentStatus.ACTIVE
+                                        && expected.get(index) != com.inhatc.demp.dto.announcement.RecruitmentStatus.CLOSED)
+                                ? List.of("transition") : List.of());
                 assertThat(result.hasNext()).isFalse();
             }
         }
@@ -447,6 +450,34 @@ class AnnouncementQueryRepositoryTest {
         return Stream.of(Arguments.of(com.inhatc.demp.dto.announcement.RecruitmentStatus.OPEN, List.of("ending", "starting")),
                 Arguments.of(com.inhatc.demp.dto.announcement.RecruitmentStatus.CLOSED, List.of("closed")),
                 Arguments.of(com.inhatc.demp.dto.announcement.RecruitmentStatus.UPCOMING, List.of("upcoming")));
+    }
+
+    @Test
+    @DisplayName("모집 중과 예정 공고를 함께 조회할 수 있는 ACTIVE 조건을 제공한다")
+    void supportsActiveRecruitmentFilter() {
+        assertThat(com.inhatc.demp.dto.announcement.RecruitmentStatus.values())
+                .extracting(Enum::name).contains("ACTIVE");
+    }
+
+    @Test
+    @DisplayName("ACTIVE 검색은 마감 공고를 페이지 계산 전에 제외하고 모집 중·예정을 반환한다")
+    void activeRecruitmentFiltersBeforePagination() {
+        java.time.Clock fixed = java.time.Clock.fixed(java.time.Instant.parse("2026-09-27T00:00:00Z"), java.time.ZoneId.of("Asia/Seoul"));
+        org.mockito.Mockito.when(clock.instant()).thenReturn(fixed.instant());
+        org.mockito.Mockito.when(clock.getZone()).thenReturn(fixed.getZone());
+        LocalDateTime now = LocalDateTime.of(2026, 9, 27, 9, 0);
+        saveAtPeriod("open", now.minusDays(1), now.plusDays(1));
+        saveAtPeriod("upcoming", now.plusSeconds(1), now.plusDays(1));
+        saveAtPeriod("closed", now.minusDays(1), now.minusSeconds(1));
+        var condition = new AnnouncementSearchCondition();
+        condition.setRecruitmentStatus(com.inhatc.demp.dto.announcement.RecruitmentStatus.ACTIVE);
+
+        Slice<Announcement> slice = announcementQueryRepository.findAnnouncementSlice(condition, PageRequest.of(0, 1));
+        assertThat(slice.getContent()).extracting(Announcement::getTitle).containsExactly("upcoming");
+        assertThat(slice.hasNext()).isTrue();
+        Page<Announcement> page = announcementQueryRepository.findAnnouncementPage(condition, PageRequest.of(0, 2));
+        assertThat(page.getContent()).extracting(Announcement::getTitle).containsExactly("upcoming", "open");
+        assertThat(page.getTotalElements()).isEqualTo(2);
     }
 
     private void saveAtPeriod(String title, LocalDateTime start, LocalDateTime end) {

@@ -253,7 +253,7 @@ class AnnouncementRestDocsTest {
                                 parameterWithName("positions").description("직무 목록"),
                                 parameterWithName("language").description("단일 기술 언어, 기존 호환"),
                                 parameterWithName("languages").description("기술 다중 선택, 쉼표 구분, 그룹 내 OR").optional(),
-                                parameterWithName("recruitmentStatus").description("OPEN 모집 중(시작/마감 포함), UPCOMING 모집 예정, CLOSED 마감. 한국 시각 기준").optional(),
+                                parameterWithName("recruitmentStatus").description("ACTIVE 모집 중·예정, OPEN 모집 중(시작/마감 포함), UPCOMING 모집 예정, CLOSED 마감. 미지정 시 전체. 한국 시각 기준").optional(),
                                 parameterWithName("tuition").description("교육비 FREE 무료 또는 PAID 유료, 교육 공고만 조회").optional(),
                                 parameterWithName("career").description("지원자 경력이 공고의 경력 범위에 포함, 0이면 미적용"),
                                 parameterWithName("payment").description("최소 연봉 조건(만원)"),

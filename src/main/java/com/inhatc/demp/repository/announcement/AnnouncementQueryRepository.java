@@ -170,12 +170,21 @@ public class AnnouncementQueryRepository {
         if (status == null) return null;
         LocalDateTime now = LocalDateTime.now(recruitmentClock);
         return switch (status) {
-            case OPEN -> announcement.recruitmentClosed.isFalse().and(announcement.recruitPeriod.startedDate.loe(now))
-                    .and(announcement.recruitPeriod.deadlineMode.in(DeadlineMode.UNTIL_FILLED, DeadlineMode.ALWAYS_OPEN)
-                            .or(announcement.recruitPeriod.deadLineDate.goe(now).and(legacyOrFixedDeadline())));
-            case UPCOMING -> announcement.recruitmentClosed.isFalse().and(announcement.recruitPeriod.startedDate.gt(now));
+            case ACTIVE -> openMatches(now).or(upcomingMatches(now));
+            case OPEN -> openMatches(now);
+            case UPCOMING -> upcomingMatches(now);
             case CLOSED -> announcement.recruitmentClosed.isTrue().or(announcement.recruitPeriod.deadLineDate.lt(now));
         };
+    }
+
+    private BooleanExpression openMatches(LocalDateTime now) {
+        return announcement.recruitmentClosed.isFalse().and(announcement.recruitPeriod.startedDate.loe(now))
+                .and(announcement.recruitPeriod.deadlineMode.in(DeadlineMode.UNTIL_FILLED, DeadlineMode.ALWAYS_OPEN)
+                        .or(announcement.recruitPeriod.deadLineDate.goe(now).and(legacyOrFixedDeadline())));
+    }
+
+    private BooleanExpression upcomingMatches(LocalDateTime now) {
+        return announcement.recruitmentClosed.isFalse().and(announcement.recruitPeriod.startedDate.gt(now));
     }
 
     private BooleanExpression legacyOrFixedDeadline() {
