@@ -1,3 +1,3 @@
 package com.inhatc.demp.dto.announcement;
 
-public enum RecruitmentStatus { OPEN, UPCOMING, CLOSED }
+public enum RecruitmentStatus { ACTIVE, OPEN, UPCOMING, CLOSED }
