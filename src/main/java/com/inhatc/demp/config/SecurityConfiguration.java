@@ -5,6 +5,7 @@ import com.inhatc.demp.config.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import tools.jackson.databind.ObjectMapper;
 import com.inhatc.demp.config.security.SecurityErrorWriter;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -39,12 +40,14 @@ public class SecurityConfiguration {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(requests -> requests
                         .requestMatchers(CorsUtils::isPreFlightRequest).permitAll()
-                        .requestMatchers(org.springframework.http.HttpMethod.GET, "/local-files/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/local-files/**").permitAll()
                         .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                        .requestMatchers(org.springframework.http.HttpMethod.POST, "/api/announce/add").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.POST, "/api/announce/add").hasRole("ADMIN")
                         .requestMatchers("/api/announce", "/api/question", "/api/question/hashtags").permitAll()
                         .requestMatchers("/api/member/me", "/api/member/me/**").authenticated()
-                        .requestMatchers("/api/member/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/member/login", "/api/member/save").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/member/validUsername").permitAll()
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .anyRequest().hasRole("USER"))
                 .exceptionHandling(errors -> errors
                         .authenticationEntryPoint((req, res, ex) -> SecurityErrorWriter.write(objectMapper, req, res, HttpStatus.UNAUTHORIZED))

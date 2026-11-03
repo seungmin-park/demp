@@ -84,7 +84,7 @@ Question은 제목·내용·작성자·생성시각·조회/추천/비추천 수
 | POST `/api/member/save` | 폼 username/password → Member 엔티티 | 공개 |
 | POST `/api/member/login` | 폼 username/password → username/jwt | 공개 |
 | GET `/api/member/validUsername` | username → 사용 가능 여부 boolean | 공개 |
-| GET `/api/member/{memberId}` | ID → id/username/password | 공개, 개선 필요 |
+| ~~GET `/api/member/{memberId}`~~ | (삭제: 비로그인 로그인 아이디 수집 경로, [계획](docs/plans/member-enumeration-and-public-route-hardening.md)) | 없음 |
 | GET `/api/announce` | announcementType, positions, language, career, payment, title, Pageable → Slice | 공개 |
 | GET `/api/announce/scroll` | 전체 공고 → 목록 | USER |
 | GET `/api/announce/detail/{id}` | ID → 상세 | USER, 타입 참조 깨짐 |

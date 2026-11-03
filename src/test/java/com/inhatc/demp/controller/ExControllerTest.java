@@ -27,21 +27,22 @@ class ExControllerTest {
     void handlesGlobalValidationError() throws Exception {
         BeanPropertyBindingResult errors = new BeanPropertyBindingResult(new Object(), "request");
         errors.reject("invalid", "SQL password token");
-        doAnswer(invocation -> { throw new BindException(errors); }).when(members).findById(99L);
-        mvc.perform(get("/api/member/99")).andExpect(status().isBadRequest())
+        doAnswer(invocation -> { throw new BindException(errors); }).when(members).isUsernameAvailable("member-a");
+        mvc.perform(get("/api/member/validUsername").param("username", "member-a")).andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.errorCode").value(400))
                 .andExpect(jsonPath("$.errorMessage").value("Invalid request"));
     }
     @Test
     @DisplayName("내부 예외의 SQL과 자격 증명은 오류 응답에 노출하지 않는다")
     void hidesInternalDetails() throws Exception {
-        when(members.findById(99L)).thenThrow(new IllegalStateException("SQL password private-token com.private.Secret"));
-        mvc.perform(get("/api/member/99")).andExpect(status().isInternalServerError())
+        when(members.isUsernameAvailable("member-a")).thenThrow(new IllegalStateException("SQL password private-token com.private.Secret"));
+        mvc.perform(get("/api/member/validUsername").param("username", "member-a")).andExpect(status().isInternalServerError())
                 .andExpect(jsonPath("$.errorCode").value(500))
                 .andExpect(jsonPath("$.errorMessage").value("Internal server error"));
     }
     @Test
-    @DisplayName("매핑되지 않은 공개 API 경로는 내부 오류 대신 JSON 404를 반환한다")
+    @DisplayName("인증된 사용자의 매핑되지 않은 API 경로는 내부 오류 대신 JSON 404를 반환한다")
+    @com.inhatc.demp.support.WithMember
     void returnsNotFoundForUnmappedApi() throws Exception {
         mvc.perform(get("/api/member/missing/path"))
                 .andExpect(status().isNotFound())
