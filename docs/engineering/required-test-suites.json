@@ -66,5 +66,6 @@
   "com.inhatc.demp.config.TechnologyCheckMigrationTest",
   "com.inhatc.demp.service.RecruitmentDeadlineServiceTest",
   "com.inhatc.demp.service.BookmarkHttpFlowTest",
-  "com.inhatc.demp.docs.AnnouncementBookmarkRestDocsTest"
+  "com.inhatc.demp.docs.AnnouncementBookmarkRestDocsTest",
+  "com.inhatc.demp.service.HashtagCreationRaceTest"
 ]
