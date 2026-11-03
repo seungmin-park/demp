@@ -40,3 +40,7 @@
 - 검증: 최신 main(`dd1e37e`) rebase 후 `bash scripts/verify.sh` exit 0 — Java 462건, 필수 suite 69(`HashtagCreationRaceTest` 추가), 실패·오류·스킵 0, 실제 HTTP 흐름 통과.
 - 확인하지 않은 것: 실제 MySQL에서의 SQL 실행(collation, derived table 처리)과 운영 DB 적용. `docs/verification/deployment-runtime-and-data-verification/mysql_rehearsal.py` 리허설은 Docker가 꺼져 있어 실행하지 않았다. 운영 적용은 위 "운영 적용" 절차대로 별도로 진행한다.
 - 이름·책임 검토: 재시도는 트랜잭션 경계 소유자인 `QuestionService`에 두고 이름(`writeRetryingConcurrentTagCreation`)에 범위를 드러냈다. `HashtagResolver`는 정규화·조회만 맡는다. 가입은 기존 `registerMember`의 409 변환이 DB 제약으로 실제 동작하게 되었고 코드 변경은 없다.
+
+## 운영 확인 결과 (2026-11-04)
+
+운영자가 백업(`/srv/deploy/backups/manual-unique-20261103T195715Z/demp.sql.gz`, 압축·덤프 완료 확인) 후 조회한 결과 `member.username`, `hashtag.tag_name` 모두 유일 인덱스(Non_unique=0)가 이미 있고 중복은 0건이었다. 두 수동 SQL은 안내문의 "이미 있으면 건너뛴다"에 따라 적용하지 않았다. 감사가 운영 스키마 모델로 쓴 `legacy/hibernate5-schema.sql`에는 이 인덱스가 없어 실제 운영과 달랐다. 운영에서는 문제 1(같은 이름 2행)은 일어나지 않고, 동시 작성에서 늦은 요청이 제약 위반 500을 받던 문제만 있었으며 이는 `QuestionService`의 재시도로 해결했다. 수동 SQL은 인덱스가 없는 다른 기존 DB를 위한 것으로 유지한다.
