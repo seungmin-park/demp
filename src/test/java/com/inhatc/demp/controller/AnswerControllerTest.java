@@ -27,6 +27,9 @@ import com.inhatc.demp.support.WithMember;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.util.Map;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.MethodSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -150,4 +153,34 @@ class AnswerControllerTest {
                 .andExpect(jsonPath("$.answerId").value(Long.toString(id)));
     }
 
+    static Stream<String> answerContentOverLimit() {
+        return Stream.of(" ", "가".repeat(20_001));
+    }
+
+    @ParameterizedTest
+    @DisplayName("답변 작성·수정은 본문이 비었거나 한도를 넘으면 400을 반환하고 저장하지 않는다")
+    @MethodSource("answerContentOverLimit")
+    void rejectsAnswerContentOverLimit(String content) throws Exception {
+        mockMvc.perform(post("/api/answer/save").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("questionId", 51, "answerContent", content))))
+                .andExpect(status().isBadRequest()).andExpect(jsonPath("$.errorCode").value(400));
+        mockMvc.perform(patch("/api/answer/update").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("answerId", 61, "answerContent", content))))
+                .andExpect(status().isBadRequest());
+        verify(answerService, never()).createAnswer(any(), any());
+        verify(answerService, never()).update(any(), any());
+    }
+
+    @Test
+    @DisplayName("답변 작성은 대상 질문이 없으면 400을 반환하고, 한도와 같은 길이의 본문은 저장한다")
+    void requiresQuestionAndAcceptsContentAtLimit() throws Exception {
+        mockMvc.perform(post("/api/answer/save").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("answerContent", "본문"))))
+                .andExpect(status().isBadRequest());
+        verify(answerService, never()).createAnswer(any(), any());
+        mockMvc.perform(post("/api/answer/save").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(Map.of("questionId", 51, "answerContent", "가".repeat(20_000)))))
+                .andExpect(status().isOk());
+        verify(answerService).createAnswer(eq(41L), any());
+    }
 }

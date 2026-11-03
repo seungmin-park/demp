@@ -54,7 +54,7 @@ public class QuestionController {
     }
 
     @PatchMapping("/update")
-    public void updateQuestion(@AuthenticationPrincipal MemberPrincipal principal, @RequestBody QuestionUpdateForm questionUpdateForm) {
+    public void updateQuestion(@AuthenticationPrincipal MemberPrincipal principal, @Valid @RequestBody QuestionUpdateForm questionUpdateForm) {
         questionService.updateQuestion(principal.getMemberId(), questionUpdateForm);
     }
 

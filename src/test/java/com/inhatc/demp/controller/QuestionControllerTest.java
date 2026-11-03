@@ -28,6 +28,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
+import org.junit.jupiter.params.provider.MethodSource;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -210,4 +215,54 @@ class QuestionControllerTest {
         verifyNoInteractions(questionService);
     }
 
+    static Stream<Map<String, Object>> questionsOverLimit() {
+        return Stream.of(
+                question(" ", "본문", List.of()),
+                question("가".repeat(256), "본문", List.of()),
+                question("제목", " ", List.of()),
+                question("제목", "가".repeat(50_001), List.of()),
+                question("제목", "본문", IntStream.range(0, 11).mapToObj(i -> "tag" + i).toList()),
+                question("제목", "본문", List.of("가".repeat(31))));
+    }
+
+    @ParameterizedTest
+    @DisplayName("질문 작성은 제목·본문·태그 한도를 넘으면 400을 반환하고 저장하지 않는다")
+    @MethodSource("questionsOverLimit")
+    void rejectsQuestionOverLimits(Map<String, Object> payload) throws Exception {
+        mockMvc.perform(post("/api/question/add").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(payload)))
+                .andExpect(status().isBadRequest()).andExpect(jsonPath("$.errorCode").value(400));
+        verify(questionService, never()).createQuestion(any(), any());
+    }
+
+    @ParameterizedTest
+    @DisplayName("질문 수정은 제목·본문·태그 한도를 넘거나 대상이 없으면 400을 반환하고 수정하지 않는다")
+    @MethodSource("questionsOverLimit")
+    void rejectsQuestionUpdateOverLimits(Map<String, Object> payload) throws Exception {
+        Map<String, Object> update = new HashMap<>(payload);
+        update.put("questionId", 51);
+        mockMvc.perform(patch("/api/question/update").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(update)))
+                .andExpect(status().isBadRequest());
+        Map<String, Object> withoutTarget = new HashMap<>(question("제목", "본문", List.of()));
+        mockMvc.perform(patch("/api/question/update").contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(withoutTarget)))
+                .andExpect(status().isBadRequest());
+        verify(questionService, never()).updateQuestion(any(), any());
+    }
+
+    @Test
+    @DisplayName("한도와 같은 길이의 제목·본문·태그는 그대로 작성 유스케이스에 전달한다")
+    void acceptsQuestionAtLimits() throws Exception {
+        List<String> tags = IntStream.range(0, 10).mapToObj(i -> String.valueOf(i).repeat(30)).toList();
+        mockMvc.perform(post("/api/question/add").contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(question("가".repeat(255), "나".repeat(50_000), tags))))
+                .andExpect(status().isOk());
+        ArgumentCaptor<QuestionForm> sent = ArgumentCaptor.forClass(QuestionForm.class);
+        verify(questionService).createQuestion(eq(41L), sent.capture());
+        assertThat(sent.getValue().getTitle()).hasSize(255);
+        assertThat(sent.getValue().getContent()).hasSize(50_000);
+        assertThat(sent.getValue().getHashtags()).containsExactlyElementsOf(tags);
+    }
+
+    private static Map<String, Object> question(String title, String content, List<String> hashtags) {
+        return Map.of("title", title, "content", content, "hashtags", hashtags);
+    }
 }
