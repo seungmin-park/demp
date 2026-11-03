@@ -58,6 +58,29 @@ class ApiSecurityTest {
     }
 
     @Test
+    @DisplayName("비로그인 사용자는 회원 ID로 다른 회원의 로그인 아이디를 조회할 수 없다")
+    void anonymousCannotReadLoginNameByMemberId() throws Exception {
+        Member target = member("security-hidden-login-name", List.of("ROLE_USER"));
+        String body = mvc.perform(get("/api/member/{memberId}", target.getId()))
+                .andExpect(status().isUnauthorized())
+                .andReturn().getResponse().getContentAsString();
+        assertThat(body).doesNotContain(target.getUsername());
+    }
+
+    @Test
+    @DisplayName("회원 경로는 로그인·가입·아이디 확인만 비로그인으로 허용하고 나머지는 인증을 요구한다")
+    void memberRoutesRequireAuthenticationByDefault() throws Exception {
+        mvc.perform(get("/api/member/validUsername").param("username", "security-free-name"))
+                .andExpect(status().isOk()).andExpect(content().string("true"));
+        mvc.perform(post("/api/member/login").param("username", "security-missing").param("password", "wrong"))
+                .andExpect(status().isUnauthorized()).andExpect(jsonPath("$.errorCode").value(401));
+        mvc.perform(get("/api/member/unlisted-route"))
+                .andExpect(status().isUnauthorized()).andExpect(jsonPath("$.errorCode").value(401));
+        mvc.perform(post("/api/member/validUsername").param("username", "security-free-name"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
     @DisplayName("가입 응답에서 비밀번호를 제외하고 암호화된 비밀번호를 저장한다")
     void signupProtectsPassword() throws Exception {
         try {

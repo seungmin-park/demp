@@ -4,7 +4,6 @@ import com.inhatc.demp.config.SecurityConfiguration;
 import com.inhatc.demp.config.jwt.JwtTokenProvider;
 import com.inhatc.demp.controller.ExController;
 import com.inhatc.demp.controller.MemberController;
-import com.inhatc.demp.domain.Member;
 import com.inhatc.demp.dto.member.MemberDto;
 import com.inhatc.demp.dto.member.MemberInfo;
 import com.inhatc.demp.dto.member.MemberLoginForm;
@@ -20,7 +19,6 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import com.inhatc.demp.support.WithMember;
 import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -36,7 +34,6 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.queryParameters;
 import static org.springframework.restdocs.request.RequestDocumentation.formParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -55,24 +52,6 @@ class MemberRestDocsTest {
     private JwtTokenProvider jwtTokenProvider;
     @Autowired
     private MockMvc mockMvc;
-
-    @Test
-    @DisplayName("회원 단일 조회 응답을 문서화한다")
-    void documentsMemberGet() throws Exception {
-        Member member = Member.builder().username("docs-member").password("docs-password").roles(List.of("ROLE_USER")).build();
-        ReflectionTestUtils.setField(member, "id", 41L);
-        when(memberService.findById(41L)).thenReturn(member);
-
-        mockMvc.perform(get("/api/member/{memberId}", 41L))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(41))
-                .andExpect(jsonPath("$.username").value("docs-member"))
-                .andDo(document("member-get",
-                        pathParameters(parameterWithName("memberId").description("회원 ID")),
-                        responseFields(
-                                fieldWithPath("id").description("회원 ID"),
-                                fieldWithPath("username").description("로그인 이름"))));
-    }
 
     @Test
     @DisplayName("로그인 요청과 토큰 응답을 문서화한다")

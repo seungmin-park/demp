@@ -55,10 +55,6 @@ public class MemberService {
         return new MemberDto(member.getId(), member.getUsername());
     }
 
-    public Member findById(Long id) {
-        return memberRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
-    }
-
     public List<Member> findAll() {
         return memberRepository.findAll();
     }
