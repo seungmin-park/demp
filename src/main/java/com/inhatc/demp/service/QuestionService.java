@@ -11,7 +11,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,8 +31,14 @@ public class QuestionService {
     private final MemberRepository memberRepository;
     private final HashtagResolver hashtagResolver;
     private final ContentSanitizer contentSanitizer;
-    @Transactional
+    private final PlatformTransactionManager transactionManager;
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void createQuestion(Long actorId, QuestionForm questionForm) {
+        writeRetryingConcurrentTagCreation(() -> saveNewQuestion(actorId, questionForm));
+    }
+
+    private void saveNewQuestion(Long actorId, QuestionForm questionForm) {
         Member author = memberRepository.findById(actorId).orElseThrow(ResourceNotFoundException::new);
         Question question = Question.builder()
                 .title(questionForm.getTitle())
@@ -78,8 +88,12 @@ public class QuestionService {
         return findById(id, actorId);
     }
 
-    @Transactional
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void updateQuestion(Long actorId, QuestionUpdateForm questionUpdateForm) {
+        writeRetryingConcurrentTagCreation(() -> applyQuestionUpdate(actorId, questionUpdateForm));
+    }
+
+    private void applyQuestionUpdate(Long actorId, QuestionUpdateForm questionUpdateForm) {
         Question question = questionRepository.findById(questionUpdateForm.getQuestionId()).orElseThrow(ResourceNotFoundException::new);
         requireOwner(actorId, question);
         question.updateQuestion(questionUpdateForm.getTitle(), contentSanitizer.sanitize(questionUpdateForm.getContent()));
@@ -91,6 +105,20 @@ public class QuestionService {
         Question question = questionRepository.findById(id).orElseThrow(ResourceNotFoundException::new);
         requireOwner(actorId, question);
         questionRepository.delete(question);
+    }
+
+    /**
+     * Another writer can commit the same new tag between this transaction's lookup and insert. The unique
+     * tag_name constraint then rejects this insert, and only a new transaction (a new snapshot) can see the
+     * committed tag, so the whole write runs once more. A second rejection is a different fault and propagates.
+     */
+    private void writeRetryingConcurrentTagCreation(Runnable write) {
+        TransactionTemplate transaction = new TransactionTemplate(transactionManager);
+        try {
+            transaction.executeWithoutResult(status -> write.run());
+        } catch (DataIntegrityViolationException tagCreatedConcurrently) {
+            transaction.executeWithoutResult(status -> write.run());
+        }
     }
 
     private void requireOwner(Long actorId, Question question) {
