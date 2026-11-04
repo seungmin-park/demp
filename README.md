@@ -4,6 +4,18 @@
 
 채용 공고와 교육 과정은 모집 대상, 기술, 비용, 기간이 제각각입니다. DEMP는 운영자가 출처를 확인한 공고의 핵심 조건을 같은 형식으로 보여줍니다. 사용자는 조건을 좁혀 비교하고 **지원하기**에서 원본 페이지로 이동합니다. 질문·답변 공간에서는 학습 경험을 나누고 추천·비추천을 남길 수 있습니다.
 
+이 저장소는 Spring Boot API입니다. Vue 화면([dempfrontend](https://github.com/seungmin-park/dempfrontend))과 함께 GCP VM에서 운영하며, main에 머지되면 CI를 통과한 산출물이 그대로 배포됩니다.
+
+| 이 README에서 볼 수 있는 것 | 결과 |
+| --- | --- |
+| 공고 20개를 읽으려고 1만 건을 메모리에 올리던 조회 | 로딩 엔티티 10,001 → 21개 |
+| 답변 50개 화면의 N+1 조회 | SQL 53 → 3회 |
+| 연타·동시 요청에도 틀어지지 않는 추천 수 | 행 잠금 + 유일 제약, 경쟁 상황 회귀 테스트 |
+| 운영 MySQL에서만 실패하던 공고 등록 | 복원 DB에서 재현 후 데이터 해시를 비교하며 적용 |
+| 보안 감사로 찾은 후보 | 아이디 노출·태그 경합·입력 한도 3건을 PR로 수정 |
+
+**[서비스 바로가기 → demp-app.duckdns.org](https://demp-app.duckdns.org/)**
+
 [화면 보기](#서비스-둘러보기) · [기술적 문제 해결](#기술적-문제-해결) · [보안 감사](#5-보안-감사로-찾고-고친-것) · [로컬 실행](#로컬-실행) · [검증](#검증) · [프런트엔드 저장소](https://github.com/seungmin-park/dempfrontend)
 
 ## 서비스 둘러보기
@@ -60,17 +72,17 @@ flowchart LR
 
 ### 4. 운영 DB에서만 드러난 제약 차이
 
-운영 서버에 실제 공고를 등록하던 중 한 건이 HTTP 500으로 실패했습니다. 운영 MySQL의 기술 CHECK 제약이 초기 6개 값만 허용하고 있었고, Hibernate `validate`와 빈 스키마 검증으로는 이 차이를 찾을 수 없었습니다. 별도 복원 DB에서 실패를 재현하고 66개 값으로 바꾼 SQL을 롤백 트랜잭션으로 검증한 뒤 운영에 적용했으며, 기존 컬럼 값의 해시가 적용 전후로 같음을 확인했습니다. 이후 enum과 배포 SQL이 어긋나면 테스트가 실패하도록 고정했습니다. [운영 적용 기록](docs/verification/production-postings-20261013/README.md)
+운영 서버에 실제 공고를 등록하던 중 한 건이 HTTP 500으로 실패했습니다. 운영 MySQL의 기술 CHECK 제약이 초기 6개 값만 허용하고 있었고, Hibernate `validate`와 빈 스키마 검증으로는 이 차이를 찾을 수 없었습니다. 별도 복원 DB에서 실패를 재현하고, 66개 값으로 바꾼 SQL을 롤백 트랜잭션으로 검증한 뒤 운영에 적용했습니다. 기존 컬럼 값의 해시는 적용 전후로 같았습니다. 이후 enum과 배포 SQL이 어긋나면 테스트가 실패하도록 고정했습니다. [운영 적용 기록](docs/verification/production-postings-20261013/README.md)
 
 ### 5. 보안 감사로 찾고 고친 것
 
-소스 기반 보안 감사(진입 경로 × 신뢰 경계 × 공격 유형 38개 단위, 후보마다 독립 검증 2회)를 진행했습니다. 회원 간 권한 침범, 관리자 경로 우회, 미공개 공고 노출, JWT 위조, 업로드 경로 조작, CI를 통한 비밀값 탈취는 우회 경로가 없었습니다. 운영 설정이나 실행 결과로 확인해야 하는 후보 10건 중 코드로 닫을 수 있는 것부터 TDD로 고쳤습니다.
+진입 경로 × 신뢰 경계 × 공격 유형으로 나눈 38개 단위를 소스 기준으로 감사하고, 후보마다 독립 검증을 두 번 거쳤습니다. 회원 간 권한 침범, 관리자 경로 우회, 미공개 공고 노출, JWT 위조, 업로드 경로 조작, CI를 통한 비밀값 탈취는 우회 경로를 찾지 못했습니다. 운영 설정이나 실행 결과로 확인해야 하는 후보 10건 중 코드로 닫을 수 있는 것부터 TDD로 고쳤습니다.
 
 | 발견 | 사용자 영향 | 수정 |
 | --- | --- | --- |
 | 비로그인 회원 조회 API가 순차 ID로 모든 로그인 아이디를 반환 | 아이디 목록 → 남의 계정을 로그인 실패 제한으로 잠그는 공격의 첫 단계 | 미사용 API 삭제, 회원 경로 기본 인증 ([#23](https://github.com/seungmin-park/demp/pull/23)) |
 | 같은 새 태그로 동시에 질문을 쓰면 늦은 요청이 유일 제약 위반으로 실패 | 그 사용자는 500을 받고 글이 저장되지 않음 | 태그 경합은 새 트랜잭션으로 한 번 재시도. 운영 DB에는 `username`·`tag_name` 유일 인덱스가 이미 있음을 확인했고, 그 인덱스가 없는 기존 DB를 위한 수동 SQL만 함께 둠 ([#24](https://github.com/seungmin-park/demp/pull/24)) |
-| 질문·답변 쓰기 경로에 입력 제약 없음 | 빈 글 저장, 긴 제목 500, 태그 수 무제한으로 전역 태그 행 증가 | 제목·본문·태그 한도와 모든 쓰기 경로 검증 ([#25](https://github.com/seungmin-park/demp/pull/25)) |
+| 질문·답변 쓰기 경로에 입력 제약 없음 | 빈 글 저장, 긴 제목 500, 태그 수 무제한으로 전역 태그 행 증가 | 제목·본문·태그 한도와 모든 쓰기 경로 검증 ([#25](https://github.com/seungmin-park/demp/pull/25)). 화면도 저장 전에 같은 한도를 안내하고 입력을 유지 ([dempfrontend#32](https://github.com/seungmin-park/dempfrontend/pull/32)) |
 
 소스만으로 판단할 수 없던 후보는 운영 상태를 직접 확인해 정리합니다. 예를 들어 "운영 스키마에 유일 제약이 없을 수 있다"는 후보는 운영 DB 조회로 인덱스가 이미 있음을 확인해 닫았습니다. 남은 후보(계정별 로그인 제한의 클라이언트 차원 보완, 정화기 도입 전 저장 데이터 재정화, 배포 권한·관리 포트 설정)도 같은 방식으로 이어서 다룹니다.
 
@@ -143,20 +155,15 @@ DEV_API_TARGET=http://127.0.0.1:18080 npm run dev
 # demp
 bash scripts/verify.sh
 
-# dempfrontend
-npm run check:agent-contracts
-npm test
-npm run typecheck
-npm run lint -- --no-fix
-npm run build
-npm run test:e2e -- --headed
+# dempfrontend: 책임 경계·타입·단위 테스트·lint·build·E2E를 한 번에 실행
+npm run verify
 ```
 
-2026-09-29 기록에서 백엔드 **316개**, 프런트 단위·컴포넌트 **156개**, headed Playwright **20개**가 통과했습니다. 현재 cmux 세션의 실제 Spring/H2 브라우저에서는 로그인→추천·비추천→새로고침→전환·취소→재조회까지 확인했습니다. Playwright는 API fixture 기반 화면 검증이며 실제 DB 저장 검증과 구분합니다. [명령·종료 코드·화면 증거](docs/verification/agent-verification-and-official-docs/README.md)
+2026-11-05 기준 백엔드 테스트 **478개**, 프런트 단위·컴포넌트 테스트 **383개**, Playwright E2E **254개**(production·development 빌드, CI와 같은 headless)가 통과했습니다. Playwright는 API fixture 기반 화면 검증이므로 실제 DB 저장 검증과 구분합니다. 실제 Spring/H2 서버와 브라우저에서는 로그인→추천·비추천→새로고침→전환·취소→재조회 흐름을 따로 확인했습니다. [명령·종료 코드·화면 증거](docs/verification/agent-verification-and-official-docs/README.md)
 
 ## 현재 범위와 더 읽을 자료
 
-백엔드는 main 머지 후 성공한 CI 산출물을 그대로 GCP VM에 배포합니다(재빌드 없음, [CI·보호된 전달](docs/engineering/ci-and-delivery.md)). 수동 스키마 변경은 자동으로 적용하지 않고 백업·복원 DB 검증 후 운영자가 적용합니다. 실사용 트래픽과 동시 부하 측정은 아직 하지 않았습니다. 벤치마크는 로컬 H2 조건의 재현 실험이며 운영 처리량을 예측하지 않습니다.
+백엔드는 main 머지 후 성공한 CI 산출물을 그대로 GCP VM에 배포합니다(재빌드 없음, [CI·보호된 전달](docs/engineering/ci-and-delivery.md)). 수동 스키마 변경은 자동으로 적용하지 않고 백업·복원 DB 검증 후 운영자가 적용합니다. 운영 VM 디스크가 80%를 넘으면 Slack으로 알림을 받습니다. 실사용 트래픽과 동시 부하 측정은 아직 하지 않았습니다. 벤치마크는 로컬 H2 조건의 재현 실험이며 운영 처리량을 예측하지 않습니다.
 
 - [프런트엔드 구현·UI 검증](https://github.com/seungmin-park/dempfrontend)
 - [REST Docs 생성 방법과 OpenAPI](docs/operations.md)
