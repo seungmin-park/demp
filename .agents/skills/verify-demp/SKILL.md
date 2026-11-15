@@ -61,6 +61,8 @@ Inspect `build/verification/member-contract.json` from the existing full verify:
 
 When adding or importing technologies, inspect the actual MySQL language CHECK; Hibernate validate does not prove its allowed values. Keep `announcement-technologies-check.sql` aligned with Language via the required TechnologyCheckMigrationTest. A new empty Hibernate schema rehearsal cannot establish compatibility with a populated production CHECK. Rehearse the exact SQL on a restored owned DB: legacy CPP rejection, every current value accepted in a rolled-back transaction, unknown value still rejected, original row values unchanged. Never drop tags to bypass the constraint or drop the check without replacing it.
 
+The same applies to JobPosition and `announcement.job_position`: keep `announcement-job-position-check.sql` aligned via the required JobPositionCheckMigrationTest. Hibernate numbered legacy CHECK names by column order, so never hard-code `announcement_chk_N`; the SQL finds the constraint by its clause. Run `docs/verification/job-position-check-compatibility/mysql_rehearsal.sh <socket>` on an owned throwaway MySQL, then rehearse on a restored DB before an operator applies it.
+
 
 ## Saved announcements and deadline modes
 
