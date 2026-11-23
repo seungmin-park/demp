@@ -52,7 +52,7 @@
 
 기술 값은 Language enum이 소유한다. MySQL에 예전 6개만 허용하는 language_chk_1 CHECK가 있으면 새 기술 저장이 500으로 실패한다. `db/manual/announcement-technologies-check.sql`은 현재 enum의 허용 집합으로 CHECK를 교체하며 기존 값·FK·중복 제약을 유지한다. `TechnologyCheckMigrationTest`는 SQL에 enum 누락/추가가 생기면 CI에서 거절한다. 실제 MySQL 문법 및 CHECK 동작은 운영 백업의 별도 복원 DB에서 기존 CPP 거절→전체 66개 허용/미지 값 거절로 확인했다. 정적 집합 검사는 실제 MySQL 실행을 대체하지 않는다.
 
-분야 값은 JobPosition enum이 소유한다. 운영 스키마는 #10 이전 21개 분야로 `announcement.job_position` CHECK를 함께 만들었으므로 SRE·MLOPS 등 이후 추가한 10개 분야 저장이 3819→500으로 실패한다. Hibernate가 붙인 `announcement_chk_N` 번호는 컬럼 순서에 따르므로 `db/manual/announcement-job-position-check.sql`은 이름을 가정하지 않고 제약 내용으로 기존 CHECK를 찾아 `announcement_job_position_chk`로 교체한다. 재실행해도 안전하다. `JobPositionCheckMigrationTest`는 enum과 SQL 허용 집합의 드리프트를, [MySQL 리허설](../verification/job-position-check-compatibility/README.md)은 실제 교체 동작을 확인한다. 운영 적용은 백업·복원 DB 확인 후 운영자가 수행한다. [작업 기록](../plans/job-position-check-compatibility.md)
+분야 값은 JobPosition enum이 소유한다. 운영 스키마는 #10 이전 21개 분야로 `announcement.job_position` CHECK를 함께 만들었으므로 CHECK를 갱신하지 않은 DB에서는 SRE·MLOPS 등 이후 추가한 10개 분야 저장이 3819→500으로 실패한다. Hibernate가 붙인 `announcement_chk_N` 번호는 컬럼 순서에 따르므로 `db/manual/announcement-job-position-check.sql`은 이름을 가정하지 않고 제약 내용으로 기존 CHECK를 찾아 `announcement_job_position_chk`로 교체한다. 재실행해도 안전하다. `JobPositionCheckMigrationTest`는 enum과 SQL 허용 집합의 드리프트를, [MySQL 리허설](../verification/job-position-check-compatibility/README.md)은 실제 교체 동작을 확인한다. 운영 적용은 백업·복원 DB 확인 후 운영자가 수행하며, 현재 운영 DB에는 2026-11-23에 적용됐다. [작업 기록](../plans/job-position-check-compatibility.md)
 
 - 2026-10-15: [운영 목록의 게시 상태 필터](../plans/admin-announcement-status.md). 화면의 상태 선택은 URL과 API로 전달하고 저장소에서 페이지 분할 전에 필터링한다. 공개 조회의 PUBLISHED 경계는 유지한다. 검색은 첫 페이지로 돌아가며 새로고침 조건을 복원한다.
 

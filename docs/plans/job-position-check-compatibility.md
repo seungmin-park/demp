@@ -36,7 +36,9 @@
 
 1. 쓰기 중지·백업 후 현재 제약을 확인한다: `SELECT tc.CONSTRAINT_NAME, cc.CHECK_CLAUSE FROM information_schema.TABLE_CONSTRAINTS tc JOIN information_schema.CHECK_CONSTRAINTS cc ON cc.CONSTRAINT_SCHEMA = tc.CONSTRAINT_SCHEMA AND cc.CONSTRAINT_NAME = tc.CONSTRAINT_NAME WHERE tc.TABLE_SCHEMA = DATABASE() AND tc.TABLE_NAME = 'announcement';`
 2. 별도 복원 DB에서 `mysql <복원 DB> < announcement-job-position-check.sql`을 실행하고, 기존 21개 외 분야(SRE)가 적용 전 3819·적용 후 저장되는지, 알 수 없는 값이 거절되는지, 기존 `job_position` 값 해시가 같은지 확인한다.
-3. 같은 SQL을 운영에 적용하고 관리자 화면에서 새 분야 공고를 저장·재조회한다.
+3. 같은 SQL을 `--default-character-set=utf8mb4` 접속으로 운영에 적용하고 관리자 화면에서 새 분야 공고를 저장·재조회한다. 접속 문자셋에 따라 제약의 값 표기(`_utf8mb4`, `_latin1`)가 달라지므로 사후 검사는 표기에 의존하지 않는다.
+
+2026-11-23 운영 적용 완료. 결과와 남은 확인은 [검증 기록](../verification/job-position-check-compatibility/README.md#운영-적용-결과-2026-11-23)에 있다.
 
 ## 검증 기록
 
@@ -46,5 +48,6 @@
 - 실제 MySQL 리허설: `mysql_rehearsal.sh` ALL PASS — 분야 CHECK가 chk_2인 경우·chk_1인 경우 각각 적용 전 SRE 3819(Red) → 적용 후 31개 허용(롤백)·INVALID 3819·NULL 허용·announcement_type CHECK 유지·기존 값 해시 동일·분야 CHECK 정확히 1개, 재실행 후 같은 결과. 분야 CHECK가 없는 DB는 추가만 됨. 출력은 [검증 기록](../verification/job-position-check-compatibility/README.md).
 - Refactor: 구조 변경 없음. 새 테스트는 기존 `TechnologyCheckMigrationTest`와 같은 구성을 따랐고, 두 테스트의 공통화는 SQL 형태(고정 이름 vs 조회)가 달라 하지 않았다.
 - 전체 검증: `JAVA_HOME=<Java 25> bash scripts/verify.sh` exit 0 — Java 테스트 480건(기존 478 + 신규 2), 필수 suite 70(`JobPositionCheckMigrationTest` 추가), 실패·오류·스킵 0, 생성 문서·JAR 일치, 회원·공고 실제 HTTP 계약과 반응 저장 흐름 통과(격리된 메모리 H2). 첫 실행은 로그를 `build/`에 두어 `clean`에 지워졌으므로 중단하고 로그 위치만 바꿔 다시 실행했다.
-- 확인하지 않은 것: 운영 MySQL의 실제 제약 이름·버전과 운영 적용. 리허설은 MySQL 26.7.0에서 실행했고, SQL이 쓰는 `information_schema.CHECK_CONSTRAINTS`·`PREPARE`·`DO`는 MySQL 8.0.16 이상에 있다(운영이 3819로 CHECK를 강제하므로 8.0.16 이상으로 판단). 운영 복원 DB 리허설은 운영자 경로로 진행해야 한다.
+- 구현 시점(#29)에 확인하지 않았던 운영 제약 이름과 운영 적용은 2026-11-23 적용으로 확인됐다(기존 제약 `announcement_chk_5`). 리허설은 MySQL 26.7.0에서 실행했고, SQL이 쓰는 `information_schema.CHECK_CONSTRAINTS`·`PREPARE`·`DO`는 MySQL 8.0.16 이상에 있다.
+- 아직 확인하지 않은 것: 관리자 화면에서 새 분야 공고를 저장·재조회하는 흐름, 기술·분야 외 enum 컬럼의 값 변경을 잡는 자동 검사.
 - 이름·책임 검토: 새 제약 이름 `announcement_job_position_chk`는 대상 테이블·컬럼을 드러내며 자동 번호와 겹치지 않는다. 테스트 이름은 기존 `TechnologyCheckMigrationTest`와 대칭이다. 변경한 프로덕션 코드가 없어 호출부·공개 계약 영향은 없다.
